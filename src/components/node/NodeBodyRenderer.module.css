@@ -1,0 +1,105 @@
+.customNodeContent {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.nodeHeader {
+  position: relative;
+  padding: .5em 12px;
+  font-weight: 500;
+  border-bottom: var(--inputBorder);
+  background-color: var(--tableHeaderBackgroundColor, #f0f0f0);
+  border-radius: .5em .5em 0 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+/* Interactive node header (when not selected) */
+.nodeHeader[data-interactive="true"][data-selected="false"] {
+  cursor: move;
+  background-color: var(--tableHeaderBackgroundColorHover, #e5e5e5);
+  transition: background-color 0.2s ease;
+}
+
+.nodeHeader[data-interactive="true"][data-selected="false"]:hover {
+  background-color: var(--tableHeaderBackgroundColorActive, #d8d8d8);
+}
+
+.nodeHeader[data-interactive="true"][data-selected="false"]::before {
+  content: "⋮⋮";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: var(--secondaryLabelColor, #999);
+  opacity: 0.6;
+  pointer-events: none;
+  letter-spacing: -2px;
+}
+
+.nodeTitle {
+  flex: 1;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--textColor, #000);
+  text-align: center;
+  cursor: text;
+  user-select: none;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+  box-sizing: border-box;
+}
+
+.nodeTitle:hover {
+  background-color: var(--hoverBackground, rgba(0, 0, 0, 0.05));
+}
+
+/* Interactive node title (when not selected) */
+.nodeHeader[data-interactive="true"][data-selected="false"] .nodeTitle {
+  padding-left: 20px;
+}
+
+.nodeTitleInput {
+  flex: 1;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--textColor, #000);
+  text-align: center;
+  background: var(--inputBackground, #fff);
+  border: 2px solid var(--accentColor, #0066cc);
+  border-radius: 3px;
+  padding: 2px 4px;
+  outline: none;
+  min-width: 80px;
+  box-sizing: border-box;
+}
+
+.lockIcon {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 12px;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.nodeContent {
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+/* Group node styles */
+.nodeHeader[data-is-group="true"] {
+  background-color: transparent;
+  border-bottom: none;
+}
+
+.nodeTitle[data-is-group="true"] {
+  color: var(--secondaryLabelColor, #666);
+  font-weight: 500;
+}

@@ -1,0 +1,769 @@
+/* Base container moved to components/NodeEditorBase.module.css */
+
+.container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--windowBackgroundColor);
+  user-select: none;
+  padding-bottom: var(--node-editor-space-xl);
+  /* Space for status bar */
+  box-sizing: border-box;
+}
+
+/* Canvas element styles moved to components/CanvasBase.module.css */
+
+.nodes {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  /* Above connections */
+}
+
+.node {
+  position: absolute;
+  background-color: var(--controlBackground);
+  border: var(--inputBorder);
+  border-radius: var(--controlBorderRadius);
+  box-shadow: var(--cardBoxShadow);
+  min-width: 150px;
+  min-height: 50px;
+  cursor: move;
+  transition: box-shadow var(--node-editor-transition-duration);
+}
+
+.node:hover {
+  box-shadow: var(--cardHoverBoxShadow);
+}
+
+/* Locked nodes: no extra visual highlight beyond the icon */
+.node.locked {}
+
+.node.selected {
+  border-color: var(--accentColor);
+  box-shadow: var(--cardFocusBoxShadow);
+}
+
+.node.dragging {
+  opacity: var(--node-editor-dragging-opacity);
+  cursor: grabbing;
+}
+
+.nodeHeader {
+  position: relative;
+  padding: .5em var(--node-editor-space-md);
+  font-weight: var(--node-editor-inspector-font-weight-medium);
+  border-bottom: var(--inputBorder);
+  background-color: var(--tableHeaderBackgroundColor);
+  border-radius: var(--controlBorderRadius) var(--controlBorderRadius) 0 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.nodeHeader.interactiveDragHandle {
+  cursor: move;
+  background-color: var(--tableHeaderBackgroundColorHover);
+  transition: background-color var(--node-editor-transition-duration) ease;
+}
+
+.nodeHeader.interactiveDragHandle:hover {
+  background-color: var(--tableHeaderBackgroundColorActive);
+}
+
+.nodeHeader.interactiveDragHandle::before {
+  content: "⋮⋮";
+  position: absolute;
+  left: var(--node-editor-space-xs);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 10px;
+  color: var(--secondaryLabelColor);
+  opacity: 0.6;
+  pointer-events: none;
+  letter-spacing: -2px;
+}
+
+.nodeHeaderInput {
+  width: 100%;
+  padding: var(--node-editor-space-xs) .5em;
+  border: var(--node-editor-border-width) solid var(--accentColor);
+  border-radius: var(--cardBorderRadius);
+  background-color: var(--windowBackgroundColor);
+  font-weight: var(--node-editor-inspector-font-weight-medium);
+  font-size: inherit;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.lockIcon {
+  position: absolute;
+  top: var(--node-editor-space-xs);
+  right: var(--node-editor-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.nodeContent {
+  padding: var(--node-editor-space-md);
+  box-sizing: border-box;
+}
+
+.groupNode {
+  background-color: color-mix(in srgb, var(--separatorColor) 6%, transparent);
+  border-style: dashed;
+  border-width: var(--node-editor-border-width);
+  border-color: var(--dividerColor);
+}
+
+.groupNode.collapsed .nodeContent {
+  display: none;
+}
+
+.groupCollapsed {
+  text-align: center;
+  color: var(--secondaryLabelColor);
+  font-style: italic;
+}
+
+.groupExpanded {
+  /* moved to components/node/NodeView.module.css */
+}
+
+/* Node visual variants moved to components/node/NodeView.module.css */
+
+/* Removed duplicate selectionBox - using selectionBoxOverlay instead */
+
+.toolbar {
+  position: absolute;
+  top: var(--node-editor-space-lg);
+  left: var(--node-editor-space-lg);
+  display: flex;
+  gap: .5em;
+  background-color: var(--controlBackground);
+  border: var(--inputBorder);
+  border-radius: var(--controlBorderRadius);
+  padding: .5em;
+  box-shadow: var(--cardBoxShadow);
+  box-sizing: border-box;
+}
+
+/* Toolbar button styles moved to components/elements/NodeEditorToolbar.module.css */
+
+.contextMenu {
+  position: absolute;
+  background-color: var(--controlBackground);
+  border: var(--inputBorder);
+  border-radius: var(--controlBorderRadius);
+  box-shadow: var(--cardHoverBoxShadow);
+  padding: var(--node-editor-space-xs);
+  min-width: 150px;
+  box-sizing: border-box;
+}
+
+.contextMenuItem {
+  padding: .5em var(--node-editor-space-md);
+  cursor: pointer;
+  border-radius: var(--cardBorderRadius);
+  transition: background-color var(--node-editor-transition-duration);
+  box-sizing: border-box;
+}
+
+.contextMenuItem:hover {
+  background-color: var(--controlHoverBackground);
+}
+
+.grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: linear-gradient(var(--node-editor-grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--node-editor-grid-color) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: var(--node-editor-grid-opacity);
+}
+
+/* Inspector styles moved to components/inspector/InspectorPanel.module.css */
+
+.inspectorRow {
+  display: flex;
+  gap: .5em;
+}
+
+.inspectorRow input {
+  flex: 1;
+}
+
+.editorWithInspector {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.editorMain {
+  flex: 1;
+  position: relative;
+}
+
+.externalDataInfo {
+  padding: .5em;
+  background-color: var(--controlHoverBackground);
+  border-radius: var(--cardBorderRadius);
+  font-size: var(--node-editor-inspector-font-size-body);
+  margin-bottom: .5em;
+  box-sizing: border-box;
+}
+
+.externalDataInfo>div {
+  margin-bottom: var(--node-editor-space-xs);
+}
+
+/* Drag guides */
+.dragGuides {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.dragGuide {
+  position: absolute;
+  background-color: var(--accentColor);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.dragGuideVertical {
+  width: var(--node-editor-border-width);
+  height: 100%;
+}
+
+.dragGuideHorizontal {
+  width: 100%;
+  height: var(--node-editor-border-width);
+}
+
+.snapTarget {
+  position: absolute;
+  width: .5em;
+  height: .5em;
+  background-color: var(--accentColor);
+  border-radius: 50%;
+  transform: translate(-4px, -4px);
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.distanceIndicator {
+  position: absolute;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px 6px;
+  border-radius: var(--cardBorderRadius);
+  font-size: 10px;
+  font-weight: var(--node-editor-inspector-font-weight-medium);
+  white-space: nowrap;
+  z-index: 1001;
+  box-sizing: border-box;
+}
+
+.distanceLine {
+  position: absolute;
+  border-top: var(--node-editor-border-width) dashed var(--secondaryLabelColor);
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+/* Status bar styles moved to components/StatusBar.module.css and parts/StatusSection.module.css */
+
+/* Port styles */
+.nodePort {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--controlBackground);
+  border: 3px solid red;
+  /* Temporary: make ports visible */
+  cursor: crosshair;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  z-index: 100;
+  /* Increased z-index */
+  box-shadow: 0 0 var(--node-editor-space-xs) rgba(0, 0, 0, 0.5);
+  /* Add shadow for visibility */
+}
+
+.nodePort:hover {
+  transform: scale(1.2);
+  border-color: var(--accentColor);
+}
+
+.nodePort.portInput {
+  border-color: var(--nodePortInputColor);
+}
+
+.nodePort.portOutput {
+  border-color: var(--nodePortOutputColor);
+}
+
+.portInner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: .5em;
+  height: .5em;
+  background-color: var(--inputBorder);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: background-color var(--node-editor-transition-duration);
+}
+
+.nodePort:hover .portInner {
+  background-color: var(--accentColor);
+}
+
+.nodePort.portInput .portInner {
+  background-color: var(--nodePortInputColor);
+}
+
+.nodePort.portOutput .portInner {
+  background-color: var(--nodePortOutputColor);
+}
+
+.portLabel {
+  position: absolute;
+  white-space: nowrap;
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--secondaryLabelColor);
+  pointer-events: none;
+  user-select: none;
+}
+
+.portLeft .portLabel {
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: right;
+}
+
+.portRight .portLabel {
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.portTop .portLabel {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+.portBottom .portLabel {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+/* Connection overlay styles */
+.connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+  /* Higher than nodes but below floating elements */
+}
+
+.connections svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  /* SVG container should not block events */
+}
+
+/* Dash animation for drag connections */
+@keyframes dashAnimation {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+.inspectorTabs {
+  display: flex;
+  gap: .5em;
+  padding: 0;
+}
+
+.inspectorTab {
+  flex: 1;
+  padding: .5em 1em;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-size: 13px;
+  font-weight: var(--node-editor-inspector-font-weight-medium);
+  color: var(--secondaryLabelColor);
+  cursor: pointer;
+  transition: all var(--node-editor-transition-duration) ease;
+}
+
+.inspectorTab:hover {
+  color: var(--labelColor);
+  background: var(--quaternarySystemFillColor);
+}
+
+.inspectorTab.active {
+  color: var(--accentColor);
+  border-bottom-color: var(--accentColor);
+  background: transparent;
+}
+
+.inspectorTab.active:hover {
+  background: var(--quaternarySystemFillColor);
+}
+
+.inspectorContentNoPadding {
+  padding: 0;
+}
+
+
+.inspectorSection h4 {
+  margin: 0 0 var(--node-editor-space-md) 0;
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 600;
+  color: var(--secondaryLabelColor);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.inspectorField {
+  margin-bottom: var(--node-editor-space-md);
+}
+
+.inspectorField label {
+  display: block;
+  margin-bottom: var(--node-editor-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: var(--node-editor-inspector-font-weight-medium);
+  color: var(--textColor);
+}
+
+.inspectorInput,
+.inspectorTextarea {
+  width: 100%;
+  padding: 3px .25em;
+  border: var(--inputBorder);
+  border-radius: var(--cardBorderRadius);
+  font-size: var(--node-editor-inspector-font-size-body);
+  background: var(--controlBackground);
+  color: var(--textColor);
+  box-sizing: border-box;
+}
+
+.inspectorInput:focus,
+.inspectorTextarea:focus {
+  outline: none;
+  border-color: var(--accentColor);
+}
+
+.inspectorTextarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.inspectorPositionInputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--node-editor-inspector-space-xs);
+  row-gap: var(--node-editor-inspector-space-sm);
+  width: 100%;
+}
+
+.inspectorNumberInput {
+  flex: 1;
+  /* Compact padding for small width usability */
+  padding: 3px .25em;
+  border: var(--inputBorder);
+  border-radius: var(--cardBorderRadius);
+  font-size: var(--node-editor-inspector-font-size-body);
+  background: var(--controlBackground);
+  color: var(--textColor);
+  box-sizing: border-box;
+  min-width: 0;
+  /* Allow shrinking inside flex container */
+}
+
+.inspectorNumberInput:focus {
+  outline: none;
+  border-color: var(--accentColor);
+}
+
+.inspectorInput:hover,
+.inspectorTextarea:hover,
+.inspectorNumberInput:hover {
+  border-color: var(--inputBorderHover);
+}
+
+/* Unified section title for inspector */
+.inspectorSectionTitle {
+  margin: 0 0 var(--node-editor-space-sm) 0;
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 600;
+  color: var(--secondaryLabelColor);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.inspectorReadOnlyField {
+  display: block;
+  padding: 6px .5em;
+  font-size: var(--node-editor-inspector-font-size-body);
+  color: var(--secondaryLabelColor);
+  background: var(--tertiarySystemBackground);
+  border-radius: var(--cardBorderRadius);
+  border: var(--inputBorder);
+  box-sizing: border-box;
+}
+
+.inspectorEmptyState {
+  text-align: center;
+  padding: var(--node-editor-inspector-empty-padding-vertical) var(--node-editor-inspector-empty-padding-horizontal);
+  color: var(--secondaryLabelColor);
+  font-size: var(--node-editor-inspector-font-size-body);
+  box-sizing: border-box;
+}
+
+/* Canvas container/grid styles moved to components/CanvasBase.module.css */
+
+/* Editor Layout */
+.editorLayout {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.editorToolbar {
+  flex: 0 0 auto;
+  background: var(--controlBackground);
+  border-bottom: var(--inputBorder);
+  padding: .5em var(--node-editor-space-lg);
+  display: flex;
+  align-items: center;
+  min-height: 4.5em;
+  box-sizing: border-box;
+}
+
+.editorContent {
+  flex: 1;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.editorMain {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.editorSidebar {
+  flex: 0 0 auto;
+}
+
+.loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.loadingIndicator {
+  background-color: var(--controlBackground);
+  border: var(--inputBorder);
+  border-radius: var(--controlBorderRadius);
+  padding: var(--node-editor-space-lg) var(--node-editor-space-xxl);
+  font-size: 14px;
+  color: var(--controlTextColor);
+  box-shadow: var(--cardHoverBoxShadow);
+  box-sizing: border-box;
+}
+
+/* Custom Node Content */
+.customNodeContent {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Resize Handles - Transparent by default, accent color fill on hover */
+.resizeHandle {
+  position: absolute;
+  background-color: transparent;
+  border: none;
+  opacity: 0;
+  transition: opacity 0.1s ease, transform 0.1s ease, background-color 0.1s ease;
+  z-index: 15;
+  pointer-events: all;
+  /* Corner-specific border radius - only bottom-right is rounded */
+  border-radius: 0 0 var(--cardBorderRadius) 0;
+}
+
+/* Show handle when node is hovered or selected */
+.nodeView:hover .resizeHandle,
+.nodeView.selected .resizeHandle {
+  opacity: 0.6;
+}
+
+/* Accent color fill on hover */
+.resizeHandle:hover {
+  background-color: var(--accentColor);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Active state during resize */
+.resizeHandleActive {
+  background-color: var(--accentColor);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+
+/* Minimap Styles */
+.minimapContainer {
+  position: absolute;
+  top: var(--node-editor-space-lg);
+  right: var(--node-editor-space-lg);
+  z-index: 100;
+  pointer-events: all;
+}
+
+.minimap {
+  width: 200px;
+  background: var(--controlBackground);
+  border: var(--inputBorder);
+  border-radius: var(--controlBorderRadius);
+  box-shadow: var(--cardHoverBoxShadow);
+  backdrop-filter: blur(.5em);
+  overflow: hidden;
+}
+
+.minimapTitle {
+  padding: .5em var(--node-editor-space-md);
+  background: var(--tableHeaderBackgroundColor);
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 600;
+  color: var(--textColor);
+  border-bottom: var(--inputBorder);
+}
+
+.minimapContent {
+  padding: var(--node-editor-space-md);
+}
+
+.minimapViewport,
+.minimapNodes {
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--secondaryLabelColor);
+  margin-bottom: var(--node-editor-space-xs);
+}
+
+.minimapViewport:last-child,
+.minimapNodes:last-child {
+  margin-bottom: 0;
+}
+
+/* Theme-specific styles */
+.darkTheme {
+  background-color: var(--darkBackgroundColor);
+  color: var(--darkTextColor);
+}
+
+.darkTheme .minimap {
+  background: var(--darkControlBackground);
+  border-color: var(--darkInputBorder);
+}
+
+.darkTheme .minimapTitle {
+  background: var(--darkTableHeaderBackground);
+  color: var(--darkTextColor);
+  border-bottom-color: var(--darkInputBorder);
+}
+
+.darkTheme .minimapViewport,
+.darkTheme .minimapNodes {
+  color: var(--darkSecondaryTextColor);
+}
+
+/* Smooth animations - selective only for non-performance critical elements */
+.smoothAnimations .statusSection {
+  transition: opacity var(--node-editor-transition-duration) ease;
+}
+
+.smoothAnimations .minimap {
+  transition: opacity var(--node-editor-transition-duration) ease;
+}
+
+/* Remove all transform transitions to prevent janky movement */
+
+/* Disable all transitions during drag operations for smooth experience */
+.nodeView.dragging,
+.nodeView.dragging * {
+  transition: none;
+}
+
+/* Status bar saving indicator */
+.statusSaving {
+  color: var(--accentColor);
+  font-weight: 600;
+}
+
+/* UI Overlay Container - Fixed position, non-interactive overlay for UI customization */
+.uiOverlayContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  /* Never trap events - allows interaction with underlying elements */
+  z-index: 2000;
+  /* Above everything else in the editor */
+  overflow: visible;
+  /* Ensure children can be positioned absolutely within this container */
+}
+
+/* Allow individual UI overlay elements to be interactive if needed */
+.uiOverlayContainer>* {
+  pointer-events: auto;
+  /* Children can choose to be interactive */
+}
+
+/* TabNav styles moved to components/TabNav.module.css */

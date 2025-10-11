@@ -1,0 +1,177 @@
+/* Debug Overlay Component Styles */
+.debugOverlay {
+  position: absolute;
+  background: var(--controlBackground, rgba(0, 0, 0, 0.9));
+  color: var(--controlTextColor, #ffffff);
+  border: 1px solid var(--inputBorder, rgba(255, 255, 255, 0.2));
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace;
+  font-size: 11px;
+  max-width: 280px;
+  z-index: 2000;
+  backdrop-filter: blur(8px);
+  user-select: none;
+}
+
+/* Position variants */
+.topLeft {
+  top: 16px;
+  left: 16px;
+}
+
+.topRight {
+  top: 16px;
+  right: 16px;
+}
+
+.bottomLeft {
+  bottom: 60px;
+  /* Account for status bar */
+  left: 16px;
+}
+
+.bottomRight {
+  bottom: 60px;
+  /* Account for status bar */
+  right: 16px;
+}
+
+/* Collapsed state */
+.collapsed {
+  width: auto;
+}
+
+/* Debug header */
+.debugHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.debugTitle {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.collapseButton {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.collapseButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Debug content */
+.debugContent {
+  padding: 8px 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Debug sections */
+.debugSection {
+  margin-bottom: 12px;
+  padding: 0 12px;
+}
+
+.debugSection:last-child {
+  margin-bottom: 8px;
+}
+
+.sectionTitle {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--accentColor, #66d9ef);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Debug items */
+.debugItem {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  padding: 2px 0;
+}
+
+.label {
+  color: rgba(255, 255, 255, 0.7);
+  margin-right: 8px;
+  min-width: 60px;
+}
+
+.value {
+  color: var(--successColor, #a6e22e);
+  font-weight: 500;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* Scrollbar styling */
+.debugContent::-webkit-scrollbar {
+  width: 4px;
+}
+
+.debugContent::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.debugContent::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 2px;
+}
+
+.debugContent::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Dark theme adjustments */
+@media (prefers-color-scheme: dark) {
+  .debugOverlay {
+    background: rgba(0, 0, 0, 0.95);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .debugHeader {
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom-color: rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* Light theme adjustments */
+@media (prefers-color-scheme: light) {
+  .debugOverlay {
+    background: rgba(255, 255, 255, 0.95);
+    color: #000000;
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .debugHeader {
+    background: rgba(0, 0, 0, 0.05);
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .label {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .value {
+    color: var(--accentColor, #007aff);
+  }
+
+  .sectionTitle {
+    color: var(--accentColor, #007aff);
+  }
+}

@@ -1,0 +1,128 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  border-radius: var(--controlBorderRadius);
+  background-color: var(--windowBackgroundColor);
+}
+
+/* Orientations */
+.toolbar[data-orientation="horizontal"] {
+  flex-direction: row;
+  gap: var(--node-editor-space-xs);
+}
+
+.toolbar[data-orientation="vertical"] {
+  flex-direction: column;
+  gap: var(--node-editor-space-xs);
+}
+
+/* Variants */
+.toolbar[data-variant="default"] {
+  border: var(--cardBorder);
+  box-shadow: var(--cardBoxShadow);
+}
+
+.toolbar[data-variant="subtle"] {
+  background-color: var(--cardFilledBackground);
+  border: 1px solid var(--cardBorderColor);
+}
+
+.toolbar[data-variant="elevated"] {
+  background-color: var(--windowBackgroundColor);
+  border: var(--cardBorder);
+  box-shadow: var(--cardElevatedBoxShadow);
+}
+
+/* Sizes */
+.toolbar[data-size="small"] {
+  padding: var(--node-editor-space-xs);
+  min-height: 32px;
+}
+
+.toolbar[data-size="medium"] {
+  padding: var(--node-editor-space-sm);
+  min-height: 40px;
+}
+
+.toolbar[data-size="large"] {
+  padding: var(--node-editor-space-sm);
+  min-height: 48px;
+}
+
+/* Toolbar Group */
+.group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.toolbar[data-orientation="horizontal"] .group {
+  flex-direction: row;
+}
+
+.toolbar[data-orientation="vertical"] .group {
+  flex-direction: column;
+}
+
+/* Toolbar Separator */
+.separator {
+  background-color: var(--separatorColor);
+  flex-shrink: 0;
+}
+
+.toolbar[data-orientation="horizontal"] .separator {
+  width: 1px;
+  height: 20px;
+  margin: 0 var(--node-editor-space-xs);
+}
+
+.toolbar[data-orientation="vertical"] .separator {
+  height: 1px;
+  width: 20px;
+  margin: var(--node-editor-space-xs) 0;
+}
+
+.toolbarIcon {
+  font-size: var(--node-editor-space-lg);
+}
+
+.toolbarIconText {
+  font-size: var(--node-editor-inspector-font-size-meta);
+  font-weight: 600;
+}
+
+.toolbarSeparator {
+  width: 1px;
+  height: var(--node-editor-space-xl);
+  background-color: var(--separatorColor);
+  margin: var(--node-editor-space-xs);
+}
+
+.toolButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: var(--controlBorderRadius);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: var(--textColor);
+}
+
+.toolButton:hover {
+  background-color: var(--controlHoverBackground);
+}
+
+.toolButton:active {
+  background-color: var(--tableHeaderBackgroundColor);
+}
+
+.topToolbar {
+  display: flex;
+  gap: var(--node-editor-space-sm);
+  align-items: center;
+  flex: 1;
+}

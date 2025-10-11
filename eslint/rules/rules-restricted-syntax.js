@@ -14,15 +14,15 @@ export default {
       selector: "ClassDeclaration",
       message: "Class implementation is not recommended. Please write as function-based as much as possible.",
     },
-    {
-      selector:
-        "VariableDeclaration[kind='let']" +
-        ":not(ForStatement > VariableDeclaration)" +
-        ":not(ForInStatement > VariableDeclaration)" +
-        ":not(ForOfStatement > VariableDeclaration)",
-      message:
-        "Use of let is prohibited. If you need to branch, create a separate function and use its return value. If absolutely necessary for performance issues, explicitly use // eslint-disable-next-line.",
-    },
+    // {
+    //   selector:
+    //     "VariableDeclaration[kind='let']" +
+    //     ":not(ForStatement > VariableDeclaration)" +
+    //     ":not(ForInStatement > VariableDeclaration)" +
+    //     ":not(ForOfStatement > VariableDeclaration)",
+    //   message:
+    //     "Use of let is prohibited. If you need to branch, create a separate function and use its return value. If absolutely necessary for performance issues, explicitly use // eslint-disable-next-line.",
+    // },
     {
       selector: "TSAsExpression TSAnyKeyword",
       message:

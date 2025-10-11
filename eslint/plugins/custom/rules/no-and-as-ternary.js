@@ -43,7 +43,7 @@ export default {
     }
 
     function isBooleanLike(n) {
-      if (!n) return false;
+      if (!n) {return false;}
       switch (n.type) {
         case "Literal":
           return typeof n.value === "boolean";
@@ -70,7 +70,7 @@ export default {
 
     function isInConditionalTest(node) {
       const p = node.parent;
-      if (!p) return false;
+      if (!p) {return false;}
       if (
         (p.type === "IfStatement" && p.test === node) ||
         (p.type === "WhileStatement" && p.test === node) ||
@@ -85,13 +85,13 @@ export default {
 
     return {
       LogicalExpression(node) {
-        if (node.operator !== "&&" && node.operator !== "||") return;
+        if (node.operator !== "&&" && node.operator !== "||") {return;}
 
         // Allow in conditional tests like if (...) { ... }
-        if (isInConditionalTest(node)) return;
+        if (isInConditionalTest(node)) {return;}
 
         // Allow when both sides are clearly boolean expressions
-        if (isBooleanLike(node.left) && isBooleanLike(node.right)) return;
+        if (isBooleanLike(node.left) && isBooleanLike(node.right)) {return;}
 
         // Otherwise, this is likely used as a ternary substitute
         const message =

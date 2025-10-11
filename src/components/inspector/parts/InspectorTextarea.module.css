@@ -1,0 +1,20 @@
+.textarea {
+  width: 100%;
+  padding: 3px 0.25em;
+  border: var(--inputBorder);
+  border-radius: var(--controlBorderRadius);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  background: var(--controlBackground);
+  color: var(--textColor);
+  box-sizing: border-box;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--accentColor);
+}
+
+.textarea:hover {
+  border-color: var(--separatorColor);
+}

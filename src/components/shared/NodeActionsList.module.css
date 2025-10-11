@@ -1,0 +1,19 @@
+/* NodeActionsList - Menu item styles using design tokens */
+
+.actionItem {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-space-sm, 8px);
+  padding: var(--node-editor-space-sm, 8px) var(--node-editor-space-md, 12px);
+  border-radius: var(--controlBorderRadius, 6px);
+  cursor: pointer;
+  user-select: none;
+}
+
+.actionItem:hover {
+  background: var(--controlHoverBackground, #f5f5f5);
+}
+
+.actionItemDanger {
+  color: var(--cautionColor, #ff3b30);
+}

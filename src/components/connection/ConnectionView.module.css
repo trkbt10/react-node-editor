@@ -1,0 +1,13 @@
+.connectionGroup { cursor: pointer; }
+/* Apply shadow only to the base stroke to avoid blurring stripes */
+.connectionGroup:hover .connectionBase { filter: drop-shadow(0 0 4px rgba(0,0,0,0.2)); }
+.connectionSelected .connectionBase { filter: drop-shadow(0 0 6px var(--accentColor, #0066cc)); }
+.connectionHovered { opacity: 0.8; }
+.connectionDragging { opacity: 0.6; }
+.connectionFlowStripe { animation: connectionFlow 1.2s linear infinite; }
+@keyframes connectionFlow { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -24; } }
+
+/* Specific path classes */
+.connectionBase {}
+.connectionStripeAccent {}
+.connectionStripeBg {}

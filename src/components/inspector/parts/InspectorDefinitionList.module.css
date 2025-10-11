@@ -1,0 +1,39 @@
+.list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content;
+  column-gap: var(--node-editor-inspector-inline-gap);
+  row-gap: var(--node-editor-inspector-field-gap);
+  align-items: center;
+  margin: 0;
+}
+
+.term {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-inspector-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  color: var(--secondaryLabelColor);
+}
+
+.termLabel {
+  display: block;
+  font-weight: 600;
+  color: var(--textColor);
+}
+
+.termDescription {
+  display: block;
+  font-size: var(--node-editor-inspector-font-size-meta);
+  line-height: var(--node-editor-inspector-line-height-meta);
+  color: var(--secondaryLabelColor);
+}
+
+.definition {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--node-editor-inspector-inline-gap);
+}

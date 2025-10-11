@@ -1,0 +1,8 @@
+.title {
+  margin: 0;
+  color: var(--secondaryLabelColor);
+  text-transform: uppercase;
+  font-size: var(--node-editor-inspector-font-size-title);
+  line-height: var(--node-editor-inspector-line-height-title);
+  letter-spacing: 0.08em;
+}

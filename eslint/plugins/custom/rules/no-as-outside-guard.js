@@ -24,7 +24,7 @@ export default {
         // Find nearest function
         const findNearestFunction = (startNode) => {
           const searchParent = (current) => {
-            if (!current) return null;
+            if (!current) {return null;}
             if (["FunctionDeclaration", "FunctionExpression", "ArrowFunctionExpression"].includes(current.type)) {
               return current;
             }

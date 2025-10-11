@@ -1,0 +1,65 @@
+.alignmentControls {
+  margin-bottom: var(--node-editor-inspector-space-sm);
+}
+
+.alignmentLabel {
+  display: block;
+  margin-bottom: var(--node-editor-inspector-field-gap);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  line-height: var(--node-editor-inspector-line-height-meta);
+  font-weight: 500;
+  color: var(--secondaryLabelColor, #666);
+}
+
+.alignmentGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-inspector-space-xs);
+}
+
+.alignmentRow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--node-editor-inspector-space-xs);
+}
+
+.alignmentButton {
+  padding: 0;
+  border: 1px solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  width: 100%;
+  height: 24px;
+  min-width: 24px;
+  box-sizing: border-box;
+  opacity: 0.75;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+  color: var(--secondaryLabelColor, currentColor);
+}
+
+.alignmentButton:hover:not(:disabled) {
+  opacity: 1;
+  border: var(--inputBorder);
+  background-color: var(--controlHoverBackground, #f5f5f5);
+  color: var(--accentColor, currentColor);
+}
+
+.alignmentButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: var(--tertiaryLabelColor, currentColor);
+}
+
+.alignmentButton:disabled:hover {
+  opacity: 0.35;
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: var(--tertiaryLabelColor, currentColor);
+}

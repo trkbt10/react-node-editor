@@ -1,0 +1,31 @@
+/* Resize Handles - Transparent by default, accent color fill on hover */
+.resizeHandle {
+  position: absolute;
+  background-color: transparent;
+  border: none;
+  opacity: 0;
+  transition: opacity 0.1s ease, transform 0.1s ease, background-color 0.1s ease;
+  z-index: 15;
+  pointer-events: all;
+  /* Corner-specific border radius - only bottom-right is rounded */
+  border-radius: 0 0 4px 0;
+}
+
+/* Visible when node is hovered or selected - will be applied programmatically */
+.resizeHandleVisible {
+  opacity: 0.6;
+}
+
+/* Accent color fill on hover */
+.resizeHandle:hover {
+  background-color: var(--accentColor, #007aff);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Active state during resize */
+.resizeHandleActive {
+  background-color: var(--accentColor, #007aff);
+  opacity: 1;
+  transform: scale(1.1);
+}

@@ -1,0 +1,29 @@
+.resizeHandle {
+  position: absolute;
+  z-index: 1000;
+  background: transparent;
+  transition: background-color 0.2s ease;
+}
+
+.resizeHandle:hover,
+.resizeHandle.dragging {
+  background-color: var(--color-primary, #2196f3);
+}
+
+.resizeHandle.dragging {
+  opacity: 0.8;
+}
+
+.vertical {
+  width: 4px;
+  height: 100%;
+  top: 0;
+  cursor: col-resize;
+}
+
+.horizontal {
+  width: 100%;
+  height: 4px;
+  left: 0;
+  cursor: row-resize;
+}

@@ -1,0 +1,13 @@
+/* Selection Box Overlay */
+.selectionBoxOverlay {
+  position: absolute;
+  border: 2px solid var(--accentColor, #0066cc);
+  background-color: rgba(0, 102, 204, 0.15);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1000;
+  box-sizing: border-box;
+  min-width: 1px;
+  min-height: 1px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+}

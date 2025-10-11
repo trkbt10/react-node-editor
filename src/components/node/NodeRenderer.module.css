@@ -1,0 +1,3 @@
+.nodeWrapper { position: absolute; }
+.nodeWrapper[data-dragging="true"] { opacity: 0.8; cursor: grabbing; }
+

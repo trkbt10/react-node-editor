@@ -1,0 +1,95 @@
+.heading {
+  margin: 0;
+  font-family: var(--themeLabelFontFamily);
+  line-height: 1.2;
+}
+
+/* Default sizes based on heading level */
+.heading[data-level="1"] {
+  font-size: 2rem;
+}
+
+.heading[data-level="2"] {
+  font-size: 1.5rem;
+}
+
+.heading[data-level="3"] {
+  font-size: 1.25rem;
+}
+
+.heading[data-level="4"] {
+  font-size: 1.125rem;
+}
+
+.heading[data-level="5"] {
+  font-size: 1rem;
+}
+
+.heading[data-level="6"] {
+  font-size: 0.875rem;
+}
+
+/* Custom sizes */
+.heading[data-size="compact"] {
+  font-size: var(--node-editor-inspector-font-size-title);
+  line-height: var(--node-editor-inspector-line-height-title);
+  letter-spacing: 0.04em;
+}
+
+.heading[data-size="xs"] {
+  font-size: 0.75rem;
+}
+
+.heading[data-size="sm"] {
+  font-size: 0.875rem;
+}
+
+.heading[data-size="md"] {
+  font-size: 1rem;
+}
+
+.heading[data-size="lg"] {
+  font-size: 1.125rem;
+}
+
+.heading[data-size="xl"] {
+  font-size: 1.25rem;
+}
+
+.heading[data-size="2xl"] {
+  font-size: 1.5rem;
+}
+
+.heading[data-size="3xl"] {
+  font-size: 2rem;
+}
+
+/* Font weights */
+.heading[data-weight="normal"] {
+  font-weight: 400;
+}
+
+.heading[data-weight="medium"] {
+  font-weight: 500;
+}
+
+.heading[data-weight="semibold"] {
+  font-weight: 600;
+}
+
+.heading[data-weight="bold"] {
+  font-weight: 700;
+}
+
+/* Colors */
+.heading[data-color="primary"] {
+  color: var(--textColor);
+}
+
+.heading[data-color="secondary"] {
+  color: var(--secondaryLabelColor);
+}
+
+.heading[data-color="muted"] {
+  color: var(--tertiaryLabelColor);
+}

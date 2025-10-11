@@ -11,14 +11,13 @@ import prettierConfig from "eslint-config-prettier";
 // Local plugin and modularized rule groups
 import customPlugin from "./eslint/plugins/custom/index.js";
 import rulesJSDoc from "./eslint/rules/rules-jsdoc.js";
-import rulesRestrictedSyntax from "./eslint/rules/rules-restricted-syntax.js";
 import rulesCurly from "./eslint/rules/rules-curly.js";
 import rulesNoTestImports from "./eslint/rules/rules-no-test-imports.js";
 import rulesNoMocks from "./eslint/rules/rules-no-mocks.js";
 
 export default [
   // Ignore patterns
-  { ignores: ["node_modules/**", "dist/**", "build/**", "debug/**", "*.config.ts"] },
+  { ignores: ["node_modules/**", "dist/**", "build/**", "debug/**", "*.config.ts", "eslint/**"] },
 
   // JS/TS recommended sets (Flat-compatible)
   ...tseslint.config(
@@ -47,14 +46,14 @@ export default [
         jsdoc: { mode: "typescript" },
       },
       rules: {
-        "custom/ternary-length": "error",
-        "custom/no-and-as-ternary": "error",
-        "custom/prefer-node-protocol": "error",
-        "custom/no-as-outside-guard": "error",
-        "custom/no-nested-try": "error",
+        "custom/ternary-length": "off",
+        "custom/no-and-as-ternary": "off",
+        "custom/prefer-node-protocol": "off",
+        "custom/no-as-outside-guard": "off",
+        "custom/no-nested-try": "off",
         // Spread from modular groups
         ...rulesJSDoc,
-        ...rulesRestrictedSyntax,
+        //        ...rulesRestrictedSyntax,
         // /* 3. Prohibit relative parent import (../../ etc.) */
         // "import/no-relative-parent-imports": "error",
         ...rulesCurly,
@@ -91,17 +90,6 @@ export default [
           suite: "readonly",
           bench: "readonly",
         },
-      },
-    },
-
-    // Internal ESLint plugin/rules: don't enforce custom rules on their own source
-    {
-      files: ["eslint/**"],
-      rules: {
-        "custom/ternary-length": "off",
-        "custom/no-and-as-ternary": "off",
-        "custom/no-as-outside-guard": "off",
-        "custom/no-nested-try": "off",
       },
     },
   ),

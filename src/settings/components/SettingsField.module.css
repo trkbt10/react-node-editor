@@ -1,0 +1,5 @@
+.settingsField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-inspector-field-gap);
+}

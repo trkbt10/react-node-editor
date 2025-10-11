@@ -1,0 +1,58 @@
+.tabNav {
+  display: flex;
+  border-radius: var(--segmentControlBorderRadius);
+  overflow: hidden;
+  background: var(--segmentControlBackground);
+  filter: var(--segmentBackgroundFilter);
+  box-shadow: var(--segmentControlBoxShadow);
+  padding: var(--segmentControlPadding);
+}
+
+.tabButton {
+  z-index: 2;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  flex: 1;
+  padding: var(--segmentControlSegmentPadding);
+  background: var(--segmentControlBackgroundColor);
+  border: none;
+  font-size: var(--node-editor-inspector-font-size-meta);
+  line-height: var(--node-editor-inspector-line-height-meta);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 2.5em;
+}
+
+.tabButton:first-child {
+  border-radius: var(--segmentControlBorderRadius) 0 0 var(--segmentControlBorderRadius);
+}
+
+.tabButton:last-child {
+  border-radius: 0 var(--segmentControlBorderRadius) var(--segmentControlBorderRadius) 0;
+}
+
+.tabButton:only-child {
+  border-radius: var(--segmentControlBorderRadius);
+}
+
+.tabButton[data-active="true"] {
+  background: var(--segmentControlBackgroundColor);
+  box-shadow: var(--segmentControlIndicatorBoxShadow);
+}
+
+.tabButton:not([data-active="true"]):hover {
+  background: var(--segmentControlBackgroundColor);
+}
+
+.tabButton[data-active="true"]:hover {
+  opacity: 0.9;
+}

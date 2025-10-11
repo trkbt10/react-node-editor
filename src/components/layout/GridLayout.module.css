@@ -1,0 +1,32 @@
+.gridLayout {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.gridLayer {
+  /* Base layer styles - minimal defaults */
+  /* Specific styles applied dynamically in GridLayout.tsx based on positionMode */
+}
+
+.gridLayer[data-resizable="true"] {
+  position: relative;
+  pointer-events: none;
+}
+
+.resizeHandleVertical {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  pointer-events: auto;
+}
+
+.resizeHandleHorizontal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: auto;
+}

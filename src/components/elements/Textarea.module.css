@@ -1,0 +1,93 @@
+.textarea {
+  width: 100%;
+  font: var(--inputFont);
+  color: var(--textColor);
+  background: var(--controlBackground);
+  border-radius: var(--controlBorderRadius);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  outline: none;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.textarea:focus {
+  border-color: var(--accentColor);
+  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+}
+
+.textarea:disabled {
+  background-color: var(--cardDisabledBackground);
+  color: var(--disabledControlTextColor);
+  cursor: not-allowed;
+}
+
+/* Variants */
+.textarea[data-variant="default"] {
+  padding: var(--inputPadding);
+  border: var(--inputBorder);
+  box-shadow: var(--inputBoxShadow);
+}
+
+.textarea[data-variant="default"]:hover:not(:disabled) {
+  border-color: var(--separatorColor);
+}
+
+.textarea[data-variant="default"]:focus {
+  border-color: var(--accentColor);
+}
+
+.textarea[data-variant="outline"] {
+  padding: var(--inputPadding);
+  border: var(--cardBorder);
+  background-color: transparent;
+}
+
+.textarea[data-variant="outline"]:hover:not(:disabled) {
+  border-color: var(--cardHoverBorderColor);
+}
+
+.textarea[data-variant="outline"]:focus {
+  border-color: var(--accentColor);
+}
+
+.textarea[data-variant="filled"] {
+  padding: var(--inputPadding);
+  border: 1px solid transparent;
+  background-color: var(--cardFilledBackground);
+}
+
+.textarea[data-variant="filled"]:hover:not(:disabled) {
+  background-color: var(--cardFilledHoverBackground);
+}
+
+.textarea[data-variant="filled"]:focus {
+  background-color: var(--controlBackground);
+  border-color: var(--accentColor);
+}
+
+/* Resize options */
+.textarea[data-resize="none"] {
+  resize: none;
+}
+
+.textarea[data-resize="vertical"] {
+  resize: vertical;
+}
+
+.textarea[data-resize="horizontal"] {
+  resize: horizontal;
+}
+
+.textarea[data-resize="both"] {
+  resize: both;
+}
+
+/* Error state */
+.textarea[data-error="true"] {
+  border-color: var(--cautionColor);
+}
+
+.textarea[data-error="true"]:focus {
+  border-color: var(--cautionColor);
+  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+}

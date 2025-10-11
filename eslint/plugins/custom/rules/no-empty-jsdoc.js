@@ -40,7 +40,7 @@ export default {
       Program() {
         const comments = sourceCode.getAllComments();
         for (const comment of comments) {
-          if (!isJsdocBlock(comment)) continue;
+          if (!isJsdocBlock(comment)) {continue;}
           if (isEmptyJsdocContent(comment.value)) {
             context.report({
               loc: comment.loc,

@@ -1,0 +1,8 @@
+.label {
+  display: block;
+  margin: var(--node-editor-inspector-space-xs) 0 var(--node-editor-inspector-space-xs);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  line-height: var(--node-editor-inspector-line-height-meta);
+  font-weight: 500;
+  color: var(--secondaryLabelColor);
+}

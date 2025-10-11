@@ -1,0 +1,75 @@
+.input {
+  width: 100%;
+  font: var(--inputFont);
+  color: var(--textColor);
+  background: var(--controlBackground);
+  border-radius: var(--controlBorderRadius);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.input:focus {
+  border-color: var(--accentColor);
+  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+}
+
+.input:disabled {
+  background-color: var(--cardDisabledBackground);
+  color: var(--disabledControlTextColor);
+  cursor: not-allowed;
+}
+
+/* Variants */
+.input[data-variant="default"] {
+  padding: var(--inputPadding);
+  border: var(--inputBorder);
+  box-shadow: var(--inputBoxShadow);
+}
+
+.input[data-variant="default"]:hover:not(:disabled) {
+  border-color: var(--separatorColor);
+}
+
+.input[data-variant="default"]:focus {
+  border-color: var(--accentColor);
+}
+
+.input[data-variant="outline"] {
+  padding: var(--inputPadding);
+  border: var(--cardBorder);
+  background-color: transparent;
+}
+
+.input[data-variant="outline"]:hover:not(:disabled) {
+  border-color: var(--cardHoverBorderColor);
+}
+
+.input[data-variant="outline"]:focus {
+  border-color: var(--accentColor);
+}
+
+.input[data-variant="filled"] {
+  padding: var(--inputPadding);
+  border: 1px solid transparent;
+  background-color: var(--cardFilledBackground);
+}
+
+.input[data-variant="filled"]:hover:not(:disabled) {
+  background-color: var(--cardFilledHoverBackground);
+}
+
+.input[data-variant="filled"]:focus {
+  background-color: var(--controlBackground);
+  border-color: var(--accentColor);
+}
+
+/* Error state */
+.input[data-error="true"] {
+  border-color: var(--cautionColor);
+}
+
+.input[data-error="true"]:focus {
+  border-color: var(--cautionColor);
+  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+}

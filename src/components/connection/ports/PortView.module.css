@@ -1,0 +1,132 @@
+/* Port Styles */
+.port {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--controlBackground, #ffffff);
+  border: 2px solid var(--inputBorder, #e0e0e0);
+  cursor: crosshair;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  z-index: 10;
+  pointer-events: all;
+}
+
+.port:hover {
+  transform: scale(1.3);
+  box-shadow: 0 0 .5em rgba(0, 0, 0, 0.3);
+}
+
+.portInput {
+  border-color: var(--nodePortInputColor, #66cc00);
+}
+
+.portOutput {
+  border-color: var(--nodePortOutputColor, #0099ff);
+}
+
+.portLeft {
+  left: -6px;
+}
+
+.portRight {
+  right: -6px;
+}
+
+.portTop {
+  top: -6px;
+}
+
+.portBottom {
+  bottom: -6px;
+}
+
+.portInner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  background-color: var(--secondaryLabelColor, #999);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.1s ease;
+}
+
+.port:hover .portInner,
+.portHovered .portInner {
+  background-color: var(--accentColor, #0066cc);
+}
+
+.portConnecting {
+  transform: scale(1.5);
+  animation: pulse 1s infinite;
+}
+
+.portConnectable {
+  border-color: var(--accentColor, #0066cc);
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.3);
+  transform: scale(1.1);
+}
+
+.portCandidate {
+  border-color: var(--accentColor, #0066cc);
+  box-shadow: 0 0 .5em rgba(0, 102, 204, 0.5);
+  transform: scale(1.3);
+}
+
+.portConnected .portInner {
+  background-color: var(--successColor, #34c759);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 102, 204, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 102, 204, 0);
+  }
+}
+
+/* Port Labels */
+.portLabel {
+  position: absolute;
+  font-size: 10px;
+  color: var(--secondaryLabelColor, #666);
+  white-space: nowrap;
+  pointer-events: none;
+  background-color: var(--controlBackground, #ffffff);
+  padding: 2px 4px;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.portLabelLeft {
+  right: 100%;
+  margin-right: 4px;
+}
+
+.portLabelRight {
+  left: 100%;
+  margin-left: 4px;
+}
+
+.portLabelTop {
+  bottom: 100%;
+  margin-bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.portLabelBottom {
+  top: 100%;
+  margin-top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+}

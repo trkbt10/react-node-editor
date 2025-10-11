@@ -1,0 +1,11 @@
+.section {
+  margin-bottom: var(--node-editor-inspector-section-gap);
+}
+
+.section label {
+  display: block;
+  margin-bottom: var(--node-editor-inspector-field-gap);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  color: var(--secondaryLabelColor);
+}

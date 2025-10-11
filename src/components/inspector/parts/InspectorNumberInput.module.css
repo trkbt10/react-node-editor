@@ -1,0 +1,60 @@
+.container {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--node-editor-inspector-space-xs);
+  background-color: var(--controlBackground);
+  border: var(--inputBorder);
+  border-radius: var(--controlBorderRadius);
+  padding: calc(var(--node-editor-inspector-space-xs) + 2px) var(--node-editor-inspector-space-sm);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.container:focus-within {
+  border-color: var(--accentColor);
+  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+}
+
+.label {
+  color: var(--secondaryLabelColor);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  line-height: var(--node-editor-inspector-line-height-meta);
+  font-weight: 500;
+}
+
+.input {
+  justify-self: end;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  text-align: right;
+  outline: none;
+  box-shadow: none;
+}
+
+.input[data-variant="default"],
+.input[data-variant="outline"],
+.input[data-variant="filled"] {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  margin: 0;
+}

@@ -13,8 +13,8 @@ const CORE_MODULES = new Set(
 );
 
 function needsNodePrefix(specifier) {
-  if (typeof specifier !== "string") return false;
-  if (specifier.startsWith("node:")) return false; // already using protocol
+  if (typeof specifier !== "string") {return false;}
+  if (specifier.startsWith("node:")) {return false;} // already using protocol
   const base = specifier.split("/")[0];
   return CORE_MODULES.has(base);
 }

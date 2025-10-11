@@ -1,0 +1,34 @@
+.label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--secondaryLabelColor, #666666);
+  margin-bottom: 4px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.label[data-disabled="true"] {
+  color: var(--tertiaryLabelColor, #9ca3af);
+  cursor: not-allowed;
+}
+
+.required {
+  color: var(--cautionColor, #ff3b30);
+  margin-left: 2px;
+  font-weight: 600;
+}
+
+/* Alignment */
+.label[data-align="center"] { text-align: center; }
+.label[data-align="right"] { text-align: right; }
+
+/* Wrapping and ellipsis */
+.label[data-text-wrap="nowrap"] { white-space: nowrap; }
+.label[data-text-wrap="balance"] { text-wrap: balance; }
+
+.label[data-ellipsis="true"] {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

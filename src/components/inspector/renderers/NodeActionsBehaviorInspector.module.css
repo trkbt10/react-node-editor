@@ -1,0 +1,12 @@
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--node-editor-inspector-inline-gap);
+}
+
+.buttonContent {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

@@ -1,0 +1,162 @@
+.toolbar {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px;
+  background: var(--controlBackground, rgba(255, 255, 255, 0.95));
+  border: 1px solid var(--inputBorder, rgba(0, 0, 0, 0.1));
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+  user-select: none;
+}
+
+.toolbarSection {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--labelColor, #000);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.toolButton:hover {
+  background: var(--quaternarySystemFillColor, rgba(0, 0, 0, 0.08));
+}
+
+.toolButton:active {
+  background: var(--tertiarySystemFillColor, rgba(0, 0, 0, 0.12));
+  transform: scale(0.95);
+}
+
+.toolButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.toolButton:disabled:hover {
+  background: transparent;
+}
+
+.toolButton.active {
+  background: var(--accentColor, #007AFF);
+  color: white;
+}
+
+.toolButton.active:hover {
+  background: var(--accentColorHover, #0051D5);
+}
+
+.separator {
+  width: 1px;
+  height: 24px;
+  background: var(--separatorColor, rgba(0, 0, 0, 0.1));
+}
+
+.zoomDisplay {
+  display: flex;
+  align-items: center;
+  min-width: 60px;
+}
+
+.zoomSelect {
+  width: 100%;
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--labelColor, #000);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.zoomSelect:hover {
+  background: var(--quaternarySystemFillColor, rgba(0, 0, 0, 0.08));
+}
+
+.zoomSelect:focus {
+  outline: none;
+  border-color: var(--accentColor, #007AFF);
+}
+
+.toolbarSpacer {
+  flex: 1;
+  min-width: 20px;
+}
+
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  font-size: 11px;
+}
+
+.statusLabel {
+  color: var(--secondaryLabelColor, rgba(0, 0, 0, 0.5));
+}
+
+.statusValue {
+  color: var(--labelColor, #000);
+  font-weight: 500;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .toolbar {
+    background: var(--controlBackground, rgba(30, 30, 30, 0.95));
+    border-color: var(--inputBorder, rgba(255, 255, 255, 0.1));
+  }
+  
+  .toolButton {
+    color: var(--labelColor, #fff);
+  }
+  
+  .toolButton:hover {
+    background: var(--quaternarySystemFillColor, rgba(255, 255, 255, 0.08));
+  }
+  
+  .toolButton:active {
+    background: var(--tertiarySystemFillColor, rgba(255, 255, 255, 0.12));
+  }
+  
+  .separator {
+    background: var(--separatorColor, rgba(255, 255, 255, 0.1));
+  }
+  
+  .zoomSelect {
+    color: var(--labelColor, #fff);
+  }
+  
+  .zoomSelect:hover {
+    background: var(--quaternarySystemFillColor, rgba(255, 255, 255, 0.08));
+  }
+  
+  .statusLabel {
+    color: var(--secondaryLabelColor, rgba(255, 255, 255, 0.5));
+  }
+  
+  .statusValue {
+    color: var(--labelColor, #fff);
+  }
+}

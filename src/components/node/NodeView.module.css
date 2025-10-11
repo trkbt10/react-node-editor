@@ -1,0 +1,101 @@
+.nodeView {
+  position: absolute;
+  background-color: var(--controlBackground, #ffffff);
+  border: var(--inputBorder);
+  border-radius: .5em;
+  box-shadow: 0 2px .5em rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+  min-height: 50px;
+  cursor: move;
+  transition: box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+
+.nodeView:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Locked nodes should not be visually highlighted beyond the icon */
+.nodeView[data-locked="true"] {}
+
+.nodeView[data-selected="true"] {
+  border-color: var(--accentColor, #0066cc);
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
+.nodeView[data-dragging="true"] {
+  opacity: 0.8;
+  cursor: grabbing;
+  z-index: 1000;
+}
+
+.nodeView[data-is-group="true"] {
+  /* Subdued, token-driven appearance */
+  background-color: var(
+    --groupNodeBackground,
+    color-mix(in srgb, var(--separatorColor, rgba(0, 0, 0, 0.12)) 6%, transparent)
+  );
+  border-style: dashed;
+  border-width: 1px;
+  border-color: var(--groupNodeBorder, var(--dividerColor, rgba(0, 0, 0, 0.12)));
+  box-shadow: none;
+  z-index: 1;
+}
+
+.nodeView[data-is-group="true"][data-has-children="true"] {
+  border-color: var(
+    --groupNodeActiveColor,
+    color-mix(in srgb, var(--accentColor, #0066cc) 45%, var(--dividerColor, rgba(0, 0, 0, 0.12)))
+  );
+  background-color: var(
+    --groupNodeActiveBackground,
+    color-mix(in srgb, var(--accentColor, #0066cc) 8%, transparent)
+  );
+}
+
+.nodeView[data-visual-state="info"] {
+  border-color: var(--accentColor, #0066cc);
+  background-color: rgba(0, 102, 204, 0.05);
+}
+
+.nodeView[data-visual-state="success"] {
+  border-color: var(--successColor, #34c759);
+  background-color: rgba(52, 199, 89, 0.05);
+}
+
+.nodeView[data-visual-state="warning"] {
+  border-color: var(--warningColor, #ff9500);
+  background-color: rgba(255, 149, 0, 0.05);
+}
+
+.nodeView[data-visual-state="error"] {
+  border-color: var(--cautionColor, #ff3b30);
+  background-color: rgba(255, 59, 48, 0.05);
+}
+
+.nodeView[data-visual-state="disabled"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Placeholder for resizing state */
+.nodeView[data-resizing="true"] {}
+
+/* Decoration-less node appearance for label-like nodes */
+.nodeView[data-plain-node="true"] {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  min-width: unset;
+  min-height: unset;
+}
+
+.nodeView[data-plain-node="true"][data-selected="true"],
+.nodeView[data-plain-node="true"]:hover,
+.nodeView[data-plain-node="true"][data-locked="true"],
+.nodeView[data-plain-node="true"][data-dragging="true"] {
+  box-shadow: none;
+  border: none;
+}

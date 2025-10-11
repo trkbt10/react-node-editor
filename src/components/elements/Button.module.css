@@ -1,0 +1,82 @@
+.button {
+  border: none;
+  border-radius: var(--controlBorderRadius);
+  cursor: pointer;
+  font-family: var(--themeControlFontFamily);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  outline: none;
+}
+
+.button:focus {
+  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Sizes via data-size */
+.button[data-size="small"] {
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  line-height: var(--node-editor-inspector-line-height-meta);
+}
+
+.button[data-size="medium"] {
+  padding: var(--controlPadding);
+  font: var(--controlTextFont);
+}
+
+.button[data-size="large"] {
+  padding: var(--node-editor-space-md) var(--node-editor-space-xl);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+}
+
+/* Variants via data-variant */
+.button[data-variant="primary"] {
+  background: var(--controlBackground--primary);
+  color: var(--controlTextColor--primary);
+  box-shadow: var(--controlBoxShadow--primary);
+}
+
+.button[data-variant="primary"]:hover:not(:disabled) {
+  background: var(--controlHoverBackground--primary);
+  color: var(--controlHoverTextColor--primary);
+}
+
+.button[data-variant="secondary"] {
+  background: var(--controlBackground--secondary);
+  color: var(--controlTextColor--secondary);
+  box-shadow: var(--controlBoxShadow--secondary);
+}
+
+.button[data-variant="secondary"]:hover:not(:disabled) {
+  background: var(--controlHoverBackground);
+}
+
+.button[data-variant="danger"] {
+  background: var(--cautionColor);
+  color: var(--selectedMenuItemTextColor);
+}
+
+.button[data-variant="danger"]:hover:not(:disabled) {
+  background: var(--systemRedColor);
+}
+
+.button[data-variant="ghost"] {
+  background-color: transparent;
+  color: var(--secondaryLabelColor);
+  border: var(--inputBorder);
+}
+
+.button[data-variant="ghost"]:hover:not(:disabled) {
+  background-color: var(--controlHoverBackground);
+  color: var(--textColor);
+}

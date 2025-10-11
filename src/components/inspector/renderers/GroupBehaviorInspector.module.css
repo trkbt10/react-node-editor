@@ -1,0 +1,42 @@
+.sectionTitle {
+  margin: 0 0 var(--node-editor-inspector-space-md);
+  font-size: var(--node-editor-inspector-font-size-heading);
+  font-weight: 600;
+  color: var(--labelColor);
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-inspector-space-sm);
+  margin-bottom: var(--node-editor-inspector-space-lg);
+}
+
+.checkboxRow input[type="checkbox"] {
+  cursor: pointer;
+}
+
+.colorInputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-inspector-space-xs);
+}
+
+.colorInput {
+  width: 40px;
+  padding: 0;
+  height: 24px;
+}
+
+.opacityRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--node-editor-inspector-space-xs);
+}
+
+.opacityValue {
+  min-width: 36px;
+  text-align: right;
+  font-size: var(--node-editor-inspector-font-size-body);
+}

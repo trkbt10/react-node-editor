@@ -1,0 +1,51 @@
+/* Label node styles: decoration-less and driven by design tokens */
+.labelContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  box-sizing: border-box;
+  padding: 8px 12px;
+}
+
+.labelInner {
+  background: transparent;
+  color: var(--textColor, #111);
+  text-align: center;
+}
+
+/* Alignment helpers */
+.alignLeft { text-align: left; }
+.alignCenter { text-align: center; }
+.alignRight { text-align: right; }
+
+.labelGroup {
+  margin: 0;
+}
+
+.labelTitle {
+  margin: 0;
+  font: var(--titleFont, 600 16px var(--themeDefaultFontFamily));
+  line-height: 1.2;
+  font-size: 1.25em; /* bump up one size */
+}
+
+/* Wrapping and ellipsis utilities */
+.nowrap { white-space: nowrap; }
+.wrapBalance { text-wrap: balance; }
+.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.labelSubtitle {
+  margin-left: .5em;
+  font: var(--subtitleFont, 500 12px var(--themeDefaultFontFamily));
+  color: var(--secondaryLabelColor, #666);
+  font-size: 1.15em; /* slightly larger */
+}
+
+.labelCaption {
+  margin: 4px 0 0;
+  font: var(--captionFont, 400 12px var(--themeDefaultFontFamily));
+  color: var(--secondaryLabelColor, #666);
+}

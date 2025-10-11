@@ -1,0 +1,37 @@
+.horizontalDivider {
+  width: 4px;
+  background: transparent;
+  cursor: col-resize;
+  position: relative;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.horizontalDivider:hover {
+  background: var(--accentColor, #007aff);
+  opacity: 0.3;
+}
+
+.horizontalDivider.dragging {
+  background: var(--accentColor, #007aff);
+  opacity: 0.6;
+}
+
+/* Add a larger hit area */
+.horizontalDivider::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -4px;
+  right: -4px;
+  bottom: 0;
+  background: transparent;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .horizontalDivider:hover,
+  .horizontalDivider.dragging {
+    background: var(--accentColor, #0099ff);
+  }
+}

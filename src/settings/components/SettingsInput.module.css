@@ -1,0 +1,16 @@
+.settingsInput {
+  width: 100%;
+  padding: var(--node-editor-inspector-input-padding);
+  border: var(--inputBorder);
+  border-radius: 3px;
+  background-color: var(--inputBackground);
+  color: var(--inputTextColor);
+  font-size: var(--node-editor-inspector-font-size);
+  line-height: var(--node-editor-inspector-line-height);
+}
+
+.settingsInput:focus {
+  outline: none;
+  border-color: var(--accentColor, #007aff);
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.1);
+}

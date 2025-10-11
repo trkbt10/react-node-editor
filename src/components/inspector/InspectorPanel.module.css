@@ -1,0 +1,60 @@
+.inspectorPanel {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--controlBackground);
+  border-left: var(--inputBorder);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--node-editor-inspector-shadow);
+  box-sizing: border-box;
+}
+
+.inspectorHeader {
+  padding: var(--node-editor-inspector-space-sm) 0;
+  display: grid;
+  justify-content: center;
+  box-sizing: border-box;
+  box-shadow: var(--node-editor-inspector-header-shadow);
+}
+
+.inspectorContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--node-editor-inspector-content-padding);
+  box-sizing: border-box;
+}
+
+.inspectorContentNoPadding {
+  padding: 0;
+}
+
+.settingsSectionBody {
+  gap: var(--node-editor-inspector-space-sm);
+  padding-top: var(--node-editor-inspector-space-sm);
+  box-sizing: border-box;
+}
+
+.inspectorReadOnlyField {
+  display: block;
+  padding: var(--node-editor-inspector-space-sm) var(--node-editor-inspector-space-sm);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  color: var(--secondaryLabelColor);
+  background: var(--cardFilledBackground);
+  border-radius: var(--controlBorderRadius);
+  border: var(--inputBorder);
+  box-sizing: border-box;
+}
+
+.inspectorEmptyState {
+  text-align: center;
+  padding: var(--node-editor-inspector-empty-padding-vertical) var(--node-editor-inspector-empty-padding-horizontal);
+  color: var(--secondaryLabelColor);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  box-sizing: border-box;
+}

@@ -1,0 +1,210 @@
+.standardNodeRenderer {
+  padding: var(--node-editor-inspector-space-md);
+  border-radius: var(--cardBorderRadius);
+  background-color: var(--controlBackground);
+}
+
+.standardNodeRendererSelected {
+  background-color: var(--selectedContentBackgroundColor);
+}
+
+.standardNodeRendererDragging {
+  opacity: 0.7;
+  cursor: grabbing;
+}
+
+.standardNodeRendererNotDragging {
+  cursor: grab;
+}
+
+.nodeTitle {
+  margin: 0;
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 600;
+}
+
+.nodeContent {
+  margin: var(--node-editor-inspector-space-xs) 0 0;
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--secondaryLabelColor);
+}
+
+.inspectorContainer {
+  /* Container for inspector components */
+}
+
+.inspectorInput {
+  width: 100%;
+  padding: var(--node-editor-inspector-space-xs) var(--node-editor-inspector-space-sm);
+  border: var(--inputBorder);
+  border-radius: var(--controlBorderRadius);
+  font-size: var(--node-editor-inspector-font-size-body);
+}
+
+.inspectorTextarea {
+  width: 100%;
+  padding: var(--node-editor-inspector-space-xs) var(--node-editor-inspector-space-sm);
+  border: var(--inputBorder);
+  border-radius: var(--controlBorderRadius);
+  font-size: var(--node-editor-inspector-font-size-body);
+  min-height: 60px;
+  resize: vertical;
+}
+
+.inspectorLabel {
+  display: block;
+  margin-bottom: var(--node-editor-inspector-field-gap);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  font-weight: 500;
+  color: var(--secondaryLabelColor);
+}
+
+.numberInputContainer {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--node-editor-inspector-space-xs);
+  background-color: var(--controlBackground);
+  border: var(--inputBorder);
+  border-radius: var(--controlBorderRadius);
+  padding: calc(var(--node-editor-inspector-space-xs) + 2px) var(--node-editor-inspector-space-sm);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.numberInputContainer:focus-within {
+  border-color: var(--accentColor);
+  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+}
+
+.numberInputLabel {
+  color: var(--secondaryLabelColor);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  line-height: var(--node-editor-inspector-line-height-meta);
+  font-weight: 500;
+}
+
+.numberInput {
+  justify-self: end;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  text-align: right;
+  outline: none;
+  box-shadow: none;
+}
+
+.numberInput[data-variant="default"],
+.numberInput[data-variant="outline"],
+.numberInput[data-variant="filled"] {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.numberInput:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.numberInput::-webkit-outer-spin-button,
+.numberInput::-webkit-inner-spin-button {
+  margin: 0;
+}
+
+.checkboxContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-inspector-inline-gap);
+  cursor: pointer;
+}
+
+.checkboxContainer input[type="checkbox"] {
+  margin-right: var(--node-editor-space-xs);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checkboxText {
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  user-select: none;
+}
+
+.inspectorHeader {
+  margin: 0 0 var(--node-editor-inspector-space-lg);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+}
+
+.fieldContainer {
+  margin-bottom: var(--node-editor-inspector-section-gap);
+}
+
+.positionSizeGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--node-editor-inspector-space-xs);
+}
+
+.typeDisplay {
+  padding: var(--node-editor-inspector-space-xs) var(--node-editor-inspector-space-sm);
+  background-color: var(--cardFilledBackground);
+  border-radius: var(--controlBorderRadius);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+}
+
+.deleteSection {
+  margin-top: var(--node-editor-inspector-space-lg);
+  padding-top: var(--node-editor-inspector-space-lg);
+  border-top: var(--inputBorder);
+}
+
+.deleteButton {
+  padding: var(--node-editor-inspector-space-sm) var(--node-editor-inspector-space-lg);
+  background-color: var(--cautionColor);
+  color: var(--selectedMenuItemTextColor);
+  border: none;
+  border-radius: var(--controlBorderRadius);
+  cursor: pointer;
+  font-size: var(--node-editor-inspector-font-size-body);
+  width: 100%;
+}
+
+.deleteButton:hover {
+  filter: brightness(0.9);
+}
+
+.groupInspectorOptions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--node-editor-inspector-inline-gap);
+}
+
+.inspectorActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--node-editor-inspector-inline-gap);
+}
+
+/* Ensure checkbox and label text align nicely */
+.checkboxContainer input[type="checkbox"] {
+  margin: 0;
+  align-self: center;
+}
+
+.checkboxText {
+  display: inline-block;
+  line-height: 1.4;
+}
