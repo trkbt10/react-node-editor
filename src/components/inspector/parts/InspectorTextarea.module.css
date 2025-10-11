@@ -1,20 +1,20 @@
 .textarea {
   width: 100%;
   padding: 3px 0.25em;
-  border: var(--inputBorder);
-  border-radius: var(--controlBorderRadius);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
   font-size: var(--node-editor-inspector-font-size-body);
   line-height: var(--node-editor-inspector-line-height-body);
-  background: var(--controlBackground);
-  color: var(--textColor);
+  background: var(--node-editor-control-background);
+  color: var(--node-editor-text-color);
   box-sizing: border-box;
 }
 
 .textarea:focus {
   outline: none;
-  border-color: var(--accentColor);
+  border-color: var(--node-editor-accent-color);
 }
 
 .textarea:hover {
-  border-color: var(--separatorColor);
+  border-color: var(--node-editor-separator-color);
 }

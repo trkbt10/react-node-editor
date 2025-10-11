@@ -124,12 +124,12 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
   const strokeColor = React.useMemo(() => {
     if (isDragging && dragProgress > 0) {
       // Interpolate to warning color during drag
-      const normalColor = "var(--connectionColor, #999)";
-      const warningColor = "var(--cautionColor, #ff3b30)";
+      const normalColor = "var(--node-editor-connection-color, #999)";
+      const warningColor = "var(--node-editor-caution-color, #ff3b30)";
       return dragProgress > 0.5 ? warningColor : normalColor;
     }
-    if (colorActive) {return "var(--accentColor, #0066cc)";}
-    return "var(--connectionColor, #999)";
+    if (colorActive) {return "var(--node-editor-accent-color, #0066cc)";}
+    return "var(--node-editor-connection-color, #999)";
   }, [isDragging, dragProgress, colorActive]);
 
   const handlePointerDown = (e: React.PointerEvent) => {
@@ -199,7 +199,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
           <path
             d={pathData}
             fill="none"
-            stroke={"var(--accentColor, #0066cc)"}
+            stroke={"var(--node-editor-accent-color, #0066cc)"}
             strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -216,7 +216,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
           <path
             d={pathData}
             fill="none"
-            stroke={"var(--controlBackground, #ffffff)"}
+            stroke={"var(--node-editor-control-background, #ffffff)"}
             strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
             strokeLinecap="round"
             strokeLinejoin="round"

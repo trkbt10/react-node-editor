@@ -11,12 +11,12 @@
   min-width: 360px;
   max-width: 480px;
   max-height: 480px;
-  background: var(--controlBackground);
-  border: var(--inputBorder);
-  border-radius: var(--cardBorderRadius);
-  box-shadow: var(--dialogBoxShadow);
+  background: var(--node-editor-control-background);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-card-border-radius);
+  box-shadow: var(--node-editor-dialog-box-shadow);
   overflow: hidden;
-  font-family: var(--themeDefaultFontFamily);
+  font-family: var(--node-editor-theme-default-font-family);
   animation: menuFadeIn 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   z-index: 1000;
   display: flex;
@@ -37,39 +37,39 @@
 
 .searchHeader {
   padding: var(--node-editor-space-md) var(--node-editor-space-lg);
-  border-bottom: var(--inputBorder);
-  background: var(--tableHeaderBackgroundColor);
+  border-bottom: var(--node-editor-input-border);
+  background: var(--node-editor-table-header-background-color);
   position: relative;
   box-sizing: border-box;
 }
 
 .searchInput {
   width: 100%;
-  padding: var(--inputPadding);
-  border: var(--inputBorder);
-  border-radius: var(--controlBorderRadius);
-  font: var(--inputFont);
-  background: var(--controlBackground);
-  color: var(--textColor);
+  padding: var(--node-editor-input-padding);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
+  font: var(--node-editor-input-font);
+  background: var(--node-editor-control-background);
+  color: var(--node-editor-text-color);
   outline: none;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   box-sizing: border-box;
 }
 
 .searchInput:focus {
-  border-color: var(--accentColor);
-  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+  border-color: var(--node-editor-accent-color);
+  box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
 }
 
 .searchInput::placeholder {
-  color: var(--quaternaryLabelColor);
+  color: var(--node-editor-quaternary-label-color);
   font-weight: 400;
 }
 
 .searchHint {
   margin-top: var(--node-editor-space-sm);
   font-size: var(--node-editor-inspector-font-size-meta);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   display: flex;
   gap: var(--node-editor-space-sm);
   align-items: center;
@@ -79,12 +79,12 @@
 
 .searchHint kbd {
   padding: var(--node-editor-space-xs);
-  background: var(--tableHeaderBackgroundColor);
-  border: var(--inputBorder);
-  border-radius: var(--controlBorderRadius);
+  background: var(--node-editor-table-header-background-color);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
   font-size: var(--node-editor-inspector-font-size-meta);
-  font-family: var(--inputFont);
-  color: var(--textColor);
+  font-family: var(--node-editor-input-font);
+  color: var(--node-editor-text-color);
   font-weight: 500;
   box-sizing: border-box;
 }
@@ -94,7 +94,7 @@
   overflow-y: auto;
   padding: 0;
   box-sizing: border-box;
-  background: var(--controlBackground);
+  background: var(--node-editor-control-background);
 }
 
 /* .categoryList is a container for all categories */
@@ -105,8 +105,8 @@
 
 .categoryHeader {
   padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
-  background: var(--tableHeaderBackgroundColor);
-  color: var(--secondaryLabelColor);
+  background: var(--node-editor-table-header-background-color);
+  color: var(--node-editor-secondary-label-color);
   font-size: var(--node-editor-inspector-font-size-meta);
   font-weight: 600;
   text-transform: uppercase;
@@ -116,7 +116,7 @@
   justify-content: space-between;
   align-items: center;
   transition: background-color 0.15s ease;
-  border-bottom: var(--inputBorder);
+  border-bottom: var(--node-editor-input-border);
   position: sticky;
   top: 0;
   z-index: 1;
@@ -128,7 +128,7 @@
 }
 
 .selectedCategory {
-  border-bottom-color: var(--accentColor);
+  border-bottom-color: var(--node-editor-accent-color);
 }
 
 
@@ -138,7 +138,7 @@
 
 .nodeCount {
   font-size: var(--node-editor-inspector-font-size-meta);
-  color: var(--tertiaryLabelColor);
+  color: var(--node-editor-tertiary-label-color);
 }
 
 /* .nodeList is a container for nodes in a category */
@@ -155,17 +155,17 @@
 }
 
 .nodeItem:not(.selectedNode):hover {
-  background: color-mix(in srgb, var(--selectedControlColor) 80%, transparent);
+  background: color-mix(in srgb, var(--node-editor-selected-control-color) 80%, transparent);
 }
 
 .selectedNode {
-  color: var(--selectedControlTextColor);
-  background: var(--selectedControlColor);
+  color: var(--node-editor-selected-control-text-color);
+  background: var(--node-editor-selected-control-color);
 }
 
 .selectedNode:hover {
-  color: var(--selectedControlTextColor);
-  background: var(--selectedControlColor);
+  color: var(--node-editor-selected-control-text-color);
+  background: var(--node-editor-selected-control-color);
 }
 
 
@@ -214,11 +214,11 @@
 
 .nodeType {
   font-size: var(--node-editor-inspector-font-size-meta);
-  color: var(--secondaryLabelColor);
-  font-family: var(--inputFont);
-  background: var(--tableHeaderBackgroundColor);
+  color: var(--node-editor-secondary-label-color);
+  font-family: var(--node-editor-input-font);
+  background: var(--node-editor-table-header-background-color);
   padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
-  border-radius: var(--controlBorderRadius);
+  border-radius: var(--node-editor-control-border-radius);
   flex-shrink: 0;
   max-width: 80px;
   overflow: hidden;
@@ -229,29 +229,29 @@
 .noResults {
   padding: var(--node-editor-space-xxl) var(--node-editor-space-xl);
   text-align: center;
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   box-sizing: border-box;
 }
 
 .noResultsIcon {
   font-size: 32px;
   margin-bottom: var(--node-editor-space-sm);
-  color: var(--tertiaryLabelColor);
+  color: var(--node-editor-tertiary-label-color);
 }
 
 .searchFooter {
   padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
-  border-top: var(--inputBorder);
-  background: var(--tableHeaderBackgroundColor);
+  border-top: var(--node-editor-input-border);
+  background: var(--node-editor-table-header-background-color);
   font-size: var(--node-editor-inspector-font-size-meta);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   box-sizing: border-box;
 }
 
 .selectionInfo {
   text-align: center;
   font-weight: 500;
-  color: var(--textColor);
+  color: var(--node-editor-text-color);
 }
 
 /* Modern scrollbar styling */
@@ -264,20 +264,20 @@
 }
 
 .searchResults::-webkit-scrollbar-thumb {
-  background: var(--scrollBarThumbColor);
-  border-radius: var(--controlBorderRadius);
+  background: var(--node-editor-scroll-bar-thumb-color);
+  border-radius: var(--node-editor-control-border-radius);
 }
 
 .searchResults::-webkit-scrollbar-thumb:hover {
-  background: var(--activeScrollBarThumbColor);
+  background: var(--node-editor-active-scroll-bar-thumb-color);
 }
 
 .searchResults::-webkit-scrollbar-thumb:active {
-  background: var(--activeScrollBarThumbColor);
+  background: var(--node-editor-active-scroll-bar-thumb-color);
 }
 
 /* Firefox scrollbar styling */
 .searchResults {
   scrollbar-width: thin;
-  scrollbar-color: var(--scrollBarThumbColor) transparent;
+  scrollbar-color: var(--node-editor-scroll-bar-thumb-color) transparent;
 }

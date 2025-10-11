@@ -18,14 +18,14 @@
 
 /* Accent color fill on hover */
 .resizeHandle:hover {
-  background-color: var(--accentColor, #007aff);
+  background-color: var(--node-editor-accent-color, #007aff);
   opacity: 1;
   transform: scale(1.1);
 }
 
 /* Active state during resize */
 .resizeHandleActive {
-  background-color: var(--accentColor, #007aff);
+  background-color: var(--node-editor-accent-color, #007aff);
   opacity: 1;
   transform: scale(1.1);
 }

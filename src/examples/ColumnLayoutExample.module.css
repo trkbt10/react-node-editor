@@ -5,6 +5,6 @@
 
 .toolbar {
   padding: 8px 16px;
-  background: var(--color-bg-secondary, #f5f5f5);
-  border-bottom: 1px solid var(--color-border, #ddd);
+  background: var(--node-editor-surface-secondary, #f5f5f5);
+  border-bottom: 1px solid var(--node-editor-border-color, #ddd);
 }

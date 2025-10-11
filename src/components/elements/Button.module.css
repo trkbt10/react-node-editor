@@ -1,8 +1,8 @@
 .button {
   border: none;
-  border-radius: var(--controlBorderRadius);
+  border-radius: var(--node-editor-control-border-radius);
   cursor: pointer;
-  font-family: var(--themeControlFontFamily);
+  font-family: var(--node-editor-theme-control-font-family);
   font-weight: 500;
   transition: all 0.2s ease;
   display: inline-flex;
@@ -13,7 +13,7 @@
 }
 
 .button:focus {
-  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+  box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
 }
 
 .button:disabled {
@@ -29,8 +29,8 @@
 }
 
 .button[data-size="medium"] {
-  padding: var(--controlPadding);
-  font: var(--controlTextFont);
+  padding: var(--node-editor-control-padding);
+  font: var(--node-editor-control-text-font);
 }
 
 .button[data-size="large"] {
@@ -41,42 +41,42 @@
 
 /* Variants via data-variant */
 .button[data-variant="primary"] {
-  background: var(--controlBackground--primary);
-  color: var(--controlTextColor--primary);
-  box-shadow: var(--controlBoxShadow--primary);
+  background: var(--node-editor-control-background-primary);
+  color: var(--node-editor-control-text-color-primary);
+  box-shadow: var(--node-editor-control-box-shadow-primary);
 }
 
 .button[data-variant="primary"]:hover:not(:disabled) {
-  background: var(--controlHoverBackground--primary);
-  color: var(--controlHoverTextColor--primary);
+  background: var(--node-editor-control-hover-background-primary);
+  color: var(--node-editor-control-hover-text-color-primary);
 }
 
 .button[data-variant="secondary"] {
-  background: var(--controlBackground--secondary);
-  color: var(--controlTextColor--secondary);
-  box-shadow: var(--controlBoxShadow--secondary);
+  background: var(--node-editor-control-background-secondary);
+  color: var(--node-editor-control-text-color-secondary);
+  box-shadow: var(--node-editor-control-box-shadow-secondary);
 }
 
 .button[data-variant="secondary"]:hover:not(:disabled) {
-  background: var(--controlHoverBackground);
+  background: var(--node-editor-control-hover-background);
 }
 
 .button[data-variant="danger"] {
-  background: var(--cautionColor);
-  color: var(--selectedMenuItemTextColor);
+  background: var(--node-editor-caution-color);
+  color: var(--node-editor-selected-menu-item-text-color);
 }
 
 .button[data-variant="danger"]:hover:not(:disabled) {
-  background: var(--systemRedColor);
+  background: var(--node-editor-system-red-color);
 }
 
 .button[data-variant="ghost"] {
   background-color: transparent;
-  color: var(--secondaryLabelColor);
-  border: var(--inputBorder);
+  color: var(--node-editor-secondary-label-color);
+  border: var(--node-editor-input-border);
 }
 
 .button[data-variant="ghost"]:hover:not(:disabled) {
-  background-color: var(--controlHoverBackground);
-  color: var(--textColor);
+  background-color: var(--node-editor-control-hover-background);
+  color: var(--node-editor-text-color);
 }

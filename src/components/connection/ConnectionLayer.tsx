@@ -71,7 +71,7 @@ const DragConnection = React.memo(() => {
         <path
           d={pathData}
           fill="none"
-          stroke="var(--accentColor, #0066cc)"
+          stroke="var(--node-editor-accent-color, #0066cc)"
           strokeWidth={2}
           strokeDasharray="5,5"
           strokeLinecap="round"
@@ -107,7 +107,7 @@ const DragConnection = React.memo(() => {
         <path
           d={pathData}
           fill="none"
-          stroke="var(--cautionColor, #ff3b30)"
+          stroke="var(--node-editor-caution-color, #ff3b30)"
           strokeWidth={3}
           strokeDasharray="8,4"
           strokeLinecap="round"

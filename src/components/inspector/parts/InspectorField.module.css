@@ -8,5 +8,5 @@
   font-size: var(--node-editor-inspector-font-size-body);
   line-height: var(--node-editor-inspector-line-height-body);
   font-weight: 500;
-  color: var(--textColor);
+  color: var(--node-editor-text-color);
 }

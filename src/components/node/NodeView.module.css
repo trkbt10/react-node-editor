@@ -1,7 +1,7 @@
 .nodeView {
   position: absolute;
-  background-color: var(--controlBackground, #ffffff);
-  border: var(--inputBorder);
+  background-color: var(--node-editor-control-background, #ffffff);
+  border: var(--node-editor-input-border);
   border-radius: .5em;
   box-shadow: 0 2px .5em rgba(0, 0, 0, 0.1);
   min-width: 150px;
@@ -21,7 +21,7 @@
 .nodeView[data-locked="true"] {}
 
 .nodeView[data-selected="true"] {
-  border-color: var(--accentColor, #0066cc);
+  border-color: var(--node-editor-accent-color, #0066cc);
   box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
 }
 
@@ -34,44 +34,44 @@
 .nodeView[data-is-group="true"] {
   /* Subdued, token-driven appearance */
   background-color: var(
-    --groupNodeBackground,
-    color-mix(in srgb, var(--separatorColor, rgba(0, 0, 0, 0.12)) 6%, transparent)
+    --node-editor-group-node-background,
+    color-mix(in srgb, var(--node-editor-separator-color, rgba(0, 0, 0, 0.12)) 6%, transparent)
   );
   border-style: dashed;
   border-width: 1px;
-  border-color: var(--groupNodeBorder, var(--dividerColor, rgba(0, 0, 0, 0.12)));
+  border-color: var(--node-editor-group-node-border, var(--node-editor-divider-color, rgba(0, 0, 0, 0.12)));
   box-shadow: none;
   z-index: 1;
 }
 
 .nodeView[data-is-group="true"][data-has-children="true"] {
   border-color: var(
-    --groupNodeActiveColor,
-    color-mix(in srgb, var(--accentColor, #0066cc) 45%, var(--dividerColor, rgba(0, 0, 0, 0.12)))
+    --node-editor-group-node-active-color,
+    color-mix(in srgb, var(--node-editor-accent-color, #0066cc) 45%, var(--node-editor-divider-color, rgba(0, 0, 0, 0.12)))
   );
   background-color: var(
-    --groupNodeActiveBackground,
-    color-mix(in srgb, var(--accentColor, #0066cc) 8%, transparent)
+    --node-editor-group-node-active-background,
+    color-mix(in srgb, var(--node-editor-accent-color, #0066cc) 8%, transparent)
   );
 }
 
 .nodeView[data-visual-state="info"] {
-  border-color: var(--accentColor, #0066cc);
+  border-color: var(--node-editor-accent-color, #0066cc);
   background-color: rgba(0, 102, 204, 0.05);
 }
 
 .nodeView[data-visual-state="success"] {
-  border-color: var(--successColor, #34c759);
+  border-color: var(--node-editor-success-color, #34c759);
   background-color: rgba(52, 199, 89, 0.05);
 }
 
 .nodeView[data-visual-state="warning"] {
-  border-color: var(--warningColor, #ff9500);
+  border-color: var(--node-editor-warning-color, #ff9500);
   background-color: rgba(255, 149, 0, 0.05);
 }
 
 .nodeView[data-visual-state="error"] {
-  border-color: var(--cautionColor, #ff3b30);
+  border-color: var(--node-editor-caution-color, #ff3b30);
   background-color: rgba(255, 59, 48, 0.05);
 }
 

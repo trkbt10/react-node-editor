@@ -1,11 +1,11 @@
 .tabNav {
   display: flex;
-  border-radius: var(--segmentControlBorderRadius);
+  border-radius: var(--node-editor-segment-control-border-radius);
   overflow: hidden;
-  background: var(--segmentControlBackground);
-  filter: var(--segmentBackgroundFilter);
-  box-shadow: var(--segmentControlBoxShadow);
-  padding: var(--segmentControlPadding);
+  background: var(--node-editor-segment-control-background);
+  filter: var(--node-editor-segment-background-filter);
+  box-shadow: var(--node-editor-segment-control-box-shadow);
+  padding: var(--node-editor-segment-control-padding);
 }
 
 .tabButton {
@@ -15,8 +15,8 @@
   background: transparent;
   color: inherit;
   flex: 1;
-  padding: var(--segmentControlSegmentPadding);
-  background: var(--segmentControlBackgroundColor);
+  padding: var(--node-editor-segment-control-segment-padding);
+  background: var(--node-editor-segment-control-background-color);
   border: none;
   font-size: var(--node-editor-inspector-font-size-meta);
   line-height: var(--node-editor-inspector-line-height-meta);
@@ -33,24 +33,24 @@
 }
 
 .tabButton:first-child {
-  border-radius: var(--segmentControlBorderRadius) 0 0 var(--segmentControlBorderRadius);
+  border-radius: var(--node-editor-segment-control-border-radius) 0 0 var(--node-editor-segment-control-border-radius);
 }
 
 .tabButton:last-child {
-  border-radius: 0 var(--segmentControlBorderRadius) var(--segmentControlBorderRadius) 0;
+  border-radius: 0 var(--node-editor-segment-control-border-radius) var(--node-editor-segment-control-border-radius) 0;
 }
 
 .tabButton:only-child {
-  border-radius: var(--segmentControlBorderRadius);
+  border-radius: var(--node-editor-segment-control-border-radius);
 }
 
 .tabButton[data-active="true"] {
-  background: var(--segmentControlBackgroundColor);
-  box-shadow: var(--segmentControlIndicatorBoxShadow);
+  background: var(--node-editor-segment-control-background-color);
+  box-shadow: var(--node-editor-segment-control-indicator-box-shadow);
 }
 
 .tabButton:not([data-active="true"]):hover {
-  background: var(--segmentControlBackgroundColor);
+  background: var(--node-editor-segment-control-background-color);
 }
 
 .tabButton[data-active="true"]:hover {

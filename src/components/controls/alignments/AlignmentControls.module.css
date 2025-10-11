@@ -8,7 +8,7 @@
   font-size: var(--node-editor-inspector-font-size-meta);
   line-height: var(--node-editor-inspector-line-height-meta);
   font-weight: 500;
-  color: var(--secondaryLabelColor, #666);
+  color: var(--node-editor-secondary-label-color, #666);
 }
 
 .alignmentGrid {
@@ -39,14 +39,14 @@
   box-sizing: border-box;
   opacity: 0.75;
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
-  color: var(--secondaryLabelColor, currentColor);
+  color: var(--node-editor-secondary-label-color, currentColor);
 }
 
 .alignmentButton:hover:not(:disabled) {
   opacity: 1;
-  border: var(--inputBorder);
-  background-color: var(--controlHoverBackground, #f5f5f5);
-  color: var(--accentColor, currentColor);
+  border: var(--node-editor-input-border);
+  background-color: var(--node-editor-control-hover-background, #f5f5f5);
+  color: var(--node-editor-accent-color, currentColor);
 }
 
 .alignmentButton:disabled {
@@ -54,12 +54,12 @@
   cursor: not-allowed;
   border: 1px solid transparent;
   background-color: transparent;
-  color: var(--tertiaryLabelColor, currentColor);
+  color: var(--node-editor-tertiary-label-color, currentColor);
 }
 
 .alignmentButton:disabled:hover {
   opacity: 0.35;
   border: 1px solid transparent;
   background-color: transparent;
-  color: var(--tertiaryLabelColor, currentColor);
+  color: var(--node-editor-tertiary-label-color, currentColor);
 }

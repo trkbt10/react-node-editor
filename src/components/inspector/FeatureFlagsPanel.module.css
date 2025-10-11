@@ -1,8 +1,8 @@
 .panel {
-  background: var(--surface-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  background: var(--node-editor-surface-primary);
+  border: 1px solid var(--node-editor-border-color);
+  border-radius: var(--node-editor-radius-md);
+  box-shadow: var(--node-editor-shadow-lg);
   max-width: 500px;
   width: 100%;
 }
@@ -11,15 +11,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-md);
-  border-bottom: 1px solid var(--border-color);
+  padding: var(--node-editor-space-lg);
+  border-bottom: 1px solid var(--node-editor-border-color);
 }
 
 .header h3 {
   margin: 0;
-  font-size: var(--font-size-lg);
+  font-size: var(--node-editor-font-size-lg);
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--node-editor-text-color);
 }
 
 .closeButton {
@@ -27,7 +27,7 @@
   border: none;
   font-size: 24px;
   line-height: 1;
-  color: var(--text-secondary);
+  color: var(--node-editor-text-secondary);
   cursor: pointer;
   padding: 0;
   width: 32px;
@@ -35,39 +35,39 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: var(--radius-sm);
+  border-radius: var(--node-editor-radius-sm);
   transition: all 0.2s;
 }
 
 .closeButton:hover {
-  background: var(--surface-secondary);
-  color: var(--text-primary);
+  background: var(--node-editor-surface-secondary);
+  color: var(--node-editor-text-color);
 }
 
 .content {
-  padding: var(--spacing-md);
+  padding: var(--node-editor-space-lg);
 }
 
 .description {
-  margin-bottom: var(--spacing-lg);
-  color: var(--text-secondary);
-  font-size: var(--font-size-sm);
+  margin-bottom: var(--node-editor-space-xl);
+  color: var(--node-editor-text-secondary);
+  font-size: var(--node-editor-font-size-sm);
 }
 
 .flags {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--node-editor-space-xl);
 }
 
 .flagsList {
-  padding: var(--spacing-md);
-  background: var(--surface-secondary);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-color);
+  padding: var(--node-editor-space-lg);
+  background: var(--node-editor-surface-secondary);
+  border-radius: var(--node-editor-radius-sm);
+  border: 1px solid var(--node-editor-border-color);
 }
 
 .flagsList :global(dt + dd) {
-  border-top: 1px solid var(--border-color);
-  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--node-editor-border-color);
+  padding-top: var(--node-editor-space-sm);
 }
 
 .flagsList :global(dt:first-of-type + dd) {
@@ -76,34 +76,34 @@
 }
 
 .currentState {
-  margin-bottom: var(--spacing-lg);
-  padding: var(--spacing-md);
-  background: var(--surface-secondary);
-  border-radius: var(--radius-sm);
+  margin-bottom: var(--node-editor-space-xl);
+  padding: var(--node-editor-space-lg);
+  background: var(--node-editor-surface-secondary);
+  border-radius: var(--node-editor-radius-sm);
 }
 
 .currentState h4 {
-  margin: 0 0 var(--spacing-sm) 0;
-  font-size: var(--font-size-sm);
+  margin: 0 0 var(--node-editor-space-sm) 0;
+  font-size: var(--node-editor-font-size-sm);
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--node-editor-text-color);
 }
 
 .currentState pre {
   margin: 0;
-  padding: var(--spacing-sm);
-  background: var(--surface-tertiary);
-  border-radius: var(--radius-xs);
-  font-size: var(--font-size-xs);
-  font-family: var(--font-mono);
-  color: var(--text-secondary);
+  padding: var(--node-editor-space-sm);
+  background: var(--node-editor-surface-tertiary);
+  border-radius: var(--node-editor-radius-xs);
+  font-size: var(--node-editor-font-size-xs);
+  font-family: var(--node-editor-font-mono);
+  color: var(--node-editor-text-secondary);
   overflow-x: auto;
 }
 
 .actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: var(--node-editor-space-sm);
   justify-content: flex-end;
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--border-color);
+  padding-top: var(--node-editor-space-lg);
+  border-top: 1px solid var(--node-editor-border-color);
 }

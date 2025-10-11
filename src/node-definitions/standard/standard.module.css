@@ -1,11 +1,11 @@
 .standardNodeRenderer {
   padding: var(--node-editor-inspector-space-md);
-  border-radius: var(--cardBorderRadius);
-  background-color: var(--controlBackground);
+  border-radius: var(--node-editor-card-border-radius);
+  background-color: var(--node-editor-control-background);
 }
 
 .standardNodeRendererSelected {
-  background-color: var(--selectedContentBackgroundColor);
+  background-color: var(--node-editor-selected-content-background-color);
 }
 
 .standardNodeRendererDragging {
@@ -26,7 +26,7 @@
 .nodeContent {
   margin: var(--node-editor-inspector-space-xs) 0 0;
   font-size: var(--node-editor-inspector-font-size-meta);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
 }
 
 .inspectorContainer {
@@ -36,16 +36,16 @@
 .inspectorInput {
   width: 100%;
   padding: var(--node-editor-inspector-space-xs) var(--node-editor-inspector-space-sm);
-  border: var(--inputBorder);
-  border-radius: var(--controlBorderRadius);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
   font-size: var(--node-editor-inspector-font-size-body);
 }
 
 .inspectorTextarea {
   width: 100%;
   padding: var(--node-editor-inspector-space-xs) var(--node-editor-inspector-space-sm);
-  border: var(--inputBorder);
-  border-radius: var(--controlBorderRadius);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
   font-size: var(--node-editor-inspector-font-size-body);
   min-height: 60px;
   resize: vertical;
@@ -56,7 +56,7 @@
   margin-bottom: var(--node-editor-inspector-field-gap);
   font-size: var(--node-editor-inspector-font-size-meta);
   font-weight: 500;
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
 }
 
 .numberInputContainer {
@@ -64,9 +64,9 @@
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: var(--node-editor-inspector-space-xs);
-  background-color: var(--controlBackground);
-  border: var(--inputBorder);
-  border-radius: var(--controlBorderRadius);
+  background-color: var(--node-editor-control-background);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
   padding: calc(var(--node-editor-inspector-space-xs) + 2px) var(--node-editor-inspector-space-sm);
   font-size: var(--node-editor-inspector-font-size-body);
   line-height: var(--node-editor-inspector-line-height-body);
@@ -76,12 +76,12 @@
 }
 
 .numberInputContainer:focus-within {
-  border-color: var(--accentColor);
-  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+  border-color: var(--node-editor-accent-color);
+  box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
 }
 
 .numberInputLabel {
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   font-size: var(--node-editor-inspector-font-size-meta);
   line-height: var(--node-editor-inspector-line-height-meta);
   font-weight: 500;
@@ -157,8 +157,8 @@
 
 .typeDisplay {
   padding: var(--node-editor-inspector-space-xs) var(--node-editor-inspector-space-sm);
-  background-color: var(--cardFilledBackground);
-  border-radius: var(--controlBorderRadius);
+  background-color: var(--node-editor-card-filled-background);
+  border-radius: var(--node-editor-control-border-radius);
   font-size: var(--node-editor-inspector-font-size-body);
   line-height: var(--node-editor-inspector-line-height-body);
 }
@@ -166,15 +166,15 @@
 .deleteSection {
   margin-top: var(--node-editor-inspector-space-lg);
   padding-top: var(--node-editor-inspector-space-lg);
-  border-top: var(--inputBorder);
+  border-top: var(--node-editor-input-border);
 }
 
 .deleteButton {
   padding: var(--node-editor-inspector-space-sm) var(--node-editor-inspector-space-lg);
-  background-color: var(--cautionColor);
-  color: var(--selectedMenuItemTextColor);
+  background-color: var(--node-editor-caution-color);
+  color: var(--node-editor-selected-menu-item-text-color);
   border: none;
-  border-radius: var(--controlBorderRadius);
+  border-radius: var(--node-editor-control-border-radius);
   cursor: pointer;
   font-size: var(--node-editor-inspector-font-size-body);
   width: 100%;

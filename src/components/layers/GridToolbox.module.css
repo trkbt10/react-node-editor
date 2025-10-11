@@ -7,8 +7,8 @@
   align-items: center;
   gap: 8px;
   padding: 4px;
-  background: var(--controlBackground, rgba(255, 255, 255, 0.95));
-  border: 1px solid var(--inputBorder, rgba(0, 0, 0, 0.1));
+  background: var(--node-editor-control-background, rgba(255, 255, 255, 0.95));
+  border: 1px solid var(--node-editor-input-border, rgba(0, 0, 0, 0.1));
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(20px);
@@ -32,17 +32,17 @@
   background: transparent;
   border: none;
   border-radius: 6px;
-  color: var(--labelColor, #000);
+  color: var(--node-editor-label-color, #000);
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .toolButton:hover {
-  background: var(--quaternarySystemFillColor, rgba(0, 0, 0, 0.08));
+  background: var(--node-editor-quaternary-system-fill-color, rgba(0, 0, 0, 0.08));
 }
 
 .toolButton:active {
-  background: var(--tertiarySystemFillColor, rgba(0, 0, 0, 0.12));
+  background: var(--node-editor-tertiary-system-fill-color, rgba(0, 0, 0, 0.12));
   transform: scale(0.95);
 }
 
@@ -56,18 +56,18 @@
 }
 
 .toolButton.active {
-  background: var(--accentColor, #007AFF);
+  background: var(--node-editor-accent-color, #007AFF);
   color: white;
 }
 
 .toolButton.active:hover {
-  background: var(--accentColorHover, #0051D5);
+  background: var(--node-editor-accent-color-hover, #0051D5);
 }
 
 .separator {
   width: 1px;
   height: 24px;
-  background: var(--separatorColor, rgba(0, 0, 0, 0.1));
+  background: var(--node-editor-separator-color, rgba(0, 0, 0, 0.1));
 }
 
 .zoomDisplay {
@@ -82,7 +82,7 @@
   background: transparent;
   border: 1px solid transparent;
   border-radius: 4px;
-  color: var(--labelColor, #000);
+  color: var(--node-editor-label-color, #000);
   font-size: 12px;
   font-weight: 500;
   text-align: center;
@@ -91,12 +91,12 @@
 }
 
 .zoomSelect:hover {
-  background: var(--quaternarySystemFillColor, rgba(0, 0, 0, 0.08));
+  background: var(--node-editor-quaternary-system-fill-color, rgba(0, 0, 0, 0.08));
 }
 
 .zoomSelect:focus {
   outline: none;
-  border-color: var(--accentColor, #007AFF);
+  border-color: var(--node-editor-accent-color, #007AFF);
 }
 
 .toolbarSpacer {
@@ -113,50 +113,50 @@
 }
 
 .statusLabel {
-  color: var(--secondaryLabelColor, rgba(0, 0, 0, 0.5));
+  color: var(--node-editor-secondary-label-color, rgba(0, 0, 0, 0.5));
 }
 
 .statusValue {
-  color: var(--labelColor, #000);
+  color: var(--node-editor-label-color, #000);
   font-weight: 500;
 }
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .toolbar {
-    background: var(--controlBackground, rgba(30, 30, 30, 0.95));
-    border-color: var(--inputBorder, rgba(255, 255, 255, 0.1));
+    background: var(--node-editor-control-background, rgba(30, 30, 30, 0.95));
+    border-color: var(--node-editor-input-border, rgba(255, 255, 255, 0.1));
   }
   
   .toolButton {
-    color: var(--labelColor, #fff);
+    color: var(--node-editor-label-color, #fff);
   }
   
   .toolButton:hover {
-    background: var(--quaternarySystemFillColor, rgba(255, 255, 255, 0.08));
+    background: var(--node-editor-quaternary-system-fill-color, rgba(255, 255, 255, 0.08));
   }
   
   .toolButton:active {
-    background: var(--tertiarySystemFillColor, rgba(255, 255, 255, 0.12));
+    background: var(--node-editor-tertiary-system-fill-color, rgba(255, 255, 255, 0.12));
   }
   
   .separator {
-    background: var(--separatorColor, rgba(255, 255, 255, 0.1));
+    background: var(--node-editor-separator-color, rgba(255, 255, 255, 0.1));
   }
   
   .zoomSelect {
-    color: var(--labelColor, #fff);
+    color: var(--node-editor-label-color, #fff);
   }
   
   .zoomSelect:hover {
-    background: var(--quaternarySystemFillColor, rgba(255, 255, 255, 0.08));
+    background: var(--node-editor-quaternary-system-fill-color, rgba(255, 255, 255, 0.08));
   }
   
   .statusLabel {
-    color: var(--secondaryLabelColor, rgba(255, 255, 255, 0.5));
+    color: var(--node-editor-secondary-label-color, rgba(255, 255, 255, 0.5));
   }
   
   .statusValue {
-    color: var(--labelColor, #fff);
+    color: var(--node-editor-label-color, #fff);
   }
 }

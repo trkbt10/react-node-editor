@@ -4,13 +4,13 @@
   left: 0;
   right: 0;
   height: 24px;
-  background: var(--controlBackground, #ffffff);
-  border-top: var(--inputBorder);
+  background: var(--node-editor-control-background, #ffffff);
+  border-top: var(--node-editor-input-border);
   display: flex;
   align-items: center;
   padding: 0 12px;
   font-size: 11px;
-  color: var(--secondaryLabelColor, #666);
+  color: var(--node-editor-secondary-label-color, #666);
   z-index: 10;
   box-sizing: border-box;
 }

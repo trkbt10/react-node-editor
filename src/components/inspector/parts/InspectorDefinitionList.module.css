@@ -14,20 +14,20 @@
   gap: var(--node-editor-inspector-space-xs);
   font-size: var(--node-editor-inspector-font-size-body);
   line-height: var(--node-editor-inspector-line-height-body);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
 }
 
 .termLabel {
   display: block;
   font-weight: 600;
-  color: var(--textColor);
+  color: var(--node-editor-text-color);
 }
 
 .termDescription {
   display: block;
   font-size: var(--node-editor-inspector-font-size-meta);
   line-height: var(--node-editor-inspector-line-height-meta);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
 }
 
 .definition {

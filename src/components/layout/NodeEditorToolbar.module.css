@@ -1,8 +1,8 @@
 .toolbar {
   display: flex;
   align-items: center;
-  border-radius: var(--controlBorderRadius);
-  background-color: var(--windowBackgroundColor);
+  border-radius: var(--node-editor-control-border-radius);
+  background-color: var(--node-editor-window-background-color);
 }
 
 /* Orientations */
@@ -18,19 +18,19 @@
 
 /* Variants */
 .toolbar[data-variant="default"] {
-  border: var(--cardBorder);
-  box-shadow: var(--cardBoxShadow);
+  border: var(--node-editor-card-border);
+  box-shadow: var(--node-editor-card-box-shadow);
 }
 
 .toolbar[data-variant="subtle"] {
-  background-color: var(--cardFilledBackground);
-  border: 1px solid var(--cardBorderColor);
+  background-color: var(--node-editor-card-filled-background);
+  border: 1px solid var(--node-editor-card-border-color);
 }
 
 .toolbar[data-variant="elevated"] {
-  background-color: var(--windowBackgroundColor);
-  border: var(--cardBorder);
-  box-shadow: var(--cardElevatedBoxShadow);
+  background-color: var(--node-editor-window-background-color);
+  border: var(--node-editor-card-border);
+  box-shadow: var(--node-editor-card-elevated-box-shadow);
 }
 
 /* Sizes */
@@ -66,7 +66,7 @@
 
 /* Toolbar Separator */
 .separator {
-  background-color: var(--separatorColor);
+  background-color: var(--node-editor-separator-color);
   flex-shrink: 0;
 }
 
@@ -94,7 +94,7 @@
 .toolbarSeparator {
   width: 1px;
   height: var(--node-editor-space-xl);
-  background-color: var(--separatorColor);
+  background-color: var(--node-editor-separator-color);
   margin: var(--node-editor-space-xs);
 }
 
@@ -106,18 +106,18 @@
   justify-content: center;
   background: none;
   border: none;
-  border-radius: var(--controlBorderRadius);
+  border-radius: var(--node-editor-control-border-radius);
   cursor: pointer;
   transition: background-color 0.2s;
-  color: var(--textColor);
+  color: var(--node-editor-text-color);
 }
 
 .toolButton:hover {
-  background-color: var(--controlHoverBackground);
+  background-color: var(--node-editor-control-hover-background);
 }
 
 .toolButton:active {
-  background-color: var(--tableHeaderBackgroundColor);
+  background-color: var(--node-editor-table-header-background-color);
 }
 
 .topToolbar {

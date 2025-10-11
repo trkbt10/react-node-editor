@@ -5,7 +5,7 @@
   height: 100%;
   position: relative;
   overflow: hidden;
-  background-color: var(--windowBackgroundColor);
+  background-color: var(--node-editor-window-background-color);
   user-select: none;
   padding-bottom: var(--node-editor-space-xl);
   /* Space for status bar */
@@ -24,10 +24,10 @@
 
 .node {
   position: absolute;
-  background-color: var(--controlBackground);
-  border: var(--inputBorder);
-  border-radius: var(--controlBorderRadius);
-  box-shadow: var(--cardBoxShadow);
+  background-color: var(--node-editor-control-background);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
+  box-shadow: var(--node-editor-card-box-shadow);
   min-width: 150px;
   min-height: 50px;
   cursor: move;
@@ -35,15 +35,15 @@
 }
 
 .node:hover {
-  box-shadow: var(--cardHoverBoxShadow);
+  box-shadow: var(--node-editor-card-hover-box-shadow);
 }
 
 /* Locked nodes: no extra visual highlight beyond the icon */
 .node.locked {}
 
 .node.selected {
-  border-color: var(--accentColor);
-  box-shadow: var(--cardFocusBoxShadow);
+  border-color: var(--node-editor-accent-color);
+  box-shadow: var(--node-editor-card-focus-box-shadow);
 }
 
 .node.dragging {
@@ -55,9 +55,9 @@
   position: relative;
   padding: .5em var(--node-editor-space-md);
   font-weight: var(--node-editor-inspector-font-weight-medium);
-  border-bottom: var(--inputBorder);
-  background-color: var(--tableHeaderBackgroundColor);
-  border-radius: var(--controlBorderRadius) var(--controlBorderRadius) 0 0;
+  border-bottom: var(--node-editor-input-border);
+  background-color: var(--node-editor-table-header-background-color);
+  border-radius: var(--node-editor-control-border-radius) var(--node-editor-control-border-radius) 0 0;
   height: 40px;
   display: flex;
   align-items: center;
@@ -66,12 +66,12 @@
 
 .nodeHeader.interactiveDragHandle {
   cursor: move;
-  background-color: var(--tableHeaderBackgroundColorHover);
+  background-color: var(--node-editor-table-header-background-color-hover);
   transition: background-color var(--node-editor-transition-duration) ease;
 }
 
 .nodeHeader.interactiveDragHandle:hover {
-  background-color: var(--tableHeaderBackgroundColorActive);
+  background-color: var(--node-editor-table-header-background-color-active);
 }
 
 .nodeHeader.interactiveDragHandle::before {
@@ -81,7 +81,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 10px;
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   opacity: 0.6;
   pointer-events: none;
   letter-spacing: -2px;
@@ -90,9 +90,9 @@
 .nodeHeaderInput {
   width: 100%;
   padding: var(--node-editor-space-xs) .5em;
-  border: var(--node-editor-border-width) solid var(--accentColor);
-  border-radius: var(--cardBorderRadius);
-  background-color: var(--windowBackgroundColor);
+  border: var(--node-editor-border-width) solid var(--node-editor-accent-color);
+  border-radius: var(--node-editor-card-border-radius);
+  background-color: var(--node-editor-window-background-color);
   font-weight: var(--node-editor-inspector-font-weight-medium);
   font-size: inherit;
   font-family: inherit;
@@ -115,10 +115,10 @@
 }
 
 .groupNode {
-  background-color: color-mix(in srgb, var(--separatorColor) 6%, transparent);
+  background-color: color-mix(in srgb, var(--node-editor-separator-color) 6%, transparent);
   border-style: dashed;
   border-width: var(--node-editor-border-width);
-  border-color: var(--dividerColor);
+  border-color: var(--node-editor-divider-color);
 }
 
 .groupNode.collapsed .nodeContent {
@@ -127,7 +127,7 @@
 
 .groupCollapsed {
   text-align: center;
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   font-style: italic;
 }
 
@@ -145,11 +145,11 @@
   left: var(--node-editor-space-lg);
   display: flex;
   gap: .5em;
-  background-color: var(--controlBackground);
-  border: var(--inputBorder);
-  border-radius: var(--controlBorderRadius);
+  background-color: var(--node-editor-control-background);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
   padding: .5em;
-  box-shadow: var(--cardBoxShadow);
+  box-shadow: var(--node-editor-card-box-shadow);
   box-sizing: border-box;
 }
 
@@ -157,10 +157,10 @@
 
 .contextMenu {
   position: absolute;
-  background-color: var(--controlBackground);
-  border: var(--inputBorder);
-  border-radius: var(--controlBorderRadius);
-  box-shadow: var(--cardHoverBoxShadow);
+  background-color: var(--node-editor-control-background);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
+  box-shadow: var(--node-editor-card-hover-box-shadow);
   padding: var(--node-editor-space-xs);
   min-width: 150px;
   box-sizing: border-box;
@@ -169,13 +169,13 @@
 .contextMenuItem {
   padding: .5em var(--node-editor-space-md);
   cursor: pointer;
-  border-radius: var(--cardBorderRadius);
+  border-radius: var(--node-editor-card-border-radius);
   transition: background-color var(--node-editor-transition-duration);
   box-sizing: border-box;
 }
 
 .contextMenuItem:hover {
-  background-color: var(--controlHoverBackground);
+  background-color: var(--node-editor-control-hover-background);
 }
 
 .grid {
@@ -214,8 +214,8 @@
 
 .externalDataInfo {
   padding: .5em;
-  background-color: var(--controlHoverBackground);
-  border-radius: var(--cardBorderRadius);
+  background-color: var(--node-editor-control-hover-background);
+  border-radius: var(--node-editor-card-border-radius);
   font-size: var(--node-editor-inspector-font-size-body);
   margin-bottom: .5em;
   box-sizing: border-box;
@@ -238,7 +238,7 @@
 
 .dragGuide {
   position: absolute;
-  background-color: var(--accentColor);
+  background-color: var(--node-editor-accent-color);
   pointer-events: none;
   opacity: 0.7;
 }
@@ -257,7 +257,7 @@
   position: absolute;
   width: .5em;
   height: .5em;
-  background-color: var(--accentColor);
+  background-color: var(--node-editor-accent-color);
   border-radius: 50%;
   transform: translate(-4px, -4px);
   pointer-events: none;
@@ -270,7 +270,7 @@
   background-color: rgba(0, 0, 0, 0.7);
   color: white;
   padding: 2px 6px;
-  border-radius: var(--cardBorderRadius);
+  border-radius: var(--node-editor-card-border-radius);
   font-size: 10px;
   font-weight: var(--node-editor-inspector-font-weight-medium);
   white-space: nowrap;
@@ -280,7 +280,7 @@
 
 .distanceLine {
   position: absolute;
-  border-top: var(--node-editor-border-width) dashed var(--secondaryLabelColor);
+  border-top: var(--node-editor-border-width) dashed var(--node-editor-secondary-label-color);
   pointer-events: none;
   opacity: 0.6;
 }
@@ -293,7 +293,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-color: var(--controlBackground);
+  background-color: var(--node-editor-control-background);
   border: 3px solid red;
   /* Temporary: make ports visible */
   cursor: crosshair;
@@ -306,15 +306,15 @@
 
 .nodePort:hover {
   transform: scale(1.2);
-  border-color: var(--accentColor);
+  border-color: var(--node-editor-accent-color);
 }
 
 .nodePort.portInput {
-  border-color: var(--nodePortInputColor);
+  border-color: var(--node-editor-node-port-input-color);
 }
 
 .nodePort.portOutput {
-  border-color: var(--nodePortOutputColor);
+  border-color: var(--node-editor-node-port-output-color);
 }
 
 .portInner {
@@ -323,29 +323,29 @@
   left: 50%;
   width: .5em;
   height: .5em;
-  background-color: var(--inputBorder);
+  background-color: var(--node-editor-input-border);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: background-color var(--node-editor-transition-duration);
 }
 
 .nodePort:hover .portInner {
-  background-color: var(--accentColor);
+  background-color: var(--node-editor-accent-color);
 }
 
 .nodePort.portInput .portInner {
-  background-color: var(--nodePortInputColor);
+  background-color: var(--node-editor-node-port-input-color);
 }
 
 .nodePort.portOutput .portInner {
-  background-color: var(--nodePortOutputColor);
+  background-color: var(--node-editor-node-port-output-color);
 }
 
 .portLabel {
   position: absolute;
   white-space: nowrap;
   font-size: var(--node-editor-inspector-font-size-meta);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   pointer-events: none;
   user-select: none;
 }
@@ -421,24 +421,24 @@
   border-bottom: 2px solid transparent;
   font-size: 13px;
   font-weight: var(--node-editor-inspector-font-weight-medium);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   cursor: pointer;
   transition: all var(--node-editor-transition-duration) ease;
 }
 
 .inspectorTab:hover {
-  color: var(--labelColor);
-  background: var(--quaternarySystemFillColor);
+  color: var(--node-editor-label-color);
+  background: var(--node-editor-quaternary-system-fill-color);
 }
 
 .inspectorTab.active {
-  color: var(--accentColor);
-  border-bottom-color: var(--accentColor);
+  color: var(--node-editor-accent-color);
+  border-bottom-color: var(--node-editor-accent-color);
   background: transparent;
 }
 
 .inspectorTab.active:hover {
-  background: var(--quaternarySystemFillColor);
+  background: var(--node-editor-quaternary-system-fill-color);
 }
 
 .inspectorContentNoPadding {
@@ -450,7 +450,7 @@
   margin: 0 0 var(--node-editor-space-md) 0;
   font-size: var(--node-editor-inspector-font-size-body);
   font-weight: 600;
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -464,25 +464,25 @@
   margin-bottom: var(--node-editor-space-xs);
   font-size: var(--node-editor-inspector-font-size-body);
   font-weight: var(--node-editor-inspector-font-weight-medium);
-  color: var(--textColor);
+  color: var(--node-editor-text-color);
 }
 
 .inspectorInput,
 .inspectorTextarea {
   width: 100%;
   padding: 3px .25em;
-  border: var(--inputBorder);
-  border-radius: var(--cardBorderRadius);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-card-border-radius);
   font-size: var(--node-editor-inspector-font-size-body);
-  background: var(--controlBackground);
-  color: var(--textColor);
+  background: var(--node-editor-control-background);
+  color: var(--node-editor-text-color);
   box-sizing: border-box;
 }
 
 .inspectorInput:focus,
 .inspectorTextarea:focus {
   outline: none;
-  border-color: var(--accentColor);
+  border-color: var(--node-editor-accent-color);
 }
 
 .inspectorTextarea {
@@ -502,11 +502,11 @@
   flex: 1;
   /* Compact padding for small width usability */
   padding: 3px .25em;
-  border: var(--inputBorder);
-  border-radius: var(--cardBorderRadius);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-card-border-radius);
   font-size: var(--node-editor-inspector-font-size-body);
-  background: var(--controlBackground);
-  color: var(--textColor);
+  background: var(--node-editor-control-background);
+  color: var(--node-editor-text-color);
   box-sizing: border-box;
   min-width: 0;
   /* Allow shrinking inside flex container */
@@ -514,13 +514,13 @@
 
 .inspectorNumberInput:focus {
   outline: none;
-  border-color: var(--accentColor);
+  border-color: var(--node-editor-accent-color);
 }
 
 .inspectorInput:hover,
 .inspectorTextarea:hover,
 .inspectorNumberInput:hover {
-  border-color: var(--inputBorderHover);
+  border-color: var(--node-editor-input-border-hover);
 }
 
 /* Unified section title for inspector */
@@ -528,7 +528,7 @@
   margin: 0 0 var(--node-editor-space-sm) 0;
   font-size: var(--node-editor-inspector-font-size-body);
   font-weight: 600;
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -537,17 +537,17 @@
   display: block;
   padding: 6px .5em;
   font-size: var(--node-editor-inspector-font-size-body);
-  color: var(--secondaryLabelColor);
-  background: var(--tertiarySystemBackground);
-  border-radius: var(--cardBorderRadius);
-  border: var(--inputBorder);
+  color: var(--node-editor-secondary-label-color);
+  background: var(--node-editor-tertiary-system-background);
+  border-radius: var(--node-editor-card-border-radius);
+  border: var(--node-editor-input-border);
   box-sizing: border-box;
 }
 
 .inspectorEmptyState {
   text-align: center;
   padding: var(--node-editor-inspector-empty-padding-vertical) var(--node-editor-inspector-empty-padding-horizontal);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   font-size: var(--node-editor-inspector-font-size-body);
   box-sizing: border-box;
 }
@@ -565,8 +565,8 @@
 
 .editorToolbar {
   flex: 0 0 auto;
-  background: var(--controlBackground);
-  border-bottom: var(--inputBorder);
+  background: var(--node-editor-control-background);
+  border-bottom: var(--node-editor-input-border);
   padding: .5em var(--node-editor-space-lg);
   display: flex;
   align-items: center;
@@ -605,13 +605,13 @@
 }
 
 .loadingIndicator {
-  background-color: var(--controlBackground);
-  border: var(--inputBorder);
-  border-radius: var(--controlBorderRadius);
+  background-color: var(--node-editor-control-background);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
   padding: var(--node-editor-space-lg) var(--node-editor-space-xxl);
   font-size: 14px;
-  color: var(--controlTextColor);
-  box-shadow: var(--cardHoverBoxShadow);
+  color: var(--node-editor-control-text-color);
+  box-shadow: var(--node-editor-card-hover-box-shadow);
   box-sizing: border-box;
 }
 
@@ -632,7 +632,7 @@
   z-index: 15;
   pointer-events: all;
   /* Corner-specific border radius - only bottom-right is rounded */
-  border-radius: 0 0 var(--cardBorderRadius) 0;
+  border-radius: 0 0 var(--node-editor-card-border-radius) 0;
 }
 
 /* Show handle when node is hovered or selected */
@@ -643,14 +643,14 @@
 
 /* Accent color fill on hover */
 .resizeHandle:hover {
-  background-color: var(--accentColor);
+  background-color: var(--node-editor-accent-color);
   opacity: 1;
   transform: scale(1.1);
 }
 
 /* Active state during resize */
 .resizeHandleActive {
-  background-color: var(--accentColor);
+  background-color: var(--node-editor-accent-color);
   opacity: 1;
   transform: scale(1.1);
 }
@@ -667,21 +667,21 @@
 
 .minimap {
   width: 200px;
-  background: var(--controlBackground);
-  border: var(--inputBorder);
-  border-radius: var(--controlBorderRadius);
-  box-shadow: var(--cardHoverBoxShadow);
+  background: var(--node-editor-control-background);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
+  box-shadow: var(--node-editor-card-hover-box-shadow);
   backdrop-filter: blur(.5em);
   overflow: hidden;
 }
 
 .minimapTitle {
   padding: .5em var(--node-editor-space-md);
-  background: var(--tableHeaderBackgroundColor);
+  background: var(--node-editor-table-header-background-color);
   font-size: var(--node-editor-inspector-font-size-body);
   font-weight: 600;
-  color: var(--textColor);
-  border-bottom: var(--inputBorder);
+  color: var(--node-editor-text-color);
+  border-bottom: var(--node-editor-input-border);
 }
 
 .minimapContent {
@@ -691,7 +691,7 @@
 .minimapViewport,
 .minimapNodes {
   font-size: var(--node-editor-inspector-font-size-meta);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   margin-bottom: var(--node-editor-space-xs);
 }
 
@@ -702,24 +702,24 @@
 
 /* Theme-specific styles */
 .darkTheme {
-  background-color: var(--darkBackgroundColor);
-  color: var(--darkTextColor);
+  background-color: var(--node-editor-dark-background-color);
+  color: var(--node-editor-dark-text-color);
 }
 
 .darkTheme .minimap {
-  background: var(--darkControlBackground);
-  border-color: var(--darkInputBorder);
+  background: var(--node-editor-dark-control-background);
+  border-color: var(--node-editor-dark-input-border);
 }
 
 .darkTheme .minimapTitle {
-  background: var(--darkTableHeaderBackground);
-  color: var(--darkTextColor);
-  border-bottom-color: var(--darkInputBorder);
+  background: var(--node-editor-dark-table-header-background);
+  color: var(--node-editor-dark-text-color);
+  border-bottom-color: var(--node-editor-dark-input-border);
 }
 
 .darkTheme .minimapViewport,
 .darkTheme .minimapNodes {
-  color: var(--darkSecondaryTextColor);
+  color: var(--node-editor-dark-secondary-text-color);
 }
 
 /* Smooth animations - selective only for non-performance critical elements */
@@ -741,7 +741,7 @@
 
 /* Status bar saving indicator */
 .statusSaving {
-  color: var(--accentColor);
+  color: var(--node-editor-accent-color);
   font-weight: 600;
 }
 

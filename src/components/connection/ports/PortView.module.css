@@ -4,8 +4,8 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: var(--controlBackground, #ffffff);
-  border: 2px solid var(--inputBorder, #e0e0e0);
+  background-color: var(--node-editor-control-background, #ffffff);
+  border: 2px solid var(--node-editor-input-border, #e0e0e0);
   cursor: crosshair;
   transition: transform 0.1s ease, box-shadow 0.1s ease;
   z-index: 10;
@@ -18,11 +18,11 @@
 }
 
 .portInput {
-  border-color: var(--nodePortInputColor, #66cc00);
+  border-color: var(--node-editor-node-port-input-color, #66cc00);
 }
 
 .portOutput {
-  border-color: var(--nodePortOutputColor, #0099ff);
+  border-color: var(--node-editor-node-port-output-color, #0099ff);
 }
 
 .portLeft {
@@ -47,7 +47,7 @@
   left: 50%;
   width: 6px;
   height: 6px;
-  background-color: var(--secondaryLabelColor, #999);
+  background-color: var(--node-editor-secondary-label-color, #999);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   transition: background-color 0.1s ease;
@@ -55,7 +55,7 @@
 
 .port:hover .portInner,
 .portHovered .portInner {
-  background-color: var(--accentColor, #0066cc);
+  background-color: var(--node-editor-accent-color, #0066cc);
 }
 
 .portConnecting {
@@ -64,19 +64,19 @@
 }
 
 .portConnectable {
-  border-color: var(--accentColor, #0066cc);
+  border-color: var(--node-editor-accent-color, #0066cc);
   box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.3);
   transform: scale(1.1);
 }
 
 .portCandidate {
-  border-color: var(--accentColor, #0066cc);
+  border-color: var(--node-editor-accent-color, #0066cc);
   box-shadow: 0 0 .5em rgba(0, 102, 204, 0.5);
   transform: scale(1.3);
 }
 
 .portConnected .portInner {
-  background-color: var(--successColor, #34c759);
+  background-color: var(--node-editor-success-color, #34c759);
 }
 
 @keyframes pulse {
@@ -97,10 +97,10 @@
 .portLabel {
   position: absolute;
   font-size: 10px;
-  color: var(--secondaryLabelColor, #666);
+  color: var(--node-editor-secondary-label-color, #666);
   white-space: nowrap;
   pointer-events: none;
-  background-color: var(--controlBackground, #ffffff);
+  background-color: var(--node-editor-control-background, #ffffff);
   padding: 2px 4px;
   border-radius: 3px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);

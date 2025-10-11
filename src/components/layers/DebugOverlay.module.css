@@ -1,9 +1,9 @@
 /* Debug Overlay Component Styles */
 .debugOverlay {
   position: absolute;
-  background: var(--controlBackground, rgba(0, 0, 0, 0.9));
-  color: var(--controlTextColor, #ffffff);
-  border: 1px solid var(--inputBorder, rgba(255, 255, 255, 0.2));
+  background: var(--node-editor-control-background, rgba(0, 0, 0, 0.9));
+  color: var(--node-editor-control-text-color, #ffffff);
+  border: 1px solid var(--node-editor-input-border, rgba(255, 255, 255, 0.2));
   border-radius: 6px;
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace;
   font-size: 11px;
@@ -92,7 +92,7 @@
 .sectionTitle {
   font-weight: 600;
   margin-bottom: 6px;
-  color: var(--accentColor, #66d9ef);
+  color: var(--node-editor-accent-color, #66d9ef);
   font-size: 10px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -113,7 +113,7 @@
 }
 
 .value {
-  color: var(--successColor, #a6e22e);
+  color: var(--node-editor-success-color, #a6e22e);
   font-weight: 500;
   text-align: right;
   word-break: break-word;
@@ -168,10 +168,10 @@
   }
 
   .value {
-    color: var(--accentColor, #007aff);
+    color: var(--node-editor-accent-color, #007aff);
   }
 
   .sectionTitle {
-    color: var(--accentColor, #007aff);
+    color: var(--node-editor-accent-color, #007aff);
   }
 }

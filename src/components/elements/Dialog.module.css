@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--underPageBackgroundColor);
+  background-color: var(--node-editor-under-page-background-color);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,9 +13,9 @@
 }
 
 .dialog {
-  background: var(--dialogBackground);
-  border-radius: var(--cardBorderRadius);
-  box-shadow: var(--dialogBoxShadow);
+  background: var(--node-editor-dialog-background);
+  border-radius: var(--node-editor-card-border-radius);
+  box-shadow: var(--node-editor-dialog-box-shadow);
   max-height: 90vh;
   overflow: hidden;
   display: flex;
@@ -52,7 +52,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--node-editor-space-lg) var(--node-editor-space-xl);
-  border-bottom: 1px solid var(--separatorColor);
+  border-bottom: 1px solid var(--node-editor-separator-color);
   flex-shrink: 0;
 }
 
@@ -60,29 +60,29 @@
   margin: 0;
   font-size: var(--node-editor-inspector-font-size-body);
   font-weight: 600;
-  color: var(--headerTextColor);
+  color: var(--node-editor-header-text-color);
 }
 
 .close {
   background: none;
   border: none;
   font-size: var(--node-editor-space-xl);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   cursor: pointer;
   padding: var(--node-editor-space-xs);
   line-height: 1;
-  border-radius: var(--controlBorderRadius);
+  border-radius: var(--node-editor-control-border-radius);
   transition: all 0.2s ease;
 }
 
 .close:hover {
-  color: var(--textColor);
-  background-color: var(--controlHoverBackground);
+  color: var(--node-editor-text-color);
+  background-color: var(--node-editor-control-hover-background);
 }
 
 .close:focus {
   outline: none;
-  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+  box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
 }
 
 .content {

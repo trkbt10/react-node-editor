@@ -8,8 +8,8 @@
   position: relative;
   padding: .5em 12px;
   font-weight: 500;
-  border-bottom: var(--inputBorder);
-  background-color: var(--tableHeaderBackgroundColor, #f0f0f0);
+  border-bottom: var(--node-editor-input-border);
+  background-color: var(--node-editor-table-header-background-color, #f0f0f0);
   border-radius: .5em .5em 0 0;
   height: 40px;
   display: flex;
@@ -20,12 +20,12 @@
 /* Interactive node header (when not selected) */
 .nodeHeader[data-interactive="true"][data-selected="false"] {
   cursor: move;
-  background-color: var(--tableHeaderBackgroundColorHover, #e5e5e5);
+  background-color: var(--node-editor-table-header-background-color-hover, #e5e5e5);
   transition: background-color 0.2s ease;
 }
 
 .nodeHeader[data-interactive="true"][data-selected="false"]:hover {
-  background-color: var(--tableHeaderBackgroundColorActive, #d8d8d8);
+  background-color: var(--node-editor-table-header-background-color-active, #d8d8d8);
 }
 
 .nodeHeader[data-interactive="true"][data-selected="false"]::before {
@@ -35,7 +35,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 10px;
-  color: var(--secondaryLabelColor, #999);
+  color: var(--node-editor-secondary-label-color, #999);
   opacity: 0.6;
   pointer-events: none;
   letter-spacing: -2px;
@@ -45,7 +45,7 @@
   flex: 1;
   font-weight: 500;
   font-size: 13px;
-  color: var(--textColor, #000);
+  color: var(--node-editor-text-color, #000);
   text-align: center;
   cursor: text;
   user-select: none;
@@ -56,7 +56,7 @@
 }
 
 .nodeTitle:hover {
-  background-color: var(--hoverBackground, rgba(0, 0, 0, 0.05));
+  background-color: var(--node-editor-hover-background, rgba(0, 0, 0, 0.05));
 }
 
 /* Interactive node title (when not selected) */
@@ -68,10 +68,10 @@
   flex: 1;
   font-weight: 500;
   font-size: 13px;
-  color: var(--textColor, #000);
+  color: var(--node-editor-text-color, #000);
   text-align: center;
-  background: var(--inputBackground, #fff);
-  border: 2px solid var(--accentColor, #0066cc);
+  background: var(--node-editor-input-background, #fff);
+  border: 2px solid var(--node-editor-accent-color, #0066cc);
   border-radius: 3px;
   padding: 2px 4px;
   outline: none;
@@ -100,6 +100,6 @@
 }
 
 .nodeTitle[data-is-group="true"] {
-  color: var(--secondaryLabelColor, #666);
+  color: var(--node-editor-secondary-label-color, #666);
   font-weight: 500;
 }

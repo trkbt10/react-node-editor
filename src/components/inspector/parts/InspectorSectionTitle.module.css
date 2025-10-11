@@ -1,6 +1,6 @@
 .title {
   margin: 0;
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   text-transform: uppercase;
   font-size: var(--node-editor-inspector-font-size-title);
   line-height: var(--node-editor-inspector-line-height-title);

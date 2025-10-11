@@ -7,7 +7,7 @@
 
 .resizeHandle:hover,
 .resizeHandle.dragging {
-  background-color: var(--color-primary, #2196f3);
+  background-color: var(--node-editor-color-primary, #2196f3);
 }
 
 .resizeHandle.dragging {

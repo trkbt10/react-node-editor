@@ -10,7 +10,7 @@
   font-size: var(--node-editor-inspector-font-size-meta);
   line-height: var(--node-editor-inspector-line-height-meta);
   font-weight: var(--node-editor-inspector-font-weight-medium);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
 }
 
 .nodeTreeListBody {
@@ -31,7 +31,7 @@
 .emptyState {
   padding: var(--node-editor-inspector-space-xl) var(--node-editor-inspector-space-lg);
   text-align: center;
-  color: var(--tertiaryLabelColor);
+  color: var(--node-editor-tertiary-label-color);
   font-size: var(--node-editor-inspector-font-size-body);
   line-height: var(--node-editor-inspector-line-height-body);
   box-sizing: border-box;
@@ -50,16 +50,16 @@
 }
 
 .treeItem:not([data-selected="true"]):hover {
-  background: color-mix(in srgb, var(--selectedControlColor) 80%, transparent);
+  background: color-mix(in srgb, var(--node-editor-selected-control-color) 80%, transparent);
 }
 
 .treeItem[data-selected="true"] {
-  background: var(--selectedControlColor);
-  color: var(--selectedControlTextColor);
+  background: var(--node-editor-selected-control-color);
+  color: var(--node-editor-selected-control-text-color);
 }
 
 .treeItem[data-selected="true"] .nodeName {
-  color: var(--selectedControlTextColor);
+  color: var(--node-editor-selected-control-text-color);
 }
 
 .treeItem[data-selected="true"] .nodeIcon {
@@ -77,21 +77,21 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   flex-shrink: 0;
   box-sizing: border-box;
 }
 
 .expandButton:hover {
-  color: var(--labelColor);
+  color: var(--node-editor-label-color);
 }
 
 .treeItem[data-selected="true"] .expandButton {
-  color: color-mix(in srgb, var(--selectedControlTextColor) 70%, transparent);
+  color: color-mix(in srgb, var(--node-editor-selected-control-text-color) 70%, transparent);
 }
 
 .treeItem[data-selected="true"] .expandButton:hover {
-  color: var(--selectedControlTextColor);
+  color: var(--node-editor-selected-control-text-color);
 }
 
 .nodeIcon {
@@ -105,7 +105,7 @@
   flex: 1;
   font-size: var(--node-editor-inspector-font-size-body);
   line-height: var(--node-editor-inspector-line-height-body);
-  color: var(--labelColor);
+  color: var(--node-editor-label-color);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -124,7 +124,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   opacity: 0;
   transition: opacity var(--node-editor-transition-duration) ease;
   flex-shrink: 0;
@@ -132,7 +132,7 @@
 }
 
 .deleteButton {
-  color: var(--cautionColor);
+  color: var(--node-editor-caution-color);
 }
 
 .treeItem:hover .visibilityButton,
@@ -142,11 +142,11 @@
 }
 
 .visibilityButton:hover {
-  color: var(--labelColor);
+  color: var(--node-editor-label-color);
 }
 
 .deleteButton:hover {
-  color: var(--cautionColor);
+  color: var(--node-editor-caution-color);
   background: var(--node-editor-caution-hover-background);
   border-radius: var(--node-editor-border-radius-xs);
   box-sizing: border-box;
@@ -155,23 +155,23 @@
 .treeItem[data-selected="true"] .visibilityButton,
 .treeItem[data-selected="true"] .lockButton,
 .treeItem[data-selected="true"] .deleteButton {
-  color: color-mix(in srgb, var(--selectedControlTextColor) 70%, transparent);
+  color: color-mix(in srgb, var(--node-editor-selected-control-text-color) 70%, transparent);
 }
 
 .treeItem[data-selected="true"] .visibilityButton:hover,
 .treeItem[data-selected="true"] .lockButton:hover {
-  color: var(--selectedControlTextColor);
+  color: var(--node-editor-selected-control-text-color);
 }
 
 .treeItem[data-selected="true"] .deleteButton:hover {
-  color: var(--selectedControlTextColor);
-  background: color-mix(in srgb, var(--selectedControlTextColor) 15%, transparent);
+  color: var(--node-editor-selected-control-text-color);
+  background: color-mix(in srgb, var(--node-editor-selected-control-text-color) 15%, transparent);
   box-sizing: border-box;
 }
 
 /* Indentation for nested items */
 .treeItem[style*="padding-left: 24px"] {
-  border-left: var(--node-editor-border-width) solid var(--separatorColor);
+  border-left: var(--node-editor-border-width) solid var(--node-editor-separator-color);
   margin-left: var(--node-editor-tree-indent);
   box-sizing: border-box;
 }
@@ -183,19 +183,19 @@
 }
 
 .treeItem[data-drag-over-inside="true"] {
-  background: var(--selectedControlColor);
-  color: var(--selectedControlTextColor);
+  background: var(--node-editor-selected-control-color);
+  color: var(--node-editor-selected-control-text-color);
 }
 
 .treeItem[data-drag-over-inside="true"] .nodeName,
 .treeItem[data-drag-over-inside="true"] .expandButton,
 .treeItem[data-drag-over-inside="true"] .visibilityButton {
-  color: var(--selectedControlTextColor);
+  color: var(--node-editor-selected-control-text-color);
 }
 
 .dropIndicator {
   height: var(--node-editor-drop-indicator-height);
-  background: var(--accentColor);
+  background: var(--node-editor-accent-color);
   margin: var(--node-editor-inspector-space-xs) 0;
   border-radius: var(--node-editor-border-radius-xxs);
   animation: dropIndicatorPulse var(--node-editor-animation-duration) ease-in-out infinite;
@@ -217,57 +217,57 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .nodeTreeList {
-    background: var(--controlBackground);
+    background: var(--node-editor-control-background);
   }
 
   .header {
-    background: var(--controlBackground);
-    border-bottom-color: var(--separatorColor);
+    background: var(--node-editor-control-background);
+    border-bottom-color: var(--node-editor-separator-color);
   }
 
   .title {
-    color: var(--labelColor);
+    color: var(--node-editor-label-color);
   }
 
   .nodeCount {
-    color: var(--secondaryLabelColor);
+    color: var(--node-editor-secondary-label-color);
   }
 
   .emptyState {
-    color: var(--tertiaryLabelColor);
+    color: var(--node-editor-tertiary-label-color);
   }
 
   .treeItem:not([data-selected="true"]):hover {
-    background: color-mix(in srgb, var(--selectedControlColor) 80%, transparent);
+    background: color-mix(in srgb, var(--node-editor-selected-control-color) 80%, transparent);
   }
 
   .nodeName {
-    color: var(--labelColor);
+    color: var(--node-editor-label-color);
   }
 
   .expandButton {
-    color: var(--secondaryLabelColor);
+    color: var(--node-editor-secondary-label-color);
   }
 
   .expandButton:hover {
-    color: var(--labelColor);
+    color: var(--node-editor-label-color);
   }
 
   .visibilityButton,
   .deleteButton {
-    color: var(--secondaryLabelColor);
+    color: var(--node-editor-secondary-label-color);
   }
 
   .visibilityButton:hover {
-    color: var(--labelColor);
+    color: var(--node-editor-label-color);
   }
 
   .deleteButton:hover {
-    color: var(--cautionColor);
+    color: var(--node-editor-caution-color);
     background: var(--node-editor-caution-hover-background);
   }
 
   .treeItem[style*="padding-left: 24px"] {
-    border-left-color: var(--separatorColor);
+    border-left-color: var(--node-editor-separator-color);
   }
 }

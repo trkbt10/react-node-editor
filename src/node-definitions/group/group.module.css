@@ -1,8 +1,8 @@
 .groupCollapsed {
-  color: var(--secondaryLabelColor, #666);
+  color: var(--node-editor-secondary-label-color, #666);
   font-style: italic;
 }
 
 .groupExpanded {
-  color: var(--textColor, #000);
+  color: var(--node-editor-text-color, #000);
 }

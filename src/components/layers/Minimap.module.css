@@ -1,8 +1,8 @@
 /* Minimap Component Styles */
 .minimap {
   position: absolute;
-  background: var(--controlBackground, rgba(255, 255, 255, 0.95));
-  border: 1px solid var(--inputBorder, rgba(0, 0, 0, 0.1));
+  background: var(--node-editor-control-background, rgba(255, 255, 255, 0.95));
+  border: 1px solid var(--node-editor-input-border, rgba(0, 0, 0, 0.1));
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1000;
@@ -13,8 +13,8 @@
 
 .minimapContainer {
   position: absolute;
-  background: var(--controlBackground, rgba(255, 255, 255, 0.9));
-  border: var(--inputBorder);
+  background: var(--node-editor-control-background, rgba(255, 255, 255, 0.9));
+  border: var(--node-editor-input-border);
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(8px);
@@ -72,8 +72,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 6px 12px;
-  background: var(--controlHoverBackground, rgba(0, 0, 0, 0.05));
-  border-bottom: 1px solid var(--inputBorder, rgba(0, 0, 0, 0.1));
+  background: var(--node-editor-control-hover-background, rgba(0, 0, 0, 0.05));
+  border-bottom: 1px solid var(--node-editor-input-border, rgba(0, 0, 0, 0.1));
   font-size: 11px;
   height: 30px;
   box-sizing: border-box;
@@ -81,17 +81,17 @@
 
 .minimapZoom {
   font-size: 10px;
-  color: var(--secondaryLabelColor, #666);
+  color: var(--node-editor-secondary-label-color, #666);
   font-family: monospace;
 }
 
 .minimapTitle {
   font-weight: 600;
-  color: var(--textColor, #000);
+  color: var(--node-editor-text-color, #000);
 }
 
 .minimapStats {
-  color: var(--secondaryLabelColor, #666);
+  color: var(--node-editor-secondary-label-color, #666);
   font-size: 10px;
 }
 
@@ -99,7 +99,7 @@
 .minimapCanvas {
   position: relative;
   cursor: grab;
-  background: var(--windowBackgroundColor, #f5f5f5);
+  background: var(--node-editor-window-background-color, #f5f5f5);
   overflow: hidden;
   user-select: none;
   touch-action: none;
@@ -118,7 +118,7 @@
 /* Node representations */
 .minimapNode {
   position: absolute;
-  background: var(--accentColor, #007aff);
+  background: var(--node-editor-accent-color, #007aff);
   border-radius: 1px;
   opacity: 0.8;
   transition: opacity 0.2s ease;
@@ -126,7 +126,7 @@
 
 .minimapGroupNode {
   background: transparent;
-  border: 1px dashed var(--accentColor, #007aff);
+  border: 1px dashed var(--node-editor-accent-color, #007aff);
   opacity: 0.6;
 }
 
@@ -145,7 +145,7 @@
 }
 
 .minimapConnection {
-  stroke: var(--secondaryLabelColor, #999);
+  stroke: var(--node-editor-secondary-label-color, #999);
   stroke-width: 1;
   opacity: 0.6;
 }
@@ -153,7 +153,7 @@
 /* Viewport indicator */
 .minimapViewport {
   position: absolute;
-  border: 2px solid var(--accentColor, #007aff);
+  border: 2px solid var(--node-editor-accent-color, #007aff);
   background: rgba(0, 122, 255, 0.1);
   border-radius: 2px;
   pointer-events: none;
@@ -164,7 +164,7 @@
 
 .minimapViewportDragging {
   background: rgba(0, 122, 255, 0.2);
-  border-color: var(--accentColor, #007aff);
+  border-color: var(--node-editor-accent-color, #007aff);
   box-shadow: 0 0 8px rgba(0, 122, 255, 0.4);
 }
 

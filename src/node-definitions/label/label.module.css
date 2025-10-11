@@ -12,7 +12,7 @@
 
 .labelInner {
   background: transparent;
-  color: var(--textColor, #111);
+  color: var(--node-editor-text-color, #111);
   text-align: center;
 }
 
@@ -27,7 +27,7 @@
 
 .labelTitle {
   margin: 0;
-  font: var(--titleFont, 600 16px var(--themeDefaultFontFamily));
+  font: var(--node-editor-title-font, 600 16px var(--node-editor-theme-default-font-family));
   line-height: 1.2;
   font-size: 1.25em; /* bump up one size */
 }
@@ -39,13 +39,13 @@
 
 .labelSubtitle {
   margin-left: .5em;
-  font: var(--subtitleFont, 500 12px var(--themeDefaultFontFamily));
-  color: var(--secondaryLabelColor, #666);
+  font: var(--node-editor-subtitle-font, 500 12px var(--node-editor-theme-default-font-family));
+  color: var(--node-editor-secondary-label-color, #666);
   font-size: 1.15em; /* slightly larger */
 }
 
 .labelCaption {
   margin: 4px 0 0;
-  font: var(--captionFont, 400 12px var(--themeDefaultFontFamily));
-  color: var(--secondaryLabelColor, #666);
+  font: var(--node-editor-caption-font, 400 12px var(--node-editor-theme-default-font-family));
+  color: var(--node-editor-secondary-label-color, #666);
 }

@@ -1,75 +1,75 @@
 .input {
   width: 100%;
-  font: var(--inputFont);
-  color: var(--textColor);
-  background: var(--controlBackground);
-  border-radius: var(--controlBorderRadius);
+  font: var(--node-editor-input-font);
+  color: var(--node-editor-text-color);
+  background: var(--node-editor-control-background);
+  border-radius: var(--node-editor-control-border-radius);
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
   outline: none;
   box-sizing: border-box;
 }
 
 .input:focus {
-  border-color: var(--accentColor);
-  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+  border-color: var(--node-editor-accent-color);
+  box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
 }
 
 .input:disabled {
-  background-color: var(--cardDisabledBackground);
-  color: var(--disabledControlTextColor);
+  background-color: var(--node-editor-card-disabled-background);
+  color: var(--node-editor-disabled-control-text-color);
   cursor: not-allowed;
 }
 
 /* Variants */
 .input[data-variant="default"] {
-  padding: var(--inputPadding);
-  border: var(--inputBorder);
-  box-shadow: var(--inputBoxShadow);
+  padding: var(--node-editor-input-padding);
+  border: var(--node-editor-input-border);
+  box-shadow: var(--node-editor-input-box-shadow);
 }
 
 .input[data-variant="default"]:hover:not(:disabled) {
-  border-color: var(--separatorColor);
+  border-color: var(--node-editor-separator-color);
 }
 
 .input[data-variant="default"]:focus {
-  border-color: var(--accentColor);
+  border-color: var(--node-editor-accent-color);
 }
 
 .input[data-variant="outline"] {
-  padding: var(--inputPadding);
-  border: var(--cardBorder);
+  padding: var(--node-editor-input-padding);
+  border: var(--node-editor-card-border);
   background-color: transparent;
 }
 
 .input[data-variant="outline"]:hover:not(:disabled) {
-  border-color: var(--cardHoverBorderColor);
+  border-color: var(--node-editor-card-hover-border-color);
 }
 
 .input[data-variant="outline"]:focus {
-  border-color: var(--accentColor);
+  border-color: var(--node-editor-accent-color);
 }
 
 .input[data-variant="filled"] {
-  padding: var(--inputPadding);
+  padding: var(--node-editor-input-padding);
   border: 1px solid transparent;
-  background-color: var(--cardFilledBackground);
+  background-color: var(--node-editor-card-filled-background);
 }
 
 .input[data-variant="filled"]:hover:not(:disabled) {
-  background-color: var(--cardFilledHoverBackground);
+  background-color: var(--node-editor-card-filled-hover-background);
 }
 
 .input[data-variant="filled"]:focus {
-  background-color: var(--controlBackground);
-  border-color: var(--accentColor);
+  background-color: var(--node-editor-control-background);
+  border-color: var(--node-editor-accent-color);
 }
 
 /* Error state */
 .input[data-error="true"] {
-  border-color: var(--cautionColor);
+  border-color: var(--node-editor-caution-color);
 }
 
 .input[data-error="true"]:focus {
-  border-color: var(--cautionColor);
-  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+  border-color: var(--node-editor-caution-color);
+  box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
 }

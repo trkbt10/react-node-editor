@@ -2,7 +2,7 @@
   margin: 0 0 var(--node-editor-inspector-space-md);
   font-size: var(--node-editor-inspector-font-size-heading);
   font-weight: 600;
-  color: var(--labelColor);
+  color: var(--node-editor-label-color);
 }
 
 .checkboxRow {

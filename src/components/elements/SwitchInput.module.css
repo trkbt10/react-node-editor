@@ -14,7 +14,7 @@
 }
 
 .switch:focus {
-  box-shadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+  box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
 }
 
 .switch[data-disabled="true"] {
@@ -26,25 +26,25 @@
   position: relative;
   border-radius: 999px;
   transition: all 0.2s ease;
-  background-color: var(--cardBorderColor);
+  background-color: var(--node-editor-card-border-color);
 }
 
 .switch[data-checked="true"] .track {
-  background-color: var(--accentColor);
+  background-color: var(--node-editor-accent-color);
 }
 
 .switch[data-disabled="true"][data-checked="true"] .track {
-  background-color: var(--tertiaryLabelColor);
+  background-color: var(--node-editor-tertiary-label-color);
 }
 
 .thumb {
   position: absolute;
   top: 2px;
   left: 2px;
-  background-color: var(--controlBackground);
+  background-color: var(--node-editor-control-background);
   border-radius: 50%;
   transition: all 0.2s ease;
-  box-shadow: var(--cardBoxShadow);
+  box-shadow: var(--node-editor-card-box-shadow);
 }
 
 /* Sizes */
@@ -92,12 +92,12 @@
 
 .switchLabel {
   font-size: var(--node-editor-inspector-font-size-body);
-  color: var(--textColor);
+  color: var(--node-editor-text-color);
   cursor: pointer;
   user-select: none;
 }
 
 .switchLabel[data-disabled="true"] {
-  color: var(--tertiaryLabelColor);
+  color: var(--node-editor-tertiary-label-color);
   cursor: not-allowed;
 }

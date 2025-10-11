@@ -4,8 +4,8 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--controlBackground);
-  border-left: var(--inputBorder);
+  background-color: var(--node-editor-control-background);
+  border-left: var(--node-editor-input-border);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -43,17 +43,17 @@
   padding: var(--node-editor-inspector-space-sm) var(--node-editor-inspector-space-sm);
   font-size: var(--node-editor-inspector-font-size-body);
   line-height: var(--node-editor-inspector-line-height-body);
-  color: var(--secondaryLabelColor);
-  background: var(--cardFilledBackground);
-  border-radius: var(--controlBorderRadius);
-  border: var(--inputBorder);
+  color: var(--node-editor-secondary-label-color);
+  background: var(--node-editor-card-filled-background);
+  border-radius: var(--node-editor-control-border-radius);
+  border: var(--node-editor-input-border);
   box-sizing: border-box;
 }
 
 .inspectorEmptyState {
   text-align: center;
   padding: var(--node-editor-inspector-empty-padding-vertical) var(--node-editor-inspector-empty-padding-horizontal);
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
   font-size: var(--node-editor-inspector-font-size-body);
   line-height: var(--node-editor-inspector-line-height-body);
   box-sizing: border-box;

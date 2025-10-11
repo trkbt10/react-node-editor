@@ -4,5 +4,5 @@
   font-size: var(--node-editor-inspector-font-size-meta);
   line-height: var(--node-editor-inspector-line-height-meta);
   font-weight: 500;
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
 }

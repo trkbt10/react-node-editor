@@ -1,6 +1,6 @@
 .heading {
   margin: 0;
-  font-family: var(--themeLabelFontFamily);
+  font-family: var(--node-editor-theme-label-font-family);
   line-height: 1.2;
 }
 
@@ -83,13 +83,13 @@
 
 /* Colors */
 .heading[data-color="primary"] {
-  color: var(--textColor);
+  color: var(--node-editor-text-color);
 }
 
 .heading[data-color="secondary"] {
-  color: var(--secondaryLabelColor);
+  color: var(--node-editor-secondary-label-color);
 }
 
 .heading[data-color="muted"] {
-  color: var(--tertiaryLabelColor);
+  color: var(--node-editor-tertiary-label-color);
 }

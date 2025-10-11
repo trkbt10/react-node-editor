@@ -6,9 +6,9 @@
   align-items: center;
   gap: 8px;
   padding: 8px;
-  background: var(--controlBackground, rgba(255, 255, 255, 0.95));
-  border: 1px solid var(--inputBorder, rgba(0, 0, 0, 0.08));
-  border-radius: var(--controlBorderRadius, 8px);
+  background: var(--node-editor-control-background, rgba(255, 255, 255, 0.95));
+  border: 1px solid var(--node-editor-input-border, rgba(0, 0, 0, 0.08));
+  border-radius: var(--node-editor-control-border-radius, 8px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(20px);
   user-select: none;
@@ -58,7 +58,7 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .floatingContainer {
-    background: var(--controlBackground, rgba(30, 30, 30, 0.95));
-    border-color: var(--inputBorder, rgba(255, 255, 255, 0.1));
+    background: var(--node-editor-control-background, rgba(30, 30, 30, 0.95));
+    border-color: var(--node-editor-input-border, rgba(255, 255, 255, 0.1));
   }
 }
