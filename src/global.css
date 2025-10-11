@@ -192,9 +192,13 @@
   --node-editor-separator-color: rgba(15, 23, 42, 0.1);
 
   /* Segment controls */
-  --node-editor-segment-background-filter: blur(24px) saturate(160%);
+  --node-editor-segment-backdrop-filter: blur(16px) saturate(160%);
   --node-editor-segment-control-background: rgba(15, 23, 42, 0.05);
   --node-editor-segment-control-background-color: #ffffff;
+  --node-editor-segment-control-text-color: var(--node-editor-text-secondary);
+  --node-editor-segment-control-active-background-color: #0b3d91;
+  --node-editor-segment-control-active-text-color: #ffffff;
+  --node-editor-segment-control-hover-background-color: rgba(15, 23, 42, 0.12);
   --node-editor-segment-control-padding: var(--node-editor-space-xs);
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
   --node-editor-segment-control-box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
@@ -276,6 +280,14 @@
     --node-editor-tertiary-system-fill-color: rgba(148, 163, 184, 0.2);
     --node-editor-quaternary-system-fill-color: rgba(148, 163, 184, 0.24);
 
+    --node-editor-segment-backdrop-filter: blur(12px) saturate(180%);
+    --node-editor-segment-control-background: rgba(15, 23, 42, 0.35);
+    --node-editor-segment-control-background-color: rgba(15, 23, 42, 0.55);
+    --node-editor-segment-control-text-color: var(--node-editor-text-color);
+    --node-editor-segment-control-active-background-color: rgba(59, 130, 246, 0.85);
+    --node-editor-segment-control-active-text-color: var(--node-editor-text-color);
+    --node-editor-segment-control-hover-background-color: rgba(148, 163, 184, 0.28);
+
     --node-editor-scroll-bar-thumb-color: rgba(148, 163, 184, 0.4);
     --node-editor-active-scroll-bar-thumb-color: rgba(148, 163, 184, 0.6);
 
@@ -293,4 +305,5 @@
    - Derived from usage in src/components/shared/NodeSearchMenu.module.css for menus and scrollbars.
    - Derived from usage in src/components/inspector/FeatureFlagsPanel.module.css for panel layouts.
    - Derived from usage in src/components/node/NodeView.module.css for node surfaces.
+   - Derived from usage in src/components/layout/TabNav.module.css for segmented navigation controls.
 */

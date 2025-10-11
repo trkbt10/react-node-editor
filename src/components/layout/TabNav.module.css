@@ -3,9 +3,11 @@
   border-radius: var(--node-editor-segment-control-border-radius);
   overflow: hidden;
   background: var(--node-editor-segment-control-background);
-  filter: var(--node-editor-segment-background-filter);
+  backdrop-filter: var(--node-editor-segment-backdrop-filter);
+  -webkit-backdrop-filter: var(--node-editor-segment-backdrop-filter);
   box-shadow: var(--node-editor-segment-control-box-shadow);
   padding: var(--node-editor-segment-control-padding);
+  color: var(--node-editor-segment-control-text-color);
 }
 
 .tabButton {
@@ -13,7 +15,7 @@
   appearance: none;
   border: 0;
   background: transparent;
-  color: inherit;
+  color: var(--node-editor-segment-control-text-color);
   flex: 1;
   padding: var(--node-editor-segment-control-segment-padding);
   background: var(--node-editor-segment-control-background-color);
@@ -45,12 +47,13 @@
 }
 
 .tabButton[data-active="true"] {
-  background: var(--node-editor-segment-control-background-color);
+  background: var(--node-editor-segment-control-active-background-color);
+  color: var(--node-editor-segment-control-active-text-color);
   box-shadow: var(--node-editor-segment-control-indicator-box-shadow);
 }
 
 .tabButton:not([data-active="true"]):hover {
-  background: var(--node-editor-segment-control-background-color);
+  background: var(--node-editor-segment-control-hover-background-color);
 }
 
 .tabButton[data-active="true"]:hover {

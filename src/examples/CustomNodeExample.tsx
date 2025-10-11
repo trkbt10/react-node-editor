@@ -328,11 +328,11 @@ export const CustomNodeExample: React.FC = () => {
         onDataChange={(data) => {
           console.log("Editor data changed:", data);
         }}
+        autoSaveEnabled={false}
         onSave={async (data) => {
           console.log("Saving data:", data);
           await new Promise((resolve) => setTimeout(resolve, 1000));
           setSavedData(data);
-          alert("Data saved successfully!");
         }}
       />
     </ExampleLayout>
