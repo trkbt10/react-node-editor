@@ -1,10 +1,11 @@
 import * as React from "react";
 import { NodeEditor, InspectorPanel, NodeCanvas, StatusBar, type GridLayoutConfig, type LayerDefinition } from "../index";
+import classes from "./ColumnLayoutExample.module.css";
 
 // Example: Default layout (canvas + inspector)
 export const DefaultLayoutExample: React.FC = () => {
   return (
-    <div style={{ height: "100vh", width: "100vw" }}>
+    <div className={classes.wrapper}>
       {/* No gridConfig/gridLayers specified - uses default canvas + inspector (300px, resizable) */}
       <NodeEditor />
     </div>
@@ -37,7 +38,7 @@ export const CustomInspectorWidthExample: React.FC = () => {
   ];
 
   return (
-    <div style={{ height: "100vh", width: "100vw" }}>
+    <div className={classes.wrapper}>
       <NodeEditor gridConfig={gridConfig} gridLayers={gridLayers} />
     </div>
   );
@@ -61,7 +62,7 @@ export const CanvasOnlyExample: React.FC = () => {
   ];
 
   return (
-    <div style={{ height: "100vh", width: "100vw" }}>
+    <div className={classes.wrapper}>
       <NodeEditor gridConfig={gridConfig} gridLayers={gridLayers} />
     </div>
   );
@@ -70,7 +71,7 @@ export const CanvasOnlyExample: React.FC = () => {
 // Example: With custom toolbar
 export const WithToolbarExample: React.FC = () => {
   const toolbar = (
-    <div style={{ padding: "8px 16px", background: "var(--color-bg-secondary, #f5f5f5)", borderBottom: "1px solid var(--color-border, #ddd)" }}>
+    <div className={classes.toolbar}>
       <button>New</button>
       <button>Save</button>
       <button>Export</button>
@@ -112,7 +113,7 @@ export const WithToolbarExample: React.FC = () => {
   ];
 
   return (
-    <div style={{ height: "100vh", width: "100vw" }}>
+    <div className={classes.wrapper}>
       <NodeEditor gridConfig={gridConfig} gridLayers={gridLayers} />
     </div>
   );

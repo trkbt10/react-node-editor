@@ -1,0 +1,137 @@
+/* Task Node Renderer Styles */
+.taskNode {
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: 2px solid;
+  min-height: 80px;
+}
+
+.taskNode.selected {
+  background-color: #e3f2fd;
+}
+
+.taskNode.dragging {
+  opacity: 0.7;
+}
+
+.taskNode.grabbing {
+  cursor: grabbing;
+}
+
+.taskNode.grab {
+  cursor: grab;
+}
+
+.taskNode.statusTodo {
+  border-color: #8e8e93;
+}
+
+.taskNode.statusInProgress {
+  border-color: #007aff;
+}
+
+.taskNode.statusDone {
+  border-color: #34c759;
+}
+
+.taskNode.statusDefault {
+  border-color: #c7c7cc;
+}
+
+.taskNodeLoading {
+  text-align: center;
+  color: #999;
+}
+
+.taskNodeTitle {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.taskNodeDescription {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #666;
+}
+
+.taskNodeFooter {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+}
+
+.taskNodeStatus {
+  text-transform: uppercase;
+}
+
+.taskNodeNoData {
+  color: #999;
+}
+
+/* Task Inspector Styles */
+.inspectorContainer {
+  padding: 16px;
+}
+
+.inspectorTitle {
+  margin: 0 0 16px;
+}
+
+.inspectorField {
+  margin-bottom: 12px;
+}
+
+.inspectorLabel {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.inspectorInput {
+  width: 100%;
+  padding: 4px 8px;
+}
+
+.inspectorTextarea {
+  width: 100%;
+  padding: 4px 8px;
+  min-height: 60px;
+}
+
+.inspectorSelect {
+  width: 100%;
+  padding: 4px 8px;
+}
+
+.inspectorActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.inspectorButton {
+  padding: 8px 16px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.inspectorButtonSave {
+  background-color: #007aff;
+}
+
+.inspectorButtonDelete {
+  background-color: #dc3545;
+  flex: 0 0 auto;
+}
+
+/* Footer Styles */
+.footer {
+  padding: 8px;
+  background: #f5f5f5;
+  font-size: 12px;
+}

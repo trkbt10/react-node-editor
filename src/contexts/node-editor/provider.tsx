@@ -5,7 +5,6 @@ import type { SettingsManager } from "../../settings/SettingsManager";
 import type { SettingValue } from "../../settings/types";
 import { createCachedPortResolver } from "../../utils/portResolver";
 import { NodeDefinitionContext } from "../NodeDefinitionContext";
-import { loadDataWithMigration, prepareDataForSave, type VersionedNodeEditorData } from "../../utils/dataMigration";
 import { getFeatureFlags } from "../../config/featureFlags";
 import { nodeEditorActions } from "./actions";
 import { nodeEditorReducer, defaultNodeEditorData } from "./reducer";
@@ -117,18 +116,7 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
     hasLoadedRef.current = true;
     setIsLoading(true);
     Promise.resolve(onLoadRef.current())
-      .then((loadedData) => {
-        const { data, migrated, migrationResult } = loadDataWithMigration(
-          loadedData as VersionedNodeEditorData,
-          registry,
-          featureFlagsRef.current.autoMigrateOnLoad,
-        );
-        if (migrated && migrationResult && featureFlagsRef.current.showMigrationWarnings) {
-          console.log("Node editor data migrated successfully:", migrationResult.statistics);
-          if (migrationResult.warnings.length > 0) {
-            console.warn("Migration warnings:", migrationResult.warnings);
-          }
-        }
+      .then((data) => {
         dispatch(nodeEditorActions.setNodeData(data));
       })
       .catch((error) => {
@@ -144,8 +132,6 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
       return;
     }
     onDataChangeRef.current?.(stateRef.current);
-    // run once on mount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Stable save handler using refs to avoid re-creating on state changes
@@ -160,7 +146,7 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
     try {
       setIsSaving(true);
       isSavingRef.current = true;
-      const dataToSave = prepareDataForSave(stateRef.current, featureFlagsRef.current.saveInNewFormat);
+      const dataToSave = stateRef.current;
       await Promise.resolve(save(dataToSave));
     } catch (error) {
       console.error("Failed to save node editor data:", error);

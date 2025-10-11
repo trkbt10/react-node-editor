@@ -16,7 +16,6 @@ export { LabelNodeRenderer } from "./label/node";
 // export { StandardInspectorRenderer, GroupInspectorRenderer, LabelInspectorRenderer } from "../components/inspector/renderers";
 
 // Import definitions for default array
-import { StandardNodeDefinition } from "./standard";
 import { GroupNodeDefinition } from "./group";
 import { LabelNodeDefinition } from "./label";
 

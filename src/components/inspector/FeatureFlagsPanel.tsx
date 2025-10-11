@@ -7,7 +7,7 @@ import styles from "./FeatureFlagsPanel.module.css";
 export type FeatureFlagsPanelProps = {
   className?: string;
   onClose?: () => void;
-}
+};
 
 /**
  * Developer panel for managing node editor feature flags
@@ -20,7 +20,7 @@ export const FeatureFlagsPanel: React.FC<FeatureFlagsPanelProps> = ({ className,
   // Check for changes
   React.useEffect(() => {
     const changed = Object.keys(localFlags).some(
-      (key) => localFlags[key as keyof NodeEditorFeatureFlags] !== currentFlags[key as keyof NodeEditorFeatureFlags]
+      (key) => localFlags[key as keyof NodeEditorFeatureFlags] !== currentFlags[key as keyof NodeEditorFeatureFlags],
     );
     setHasChanges(changed);
   }, [localFlags, currentFlags]);
@@ -28,7 +28,7 @@ export const FeatureFlagsPanel: React.FC<FeatureFlagsPanelProps> = ({ className,
   const handleToggle = (flag: keyof NodeEditorFeatureFlags) => {
     setLocalFlags((prev) => ({
       ...prev,
-      [flag]: !prev[flag]
+      [flag]: !prev[flag],
     }));
   };
 
@@ -62,8 +62,8 @@ export const FeatureFlagsPanel: React.FC<FeatureFlagsPanelProps> = ({ className,
 
       <div className={styles.content}>
         <div className={styles.description}>
-          Configure feature flags for the node editor migration.
-          These settings are stored in localStorage for development.
+          Configure feature flags for the node editor migration. These settings are stored in localStorage for
+          development.
         </div>
 
         <div className={styles.flags}>
@@ -72,8 +72,8 @@ export const FeatureFlagsPanel: React.FC<FeatureFlagsPanelProps> = ({ className,
               label="Use Inferred Ports Only"
               description={
                 <>
-                  When enabled, ports are exclusively inferred from NodeDefinitions.
-                  Legacy embedded ports are ignored. <strong>Requires reload.</strong>
+                  When enabled, ports are exclusively inferred from NodeDefinitions. Legacy embedded ports are ignored.{" "}
+                  <strong>Requires reload.</strong>
                 </>
               }
             >
@@ -81,39 +81,6 @@ export const FeatureFlagsPanel: React.FC<FeatureFlagsPanelProps> = ({ className,
                 id="useInferredPortsOnly"
                 checked={localFlags.useInferredPortsOnly}
                 onChange={() => handleToggle("useInferredPortsOnly")}
-              />
-            </InspectorDefinitionItem>
-
-            <InspectorDefinitionItem
-              label="Show Migration Warnings"
-              description="Display console warnings during data migration."
-            >
-              <SwitchInput
-                id="showMigrationWarnings"
-                checked={localFlags.showMigrationWarnings}
-                onChange={() => handleToggle("showMigrationWarnings")}
-              />
-            </InspectorDefinitionItem>
-
-            <InspectorDefinitionItem
-              label="Auto-Migrate on Load"
-              description="Automatically migrate old data format when loading."
-            >
-              <SwitchInput
-                id="autoMigrateOnLoad"
-                checked={localFlags.autoMigrateOnLoad}
-                onChange={() => handleToggle("autoMigrateOnLoad")}
-              />
-            </InspectorDefinitionItem>
-
-            <InspectorDefinitionItem
-              label="Save in New Format"
-              description="Save data without embedded ports (new format)."
-            >
-              <SwitchInput
-                id="saveInNewFormat"
-                checked={localFlags.saveInNewFormat}
-                onChange={() => handleToggle("saveInNewFormat")}
               />
             </InspectorDefinitionItem>
           </InspectorDefinitionList>
@@ -125,18 +92,10 @@ export const FeatureFlagsPanel: React.FC<FeatureFlagsPanelProps> = ({ className,
         </div>
 
         <div className={styles.actions}>
-          <Button 
-            onClick={handleApply} 
-            variant="primary"
-            disabled={!hasChanges}
-          >
+          <Button onClick={handleApply} variant="primary" disabled={!hasChanges}>
             Apply Changes
           </Button>
-          <Button 
-            onClick={handleReset} 
-            variant="secondary"
-            disabled={!hasChanges}
-          >
+          <Button onClick={handleReset} variant="secondary" disabled={!hasChanges}>
             Reset
           </Button>
         </div>

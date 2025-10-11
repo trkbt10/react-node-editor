@@ -2,6 +2,7 @@ import * as React from "react";
 import { NodeEditor } from "../NodeEditor";
 import { createNodeDefinition, toUntypedDefinition, type ConnectionRenderContext } from "../types/NodeDefinition";
 import type { NodeEditorData } from "../types/core";
+import classes from "./CustomPortRendererExample.module.css";
 
 /**
  * Custom Port Renderer Example
@@ -210,13 +211,13 @@ export const CustomPortRendererExample: React.FC = () => {
   const [data, setData] = React.useState<NodeEditorData>(initialData);
 
   return (
-    <div style={{ width: "100%", height: "600px" }}>
-      <h2>Custom Port Renderer Example</h2>
-      <p>
+    <div className={classes.wrapper}>
+      <h2 className={classes.title}>Custom Port Renderer Example</h2>
+      <p className={classes.description}>
         This example shows how to customize port and connection appearance using{" "}
         <code>renderPort</code> and <code>renderConnection</code>.
       </p>
-      <ul>
+      <ul className={classes.list}>
         <li>Ports are colored based on their data type</li>
         <li>Ports change size when hovered or connected</li>
         <li>Connections inherit the color from their source port</li>

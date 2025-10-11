@@ -1,5 +1,5 @@
 import React, { type ReactNode, type ReactElement } from "react";
-import type { Node, NodeId, Port, Connection, ConnectionId, NodeEditorData, NodeData } from "./core";
+import type { Node, NodeId, Port, Connection, ConnectionId, NodeData } from "./core";
 import type { NodeBehavior } from "./behaviors";
 
 /**
@@ -14,7 +14,8 @@ import type { NodeBehavior } from "./behaviors";
  */
 export type NodeDataTypeMap = {
   // This interface is intentionally empty - users should use generic parameters
-}
+  [key: string]: Record<string, unknown>;
+};
 
 /**
  * External data reference for nodes
@@ -29,7 +30,7 @@ export type ExternalDataReference = {
   version?: number;
   /** Optional metadata */
   metadata?: Record<string, unknown>;
-}
+};
 
 /**
  * Node render props for custom node visualization
@@ -60,7 +61,7 @@ export type NodeRenderProps<TNodeType extends string = string, TNodeDataTypeMap 
   onStartEdit: () => void;
   /** Callback to update node data */
   onUpdateNode: (updates: Partial<Node>) => void;
-}
+};
 
 /**
  * Inspector panel render props
@@ -87,7 +88,7 @@ export type InspectorRenderProps<TNodeType extends string = string, TNodeDataTyp
   onUpdateExternalData: (data: unknown) => Promise<void>;
   /** Callback to delete the node */
   onDeleteNode: () => void;
-}
+};
 
 /**
  * Context provided to port render functions
@@ -124,7 +125,7 @@ export type PortRenderContext = {
     onPointerEnter: (e: React.PointerEvent) => void;
     onPointerLeave: (e: React.PointerEvent) => void;
   };
-}
+};
 
 /**
  * Context provided to connection render functions
@@ -154,7 +155,7 @@ export type ConnectionRenderContext = {
   isDragging?: boolean;
   /** Drag progress (0-1) for visual feedback */
   dragProgress?: number;
-}
+};
 
 /**
  * Port configuration for a node type
@@ -190,7 +191,7 @@ export type PortDefinition = {
    * @returns React element to render (should be SVG)
    */
   renderConnection?: (context: ConnectionRenderContext, defaultRender: () => ReactElement) => ReactElement;
-}
+};
 
 /**
  * Constraint violation information
@@ -208,7 +209,7 @@ export type ConstraintViolation = {
   portIds?: string[];
   /** Related connection IDs */
   connectionIds?: string[];
-}
+};
 
 /**
  * Constraint validation context
@@ -226,7 +227,7 @@ export type ConstraintContext = {
   operation: "create" | "update" | "delete" | "connect" | "disconnect" | "move";
   /** Additional context data */
   context?: Record<string, unknown>;
-}
+};
 
 /**
  * Constraint validation result
@@ -236,7 +237,7 @@ export type ConstraintValidationResult = {
   isValid: boolean;
   /** List of violations (if any) */
   violations: ConstraintViolation[];
-}
+};
 
 /**
  * Node constraint definition
@@ -254,7 +255,7 @@ export type NodeConstraint = {
   blocking?: boolean;
   /** Operations this constraint applies to */
   appliesTo?: ("create" | "update" | "delete" | "connect" | "disconnect" | "move")[];
-}
+};
 
 /**
  * Node type definition
@@ -311,7 +312,7 @@ export type NodeDefinition<TNodeType extends string = string, TNodeDataTypeMap =
   visualState?: "info" | "success" | "warning" | "error" | "disabled";
   /** Node constraints */
   constraints?: NodeConstraint[];
-}
+};
 
 /**
  * Node definitions registry
@@ -330,13 +331,15 @@ export type NodeDefinitionRegistry<TNodeDataTypeMap = NodeDataTypeMap> = {
   getAll: () => NodeDefinition<string, TNodeDataTypeMap>[];
   /** Get definitions by category */
   getByCategory: (category: string) => NodeDefinition<string, TNodeDataTypeMap>[];
-}
+};
 
 /**
  * Create a node definition registry
  * @template TNodeDataTypeMap - The node data type map
  */
-export function createNodeDefinitionRegistry<TNodeDataTypeMap = NodeDataTypeMap>(): NodeDefinitionRegistry<TNodeDataTypeMap> {
+export function createNodeDefinitionRegistry<
+  TNodeDataTypeMap extends NodeDataTypeMap,
+>(): NodeDefinitionRegistry<TNodeDataTypeMap> {
   const definitions = new Map<string, NodeDefinition<string, TNodeDataTypeMap>>();
 
   return {
@@ -359,16 +362,13 @@ export function createNodeDefinitionRegistry<TNodeDataTypeMap = NodeDataTypeMap>
   };
 }
 
-// Import type for compatibility helpers
-import type { LabelNodeDataMap } from "../node-definitions/label/types";
-
 /**
  * Helper function to create a type-safe node definition
  * @template TNodeType - The specific node type
  * @template TNodeDataTypeMap - The node data type map
  */
 export function createNodeDefinition<TNodeType extends string, TNodeDataTypeMap = NodeDataTypeMap>(
-  definition: NodeDefinition<TNodeType, TNodeDataTypeMap>
+  definition: NodeDefinition<TNodeType, TNodeDataTypeMap>,
 ): NodeDefinition<TNodeType, TNodeDataTypeMap> {
   return definition;
 }
@@ -379,7 +379,7 @@ export function createNodeDefinition<TNodeType extends string, TNodeDataTypeMap 
  * @template TNodeDataTypeMap - The node data type map
  */
 export function getTypedNodeData<TNodeType extends keyof TNodeDataTypeMap, TNodeDataTypeMap = NodeDataTypeMap>(
-  node: Node & { type: TNodeType }
+  node: Node & { type: TNodeType },
 ): TNodeDataTypeMap[TNodeType] {
   return node.data as TNodeDataTypeMap[TNodeType];
 }
@@ -390,7 +390,7 @@ export function getTypedNodeData<TNodeType extends keyof TNodeDataTypeMap, TNode
  * @template TNodeDataTypeMap - The node data type map
  */
 export function createNodeDataUpdater<TNodeType extends keyof TNodeDataTypeMap, TNodeDataTypeMap = NodeDataTypeMap>(
-  onUpdateNode: (updates: Partial<Node>) => void
+  onUpdateNode: (updates: Partial<Node>) => void,
 ) {
   return (data: Partial<TNodeDataTypeMap[TNodeType]>) => {
     onUpdateNode({ data: data as NodeData });
@@ -402,7 +402,7 @@ export function createNodeDataUpdater<TNodeType extends keyof TNodeDataTypeMap, 
  * @template TNodeType - The specific node type from NodeDataTypeMap
  */
 export function asOriginalNodeRender<TNodeType extends string>(
-  render: (props: NodeRenderProps<TNodeType>) => ReactElement
+  render: (props: NodeRenderProps<TNodeType>) => ReactElement,
 ): (props: NodeRenderProps) => ReactElement {
   return (props: NodeRenderProps) => render(props as NodeRenderProps<TNodeType>);
 }
@@ -412,7 +412,7 @@ export function asOriginalNodeRender<TNodeType extends string>(
  * @template TNodeType - The specific node type from NodeDataTypeMap
  */
 export function asOriginalInspectorRender<TNodeType extends string>(
-  render: (props: InspectorRenderProps<TNodeType>) => ReactElement
+  render: (props: InspectorRenderProps<TNodeType>) => ReactElement,
 ): (props: InspectorRenderProps) => ReactElement {
   return (props: InspectorRenderProps) => render(props as InspectorRenderProps<TNodeType>);
 }
@@ -422,7 +422,7 @@ export function asOriginalInspectorRender<TNodeType extends string>(
  * This function performs a type-safe conversion without runtime type checking.
  */
 export function toUntypedDefinition<TNodeType extends string, TMap = NodeDataTypeMap>(
-  def: NodeDefinition<TNodeType, TMap>
+  def: NodeDefinition<TNodeType, TMap>,
 ): NodeDefinition<string, NodeDataTypeMap> {
   // Simply cast the definition to the untyped version
   // Runtime type checking is handled by the renderers themselves

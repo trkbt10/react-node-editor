@@ -8,6 +8,8 @@ import type {
 } from "../types/NodeDefinition";
 import type { NodeEditorData } from "../types/core";
 import { Button, Textarea } from "../components/elements";
+import { ExampleLayout, ExampleHeader } from "./parts";
+import classes from "./AdvancedNodeExample.module.css";
 
 // =============================================
 // Code Editor Node
@@ -1064,40 +1066,30 @@ const advancedExternalDataRefs: Record<string, ExternalDataReference> = {
 export const AdvancedNodeExample: React.FC = () => {
   const [currentTheme, setCurrentTheme] = React.useState("default");
 
+  const themeActions = (
+    <>
+      <label className={classes.themeLabel}>Theme:</label>
+      <select value={currentTheme} onChange={(e) => setCurrentTheme(e.target.value)} className={classes.themeSelect}>
+        <option value="default">Default</option>
+        <option value="dark">Dark</option>
+        <option value="high-contrast">High Contrast</option>
+      </select>
+    </>
+  );
+
+  const contentClass = currentTheme === "dark" ? `${classes.content} ${classes.contentDark}` : classes.content;
+
   return (
-    <div style={{ width: "100vw", height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div
-        style={{
-          padding: "16px",
-          borderBottom: "1px solid #e0e0e0",
-          backgroundColor: "#f9fafb",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div>
-          <h2 style={{ margin: "0 0 4px 0", fontSize: "18px" }}>Advanced Node Editor</h2>
-          <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>
-            Custom renderers: Code Editor, Chart Visualization, Form Builder
-          </p>
-        </div>
-
-        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-          <label style={{ fontSize: "12px" }}>Theme:</label>
-          <select
-            value={currentTheme}
-            onChange={(e) => setCurrentTheme(e.target.value)}
-            style={{ padding: "4px 8px", fontSize: "12px" }}
-          >
-            <option value="default">Default</option>
-            <option value="dark">Dark</option>
-            <option value="high-contrast">High Contrast</option>
-          </select>
-        </div>
-      </div>
-
-      <div style={{ flex: 1, backgroundColor: currentTheme === "dark" ? "#1f2937" : "#ffffff" }}>
+    <ExampleLayout
+      header={
+        <ExampleHeader
+          title="Advanced Node Editor"
+          description="Custom renderers: Code Editor, Chart Visualization, Form Builder"
+          actions={themeActions}
+        />
+      }
+    >
+      <div className={contentClass}>
         <NodeEditor
           initialData={advancedInitialData}
           nodeDefinitions={[CodeNodeDefinition, ChartNodeDefinition, FormNodeDefinition]}
@@ -1112,7 +1104,7 @@ export const AdvancedNodeExample: React.FC = () => {
           }}
         />
       </div>
-    </div>
+    </ExampleLayout>
   );
 };
 

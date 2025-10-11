@@ -7,6 +7,8 @@ import type {
   ExternalDataReference,
 } from "../types/NodeDefinition";
 import type { NodeEditorData } from "../types/core";
+import { ExampleLayout, ExampleHeader } from "./parts";
+import classes from "./CustomNodeExample.module.css";
 
 // Example external data type
 type TaskData = {
@@ -56,45 +58,44 @@ const TaskNodeRenderer = ({
 }: NodeRenderProps) => {
   const task = externalData as TaskData | undefined;
 
-  const getStatusColor = (status?: string) => {
+  const getStatusClass = (status?: string) => {
     switch (status) {
       case "done":
-        return "#34c759";
+        return classes.statusDone;
       case "in-progress":
-        return "#007aff";
+        return classes.statusInProgress;
       case "todo":
-        return "#8e8e93";
+        return classes.statusTodo;
       default:
-        return "#c7c7cc";
+        return classes.statusDefault;
     }
   };
 
+  const nodeClasses = [
+    classes.taskNode,
+    isSelected && classes.selected,
+    isDragging && classes.dragging,
+    isDragging ? classes.grabbing : classes.grab,
+    getStatusClass(task?.status),
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div
-      style={{
-        padding: "12px",
-        borderRadius: "8px",
-        backgroundColor: isSelected ? "#e3f2fd" : "#ffffff",
-        opacity: isDragging ? 0.7 : 1,
-        border: `2px solid ${getStatusColor(task?.status)}`,
-        cursor: isDragging ? "grabbing" : "grab",
-        minHeight: "80px",
-      }}
-      onDoubleClick={onStartEdit}
-    >
+    <div className={nodeClasses} onDoubleClick={onStartEdit}>
       {isLoadingExternalData ? (
-        <div style={{ textAlign: "center", color: "#999" }}>Loading...</div>
+        <div className={classes.taskNodeLoading}>Loading...</div>
       ) : task ? (
         <>
-          <h3 style={{ margin: "0 0 8px", fontSize: "14px", fontWeight: 600 }}>{task.title}</h3>
-          <p style={{ margin: "0 0 8px", fontSize: "12px", color: "#666" }}>{task.description}</p>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px" }}>
-            <span style={{ color: getStatusColor(task.status) }}>{task.status.toUpperCase()}</span>
+          <h3 className={classes.taskNodeTitle}>{task.title}</h3>
+          <p className={classes.taskNodeDescription}>{task.description}</p>
+          <div className={classes.taskNodeFooter}>
+            <span className={classes.taskNodeStatus}>{task.status}</span>
             {task.assignee && <span>👤 {task.assignee}</span>}
           </div>
         </>
       ) : (
-        <div style={{ color: "#999" }}>No task data</div>
+        <div className={classes.taskNodeNoData}>No task data</div>
       )}
     </div>
   );
@@ -125,19 +126,19 @@ const TaskInspectorRenderer = ({
   };
 
   if (isLoadingExternalData) {
-    return <div style={{ padding: "16px" }}>Loading task data...</div>;
+    return <div className={classes.inspectorContainer}>Loading task data...</div>;
   }
 
   if (!editedTask) {
-    return <div style={{ padding: "16px" }}>No task data available</div>;
+    return <div className={classes.inspectorContainer}>No task data available</div>;
   }
 
   return (
-    <div style={{ padding: "16px" }}>
-      <h3>Task Properties</h3>
+    <div className={classes.inspectorContainer}>
+      <h3 className={classes.inspectorTitle}>Task Properties</h3>
 
-      <div style={{ marginBottom: "12px" }}>
-        <label htmlFor="task-title" style={{ display: "block", marginBottom: "4px", fontSize: "12px" }}>
+      <div className={classes.inspectorField}>
+        <label htmlFor="task-title" className={classes.inspectorLabel}>
           Title:
         </label>
         <input
@@ -146,12 +147,12 @@ const TaskInspectorRenderer = ({
           type="text"
           value={editedTask.title}
           onChange={(e) => setEditedTask({ ...editedTask, title: e.target.value })}
-          style={{ width: "100%", padding: "4px 8px" }}
+          className={classes.inspectorInput}
         />
       </div>
 
-      <div style={{ marginBottom: "12px" }}>
-        <label htmlFor="task-description" style={{ display: "block", marginBottom: "4px", fontSize: "12px" }}>
+      <div className={classes.inspectorField}>
+        <label htmlFor="task-description" className={classes.inspectorLabel}>
           Description:
         </label>
         <textarea
@@ -159,12 +160,12 @@ const TaskInspectorRenderer = ({
           name="taskDescription"
           value={editedTask.description}
           onChange={(e) => setEditedTask({ ...editedTask, description: e.target.value })}
-          style={{ width: "100%", padding: "4px 8px", minHeight: "60px" }}
+          className={classes.inspectorTextarea}
         />
       </div>
 
-      <div style={{ marginBottom: "12px" }}>
-        <label htmlFor="task-status" style={{ display: "block", marginBottom: "4px", fontSize: "12px" }}>
+      <div className={classes.inspectorField}>
+        <label htmlFor="task-status" className={classes.inspectorLabel}>
           Status:
         </label>
         <select
@@ -172,7 +173,7 @@ const TaskInspectorRenderer = ({
           name="taskStatus"
           value={editedTask.status}
           onChange={(e) => setEditedTask({ ...editedTask, status: e.target.value as TaskData["status"] })}
-          style={{ width: "100%", padding: "4px 8px" }}
+          className={classes.inspectorSelect}
         >
           <option value="todo">To Do</option>
           <option value="in-progress">In Progress</option>
@@ -180,8 +181,8 @@ const TaskInspectorRenderer = ({
         </select>
       </div>
 
-      <div style={{ marginBottom: "12px" }}>
-        <label htmlFor="task-assignee" style={{ display: "block", marginBottom: "4px", fontSize: "12px" }}>
+      <div className={classes.inspectorField}>
+        <label htmlFor="task-assignee" className={classes.inspectorLabel}>
           Assignee:
         </label>
         <input
@@ -190,36 +191,15 @@ const TaskInspectorRenderer = ({
           type="text"
           value={editedTask.assignee || ""}
           onChange={(e) => setEditedTask({ ...editedTask, assignee: e.target.value })}
-          style={{ width: "100%", padding: "4px 8px" }}
+          className={classes.inspectorInput}
         />
       </div>
 
-      <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
-        <button
-          onClick={handleSave}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#007aff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            flex: 1,
-          }}
-        >
+      <div className={classes.inspectorActions}>
+        <button onClick={handleSave} className={`${classes.inspectorButton} ${classes.inspectorButtonSave}`}>
           Save Changes
         </button>
-        <button
-          onClick={onDeleteNode}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#dc3545",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
+        <button onClick={onDeleteNode} className={`${classes.inspectorButton} ${classes.inspectorButtonDelete}`}>
           Delete
         </button>
       </div>
@@ -330,37 +310,32 @@ export const CustomNodeExample: React.FC = () => {
   const [savedData, setSavedData] = React.useState<NodeEditorData | null>(null);
 
   return (
-    <div style={{ width: "100vw", height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div style={{ padding: "16px", borderBottom: "1px solid #e0e0e0" }}>
-        <h2 style={{ margin: 0 }}>Custom Node Editor Example</h2>
-        <p style={{ margin: "8px 0 0", color: "#666" }}>
-          This example shows custom task nodes with external data loading and custom rendering.
-        </p>
-      </div>
-
-      <div style={{ flex: 1 }}>
-        <NodeEditor
-          initialData={initialData}
-          nodeDefinitions={[TaskNodeDefinition]}
-          externalDataRefs={externalDataRefs}
-          onDataChange={(data) => {
-            console.log("Editor data changed:", data);
-          }}
-          onSave={async (data) => {
-            console.log("Saving data:", data);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            setSavedData(data);
-            alert("Data saved successfully!");
-          }}
+    <ExampleLayout
+      header={
+        <ExampleHeader
+          title="Custom Node Editor Example"
+          description="This example shows custom task nodes with external data loading and custom rendering."
         />
-      </div>
-
-      {savedData && (
-        <div style={{ padding: "8px", background: "#f5f5f5", fontSize: "12px" }}>
-          Last saved: {new Date().toLocaleTimeString()}
-        </div>
-      )}
-    </div>
+      }
+      footer={
+        savedData ? <div className={classes.footer}>Last saved: {new Date().toLocaleTimeString()}</div> : undefined
+      }
+    >
+      <NodeEditor
+        initialData={initialData}
+        nodeDefinitions={[TaskNodeDefinition]}
+        externalDataRefs={externalDataRefs}
+        onDataChange={(data) => {
+          console.log("Editor data changed:", data);
+        }}
+        onSave={async (data) => {
+          console.log("Saving data:", data);
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          setSavedData(data);
+          alert("Data saved successfully!");
+        }}
+      />
+    </ExampleLayout>
   );
 };
 

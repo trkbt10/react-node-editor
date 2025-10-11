@@ -1,0 +1,18 @@
+.themeSelect {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.themeLabel {
+  font-size: 12px;
+  margin-right: 8px;
+}
+
+.content {
+  flex: 1;
+  background-color: #ffffff;
+}
+
+.contentDark {
+  background-color: #1f2937;
+}

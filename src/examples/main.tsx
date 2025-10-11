@@ -1,3 +1,6 @@
+/**
+ * @file Entry point for the Vite example preview application
+ */
 import * as React from "react";
 import { createRoot } from "react-dom/client";
 

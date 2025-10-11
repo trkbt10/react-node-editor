@@ -7,6 +7,12 @@
   --node-editor-space-xl: 24px;
   --node-editor-space-xxl: 32px;
 
+  /* Layout spacing */
+  --spacing-sm: var(--node-editor-space-sm);
+  --spacing-md: var(--node-editor-space-lg);
+  --spacing-lg: var(--node-editor-space-xl);
+  --controlPadding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+
   /* Inspector spacing system */
   --node-editor-inspector-space-xs: var(--node-editor-space-xs);
   --node-editor-inspector-space-sm: var(--node-editor-space-sm);
@@ -14,7 +20,6 @@
   --node-editor-inspector-space-lg: var(--node-editor-space-lg);
   --node-editor-inspector-space-xl: var(--node-editor-space-xl);
   --node-editor-inspector-space-xxl: var(--node-editor-space-xxl);
-
   --node-editor-inspector-content-padding: var(--node-editor-inspector-space-md);
   --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
   --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-xs);
@@ -24,6 +29,7 @@
   --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
   --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
   --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+  --node-editor-inspector-input-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
 
   /* Inspector typography */
   --node-editor-inspector-font-size-title: 0.7rem;
@@ -33,6 +39,24 @@
   --node-editor-inspector-font-size-meta: 0.6875rem;
   --node-editor-inspector-line-height-meta: 1.3;
   --node-editor-inspector-font-weight-medium: 500;
+  --node-editor-inspector-font-size-heading: 0.8125rem;
+  --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
+  --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+  /* Font families & typography */
+  --themeDefaultFontFamily: 'Inter', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  --themeControlFontFamily: 'Inter', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  --themeLabelFontFamily: 'Inter', 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+  --systemFont: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  --titleFont: 600 1rem/1.25 var(--themeLabelFontFamily);
+  --subtitleFont: 500 0.875rem/1.35 var(--themeLabelFontFamily);
+  --captionFont: 400 0.75rem/1.2 var(--themeDefaultFontFamily);
+  --controlTextFont: 500 var(--node-editor-inspector-font-size-body)/var(--node-editor-inspector-line-height-body) var(--themeControlFontFamily);
+  --inputFont: 400 var(--node-editor-inspector-font-size-body)/var(--node-editor-inspector-line-height-body) var(--themeDefaultFontFamily);
+  --font-size-lg: 1.125rem;
+  --font-size-sm: 0.875rem;
+  --font-size-xs: 0.75rem;
 
   /* Canvas grid - using textColor at 20% opacity */
   --node-editor-grid-color: var(--textColor);
@@ -54,19 +78,135 @@
   --node-editor-icon-size-sm: 14px;
   --node-editor-icon-selected-brightness: 1.2;
 
+  /* Text colors */
+  --textColor: #111827;
+  --text-primary: var(--textColor);
+  --text-secondary: #4b5563;
+  --headerTextColor: #0f172a;
+  --labelColor: var(--textColor);
+  --secondaryLabelColor: #6b7280;
+  --tertiaryLabelColor: #9ca3af;
+  --quaternaryLabelColor: #cbd5e1;
+  --controlTextColor: var(--textColor);
+  --controlTextColor--primary: #ffffff;
+  --controlTextColor--secondary: var(--textColor);
+  --controlHoverTextColor--primary: #ffffff;
+  --inputTextColor: var(--textColor);
+  --selectedControlTextColor: #0b3d91;
+  --selectedMenuItemTextColor: #ffffff;
+
+  /* Status & accent colors */
+  --accentColor: #007aff;
+  --accentColorHover: #005ecc;
+  --color-primary: #2563eb;
+  --keyboardFocusIndicatorColor: rgba(0, 122, 255, 0.3);
+  --successColor: #34c759;
+  --warningColor: #ff9500;
+  --cautionColor: #ff3b30;
+  --node-editor-caution-hover-background: rgba(255, 59, 48, 0.1);
+  --systemOrangeColor: #ff9500;
+  --systemRedColor: #d12d2d;
+
+  /* Surfaces */
+  --surface-primary: #ffffff;
+  --surface-secondary: #f1f5f9;
+  --surface-tertiary: #e2e8f0;
+  --color-bg-secondary: var(--surface-secondary);
+  --selectedContentBackgroundColor: rgba(0, 122, 255, 0.08);
+  --selectedControlColor: rgba(0, 122, 255, 0.16);
+  --underPageBackgroundColor: rgba(15, 23, 42, 0.4);
+  --windowBackgroundColor: #f5f5f5;
+
+  /* Control surfaces */
+  --controlBackground: #ffffff;
+  --controlBackground--primary: var(--accentColor);
+  --controlBackground--secondary: #f2f4f8;
+  --controlHoverBackground: rgba(15, 23, 42, 0.08);
+  --controlHoverBackground--primary: #0066d1;
+  --hoverBackground: rgba(15, 23, 42, 0.05);
+  --controlBoxShadow--primary: 0 12px 24px rgba(0, 122, 255, 0.24);
+  --controlBoxShadow--secondary: 0 1px 2px rgba(15, 23, 42, 0.08);
+  --disabledControlTextColor: #9ca3af;
+
+  /* Input surfaces */
+  --inputBackground: #ffffff;
+  --inputBorder: 1px solid rgba(15, 23, 42, 0.12);
+  --inputBorderHover: rgba(0, 122, 255, 0.55);
+  --inputBoxShadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+  --inputPadding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  /* Card & panel styling */
+  --cardBorderColor: rgba(15, 23, 42, 0.12);
+  --cardBorder: 1px solid var(--cardBorderColor);
+  --cardBorderRadius: var(--radius-md);
+  --cardBoxShadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+  --cardHoverBoxShadow: 0 16px 32px rgba(15, 23, 42, 0.18);
+  --cardElevatedBoxShadow: 0 24px 48px rgba(15, 23, 42, 0.2);
+  --cardFocusBoxShadow: 0 0 0 3px var(--keyboardFocusIndicatorColor);
+  --cardDisabledBackground: rgba(15, 23, 42, 0.06);
+  --cardFilledBackground: rgba(15, 23, 42, 0.05);
+  --cardFilledHoverBackground: rgba(15, 23, 42, 0.08);
+  --cardHoverBorderColor: rgba(15, 23, 42, 0.2);
+
+  /* Dialogs & overlays */
+  --dialogBackground: var(--surface-primary);
+  --dialogBoxShadow: 0 32px 64px rgba(15, 23, 42, 0.18);
+  --dialogLevelElevation: 1000;
+
+  /* Scrollbars */
+  --scrollBarThumbColor: rgba(15, 23, 42, 0.3);
+  --activeScrollBarThumbColor: rgba(15, 23, 42, 0.45);
+
   /* Selected State Colors */
   --node-editor-selected-secondary-color: rgba(255, 255, 255, 0.8);
   --node-editor-selected-hover-background: rgba(255, 255, 255, 0.2);
 
-  /* Caution/Danger Colors */
-  --node-editor-caution-hover-background: rgba(255, 59, 48, 0.1);
+  /* Tables & list accents */
+  --tableHeaderBackgroundColor: #f3f4f6;
+  --tableHeaderBackgroundColorHover: #e5e7eb;
+  --tableHeaderBackgroundColorActive: #d1d5db;
+
+  /* Node-specific colors */
+  --groupNodeBackground: rgba(15, 23, 42, 0.04);
+  --groupNodeBorder: rgba(15, 23, 42, 0.16);
+  --groupNodeActiveBackground: rgba(0, 122, 255, 0.12);
+  --groupNodeActiveColor: rgba(0, 122, 255, 0.6);
+  --nodePortInputColor: #66cc00;
+  --nodePortOutputColor: #0099ff;
+
+  /* System fills */
+  --tertiarySystemBackground: rgba(15, 23, 42, 0.05);
+  --tertiarySystemFillColor: rgba(15, 23, 42, 0.08);
+  --quaternarySystemFillColor: rgba(15, 23, 42, 0.06);
 
   /* Border Radii */
   --node-editor-border-radius-xxs: 1px;
   --node-editor-border-radius-xs: 3px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --controlBorderRadius: var(--radius-sm);
+  --segmentControlBorderRadius: var(--radius-md);
 
-  /* Border Widths */
+  /* Borders */
   --node-editor-border-width: 1px;
+  --border-color: rgba(15, 23, 42, 0.12);
+  --dividerColor: rgba(15, 23, 42, 0.16);
+  --separatorColor: rgba(15, 23, 42, 0.1);
+  --color-border: rgba(15, 23, 42, 0.12);
+
+  /* Segment controls */
+  --segmentBackgroundFilter: blur(24px) saturate(160%);
+  --segmentControlBackground: rgba(15, 23, 42, 0.05);
+  --segmentControlBackgroundColor: #ffffff;
+  --segmentControlPadding: var(--node-editor-space-xs);
+  --segmentControlSegmentPadding: var(--node-editor-space-xs) var(--node-editor-space-md);
+  --segmentControlBoxShadow: inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+  --segmentControlIndicatorBoxShadow: 0 4px 12px rgba(0, 122, 255, 0.24);
+
+  /* Shadows */
+  --scrolledAppMainToolbarBoxShadow: 0 1px 4px rgba(15, 23, 42, 0.12);
+  --shadow-lg: 0 24px 48px rgba(15, 23, 42, 0.2);
 
   /* Drag & Drop */
   --node-editor-dragging-opacity: 0.5;
@@ -76,4 +216,86 @@
   --node-editor-transition-duration: 0.15s;
   --node-editor-animation-duration: 0.5s;
   --node-editor-pulse-min-opacity: 0.6;
+
+  /* Dark theme defaults */
+  --darkBackgroundColor: #111827;
+  --darkTextColor: #f9fafb;
+  --darkControlBackground: #1f2937;
+  --darkInputBorder: rgba(148, 163, 184, 0.35);
+  --darkTableHeaderBackground: #1f2937;
+  --darkSecondaryTextColor: #94a3b8;
 }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --textColor: #f9fafb;
+    --text-primary: var(--textColor);
+    --text-secondary: #cbd5f5;
+    --headerTextColor: var(--textColor);
+    --labelColor: var(--textColor);
+    --secondaryLabelColor: #cbd5f5;
+    --tertiaryLabelColor: #94a3b8;
+    --quaternaryLabelColor: #64748b;
+
+    --surface-primary: #111827;
+    --surface-secondary: #1f2937;
+    --surface-tertiary: #0f172a;
+    --selectedContentBackgroundColor: rgba(59, 130, 246, 0.24);
+    --selectedControlColor: rgba(37, 99, 235, 0.35);
+    --selectedControlTextColor: #dbeafe;
+    --underPageBackgroundColor: rgba(3, 7, 18, 0.7);
+    --windowBackgroundColor: #0f172a;
+
+    --controlBackground: rgba(30, 30, 30, 0.95);
+    --controlBackground--secondary: rgba(148, 163, 184, 0.12);
+    --controlHoverBackground: rgba(255, 255, 255, 0.08);
+    --controlTextColor: var(--textColor);
+    --controlTextColor--secondary: var(--textColor);
+
+    --inputBackground: #1f2937;
+    --inputTextColor: var(--textColor);
+    --inputBorder: 1px solid rgba(148, 163, 184, 0.35);
+    --inputBorderHover: rgba(96, 165, 250, 0.7);
+    --inputBoxShadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+
+    --cardBorderColor: rgba(148, 163, 184, 0.24);
+    --cardBorder: 1px solid var(--cardBorderColor);
+    --cardDisabledBackground: rgba(148, 163, 184, 0.16);
+    --cardFilledBackground: rgba(148, 163, 184, 0.12);
+    --cardFilledHoverBackground: rgba(148, 163, 184, 0.16);
+    --cardHoverBorderColor: rgba(148, 163, 184, 0.28);
+    --cardBoxShadow: 0 18px 36px rgba(3, 7, 18, 0.55);
+    --cardHoverBoxShadow: 0 26px 48px rgba(3, 7, 18, 0.6);
+    --cardElevatedBoxShadow: 0 32px 60px rgba(3, 7, 18, 0.65);
+
+    --border-color: rgba(148, 163, 184, 0.24);
+    --dividerColor: rgba(148, 163, 184, 0.32);
+    --separatorColor: rgba(148, 163, 184, 0.2);
+
+    --groupNodeBackground: rgba(148, 163, 184, 0.08);
+    --groupNodeBorder: rgba(148, 163, 184, 0.3);
+    --groupNodeActiveBackground: rgba(59, 130, 246, 0.24);
+    --groupNodeActiveColor: rgba(96, 165, 250, 0.7);
+
+    --tertiarySystemBackground: rgba(148, 163, 184, 0.16);
+    --tertiarySystemFillColor: rgba(148, 163, 184, 0.2);
+    --quaternarySystemFillColor: rgba(148, 163, 184, 0.24);
+
+    --scrollBarThumbColor: rgba(148, 163, 184, 0.4);
+    --activeScrollBarThumbColor: rgba(148, 163, 184, 0.6);
+
+    --tableHeaderBackgroundColor: #1f2937;
+    --tableHeaderBackgroundColorHover: #111827;
+    --tableHeaderBackgroundColorActive: #0f172a;
+
+    --dialogBackground: #1f2937;
+  }
+}
+
+/* Token reference notes:
+   - Derived from usage in src/components/elements/Input.module.css for form controls.
+   - Derived from usage in src/settings/components/SettingsInput.module.css for inspector inputs.
+   - Derived from usage in src/components/shared/NodeSearchMenu.module.css for menus and scrollbars.
+   - Derived from usage in src/components/inspector/FeatureFlagsPanel.module.css for panel layouts.
+   - Derived from usage in src/components/node/NodeView.module.css for node surfaces.
+*/
