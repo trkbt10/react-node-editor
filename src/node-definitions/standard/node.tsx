@@ -6,17 +6,18 @@ import styles from "./standard.module.css";
 /**
  * Standard node renderer
  */
-export function StandardNodeRenderer({ node, isSelected, isDragging, onStartEdit }: NodeRenderProps): React.ReactElement {
+export function StandardNodeRenderer({
+  node,
+  isSelected,
+  isDragging,
+  onStartEdit,
+}: NodeRenderProps): React.ReactElement {
   const { t } = useI18n();
   return (
     <div
-      className={[
-        styles.standardNodeRenderer,
-        isSelected ? styles.standardNodeRendererSelected : "",
-        isDragging ? styles.standardNodeRendererDragging : styles.standardNodeRendererNotDragging,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      className={styles.standardNodeRenderer}
+      data-is-selected={isSelected}
+      data-is-dragging={isDragging}
       onDoubleClick={onStartEdit}
     >
       <h3 className={styles.nodeTitle}>
