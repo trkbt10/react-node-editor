@@ -97,10 +97,7 @@ export function NodeEditor({
   return (
     <I18nProvider initialLocale={locale} fallbackLocale={fallbackLocale} messagesOverride={messagesOverride}>
       <RendererProvider renderers={mergedRenderers}>
-        <NodeDefinitionProvider
-          nodeDefinitions={nodeDefinitions}
-          includeDefaults={includeDefaultDefinitions}
-        >
+        <NodeDefinitionProvider nodeDefinitions={nodeDefinitions} includeDefaults={includeDefaultDefinitions}>
           <ExternalDataProvider refs={externalDataRefs}>
             <NodeEditorProvider
               initialState={initialData}

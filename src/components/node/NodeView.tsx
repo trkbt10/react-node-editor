@@ -303,6 +303,8 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
     return applyOpacity(groupBackground, groupOpacity);
   }, [isGroup, groupBackground, groupOpacity]);
 
+  const isVisuallyDragging = isDragging || isChildDragging;
+
   return (
     <div
       ref={nodeRef}
@@ -313,12 +315,13 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
         zIndex: isGroup ? 1 : isDragging || isResizing ? 1000 : 2,
         backgroundColor: backgroundWithOpacity ?? groupBackground,
         color: groupTextColor,
+        opacity: isVisuallyDragging ? "var(--node-editor-opacity-dragging)" : undefined,
       }}
       onPointerDown={handleNodePointerDown}
       onContextMenu={(e) => onContextMenu(e, node.id)}
       data-node-id={node.id}
       data-selected={isSelected}
-      data-dragging={isDragging || isChildDragging}
+      data-dragging={isVisuallyDragging}
       data-resizing={isResizing}
       data-locked={node.locked}
       data-visual-state={node.data.visualState || undefined}

@@ -25,11 +25,7 @@
   box-shadow: var(--node-editor-shadow-selection);
 }
 
-.nodeView[data-dragging="true"] {
-  opacity: var(--node-editor-opacity-dragging);
-  cursor: grabbing;
-  z-index: var(--node-editor-z-index-dragging);
-}
+.nodeView[data-dragging="true"] { cursor: grabbing; }
 
 .nodeView[data-is-group="true"] {
   /* Subdued, token-driven appearance */
