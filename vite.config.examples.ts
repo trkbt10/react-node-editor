@@ -6,7 +6,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/node-editor/",
+  base: "./",
   build: {
     outDir: "dist-examples",
     emptyOutDir: true,
