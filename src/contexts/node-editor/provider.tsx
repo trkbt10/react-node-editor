@@ -3,7 +3,7 @@ import type { Node, NodeEditorData, NodeId, Port } from "../../types/core";
 import { useSettings } from "../../hooks";
 import type { SettingsManager } from "../../settings/SettingsManager";
 import type { SettingValue } from "../../settings/types";
-import { createCachedPortResolver } from "../node-ports";
+import { createCachedPortResolver } from "../node-ports/utils/portLookup";
 import { NodeDefinitionContext } from "../NodeDefinitionContext";
 import { getFeatureFlags } from "../../config/featureFlags";
 import { nodeEditorActions } from "./actions";

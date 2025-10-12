@@ -12,10 +12,13 @@ export function getDistance(a: Position, b: Position): number {
 /**
  * Get vector components and distance between two points
  */
-export function getVector(from: Position, to: Position): { 
-  dx: number; 
-  dy: number; 
-  distance: number; 
+export function getVector(
+  from: Position,
+  to: Position,
+): {
+  dx: number;
+  dy: number;
+  distance: number;
 } {
   const dx = to.x - from.x;
   const dy = to.y - from.y;
@@ -28,7 +31,9 @@ export function getVector(from: Position, to: Position): {
  */
 export function normalizeVector(dx: number, dy: number): Position {
   const distance = Math.sqrt(dx * dx + dy * dy);
-  if (distance < 0.001) {return { x: 0, y: 0 };}
+  if (distance < 0.001) {
+    return { x: 0, y: 0 };
+  }
   return { x: dx / distance, y: dy / distance };
 }
 
@@ -92,11 +97,7 @@ export function lerp(a: Position, b: Position, t: number): Position {
 /**
  * Clamp a position within bounds
  */
-export function clampPosition(
-  position: Position, 
-  min: Position, 
-  max: Position
-): Position {
+export function clampPosition(position: Position, min: Position, max: Position): Position {
   return {
     x: Math.max(min.x, Math.min(max.x, position.x)),
     y: Math.max(min.y, Math.min(max.y, position.y)),
@@ -113,18 +114,16 @@ export function getPerpendicularVector(vector: Position): Position {
 /**
  * Calculate the closest point on a line segment to a given point
  */
-export function getClosestPointOnSegment(
-  point: Position,
-  lineStart: Position,
-  lineEnd: Position
-): Position {
+export function getClosestPointOnSegment(point: Position, lineStart: Position, lineEnd: Position): Position {
   const line = subtractVectors(lineEnd, lineStart);
   const pointToStart = subtractVectors(point, lineStart);
-  
+
   const lineLengthSquared = line.x * line.x + line.y * line.y;
-  if (lineLengthSquared === 0) {return lineStart;}
-  
+  if (lineLengthSquared === 0) {
+    return lineStart;
+  }
+
   const t = Math.max(0, Math.min(1, dotProduct(pointToStart, line) / lineLengthSquared));
-  
+
   return addVectors(lineStart, scaleVector(line, t));
 }

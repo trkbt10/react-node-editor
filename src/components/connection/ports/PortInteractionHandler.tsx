@@ -5,12 +5,16 @@ import { useEditorActionState } from "../../../contexts/EditorActionStateContext
 import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
 import { useNodeDefinitions } from "../../../contexts/NodeDefinitionContext";
 import { usePointerDrag } from "../../../hooks/usePointerDrag";
-// Use the unified connectable ports calculator based on resolved ports
-import { isPortConnectable } from "../../../utils/nodeLayerHelpers";
+import { isPortConnectable } from "../../../contexts/node-ports/utils/portConnectability";
 import { planConnectionChange, ConnectionSwitchBehavior } from "../../../contexts/node-ports/utils/connectionSwitchBehavior";
-import { computeConnectablePortIds, emptyConnectablePorts } from "../../../contexts/node-ports/utils/connectablePortPlanner";
-// isPortConnectable imported above
+import { computeConnectablePortIds, type ConnectablePortsResult } from "../../../contexts/node-ports/utils/connectablePortPlanner";
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
+
+const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
+  ids: new Set<string>(),
+  descriptors: new Map(),
+  source: null,
+});
 
 export type PortInteractionHandlerProps = {
   port: Port;
@@ -171,7 +175,7 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
 
       // Clear drag state and connectable ports
       actionDispatch(actionActions.endConnectionDrag());
-      actionDispatch(actionActions.updateConnectablePorts(emptyConnectablePorts()));
+      actionDispatch(actionActions.updateConnectablePorts(createEmptyConnectablePorts()));
     },
     [
       actionState.connectionDragState,

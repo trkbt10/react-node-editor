@@ -1,31 +1,6 @@
 import type { Node } from "../types/core";
 import type { NodeDefinition } from "../types/NodeDefinition";
-import type { ConnectablePortsResult } from "../contexts/node-ports/utils/connectablePortPlanner";
-import {
-  getPortConnections as getPortConnectionsFromPorts,
-  isValidReconnection as isValidReconnectionFromPorts,
-  getOtherPortInfo as getOtherPortInfoFromPorts,
-} from "../contexts/node-ports/utils/portConnectionQueries";
-import {
-  createConnection as createConnectionFromPorts,
-  createValidatedConnection as createValidatedConnectionFromPorts,
-} from "../contexts/node-ports/utils/connectionOperations";
-import {
-  getConnectablePortIds as getConnectablePortIdsFromPorts,
-} from "../contexts/node-ports/utils/portConnectability";
-import {
-  isPortConnectable as isPortConnectableFromPorts,
-} from "../contexts/node-ports/utils/portConnectability";
 import { nodeHasGroupBehavior } from "../types/behaviors";
-
-// Re-export port-related functions from node-ports context
-export const getPortConnections = getPortConnectionsFromPorts;
-export const createConnection = createConnectionFromPorts;
-export const isValidReconnection = isValidReconnectionFromPorts;
-export const getConnectablePortIds = getConnectablePortIdsFromPorts;
-export const createValidatedConnection = createValidatedConnectionFromPorts;
-export const isPortConnectable = isPortConnectableFromPorts;
-export const getOtherPortInfo = getOtherPortInfoFromPorts;
 
 /**
  * Determine which nodes should be dragged
@@ -36,10 +11,12 @@ export function getNodesToDrag(
   selectedNodeIds: string[],
   nodes: Record<string, Node>,
   isInteractive: boolean,
-  isDragAllowed: boolean
+  isDragAllowed: boolean,
 ): string[] {
   const clickedNode = nodes[nodeId];
-  if (!clickedNode || clickedNode.locked) {return [];}
+  if (!clickedNode || clickedNode.locked) {
+    return [];
+  }
 
   // For interactive nodes, check if dragging is allowed
   if (isInteractive && !isDragAllowed && !selectedNodeIds.includes(nodeId)) {
@@ -52,7 +29,9 @@ export function getNodesToDrag(
     // Filter out locked nodes and child nodes of selected groups
     nodesToDrag = selectedNodeIds.filter((id) => {
       const node = nodes[id];
-      if (!node || node.locked) {return false;}
+      if (!node || node.locked) {
+        return false;
+      }
 
       // Skip children if parent is selected
       if (node.parentId && selectedNodeIds.includes(node.parentId)) {
@@ -66,7 +45,9 @@ export function getNodesToDrag(
       const allSelected = [...selectedNodeIds, nodeId];
       nodesToDrag = allSelected.filter((id) => {
         const node = nodes[id];
-        if (!node || node.locked) {return false;}
+        if (!node || node.locked) {
+          return false;
+        }
 
         if (node.parentId && allSelected.includes(node.parentId)) {
           return false;
@@ -93,7 +74,7 @@ export function collectInitialPositions(
   nodeIds: string[],
   nodes: Record<string, Node>,
   getGroupChildren: (groupId: string) => Node[],
-  nodeDefinitions: NodeDefinition[]
+  nodeDefinitions: NodeDefinition[],
 ): {
   initialPositions: Record<string, { x: number; y: number }>;
   affectedChildNodes: Record<string, string[]>;
@@ -126,10 +107,10 @@ export function collectInitialPositions(
 export function calculateNewPositions(
   nodeIds: string[],
   initialPositions: Record<string, { x: number; y: number }>,
-  offset: { x: number; y: number }
+  offset: { x: number; y: number },
 ): Record<string, { x: number; y: number }> {
   const newPositions: Record<string, { x: number; y: number }> = {};
-  
+
   nodeIds.forEach((nodeId) => {
     const initialPos = initialPositions[nodeId];
     if (initialPos) {
@@ -152,7 +133,7 @@ export function handleGroupMovement(
   snappedPositions: Record<string, { x: number; y: number }>,
   initialPositions: Record<string, { x: number; y: number }>,
   moveGroupWithChildren: (groupId: string, delta: { x: number; y: number }) => void,
-  nodeDefinitions: NodeDefinition[]
+  nodeDefinitions: NodeDefinition[],
 ): Record<string, { x: number; y: number }> {
   const groupsToMove = nodeIds.filter((nodeId) => {
     const node = nodes[nodeId];

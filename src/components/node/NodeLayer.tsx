@@ -16,21 +16,19 @@ import { snapMultipleToGrid } from "../../utils/gridSnap";
 import { useRenderers } from "../../contexts/RendererContext";
 import { hasGroupBehavior } from "../../types/behaviors";
 import { usePortPositions } from "../../contexts/node-ports/context";
-import {
-  getPortConnections,
-  getNodesToDrag,
-  createConnection,
-  isValidReconnection,
-  collectInitialPositions,
-  calculateNewPositions,
-  handleGroupMovement,
-  getOtherPortInfo,
-  createValidatedConnection,
-} from "../../utils/nodeLayerHelpers";
+import { getPortConnections, isValidReconnection, getOtherPortInfo } from "../../contexts/node-ports/utils/portConnectionQueries";
+import { createValidatedConnection } from "../../contexts/node-ports/utils/connectionOperations";
 import type { Port as CorePort } from "../../types/core";
 import { canConnectPorts } from "../../contexts/node-ports/utils/connectionValidation";
 import { planConnectionChange, ConnectionSwitchBehavior } from "../../contexts/node-ports/utils/connectionSwitchBehavior";
-import { computeConnectablePortIds, emptyConnectablePorts } from "../../contexts/node-ports/utils/connectablePortPlanner";
+import { computeConnectablePortIds, type ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
+import { getNodesToDrag, collectInitialPositions, calculateNewPositions, handleGroupMovement } from "../../utils/nodeDragHelpers";
+
+const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
+  ids: new Set<string>(),
+  descriptors: new Map(),
+  source: null,
+});
 
 export type NodeLayerProps = {
   className?: string;
@@ -373,7 +371,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className, doubleClickToEd
       }
 
       actionDispatch(actionActions.endConnectionDrag());
-      actionDispatch(actionActions.updateConnectablePorts(emptyConnectablePorts()));
+      actionDispatch(actionActions.updateConnectablePorts(createEmptyConnectablePorts()));
     },
     [
       actionState.connectionDragState,

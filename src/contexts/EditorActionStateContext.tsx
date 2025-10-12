@@ -13,8 +13,13 @@ import {
   ConnectionDisconnectState,
   ContextMenuState,
 } from "../types/core";
-import type { ConnectablePortsResult } from "./node-ports";
-import { emptyConnectablePorts } from "./node-ports";
+import type { ConnectablePortsResult } from "./node-ports/utils/connectablePortPlanner";
+
+const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
+  ids: new Set<string>(),
+  descriptors: new Map(),
+  source: null,
+});
 
 // Selection box specific to action state
 export type SelectionBox = {
@@ -389,7 +394,7 @@ export const defaultEditorActionState: EditorActionState = {
   connectionDisconnectState: null,
   hoveredPort: null,
   connectedPorts: new Set<PortId>(),
-  connectablePorts: emptyConnectablePorts(),
+  connectablePorts: createEmptyConnectablePorts(),
   contextMenu: {
     visible: false,
     position: { x: 0, y: 0 },

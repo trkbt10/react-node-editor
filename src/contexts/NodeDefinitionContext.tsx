@@ -1,11 +1,13 @@
 import * as React from "react";
 import {
   NodeDefinition,
-  NodeDefinitionRegistry,
-  createNodeDefinitionRegistry,
   type NodeDataTypeMap,
   toUntypedDefinition,
 } from "../types/NodeDefinition";
+import {
+  NodeDefinitionRegistry,
+  createNodeDefinitionRegistry,
+} from "../types/NodeDefinitionRegistry";
 import { defaultNodeDefinitions } from "../node-definitions";
 
 /**

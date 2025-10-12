@@ -9,7 +9,7 @@ import type {
   PortType,
 } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { getConnectablePortIds } from "../../../utils/nodeLayerHelpers";
+import { getConnectablePortIds } from "./portConnectability";
 import {
   ConnectionSwitchBehavior,
   getConnectionSwitchContext,
@@ -159,5 +159,3 @@ export const resolveConnectableSourcePort = ({
     disconnectFixedPort: disconnectState?.fixedPort ?? null,
     fallbackPort,
   });
-
-export const emptyConnectablePorts = createEmptyResult;

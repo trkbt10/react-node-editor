@@ -29,6 +29,10 @@ export type {
   PortRenderContext,
 } from "./types/NodeDefinition";
 
+// Node definition registry
+export { createNodeDefinitionRegistry } from "./types/NodeDefinitionRegistry";
+export type { NodeDefinitionRegistry } from "./types/NodeDefinitionRegistry";
+
 // Behavior configuration for nodes
 export type {
   AppearanceBehaviorOptions,
