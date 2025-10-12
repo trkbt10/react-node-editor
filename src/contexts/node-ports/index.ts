@@ -10,3 +10,4 @@ export * from "./utils/connectionValidation";
 export * from "./utils/connectionSwitchBehavior";
 export * from "./utils/connectablePortPlanner";
 export * from "./utils/portResolver";
+export * from "./utils/portHelpers";

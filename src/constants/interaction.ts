@@ -20,13 +20,3 @@ export const PORT_INTERACTION_THRESHOLD = {
   /** Distance within which hovering over a port is detected */
   HOVER_DISTANCE: PORT_RADIUS * 2,
 } as const;
-
-/**
- * Timing constants for interactions
- */
-export const INTERACTION_TIMING = {
-  /** Delay before showing tooltips */
-  TOOLTIP_DELAY: 500,
-  /** Duration of animations */
-  ANIMATION_DURATION: 200,
-} as const;
