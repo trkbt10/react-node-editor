@@ -1,3 +1,6 @@
+/**
+ * @file Provider component for managing port position calculations and context
+ */
 import * as React from "react";
 import type { Port } from "../../types/core";
 import { DEFAULT_PORT_POSITION_CONFIG } from "../../types/portPosition";

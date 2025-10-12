@@ -1,3 +1,6 @@
+/**
+ * @file Hook for batching multiple state updates to optimize rendering performance
+ */
 import * as React from "react";
 
 type UpdateFunction<T> = (prevState: T) => T;

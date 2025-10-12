@@ -1,3 +1,6 @@
+/**
+ * @file Examples demonstrating various grid layout configurations for the node editor
+ */
 import * as React from "react";
 import { NodeEditor, type GridLayoutConfig, type LayerDefinition } from "../../index";
 import { InspectorPanel } from "../../components/inspector/InspectorPanel";

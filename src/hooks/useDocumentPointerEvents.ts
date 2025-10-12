@@ -1,3 +1,6 @@
+/**
+ * @file Hooks for managing document-level pointer events with proper cleanup
+ */
 import * as React from "react";
 
 export type UseDocumentPointerEventsOptions = {

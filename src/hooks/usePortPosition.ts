@@ -1,3 +1,6 @@
+/**
+ * @file Hooks for accessing dynamic port positions and connection points
+ */
 import * as React from "react";
 import type { PortPosition } from "../types/portPosition";
 import { useNodeEditor } from "../contexts/node-editor";

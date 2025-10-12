@@ -1,3 +1,6 @@
+/**
+ * @file Hook for accessing and subscribing to editor settings
+ */
 import * as React from "react";
 import type { SettingsManager } from "../settings/SettingsManager";
 

@@ -1,3 +1,6 @@
+/**
+ * @file Example demonstrating custom node definitions with external data integration
+ */
 import * as React from "react";
 import { NodeEditor } from "../../NodeEditor";
 import type {

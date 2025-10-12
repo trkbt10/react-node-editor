@@ -1,3 +1,6 @@
+/**
+ * @file Generic hook for handling pointer drag operations with threshold detection
+ */
 import * as React from "react";
 import { Position } from "../types/core";
 

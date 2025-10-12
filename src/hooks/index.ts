@@ -1,5 +1,5 @@
 /**
- * Re-export all hooks for easy access by custom layers
+ * @file Central export point for all editor hooks
  */
 
 // Core editor hooks

@@ -1,3 +1,6 @@
+/**
+ * @file Hook for handling pointer interactions with canvas coordinate conversion
+ */
 import * as React from "react";
 
 export type PointerInteractionConfig<T> = {

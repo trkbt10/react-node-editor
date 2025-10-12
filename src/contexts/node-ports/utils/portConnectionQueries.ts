@@ -1,3 +1,6 @@
+/**
+ * @file Query utilities for inspecting port connections and validating reconnections
+ */
 import type { Port, Node, Connection } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { canConnectPorts } from "./connectionValidation";

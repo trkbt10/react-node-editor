@@ -1,3 +1,6 @@
+/**
+ * @file Hook for managing canvas viewport transformations and coordinate conversions
+ */
 import * as React from "react";
 import { Position, Viewport } from "../types/core";
 

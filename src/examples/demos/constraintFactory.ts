@@ -1,3 +1,6 @@
+/**
+ * @file Pre-built constraint factories for common node validation patterns
+ */
 import type { NodeConstraint, ConstraintContext, ConstraintValidationResult } from "../../types/NodeDefinition";
 import type { Node } from "../../types/core";
 

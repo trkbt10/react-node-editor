@@ -1,3 +1,6 @@
+/**
+ * @file Data types and utilities for the particle system node
+ */
 export type ParticleData = {
   id: string;
   emitX: number;

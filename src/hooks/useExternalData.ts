@@ -1,3 +1,6 @@
+/**
+ * @file Hook for managing external data loading and updates for nodes
+ */
 import * as React from "react";
 import type { Node } from "../types/core";
 import type { ExternalDataReference } from "../types/NodeDefinition";

@@ -1,3 +1,6 @@
+/**
+ * @file Unified hook combining all editor action creators from different contexts
+ */
 import { useNodeEditorActions } from "./useNodeEditorActions";
 import { useCanvasActions } from "./useCanvasActions";
 import { useActionStateActions } from "./useActionStateActions";

@@ -1,3 +1,6 @@
+/**
+ * @file Pre-bound action creators for canvas viewport operations
+ */
 import * as React from "react";
 import { useNodeCanvas } from "../contexts/NodeCanvasContext";
 

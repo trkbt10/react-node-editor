@@ -1,3 +1,6 @@
+/**
+ * @file Example demonstrating Three.js integration with custom node rendering
+ */
 import * as React from "react";
 import { NodeEditor, type GridLayoutConfig, type LayerDefinition } from "../../../index";
 import type { NodeEditorData } from "../../../types/core";

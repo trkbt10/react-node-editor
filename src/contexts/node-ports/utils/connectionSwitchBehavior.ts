@@ -1,3 +1,6 @@
+/**
+ * @file Logic for handling connection switching behavior when ports reach capacity limits
+ */
 import type { Connection, Node, NodeId, Port } from "../../../types/core";
 import type { NodeDefinition, PortDefinition } from "../../../types/NodeDefinition";
 import { createValidatedConnection } from "./connectionOperations";

@@ -1,3 +1,6 @@
+/**
+ * @file Hook for calculating which nodes are visible in the current viewport
+ */
 import * as React from "react";
 import type { Node } from "../types/core";
 import { useNodeCanvas } from "../contexts/NodeCanvasContext";

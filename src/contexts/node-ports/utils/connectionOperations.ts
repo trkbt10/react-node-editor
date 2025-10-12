@@ -1,3 +1,6 @@
+/**
+ * @file Utilities for creating and validating connections between ports
+ */
 import type { Port, Node, Connection } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { canConnectPorts } from "./connectionValidation";

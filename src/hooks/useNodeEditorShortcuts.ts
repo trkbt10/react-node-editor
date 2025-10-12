@@ -1,3 +1,6 @@
+/**
+ * @file Hook for registering all standard keyboard shortcuts for the node editor
+ */
 import * as React from "react";
 import { useRegisterShortcut } from "../contexts/KeyboardShortcutContext";
 import { useNodeEditor } from "../contexts/node-editor";
