@@ -158,41 +158,23 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
 
       // Use pre-calculated positions
       if (!fromPortPos || !toPortPos) {return;}
-      
-      const fromPos = fromPortPos;
-      const toPos = toPortPos;
-      
-      const midPoint = {
-        x: (fromPos.x + toPos.x) / 2,
-        y: (fromPos.y + toPos.y) / 2,
-      };
-
-      // Get click position in canvas coordinates
-      const rect = e.currentTarget.closest("svg")?.getBoundingClientRect();
-      if (!rect) {return;}
-
-      const clickPos = {
-        x: (e.clientX - rect.left) / canvasState.viewport.scale - canvasState.viewport.offset.x,
-        y: (e.clientY - rect.top) / canvasState.viewport.scale - canvasState.viewport.offset.y,
-      };
-
 
       // Select the connection
       const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey;
       actionDispatch(actionActions.selectConnection(connectionId, isMultiSelect));
     },
-    [connection, nodeEditorState, portLookupMap, actionDispatch, actionActions, canvasState.viewport]
+    [connection, nodeEditorState, portLookupMap, actionDispatch, actionActions, fromPortPos, toPortPos]
   );
 
   const handleConnectionPointerEnter = React.useCallback(
-    (e: React.PointerEvent, connectionId: string) => {
+    (_e: React.PointerEvent, connectionId: string) => {
       actionDispatch(actionActions.setHoveredConnection(connectionId));
     },
     [actionDispatch, actionActions]
   );
 
   const handleConnectionPointerLeave = React.useCallback(
-    (e: React.PointerEvent, connectionId: string) => {
+    (_e: React.PointerEvent, _connectionId: string) => {
       actionDispatch(actionActions.setHoveredConnection(null));
     },
     [actionDispatch, actionActions]
@@ -260,7 +242,7 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
         };
       } else {
         // Check if this node is a child of a dragging group
-        const isChildOfDraggingGroup = Object.entries(affectedChildNodes).some(([groupId, childIds]) =>
+        const isChildOfDraggingGroup = Object.entries(affectedChildNodes).some(([_groupId, childIds]) =>
           childIds.includes(nodeId)
         );
 
