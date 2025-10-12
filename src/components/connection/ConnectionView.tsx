@@ -171,12 +171,8 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
         {/* Base connection line (hit test only on stroke). Draw first, stripes overlay. */}
         <path
           d={pathData}
-          fill="none"
           stroke={strokeColor}
           strokeWidth={isSelected || isHovered ? 3 : 2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
           className={styles.connectionBase}
           onPointerDown={handlePointerDown}
           onPointerEnter={handlePointerEnter}
@@ -193,11 +189,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
             {/* Accent stripes */}
             <path
               d={pathData}
-              fill="none"
               strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              vectorEffect="non-scaling-stroke"
               className={styles.connectionFlowStripe}
               data-stripe-variant="accent"
               data-testid="connection-flow-stripe"
@@ -205,11 +197,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
             {/* Background stripes, phase-shifted */}
             <path
               d={pathData}
-              fill="none"
               strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              vectorEffect="non-scaling-stroke"
               className={styles.connectionFlowStripe}
               data-stripe-variant="background"
               data-testid="connection-flow-stripe"
@@ -224,11 +212,8 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
         >
           <path
             d="M -6 -4 L 0 0 L -6 4"
-            fill="none"
             stroke={strokeColor}
             strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
           />
         </g>
 
@@ -255,10 +240,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
         {/* Apply arrow marker to the visible path */}
         <path
           d={pathData}
-          fill="none"
-          stroke="transparent"
           markerEnd={`url(#arrow-${connection.id})`}
-          vectorEffect="non-scaling-stroke"
           className={styles.connectionArrowOverlay}
         />
       </g>

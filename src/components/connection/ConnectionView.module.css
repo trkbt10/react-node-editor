@@ -4,53 +4,71 @@
 
 /* Apply shadow only to the base stroke to avoid blurring stripes */
 .connectionGroup:hover .connectionBase {
-  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.2));
+  filter: var(--node-editor-connection-hover-shadow);
 }
 
 .connectionGroup[data-selected="true"] .connectionBase {
-  filter: drop-shadow(0 0 6px var(--node-editor-accent-color, #0066cc));
+  filter: var(--node-editor-connection-selected-shadow);
 }
 
 .connectionGroup[data-hovered="true"] {
-  opacity: 0.8;
+  opacity: var(--node-editor-connection-hover-opacity);
 }
 
 .connectionGroup[data-dragging="true"] {
-  opacity: 0.6;
+  opacity: var(--node-editor-connection-dragging-opacity);
 }
 
 .connectionFlowStripe {
-  animation: connectionFlow 1.2s linear infinite;
+  animation: connectionFlow var(--node-editor-connection-flow-animation-duration) linear infinite;
   pointer-events: none;
-  stroke-dasharray: 10 14;
+  stroke-dasharray: var(--node-editor-connection-stripe-dash-array);
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
 }
 
 .connectionFlowStripe[data-stripe-variant="accent"] {
   stroke: var(--node-editor-accent-color, #0066cc);
-  stroke-opacity: 0.9;
+  stroke-opacity: var(--node-editor-connection-stripe-opacity-accent);
 }
 
 .connectionFlowStripe[data-stripe-variant="background"] {
   stroke: var(--node-editor-control-background, #ffffff);
-  stroke-dashoffset: -12;
-  stroke-opacity: 0.6;
+  stroke-dashoffset: var(--node-editor-connection-stripe-dash-offset-bg);
+  stroke-opacity: var(--node-editor-connection-stripe-opacity-background);
 }
 
 .connectionBase {
-  transition: stroke 0.2s, stroke-width 0.2s;
+  transition: var(--node-editor-connection-base-transition);
   pointer-events: stroke;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
 }
 
 .connectionArrowHead {
-  transition: fill 0.2s;
+  transition: var(--node-editor-connection-arrow-transition);
 }
 
 .connectionDirection {
   pointer-events: none;
 }
 
+.connectionDirection path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
 .connectionArrowOverlay {
   pointer-events: none;
+  fill: none;
+  stroke: transparent;
+  vector-effect: non-scaling-stroke;
 }
 
 @keyframes connectionFlow {
@@ -59,7 +77,7 @@
   }
 
   to {
-    stroke-dashoffset: -24;
+    stroke-dashoffset: var(--node-editor-connection-flow-animation-distance);
   }
 }
 

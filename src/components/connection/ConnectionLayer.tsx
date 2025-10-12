@@ -8,9 +8,8 @@ import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { calculateBezierPath, getOppositePortPosition } from "./utils/connectionUtils";
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
 import type { Connection, Node as EditorNode, Port as CorePort } from "../../types/core";
-import { classNames } from "../elements";
-import styles from "./ConnectionLayer.module.css";
 import { useRenderers } from "../../contexts/RendererContext";
+import styles from "./ConnectionLayer.module.css";
 
 export type ConnectionLayerProps = {
   className?: string;
@@ -23,7 +22,10 @@ export const ConnectionLayer: React.FC<ConnectionLayerProps> = ({ className }) =
   const { state: nodeEditorState } = useNodeEditor();
 
   return (
-    <svg className={classNames(styles.connectionLayer, className)}>
+    <svg
+      className={className ? `${styles.root} ${className}` : styles.root}
+      data-connection-layer="root"
+    >
       {/* Render all connections */}
       {Object.values(nodeEditorState.connections).map((connection) => {
         return <ConnectionRenderer key={connection.id} connection={connection} />;
@@ -70,17 +72,11 @@ const DragConnection = React.memo(() => {
     );
 
     return (
-      <g className={styles.dragConnection} shapeRendering="geometricPrecision">
+      <g className={styles.dragGroup} data-drag-state="connecting" shapeRendering="geometricPrecision">
         <path
           d={pathData}
-          fill="none"
-          stroke="var(--node-editor-accent-color, #0066cc)"
-          strokeWidth={2}
-          strokeDasharray="5,5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
-          style={{ pointerEvents: "none" }}
+          className={styles.dragPath}
+          data-drag-variant="connecting"
         />
       </g>
     );
@@ -106,17 +102,11 @@ const DragConnection = React.memo(() => {
     );
 
     return (
-      <g className={styles.dragConnection} shapeRendering="geometricPrecision">
+      <g className={styles.dragGroup} data-drag-state="disconnecting" shapeRendering="geometricPrecision">
         <path
           d={pathData}
-          fill="none"
-          stroke="var(--node-editor-caution-color, #ff3b30)"
-          strokeWidth={3}
-          strokeDasharray="8,4"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
-          style={{ pointerEvents: "none" }}
+          className={styles.dragPath}
+          data-drag-variant="disconnecting"
         />
       </g>
     );
