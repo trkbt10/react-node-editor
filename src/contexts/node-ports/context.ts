@@ -1,3 +1,6 @@
+/**
+ * @file Context for accessing pre-computed port positions and position calculation utilities
+ */
 import * as React from "react";
 import type { Port } from "../../types/core";
 import type {

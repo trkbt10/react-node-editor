@@ -1,3 +1,6 @@
+/**
+ * @file Context for providing node definition registry
+ */
 import * as React from "react";
 import type { NodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
 

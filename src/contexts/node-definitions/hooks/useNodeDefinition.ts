@@ -1,3 +1,6 @@
+/**
+ * @file Hook for retrieving a specific node definition by type
+ */
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { useNodeDefinitions } from "../context";
 

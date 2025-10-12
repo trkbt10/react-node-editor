@@ -1,3 +1,6 @@
+/**
+ * @file Utility functions for validating node and connection constraints
+ */
 import type {
   NodeConstraint,
   ConstraintContext,

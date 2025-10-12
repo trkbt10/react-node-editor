@@ -1,3 +1,6 @@
+/**
+ * @file Hook for validating node and connection operations against defined constraints
+ */
 import * as React from "react";
 import type { Node, NodeId, Connection, Port } from "../../../types/core";
 import type { NodeEditorAction } from "../../node-editor";

@@ -1,3 +1,6 @@
+/**
+ * @file Hook for retrieving all registered node definitions as an array
+ */
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { useNodeDefinitions } from "../context";
 

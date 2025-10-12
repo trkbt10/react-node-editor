@@ -1,3 +1,6 @@
+/**
+ * @file Re-export file (to be removed)
+ */
 export { NodeDefinitionContext, useNodeDefinitions } from "./context";
 export type { NodeDefinitionContextValue } from "./context";
 

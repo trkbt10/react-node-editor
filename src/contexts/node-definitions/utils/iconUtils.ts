@@ -1,3 +1,6 @@
+/**
+ * @file Utility functions for retrieving node icons from definitions with fallback defaults
+ */
 import type { ReactNode } from "react";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 
