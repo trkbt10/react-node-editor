@@ -30,10 +30,6 @@ export const AIChatRenderer = ({ node, isSelected, isDragging, externalData }: N
   const chatData = externalData as ChatData | undefined;
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
-  React.useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatData?.messages]);
-
   const chatColor = "#06b6d4";
 
   return (
