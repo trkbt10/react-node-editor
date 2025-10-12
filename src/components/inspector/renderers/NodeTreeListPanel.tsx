@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useNodeEditor } from "../../../contexts/node-editor";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useNodeDefinitionList } from "../../../contexts/NodeDefinitionContext";
+import { useNodeDefinitionList } from "../../../contexts/node-definitions";
 import { hasGroupBehavior } from "../../../types/behaviors";
 import { Node, NodeId } from "../../../types/core";
 import { getNodeIcon } from "../../../utils/nodeUtils";

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useNodeDefinitionList } from "../../contexts/NodeDefinitionContext";
+import { useNodeDefinitionList } from "../../contexts/node-definitions";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeEditor } from "../../contexts/node-editor";

@@ -2,7 +2,6 @@ import * as React from "react";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { useNodeEditorSettings } from "../../contexts/NodeEditorSettingsContext";
 import type { SettingsManager } from "../../settings/SettingsManager";
 import { classNames } from "../elements";
 import { StatusSection, statusSectionStyles } from "./StatusSection";
@@ -17,7 +16,7 @@ export type StatusBarProps = {
 
 /**
  * StatusBar - Displays current editor state information
- * Settings are retrieved from NodeEditorSettingsContext if not provided via props.
+ * Settings are retrieved from NodeEditorContext if not provided via props.
  */
 export const StatusBar: React.FC<StatusBarProps> = ({
   className,
@@ -25,11 +24,11 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   isSaving: isSavingProp,
   settingsManager: settingsManagerProp
 }) => {
-  const editorSettings = useNodeEditorSettings();
+  const { settings, isSaving: editorIsSaving, settingsManager: editorSettingsManager } = useNodeEditor();
 
-  const autoSave = autoSaveProp ?? editorSettings.autoSaveEnabled;
-  const isSaving = isSavingProp ?? editorSettings.isSaving;
-  const settingsManager = settingsManagerProp ?? editorSettings.settingsManager;
+  const autoSave = autoSaveProp ?? settings.autoSave;
+  const isSaving = isSavingProp ?? editorIsSaving;
+  const settingsManager = settingsManagerProp ?? editorSettingsManager;
   const { state: nodeEditorState } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
   const { state: canvasState } = useNodeCanvas();

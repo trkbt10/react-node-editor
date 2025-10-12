@@ -4,7 +4,7 @@ import { useSettings } from "../../hooks";
 import type { SettingsManager } from "../../settings/SettingsManager";
 import type { SettingValue } from "../../settings/types";
 import { createCachedPortResolver } from "../node-ports/utils/portLookup";
-import { NodeDefinitionContext } from "../NodeDefinitionContext";
+import { NodeDefinitionContext } from "../node-definitions";
 import { getFeatureFlags } from "../../config/featureFlags";
 import { nodeEditorActions } from "./actions";
 import { nodeEditorReducer, defaultNodeEditorData } from "./reducer";

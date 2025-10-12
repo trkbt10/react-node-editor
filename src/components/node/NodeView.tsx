@@ -2,7 +2,7 @@ import * as React from "react";
 import type { Node, Position, Port } from "../../types/core";
 import { useInlineEditing } from "../../contexts/InlineEditingContext";
 import { useNodeEditor } from "../../contexts/node-editor";
-import { useNodeDefinition } from "../../contexts/NodeDefinitionContext";
+import { useNodeDefinition } from "../../contexts/node-definitions";
 import { useExternalDataRef } from "../../contexts/ExternalDataContext";
 import { useExternalData } from "../../hooks/useExternalData";
 import styles from "./NodeView.module.css";

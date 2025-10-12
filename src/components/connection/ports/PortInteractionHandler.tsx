@@ -3,7 +3,7 @@ import { Port, NodeId, Position } from "../../../types/core";
 import { useNodeEditor } from "../../../contexts/node-editor";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
-import { useNodeDefinitions } from "../../../contexts/NodeDefinitionContext";
+import { useNodeDefinitions } from "../../../contexts/node-definitions";
 import { usePointerDrag } from "../../../hooks/usePointerDrag";
 import { isPortConnectable } from "../../../contexts/node-ports/utils/portConnectability";
 import { planConnectionChange, ConnectionSwitchBehavior } from "../../../contexts/node-ports/utils/connectionSwitchBehavior";

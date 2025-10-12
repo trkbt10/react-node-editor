@@ -49,7 +49,7 @@ export function NodeDefinitionProvider<
     return reg;
   }, [nodeDefinitions, includeDefaults]);
 
-  const contextValue: NodeDefinitionContextValue<TNodeDataTypeMap> = { registry };
+  const contextValue = { registry } as NodeDefinitionContextValue<TNodeDataTypeMap>;
 
-  return <NodeDefinitionContext.Provider value={contextValue}>{children}</NodeDefinitionContext.Provider>;
+  return <NodeDefinitionContext.Provider value={contextValue as any}>{children}</NodeDefinitionContext.Provider>;
 }

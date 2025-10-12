@@ -4,7 +4,7 @@ import { usePointerDrag } from "../../hooks/usePointerDrag";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { useNodeDefinitionList } from "../../contexts/NodeDefinitionContext";
+import { useNodeDefinitionList } from "../../contexts/node-definitions";
 import { nodeHasGroupBehavior } from "../../types/behaviors";
 
 export type NodeDragHandlerProps = {

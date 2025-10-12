@@ -11,7 +11,6 @@ export { NodeCanvasProvider, useNodeCanvas } from "./NodeCanvasContext";
 export { HistoryProvider, useHistory } from "./HistoryContext";
 export { KeyboardShortcutProvider } from "./KeyboardShortcutContext";
 export { RendererProvider, useRenderers, useOptionalRenderers } from "./RendererContext";
-export { NodeEditorSettingsProvider, useNodeEditorSettings } from "./NodeEditorSettingsContext";
 
 // Re-export types
 export type { NodeEditorData } from "./node-editor";

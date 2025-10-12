@@ -2,7 +2,7 @@ import * as React from "react";
 import type { Connection, Node, Port } from "../../types/core";
 import { calculateBezierPath, calculateBezierControlPoints, cubicBezierPoint, cubicBezierTangent } from "./utils/connectionUtils";
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
-import { useNodeDefinition } from "../../contexts/NodeDefinitionContext";
+import { useNodeDefinition } from "../../contexts/node-definitions";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
 import { classNames } from "../elements";
 import styles from "./ConnectionView.module.css";

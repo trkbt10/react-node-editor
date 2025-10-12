@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { useNodeDefinitionList } from "../../contexts/NodeDefinitionContext";
+import { useNodeDefinitionList } from "../../contexts/node-definitions";
 import styles from "./Minimap.module.css";
 import { NodeMapRenderer } from "./NodeMapRenderer";
 

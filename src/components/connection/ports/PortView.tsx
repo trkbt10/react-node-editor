@@ -3,7 +3,7 @@ import type { Port } from "../../../types/core";
 import { classNames } from "../../elements";
 import { useDynamicPortPosition } from "../../../hooks/usePortPosition";
 import { useNodeEditor } from "../../../contexts/node-editor";
-import { useNodeDefinition } from "../../../contexts/NodeDefinitionContext";
+import { useNodeDefinition } from "../../../contexts/node-definitions";
 import type { PortRenderContext } from "../../../types/NodeDefinition";
 import styles from "./PortView.module.css";
 

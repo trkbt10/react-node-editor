@@ -9,7 +9,7 @@ import { InlineEditingProvider } from "./contexts/InlineEditingContext";
 import { KeyboardShortcutProvider } from "./contexts/KeyboardShortcutContext";
 import { NodeEditorProvider, type NodeEditorData } from "./contexts/node-editor";
 import { NodeCanvasProvider } from "./contexts/NodeCanvasContext";
-import { NodeDefinitionProvider } from "./contexts/NodeDefinitionContext";
+import { NodeDefinitionProvider } from "./contexts/node-definitions";
 import { RendererProvider } from "./contexts/RendererContext";
 import { I18nProvider, type I18nMessages, type Locale } from "./i18n";
 import { NodeEditorContent } from "./NodeEditorContent";

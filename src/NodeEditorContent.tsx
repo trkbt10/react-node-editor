@@ -8,8 +8,7 @@ import { defaultEditorGridConfig, defaultEditorGridLayers } from "./config/defau
 import { useEditorActionState } from "./contexts/EditorActionStateContext";
 import { useNodeEditor } from "./contexts/node-editor";
 import { useNodeCanvas } from "./contexts/NodeCanvasContext";
-import { useNodeDefinitionList } from "./contexts/NodeDefinitionContext";
-import { NodeEditorSettingsProvider } from "./contexts/NodeEditorSettingsContext";
+import { useNodeDefinitionList } from "./contexts/node-definitions";
 import { PortPositionProvider } from "./contexts/node-ports/provider";
 import { useSettings } from "./hooks/useSettings";
 import styles from "./NodeEditorContent.module.css";
@@ -37,7 +36,7 @@ export const NodeEditorContent: React.FC<{
   gridConfig?: GridLayoutConfig;
   /** Grid layer definitions */
   gridLayers?: LayerDefinition[];
-}> = ({ className, settingsManager, autoSaveEnabled, autoSaveInterval, portPositionBehavior, gridConfig, gridLayers }) => {
+}> = ({ className, settingsManager, portPositionBehavior, gridConfig, gridLayers }) => {
   const { state: editorState, handleSave, dispatch, actions, isLoading, isSaving, getNodePorts } = useNodeEditor();
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
@@ -159,10 +158,6 @@ export const NodeEditorContent: React.FC<{
   // Use settings hook for clean state management
   const settings = useSettings(settingsManager);
   const { theme, smoothAnimations, fontSize, gridSize, gridOpacity, canvasBackground } = settings;
-  const settingsAutoSave = settings.autoSave;
-  const settingsAutoSaveInterval = settings.autoSaveInterval;
-  const effectiveAutoSave = autoSaveEnabled ?? settingsAutoSave;
-  const effectiveAutoSaveInterval = autoSaveInterval ?? settingsAutoSaveInterval ?? 30;
   // Apply settings-based CSS custom properties
   const editorStyles = React.useMemo(
     () =>
@@ -378,22 +373,14 @@ export const NodeEditorContent: React.FC<{
       style={editorStyles}
       data-theme={theme}
     >
-      <NodeEditorSettingsProvider
-        settingsManager={settingsManager}
-        settings={settings}
-        isSaving={isSaving}
-        autoSaveEnabled={effectiveAutoSave}
-        autoSaveInterval={effectiveAutoSaveInterval}
-      >
-        <PortPositionProvider portPositions={portPositions} behavior={portPositionBehavior} config={portPositionConfig}>
-          <GridLayout
-            key={gridLayoutKey}
-            config={effectiveGridConfig}
-            layers={effectiveGridLayers}
-            className={styles.gridLayoutContainer}
-          />
-        </PortPositionProvider>
-      </NodeEditorSettingsProvider>
+      <PortPositionProvider portPositions={portPositions} behavior={portPositionBehavior} config={portPositionConfig}>
+        <GridLayout
+          key={gridLayoutKey}
+          config={effectiveGridConfig}
+          layers={effectiveGridLayers}
+          className={styles.gridLayoutContainer}
+        />
+      </PortPositionProvider>
 
       {/* Loading/Saving indicators */}
       {(isLoading || isSaving) && (

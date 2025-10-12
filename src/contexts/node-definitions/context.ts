@@ -34,9 +34,9 @@ export function useNodeDefinitions<
     [key: string]: Record<string, unknown>;
   },
 >(): NodeDefinitionContextValue<TNodeDataTypeMap> {
-  const context = React.useContext<NodeDefinitionContextValue<TNodeDataTypeMap>>(NodeDefinitionContext);
+  const context = React.useContext(NodeDefinitionContext);
   if (!context) {
     throw new Error("useNodeDefinitions must be used within a NodeDefinitionProvider");
   }
-  return context;
+  return context as NodeDefinitionContextValue<TNodeDataTypeMap>;
 }

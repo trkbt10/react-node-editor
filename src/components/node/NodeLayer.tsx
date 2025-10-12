@@ -2,7 +2,7 @@ import * as React from "react";
 import { classNames } from "../elements";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { useNodeDefinitions, useNodeDefinitionList } from "../../contexts/NodeDefinitionContext";
+import { useNodeDefinitions, useNodeDefinitionList } from "../../contexts/node-definitions";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useGroupManagement } from "../../hooks/useGroupManagement";
 import { useNodeResize } from "../../hooks/useNodeResize";
@@ -424,7 +424,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className, doubleClickToEd
     actionDispatch(actionActions.setHoveredPort(null));
     // Clear connectable highlight when leaving (unless dragging)
     if (!actionState.connectionDragState) {
-      actionDispatch(actionActions.updateConnectablePorts(emptyConnectablePorts()));
+      actionDispatch(actionActions.updateConnectablePorts(createEmptyConnectablePorts()));
     }
   }, [actionDispatch, actionActions, actionState.connectionDragState]);
 
