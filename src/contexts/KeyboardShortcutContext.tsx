@@ -7,6 +7,11 @@ export type KeyboardShortcut = {
   shift?: boolean;
   alt?: boolean;
   meta?: boolean;
+  /**
+   * When true, registers both Ctrl (Windows/Linux) and Cmd (Mac) variants
+   * Cannot be used together with ctrl or meta
+   */
+  cmdOrCtrl?: boolean;
 };
 
 export type ShortcutHandler = (e: KeyboardEvent) => void;
@@ -224,7 +229,39 @@ export const useRegisterShortcut = (
   const { registerShortcut, unregisterShortcut } = useKeyboardShortcut();
 
   React.useEffect(() => {
-    registerShortcut(shortcut, handler);
-    return () => unregisterShortcut(shortcut);
+    // Validate that cmdOrCtrl is not used with ctrl or meta
+    if (shortcut.cmdOrCtrl && (shortcut.ctrl || shortcut.meta)) {
+      console.warn(
+        "cmdOrCtrl cannot be used together with ctrl or meta. Using cmdOrCtrl only."
+      );
+    }
+
+    // If cmdOrCtrl is specified, register both Ctrl and Meta variants
+    if (shortcut.cmdOrCtrl) {
+      const ctrlShortcut: KeyboardShortcut = {
+        ...shortcut,
+        ctrl: true,
+        meta: false,
+        cmdOrCtrl: false,
+      };
+      const metaShortcut: KeyboardShortcut = {
+        ...shortcut,
+        ctrl: false,
+        meta: true,
+        cmdOrCtrl: false,
+      };
+
+      registerShortcut(ctrlShortcut, handler);
+      registerShortcut(metaShortcut, handler);
+
+      return () => {
+        unregisterShortcut(ctrlShortcut);
+        unregisterShortcut(metaShortcut);
+      };
+    } else {
+      // Normal registration
+      registerShortcut(shortcut, handler);
+      return () => unregisterShortcut(shortcut);
+    }
   }, [registerShortcut, unregisterShortcut, ...deps]);
 };

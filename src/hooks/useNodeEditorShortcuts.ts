@@ -5,7 +5,7 @@ import { useEditorActionState } from "../contexts/EditorActionStateContext";
 import { useHistoryIntegration } from "./useHistoryIntegration";
 import { useAutoLayout } from "./useAutoLayout";
 import { filterDuplicableNodeIds } from "../utils/nodeTypeLimits";
-import { getClipboard, setClipboard } from "../utils/clipboard";
+import { copyNodesToClipboard, pasteNodesFromClipboard } from "../utils/nodeClipboardOperations";
 import { useNodeDefinitionList } from "../contexts/NodeDefinitionContext";
 
 /**
@@ -66,17 +66,9 @@ export const useNodeEditorShortcuts = () => {
 
   // Select all nodes (Ctrl/Cmd+A)
   useRegisterShortcut(
-    { key: "a", ctrl: true },
+    { key: "a", cmdOrCtrl: true },
     React.useCallback(() => {
       console.log('Select All shortcut triggered');
-      const allNodeIds = Object.keys(nodeEditorState.nodes);
-      actionDispatch(actionActions.selectAllNodes(allNodeIds));
-    }, [nodeEditorState.nodes, actionDispatch, actionActions])
-  );
-  useRegisterShortcut(
-    { key: "a", meta: true },
-    React.useCallback(() => {
-      console.log('Select All (Cmd) shortcut triggered');
       const allNodeIds = Object.keys(nodeEditorState.nodes);
       actionDispatch(actionActions.selectAllNodes(allNodeIds));
     }, [nodeEditorState.nodes, actionDispatch, actionActions])
@@ -125,7 +117,7 @@ export const useNodeEditorShortcuts = () => {
 
   // Duplicate selected nodes (Ctrl/Cmd+D)
   useRegisterShortcut(
-    { key: "d", ctrl: true },
+    { key: "d", cmdOrCtrl: true },
     React.useCallback(() => {
       console.log('Duplicate shortcut triggered');
       const sel = actionStateRef.current.selectedNodeIds;
@@ -141,9 +133,9 @@ export const useNodeEditorShortcuts = () => {
     }, [nodeEditorDispatch, nodeEditorActions])
   );
 
-  // Lock selected nodes (Cmd+2 / Ctrl+2 on Windows if desired)
+  // Lock selected nodes (Cmd+2 / Ctrl+2)
   useRegisterShortcut(
-    { key: "2", meta: true },
+    { key: "2", cmdOrCtrl: true },
     React.useCallback(() => {
       const selected = actionStateRef.current.selectedNodeIds;
       if (selected.length === 0) {return;}
@@ -151,27 +143,12 @@ export const useNodeEditorShortcuts = () => {
     }, [nodeEditorDispatch, nodeEditorActions])
   );
 
-  // Unlock all nodes (Cmd+Shift+2)
+  // Unlock all nodes (Cmd+Shift+2 / Ctrl+Shift+2)
   useRegisterShortcut(
-    { key: "2", meta: true, shift: true },
+    { key: "2", cmdOrCtrl: true, shift: true },
     React.useCallback(() => {
       const allIds = Object.keys(nodeEditorStateRef.current.nodes);
       allIds.forEach((nodeId) => nodeEditorDispatch(nodeEditorActions.updateNode(nodeId, { locked: false })));
-    }, [nodeEditorDispatch, nodeEditorActions])
-  );
-  useRegisterShortcut(
-    { key: "d", meta: true },
-    React.useCallback(() => {
-      console.log('Duplicate (Cmd) shortcut triggered');
-      const sel = actionStateRef.current.selectedNodeIds;
-      const ned = nodeEditorStateRef.current;
-      const defs = nodeDefinitionsRef.current;
-      if (sel.length > 0) {
-        const allowed = filterDuplicableNodeIds(sel, ned, defs);
-        if (allowed.length > 0) {
-          nodeEditorDispatch(nodeEditorActions.duplicateNodes(allowed));
-        }
-      }
     }, [nodeEditorDispatch, nodeEditorActions])
   );
 
@@ -210,18 +187,9 @@ export const useNodeEditorShortcuts = () => {
 
   // Undo (Ctrl/Cmd+Z)
   useRegisterShortcut(
-    { key: "z", ctrl: true },
+    { key: "z", cmdOrCtrl: true },
     React.useCallback(() => {
       console.log('Undo shortcut triggered');
-      if (canUndo) {
-        performUndo();
-      }
-    }, [canUndo, performUndo])
-  );
-  useRegisterShortcut(
-    { key: "z", meta: true },
-    React.useCallback(() => {
-      console.log('Undo (Cmd) shortcut triggered');
       if (canUndo) {
         performUndo();
       }
@@ -230,18 +198,9 @@ export const useNodeEditorShortcuts = () => {
 
   // Redo (Ctrl/Cmd+Shift+Z)
   useRegisterShortcut(
-    { key: "z", ctrl: true, shift: true },
+    { key: "z", cmdOrCtrl: true, shift: true },
     React.useCallback(() => {
       console.log('Redo shortcut triggered');
-      if (canRedo) {
-        performRedo();
-      }
-    }, [canRedo, performRedo])
-  );
-  useRegisterShortcut(
-    { key: "z", meta: true, shift: true },
-    React.useCallback(() => {
-      console.log('Redo (Cmd+Shift+Z) shortcut triggered');
       if (canRedo) {
         performRedo();
       }
@@ -250,18 +209,9 @@ export const useNodeEditorShortcuts = () => {
 
   // Alternative Redo (Ctrl/Cmd+Y)
   useRegisterShortcut(
-    { key: "y", ctrl: true },
+    { key: "y", cmdOrCtrl: true },
     React.useCallback(() => {
-      console.log('Redo (Ctrl+Y) shortcut triggered');
-      if (canRedo) {
-        performRedo();
-      }
-    }, [canRedo, performRedo])
-  );
-  useRegisterShortcut(
-    { key: "y", meta: true },
-    React.useCallback(() => {
-      console.log('Redo (Cmd+Y) shortcut triggered');
+      console.log('Redo (Y) shortcut triggered');
       if (canRedo) {
         performRedo();
       }
@@ -272,76 +222,29 @@ export const useNodeEditorShortcuts = () => {
 
   // Copy (Ctrl/Cmd+C)
   useRegisterShortcut(
-    { key: "c", ctrl: true },
+    { key: "c", cmdOrCtrl: true },
     React.useCallback(() => {
       const selected = actionStateRef.current.selectedNodeIds;
-      if (selected.length === 0) {return;}
-      const nodes = selected
-        .map((id) => nodeEditorStateRef.current.nodes[id])
-        .filter(Boolean)
-        .map((n) => ({ id: n.id, type: n.type, position: n.position, size: n.size, data: n.data }));
-      const selSet = new Set(selected);
-      const connections = Object.values(nodeEditorStateRef.current.connections).filter(
-        (c) => selSet.has(c.fromNodeId) && selSet.has(c.toNodeId)
-      ).map((c) => ({ fromNodeId: c.fromNodeId, fromPortId: c.fromPortId, toNodeId: c.toNodeId, toPortId: c.toPortId }));
-      setClipboard({ nodes, connections });
-      console.log('Copied nodes:', nodes.length, 'connections:', connections.length);
-    }, [])
-  );
-  useRegisterShortcut(
-    { key: "c", meta: true },
-    React.useCallback(() => {
-      const selected = actionStateRef.current.selectedNodeIds;
-      if (selected.length === 0) {return;}
-      const nodes = selected
-        .map((id) => nodeEditorStateRef.current.nodes[id])
-        .filter(Boolean)
-        .map((n) => ({ id: n.id, type: n.type, position: n.position, size: n.size, data: n.data }));
-      const selSet = new Set(selected);
-      const connections = Object.values(nodeEditorStateRef.current.connections).filter(
-        (c) => selSet.has(c.fromNodeId) && selSet.has(c.toNodeId)
-      ).map((c) => ({ fromNodeId: c.fromNodeId, fromPortId: c.fromPortId, toNodeId: c.toNodeId, toPortId: c.toPortId }));
-      setClipboard({ nodes, connections });
-      console.log('Copied (Cmd) nodes:', nodes.length, 'connections:', connections.length);
+      const clipboardData = copyNodesToClipboard(selected, nodeEditorStateRef.current);
+      if (clipboardData) {
+        console.log('Copied nodes:', clipboardData.nodes.length, 'connections:', clipboardData.connections.length);
+      }
     }, [])
   );
 
   // Cut (Ctrl/Cmd+X)
   useRegisterShortcut(
-    { key: "x", ctrl: true },
+    { key: "x", cmdOrCtrl: true },
     React.useCallback(() => {
       const selected = actionStateRef.current.selectedNodeIds;
-      if (selected.length === 0) {return;}
+      if (selected.length === 0) {
+        return;
+      }
+
       // Copy first
-      const nodes = selected
-        .map((id) => nodeEditorStateRef.current.nodes[id])
-        .filter(Boolean)
-        .map((n) => ({ id: n.id, type: n.type, position: n.position, size: n.size, data: n.data }));
-      const selSet = new Set(selected);
-      const connections = Object.values(nodeEditorStateRef.current.connections).filter(
-        (c) => selSet.has(c.fromNodeId) && selSet.has(c.toNodeId)
-      ).map((c) => ({ fromNodeId: c.fromNodeId, fromPortId: c.fromPortId, toNodeId: c.toNodeId, toPortId: c.toPortId }));
-      setClipboard({ nodes, connections });
+      copyNodesToClipboard(selected, nodeEditorStateRef.current);
 
       // Delete nodes
-      selected.forEach((nodeId) => nodeEditorDispatch(nodeEditorActions.deleteNode(nodeId)));
-      actionDispatch(actionActions.clearSelection());
-    }, [nodeEditorDispatch, nodeEditorActions, actionDispatch, actionActions])
-  );
-  useRegisterShortcut(
-    { key: "x", meta: true },
-    React.useCallback(() => {
-      const selected = actionStateRef.current.selectedNodeIds;
-      if (selected.length === 0) {return;}
-      const nodes = selected
-        .map((id) => nodeEditorStateRef.current.nodes[id])
-        .filter(Boolean)
-        .map((n) => ({ id: n.id, type: n.type, position: n.position, size: n.size, data: n.data }));
-      const selSet = new Set(selected);
-      const connections = Object.values(nodeEditorStateRef.current.connections).filter(
-        (c) => selSet.has(c.fromNodeId) && selSet.has(c.toNodeId)
-      ).map((c) => ({ fromNodeId: c.fromNodeId, fromPortId: c.fromPortId, toNodeId: c.toNodeId, toPortId: c.toPortId }));
-      setClipboard({ nodes, connections });
       selected.forEach((nodeId) => nodeEditorDispatch(nodeEditorActions.deleteNode(nodeId)));
       actionDispatch(actionActions.clearSelection());
     }, [nodeEditorDispatch, nodeEditorActions, actionDispatch, actionActions])
@@ -349,80 +252,25 @@ export const useNodeEditorShortcuts = () => {
 
   // Paste (Ctrl/Cmd+V)
   useRegisterShortcut(
-    { key: "v", ctrl: true },
+    { key: "v", cmdOrCtrl: true },
     React.useCallback(() => {
-      const clip = getClipboard();
-      if (!clip || clip.nodes.length === 0) {return;}
-      const idMap = new Map<string, string>();
+      const result = pasteNodesFromClipboard();
+      if (!result) {
+        return;
+      }
 
-      // Add nodes with new ids and slight offset
-      clip.nodes.forEach((n) => {
-        const newId = Math.random().toString(36).slice(2, 10);
-        idMap.set(n.id, newId);
-        const newNode = {
-          id: newId,
-          type: n.type,
-          position: { x: n.position.x + 40, y: n.position.y + 40 },
-          size: n.size,
-          data: { ...(n.data || {}), title: typeof n.data?.title === 'string' ? `${n.data.title} Copy` : n.data?.title },
-        };
-        nodeEditorDispatch(nodeEditorActions.addNodeWithId(newNode));
+      // Add nodes
+      result.nodes.forEach((node) => {
+        nodeEditorDispatch(nodeEditorActions.addNodeWithId(node));
       });
 
-      // Recreate internal connections among pasted nodes
-      clip.connections.forEach((c) => {
-        const fromId = idMap.get(c.fromNodeId);
-        const toId = idMap.get(c.toNodeId);
-        if (fromId && toId) {
-          nodeEditorDispatch(
-            nodeEditorActions.addConnection({
-              fromNodeId: fromId,
-              fromPortId: c.fromPortId,
-              toNodeId: toId,
-              toPortId: c.toPortId,
-            })
-          );
-        }
+      // Add connections
+      result.connections.forEach((conn) => {
+        nodeEditorDispatch(nodeEditorActions.addConnection(conn));
       });
 
       // Select pasted nodes
-      const newIds = Array.from(idMap.values());
-      actionDispatch(actionActions.selectAllNodes(newIds));
-    }, [nodeEditorDispatch, nodeEditorActions, actionDispatch, actionActions])
-  );
-  useRegisterShortcut(
-    { key: "v", meta: true },
-    React.useCallback(() => {
-      const clip = getClipboard();
-      if (!clip || clip.nodes.length === 0) {return;}
-      const idMap = new Map<string, string>();
-      clip.nodes.forEach((n) => {
-        const newId = Math.random().toString(36).slice(2, 10);
-        idMap.set(n.id, newId);
-        const newNode = {
-          id: newId,
-          type: n.type,
-          position: { x: n.position.x + 40, y: n.position.y + 40 },
-          size: n.size,
-          data: { ...(n.data || {}), title: typeof n.data?.title === 'string' ? `${n.data.title} Copy` : n.data?.title },
-        };
-        nodeEditorDispatch(nodeEditorActions.addNodeWithId(newNode));
-      });
-      clip.connections.forEach((c) => {
-        const fromId = idMap.get(c.fromNodeId);
-        const toId = idMap.get(c.toNodeId);
-        if (fromId && toId) {
-          nodeEditorDispatch(
-            nodeEditorActions.addConnection({
-              fromNodeId: fromId,
-              fromPortId: c.fromPortId,
-              toNodeId: toId,
-              toPortId: c.toPortId,
-            })
-          );
-        }
-      });
-      const newIds = Array.from(idMap.values());
+      const newIds = Array.from(result.idMap.values());
       actionDispatch(actionActions.selectAllNodes(newIds));
     }, [nodeEditorDispatch, nodeEditorActions, actionDispatch, actionActions])
   );
