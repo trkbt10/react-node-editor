@@ -1,3 +1,6 @@
+/**
+ * @file Utilities for enforcing per-flow node type limits and capacity checking
+ */
 import type { NodeEditorData } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 

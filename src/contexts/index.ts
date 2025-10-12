@@ -1,5 +1,5 @@
 /**
- * Context providers for the Node Editor
+ * @file Re-export file (to be removed)
  */
 
 export { NodeEditorProvider, useNodeEditor } from "./node-editor";

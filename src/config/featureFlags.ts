@@ -1,5 +1,5 @@
 /**
- * Feature flags for node editor migration
+ * @file Feature flag management for node editor configuration and migration control
  */
 
 export type NodeEditorFeatureFlags = {

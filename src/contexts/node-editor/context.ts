@@ -1,3 +1,6 @@
+/**
+ * @file Node editor context type definitions and hook for accessing editor state and utilities
+ */
 import * as React from "react";
 import type { Node, NodeEditorData, NodeId, Port, Position, GridSettings } from "../../types/core";
 import type { nodeEditorActions as actions, NodeEditorAction } from "./actions";

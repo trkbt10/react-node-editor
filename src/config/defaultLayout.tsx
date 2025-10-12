@@ -1,3 +1,6 @@
+/**
+ * @file Default grid layout configuration and layer definitions for the node editor
+ */
 import React from "react";
 import { NodeCanvas } from "../components/canvas/NodeCanvas";
 import { InspectorPanel } from "../components/inspector/InspectorPanel";

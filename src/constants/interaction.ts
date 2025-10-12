@@ -1,5 +1,5 @@
 /**
- * Interaction constants for the node editor
+ * @file Interaction distance threshold constants for port connections and hover detection
  */
 
 import { DEFAULT_PORT_POSITION_CONFIG } from "../types/portPosition";

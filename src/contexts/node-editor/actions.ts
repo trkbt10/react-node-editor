@@ -1,3 +1,6 @@
+/**
+ * @file Action type definitions and action creator functions for node editor state management
+ */
 import type { Connection, ConnectionId, Node, NodeEditorData, NodeId, Position } from "../../types/core";
 
 export type NodeEditorAction =

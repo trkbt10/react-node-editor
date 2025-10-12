@@ -1,3 +1,6 @@
+/**
+ * @file Tests for node type limit enforcement utilities
+ */
 import { countNodesByType, canAddNodeType, getDisabledNodeTypes, filterDuplicableNodeIds } from "./nodeTypeLimits";
 
 const makeState = (nodes: Array<{ id: string; type: string }>) => ({

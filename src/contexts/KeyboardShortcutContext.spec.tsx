@@ -1,3 +1,6 @@
+/**
+ * @file Tests for keyboard shortcut registration and event handling
+ */
 import { render, act } from "@testing-library/react";
 import { useEffect, useState, type FC } from "react";
 import { KeyboardShortcutProvider, useKeyboardShortcut, useRegisterShortcut } from "./KeyboardShortcutContext";

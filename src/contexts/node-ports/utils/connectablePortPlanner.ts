@@ -1,3 +1,6 @@
+/**
+ * @file Utilities for computing which ports can accept connections during drag and disconnect operations
+ */
 import type {
   Connection,
   ConnectionDisconnectState,

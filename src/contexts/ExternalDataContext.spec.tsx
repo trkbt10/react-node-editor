@@ -1,3 +1,6 @@
+/**
+ * @file Tests for ExternalDataContext provider and hooks
+ */
 import { render } from "@testing-library/react";
 import { type FC } from "react";
 import { ExternalDataProvider, useExternalDataRef } from "./ExternalDataContext";
