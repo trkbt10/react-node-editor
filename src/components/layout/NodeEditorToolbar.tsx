@@ -3,23 +3,13 @@ import { useNodeDefinitionList } from "../../contexts/node-definitions";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeEditor } from "../../contexts/node-editor";
-import { FloatingContainer } from "../shared/FloatingContainer";
 import { Button } from "../elements/Button";
 import styles from "./NodeEditorToolbar.module.css";
 import { countNodesByType, canAddNodeType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
 
-export type NodeEditorToolbarProps = {
-  floating?: boolean;
-  position?: "top" | "bottom" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
-} & React.HTMLAttributes<HTMLDivElement>
+export type NodeEditorToolbarProps = {} & React.HTMLAttributes<HTMLDivElement>;
 
-export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({
-  className,
-  floating = false,
-  position = "top",
-  children,
-  ...rest
-}) => {
+export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({ className, children, ...rest }) => {
   const nodeDefinitions = useNodeDefinitionList();
   const { actions: actionActions, dispatch: actionDispatch } = useEditorActionState();
   const { state: canvasState } = useNodeCanvas();
@@ -57,7 +47,9 @@ export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({
         size: nodeDefinition.defaultSize || { width: 150, height: 50 },
         // Use definition defaults but force empty title per requirements
         data: (() => {
-          const base: Record<string, unknown> = nodeDefinition.defaultData ? { ...(nodeDefinition.defaultData as Record<string, unknown>) } : {};
+          const base: Record<string, unknown> = nodeDefinition.defaultData
+            ? { ...(nodeDefinition.defaultData as Record<string, unknown>) }
+            : {};
           return { ...base, title: "" };
         })(),
       };
@@ -65,7 +57,7 @@ export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({
       dispatch(actions.addNode(newNode));
       actionDispatch(actionActions.selectNode(nodeId, false));
     },
-    [nodeDefinitions, nodeTypeCounts, canvasState.viewport, dispatch, actions, actionDispatch, actionActions]
+    [nodeDefinitions, nodeTypeCounts, canvasState.viewport, dispatch, actions, actionDispatch, actionActions],
   );
 
   const showNodeSearchMenu = React.useCallback(() => {
@@ -76,7 +68,7 @@ export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({
     const canvasY = (-viewport.offset.y + centerScreenY) / viewport.scale;
 
     actionDispatch(
-      actionActions.showContextMenu({ x: centerScreenX, y: centerScreenY }, undefined, { x: canvasX, y: canvasY })
+      actionActions.showContextMenu({ x: centerScreenX, y: centerScreenY }, undefined, { x: canvasX, y: canvasY }),
     );
   }, [canvasState.viewport, actionDispatch, actionActions]);
 
@@ -113,17 +105,6 @@ export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({
     return [styles.topToolbar, className].filter(Boolean).join(" ");
   }, [className]);
 
-  if (floating) {
-    return (
-      <FloatingContainer position={position} className={className}>
-        <div className={styles.topToolbar} {...rest}>
-          {toolbarContent}
-          {children}
-        </div>
-      </FloatingContainer>
-    );
-  }
-
   return (
     <div className={toolbarClassName} {...rest}>
       {toolbarContent}
@@ -132,7 +113,7 @@ export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({
   );
 };
 
-export type NodeEditorToolbarGroupProps = {} & React.HTMLAttributes<HTMLDivElement>
+export type NodeEditorToolbarGroupProps = {} & React.HTMLAttributes<HTMLDivElement>;
 
 export const NodeEditorToolbarGroup: React.FC<NodeEditorToolbarGroupProps> = ({
   className = "",
@@ -148,12 +129,9 @@ export const NodeEditorToolbarGroup: React.FC<NodeEditorToolbarGroupProps> = ({
   );
 };
 
-export type NodeEditorToolbarSeparatorProps = {} & React.HTMLAttributes<HTMLDivElement>
+export type NodeEditorToolbarSeparatorProps = {} & React.HTMLAttributes<HTMLDivElement>;
 
-export const NodeEditorToolbarSeparator: React.FC<NodeEditorToolbarSeparatorProps> = ({
-  className = "",
-  ...props
-}) => {
+export const NodeEditorToolbarSeparator: React.FC<NodeEditorToolbarSeparatorProps> = ({ className = "", ...props }) => {
   const classes = [styles.separator, className].filter(Boolean).join(" ");
 
   return <div className={classes} role="separator" {...props} />;

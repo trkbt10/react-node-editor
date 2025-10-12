@@ -138,8 +138,36 @@ export type LayerDefinition = {
   // Absolute/Fixed/Relative positioning
   /** Positioning mode */
   positionMode?: LayerPositionMode;
-  /** Position coordinates (for absolute/fixed/relative modes) */
-  position?: { top?: number; right?: number; bottom?: number; left?: number };
+  /**
+   * Position coordinates (for absolute/fixed/relative modes)
+   * - Numbers are converted to px (e.g., `100` → `100px`)
+   * - Strings are used as-is, supporting %, calc(), vw, vh, etc.
+   *
+   * @example
+   * ```tsx
+   * // Pixel positioning
+   * position: { top: 20, left: 100 }
+   *
+   * // Percentage positioning
+   * position: { left: "50%", top: "25%" }
+   *
+   * // Centered with transform
+   * position: { left: "50%", top: "50%" }
+   * // Note: Use layer.style for transform: { transform: "translate(-50%, -50%)" }
+   *
+   * // Mixed units
+   * position: { top: "10vh", right: 20 }
+   *
+   * // CSS calc()
+   * position: { left: "calc(50% - 160px)", top: 0 }
+   * ```
+   */
+  position?: {
+    top?: number | string;
+    right?: number | string;
+    bottom?: number | string;
+    left?: number | string;
+  };
 
   // Stacking and dimensions
   /** Z-index for stacking order */

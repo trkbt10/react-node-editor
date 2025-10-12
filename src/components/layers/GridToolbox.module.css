@@ -1,12 +1,9 @@
 .toolbar {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 4px;
+  box-sizing: border-box;
   background: var(--node-editor-control-background, rgba(255, 255, 255, 0.95));
   border: 1px solid var(--node-editor-input-border, rgba(0, 0, 0, 0.1));
   border-radius: 8px;
@@ -35,6 +32,7 @@
   color: var(--node-editor-label-color, #000);
   cursor: pointer;
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .toolButton:hover {
@@ -88,6 +86,7 @@
   text-align: center;
   cursor: pointer;
   transition: all 0.15s ease;
+  box-sizing: border-box;
 }
 
 .zoomSelect:hover {
@@ -127,35 +126,35 @@
     background: var(--node-editor-control-background, rgba(30, 30, 30, 0.95));
     border-color: var(--node-editor-input-border, rgba(255, 255, 255, 0.1));
   }
-  
+
   .toolButton {
     color: var(--node-editor-label-color, #fff);
   }
-  
+
   .toolButton:hover {
     background: var(--node-editor-quaternary-system-fill-color, rgba(255, 255, 255, 0.08));
   }
-  
+
   .toolButton:active {
     background: var(--node-editor-tertiary-system-fill-color, rgba(255, 255, 255, 0.12));
   }
-  
+
   .separator {
     background: var(--node-editor-separator-color, rgba(255, 255, 255, 0.1));
   }
-  
+
   .zoomSelect {
     color: var(--node-editor-label-color, #fff);
   }
-  
+
   .zoomSelect:hover {
     background: var(--node-editor-quaternary-system-fill-color, rgba(255, 255, 255, 0.08));
   }
-  
+
   .statusLabel {
     color: var(--node-editor-secondary-label-color, rgba(255, 255, 255, 0.5));
   }
-  
+
   .statusValue {
     color: var(--node-editor-label-color, #fff);
   }

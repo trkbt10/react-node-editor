@@ -17,15 +17,19 @@ export type InspectorPanelTabConfig = {
   label: string;
   render: () => React.ReactNode;
   contentClassName?: string;
-}
+};
 
 export type InspectorPanelProps = {
   className?: string;
   tabs?: InspectorPanelTabConfig[];
   settingsPanels?: InspectorSettingsPanelConfig[];
-}
+};
 
-export const InspectorPanel: React.FC<InspectorPanelProps> = ({ className, tabs: providedTabs, settingsPanels = [] }) => {
+export const InspectorPanel: React.FC<InspectorPanelProps> = ({
+  className,
+  tabs: providedTabs,
+  settingsPanels = [],
+}) => {
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
   const { t } = useI18n();
 
@@ -47,7 +51,7 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({ className, tabs:
         render: () => <InspectorSettingsTab panels={settingsPanels} />,
       },
     ],
-    [t, settingsPanels]
+    [t, settingsPanels],
   );
 
   const tabs = providedTabs ?? defaultTabs;
@@ -67,7 +71,7 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({ className, tabs:
     (index: number) => {
       actionDispatch(actionActions.setInspectorActiveTab(index));
     },
-    [actionDispatch, actionActions]
+    [actionDispatch, actionActions],
   );
 
   const activeTab = boundedActiveTabIndex >= 0 ? tabs[boundedActiveTabIndex] : undefined;
@@ -76,7 +80,11 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({ className, tabs:
     <div className={classNames(styles.inspectorPanel, className)}>
       {tabs.length > 0 && (
         <div className={styles.inspectorHeader}>
-          <TabNav tabs={tabs.map((tab) => tab.label)} activeTabIndex={boundedActiveTabIndex} onTabChange={setActiveTabIndex} />
+          <TabNav
+            tabs={tabs.map((tab) => tab.label)}
+            activeTabIndex={boundedActiveTabIndex}
+            onTabChange={setActiveTabIndex}
+          />
         </div>
       )}
 
@@ -97,7 +105,6 @@ export const InspectorLayersTab: React.FC = () => {
   );
 };
 
-
 export const InspectorHistoryTab: React.FC = () => {
   return <HistoryPanel />;
 };
@@ -105,11 +112,11 @@ export const InspectorHistoryTab: React.FC = () => {
 export type InspectorSettingsPanelConfig = {
   title: string;
   component: React.ComponentType;
-}
+};
 
 export type InspectorSettingsTabProps = {
   panels: InspectorSettingsPanelConfig[];
-}
+};
 
 export const InspectorSettingsTab: React.FC<InspectorSettingsTabProps> = ({ panels }) => {
   // If no custom panels are provided, show default panels
@@ -120,12 +127,7 @@ export const InspectorSettingsTab: React.FC<InspectorSettingsTabProps> = ({ pane
     // Default panels
     return [
       {
-        title: "Auto Layout",
         component: AutoLayoutPanel,
-      },
-      {
-        title: "Feature Flags",
-        component: FeatureFlagsPanel,
       },
     ];
   }, [panels]);
@@ -133,9 +135,7 @@ export const InspectorSettingsTab: React.FC<InspectorSettingsTabProps> = ({ pane
   return (
     <>
       {effectivePanels.map((panel, index) => (
-        <PropertySection key={index} title={panel.title} bodyClassName={styles.settingsSectionBody}>
-          <panel.component />
-        </PropertySection>
+        <panel.component key={index} />
       ))}
     </>
   );

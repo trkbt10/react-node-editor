@@ -100,9 +100,9 @@
   --node-editor-warning-color: #ff9500;
   --node-editor-caution-color: #ff3b30;
   --node-editor-caution-hover-background: rgba(255, 59, 48, 0.1);
-    --node-editor-system-orange-color: #ff9500;
-    --node-editor-system-red-color: #d12d2d;
-    --node-editor-connection-color: #94a3b8;
+  --node-editor-system-orange-color: #ff9500;
+  --node-editor-system-red-color: #d12d2d;
+  --node-editor-connection-color: #94a3b8;
   --node-editor-connection-color: #999999;
 
   /* Surfaces */
@@ -226,7 +226,7 @@
   --node-editor-opacity-dragging: 0.8;
 
   /* Animations & Transitions */
-  --node-editor-transition-duration: 0.15s;
+  --node-editor-transition-duration: 0.1s ease;
   --node-editor-animation-duration: 0.5s;
   --node-editor-pulse-min-opacity: 0.6;
 

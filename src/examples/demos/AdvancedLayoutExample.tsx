@@ -7,6 +7,9 @@ import { InspectorPanel } from "../../components/inspector/InspectorPanel";
 import { NodeCanvas } from "../../components/canvas/NodeCanvas";
 import { Minimap } from "../../components/layers/Minimap";
 import { GridToolbox } from "../../components/layers/GridToolbox";
+import { StandardNodeDefinition } from "../../node-definitions/standard";
+import { toUntypedDefinition } from "../../types/NodeDefinition";
+import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import type { NodeEditorData } from "../../types/core";
 import classes from "./AdvancedLayoutExample.module.css";
 
@@ -14,38 +17,38 @@ const initialData: NodeEditorData = {
   nodes: {
     "node-1": {
       id: "node-1",
-      type: "standard-node",
+      type: "standard",
       position: { x: 100, y: 100 },
       size: { width: 180, height: 120 },
-      data: { label: "Start Node" },
+      data: { title: "Start Node", content: "" },
     },
     "node-2": {
       id: "node-2",
-      type: "standard-node",
+      type: "standard",
       position: { x: 400, y: 100 },
       size: { width: 180, height: 120 },
-      data: { label: "Process Node" },
+      data: { title: "Process Node", content: "" },
     },
     "node-3": {
       id: "node-3",
-      type: "standard-node",
+      type: "standard",
       position: { x: 700, y: 100 },
       size: { width: 180, height: 120 },
-      data: { label: "End Node" },
+      data: { title: "End Node", content: "" },
     },
     "node-4": {
       id: "node-4",
-      type: "standard-node",
+      type: "standard",
       position: { x: 250, y: 300 },
       size: { width: 180, height: 120 },
-      data: { label: "Branch A" },
+      data: { title: "Branch A", content: "" },
     },
     "node-5": {
       id: "node-5",
-      type: "standard-node",
+      type: "standard",
       position: { x: 550, y: 300 },
       size: { width: 180, height: 120 },
-      data: { label: "Branch B" },
+      data: { title: "Branch B", content: "" },
     },
   },
   connections: {
@@ -69,8 +72,32 @@ const initialData: NodeEditorData = {
 /**
  * Floating sidebar component with settings and controls
  */
-const FloatingSidebar: React.FC = () => {
+const FloatingSidebar: React.FC<{ showMinimap: boolean; onToggleMinimap: () => void }> = ({
+  showMinimap,
+  onToggleMinimap,
+}) => {
   const [isOpen, setIsOpen] = React.useState(true);
+  const { state, dispatch, actions } = useNodeCanvas();
+
+  const handleGridToggle = React.useCallback(() => {
+    dispatch(actions.updateGridSettings({ showGrid: !state.gridSettings.showGrid }));
+  }, [state.gridSettings.showGrid, dispatch, actions]);
+
+  const handleSnapToggle = React.useCallback(() => {
+    dispatch(actions.updateGridSettings({ snapToGrid: !state.gridSettings.snapToGrid }));
+  }, [state.gridSettings.snapToGrid, dispatch, actions]);
+
+  const handleGridSizeChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const size = Number(e.target.value);
+      dispatch(actions.updateGridSettings({ size }));
+    },
+    [dispatch, actions],
+  );
+
+  const handleZoomReset = React.useCallback(() => {
+    dispatch(actions.setViewport({ ...state.viewport, scale: 1 }));
+  }, [state.viewport, dispatch, actions]);
 
   return (
     <div className={`${classes.floatingSidebar} ${isOpen ? classes.open : classes.closed}`}>
@@ -89,15 +116,15 @@ const FloatingSidebar: React.FC = () => {
           <div className={classes.settingsGroup}>
             <h4 className={classes.settingsTitle}>View Options</h4>
             <label className={classes.settingRow}>
-              <input type="checkbox" defaultChecked />
+              <input type="checkbox" checked={state.gridSettings.showGrid} onChange={handleGridToggle} />
               <span>Show Grid</span>
             </label>
             <label className={classes.settingRow}>
-              <input type="checkbox" defaultChecked />
+              <input type="checkbox" checked={state.gridSettings.snapToGrid} onChange={handleSnapToggle} />
               <span>Snap to Grid</span>
             </label>
             <label className={classes.settingRow}>
-              <input type="checkbox" defaultChecked />
+              <input type="checkbox" checked={showMinimap} onChange={onToggleMinimap} />
               <span>Show Minimap</span>
             </label>
           </div>
@@ -109,39 +136,20 @@ const FloatingSidebar: React.FC = () => {
               <input
                 id="grid-size"
                 type="number"
-                defaultValue={20}
+                value={state.gridSettings.size}
+                onChange={handleGridSizeChange}
                 min={5}
                 max={100}
                 className={classes.numberInput}
               />
             </div>
-            <div className={classes.settingRow}>
-              <label htmlFor="grid-opacity">Opacity:</label>
-              <input
-                id="grid-opacity"
-                type="range"
-                defaultValue={30}
-                min={0}
-                max={100}
-                className={classes.rangeInput}
-              />
-            </div>
-          </div>
-
-          <div className={classes.settingsGroup}>
-            <h4 className={classes.settingsTitle}>Theme</h4>
-            <select className={classes.themeSelect}>
-              <option>Light</option>
-              <option>Dark</option>
-              <option>Auto</option>
-            </select>
           </div>
 
           <div className={classes.settingsGroup}>
             <h4 className={classes.settingsTitle}>Quick Actions</h4>
-            <button className={classes.actionButton}>Export as JSON</button>
-            <button className={classes.actionButton}>Clear Canvas</button>
-            <button className={classes.actionButton}>Reset Zoom</button>
+            <button className={classes.actionButton} onClick={handleZoomReset}>
+              Reset Zoom
+            </button>
           </div>
         </div>
       )}
@@ -180,24 +188,43 @@ export const AdvancedLayoutExample: React.FC = () => {
   const gridConfig: GridLayoutConfig = {
     areas: [
       ["toolbar", "toolbar", "toolbar"],
-      ["canvas", "canvas", "inspector"],
+      ["canvas", "canvas", "canvas"],
       ["statusbar", "statusbar", "statusbar"],
     ],
     rows: [{ size: "auto" }, { size: "1fr" }, { size: "auto" }],
-    columns: [
-      { size: "1fr" },
-      { size: "1fr" },
-      { size: "320px", resizable: true, minSize: 250, maxSize: 500 },
-    ],
+    columns: [{ size: "1fr" }, { size: "1fr" }, { size: "320px", resizable: true, minSize: 250, maxSize: 500 }],
     gap: "0",
   };
 
+  // Create floating overlays component
+  const [showMinimap, setShowMinimap] = React.useState(true);
+
+  const FloatingOverlays: React.FC = () => (
+    <>
+      {/* Floating sidebar overlay */}
+      <FloatingSidebar showMinimap={showMinimap} onToggleMinimap={() => setShowMinimap(!showMinimap)} />
+    </>
+  );
   const gridLayers: LayerDefinition[] = [
     {
       id: "toolbar",
       component: <GridToolbox />,
       gridArea: "toolbar",
       zIndex: 10,
+      positionMode: "fixed",
+      position: {
+        bottom: 0,
+      },
+    },
+    {
+      id: "minimap",
+      component: showMinimap ? <Minimap width={200} height={150} /> : null,
+      positionMode: "absolute",
+      position: { right: 10, bottom: 10 },
+      zIndex: 20,
+      draggable: true,
+      width: 200,
+      height: 150,
     },
     {
       id: "canvas",
@@ -208,8 +235,17 @@ export const AdvancedLayoutExample: React.FC = () => {
     {
       id: "inspector",
       component: <InspectorPanel />,
-      gridArea: "inspector",
-      zIndex: 1,
+      gridArea: "canvas",
+      zIndex: 50,
+      positionMode: "absolute",
+      position: {
+        right: 0,
+        top: 0,
+      },
+      pointerEvents: "auto",
+      width: 320,
+      height: 520,
+      draggable: true,
     },
     {
       id: "statusbar",
@@ -217,27 +253,24 @@ export const AdvancedLayoutExample: React.FC = () => {
       gridArea: "statusbar",
       zIndex: 10,
     },
+    {
+      id: "floating-overlays",
+      component: <FloatingOverlays />,
+      gridArea: "canvas",
+      zIndex: 100,
+      draggable: true,
+      positionMode: "absolute",
+    },
   ];
 
   return (
     <div className={classes.wrapper}>
-      <NodeEditor gridConfig={gridConfig} gridLayers={gridLayers} initialData={initialData} />
-
-      {/* Floating sidebar overlay */}
-      <FloatingSidebar />
-
-      {/* Minimap overlay */}
-      <div className={classes.minimapWrapper}>
-        <Minimap width={220} height={160} />
-      </div>
-
-      {/* Floating help button */}
-      <button className={classes.helpButton} title="Help">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-          <path d="M10 0C4.477 0 0 4.477 0 10s4.477 10 10 10 10-4.477 10-10S15.523 0 10 0zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z" />
-          <path d="M10 14a1 1 0 1 0 0 2 1 1 0 0 0 0-2zM10 5a3 3 0 0 0-3 3h2a1 1 0 1 1 2 0c0 .551-.224 1.05-.586 1.414L9 10.828V12h2v-.586l.707-.707A3.001 3.001 0 0 0 10 5z" />
-        </svg>
-      </button>
+      <NodeEditor
+        gridConfig={gridConfig}
+        gridLayers={gridLayers}
+        initialData={initialData}
+        nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
+      />
     </div>
   );
 };
