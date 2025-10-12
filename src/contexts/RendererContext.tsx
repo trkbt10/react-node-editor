@@ -1,3 +1,6 @@
+/**
+ * @file Context for providing custom renderer components for nodes, ports, and connections
+ */
 import * as React from "react";
 import type { NodeEditorRenderers } from "../types/renderers";
 

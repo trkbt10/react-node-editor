@@ -1,9 +1,8 @@
+/**
+ * @file Context for providing external data references to nodes for async data loading
+ */
 import * as React from "react";
 import type { ExternalDataReference } from "../types/NodeDefinition";
-
-/**
- * Context for providing external data references
- */
 export type ExternalDataContextValue = {
   refs: Record<string, ExternalDataReference>;
 };

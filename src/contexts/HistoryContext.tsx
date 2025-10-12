@@ -1,3 +1,6 @@
+/**
+ * @file Context for managing undo/redo history with editor state snapshots
+ */
 import * as React from "react";
 import type { NodeEditorData } from "../types/core";
 

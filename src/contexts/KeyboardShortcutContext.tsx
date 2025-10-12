@@ -1,3 +1,6 @@
+/**
+ * @file Context for managing global keyboard shortcuts with registration and event handling
+ */
 import * as React from "react";
 
 // Keyboard shortcut types

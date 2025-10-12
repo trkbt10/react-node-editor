@@ -1,3 +1,6 @@
+/**
+ * @file Context for managing editor UI action states like selection, dragging, resizing, and context menus
+ */
 import * as React from "react";
 import {
   NodeId,
