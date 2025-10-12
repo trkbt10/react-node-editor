@@ -95,7 +95,7 @@ const advancedInitialData: NodeEditorData = {
       type: "particle-system",
       position: { x: 380, y: 540 },
       size: { width: 300, height: 280 },
-      data: { title: "Particle Effects" },
+      data: { title: "Particle Effects", externalRefId: "particle-fx" },
     },
     "js-code-1": {
       id: "js-code-1",

@@ -54,35 +54,24 @@ const TaskNodeRenderer = ({
   externalData,
   isLoadingExternalData,
   onStartEdit,
-}: NodeRenderProps) => {
+  node,
+}: NodeRenderProps<TaskData>) => {
   const task = externalData as TaskData | undefined;
-
-  const getStatusClass = (status?: string) => {
-    switch (status) {
-      case "done":
-        return classes.statusDone;
-      case "in-progress":
-        return classes.statusInProgress;
-      case "todo":
-        return classes.statusTodo;
-      default:
-        return classes.statusDefault;
-    }
-  };
-
-  const nodeClasses = [
-    classes.taskNode,
-    isSelected && classes.selected,
-    isDragging && classes.dragging,
-    isDragging ? classes.grabbing : classes.grab,
-    getStatusClass(task?.status),
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const initialLoading = externalData === undefined && isLoadingExternalData;
 
   return (
-    <div className={nodeClasses} onDoubleClick={onStartEdit}>
-      {isLoadingExternalData ? (
+    <div
+      className={classes.taskNode}
+      data-selected={isSelected ? "true" : undefined}
+      data-dragging={isDragging ? "true" : undefined}
+      data-status={task?.status}
+      onDoubleClick={onStartEdit}
+      style={{
+        width: node.size?.width,
+        height: node.size?.height,
+      }}
+    >
+      {initialLoading ? (
         <div className={classes.taskNodeLoading}>Loading...</div>
       ) : task ? (
         <>
@@ -228,7 +217,7 @@ const TaskNodeDefinition: NodeDefinition = {
       position: "right",
     },
   ],
-  renderNode: TaskNodeRenderer,
+  renderNode: TaskNodeRenderer as NodeDefinition["renderNode"],
   renderInspector: TaskInspectorRenderer,
   loadExternalData: async (ref: ExternalDataReference) => {
     // Simulate API delay

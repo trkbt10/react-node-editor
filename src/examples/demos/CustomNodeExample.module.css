@@ -1,42 +1,33 @@
 /* Task Node Renderer Styles */
 .taskNode {
+  box-sizing: border-box;
   padding: 12px;
   border-radius: 8px;
   background-color: #ffffff;
-  border: 2px solid;
+  border: 2px solid #c7c7cc;
   min-height: 80px;
-}
-
-.taskNode.selected {
-  background-color: #e3f2fd;
-}
-
-.taskNode.dragging {
-  opacity: 0.7;
-}
-
-.taskNode.grabbing {
-  cursor: grabbing;
-}
-
-.taskNode.grab {
   cursor: grab;
 }
 
-.taskNode.statusTodo {
+.taskNode[data-selected="true"] {
+  background-color: #e3f2fd;
+}
+
+.taskNode[data-dragging="true"] {
+  opacity: 0.7;
+  cursor: grabbing;
+}
+
+.taskNode[data-status="todo"] {
   border-color: #8e8e93;
 }
 
-.taskNode.statusInProgress {
+.taskNode[data-status="in-progress"] {
   border-color: #007aff;
 }
 
-.taskNode.statusDone {
+.taskNode[data-status="done"] {
   border-color: #34c759;
-}
-
-.taskNode.statusDefault {
-  border-color: #c7c7cc;
 }
 
 .taskNodeLoading {
@@ -74,6 +65,7 @@
 
 /* Task Inspector Styles */
 .inspectorContainer {
+  box-sizing: border-box;
   padding: 16px;
 }
 
@@ -92,17 +84,20 @@
 }
 
 .inspectorInput {
+  box-sizing: border-box;
   width: 100%;
   padding: 4px 8px;
 }
 
 .inspectorTextarea {
+  box-sizing: border-box;
   width: 100%;
   padding: 4px 8px;
   min-height: 60px;
 }
 
 .inspectorSelect {
+  box-sizing: border-box;
   width: 100%;
   padding: 4px 8px;
 }
@@ -114,6 +109,7 @@
 }
 
 .inspectorButton {
+  box-sizing: border-box;
   padding: 8px 16px;
   color: white;
   border: none;
@@ -133,6 +129,7 @@
 
 /* Footer Styles */
 .footer {
+  box-sizing: border-box;
   padding: 8px;
   background: #f5f5f5;
   font-size: 12px;

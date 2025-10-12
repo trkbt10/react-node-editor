@@ -1,0 +1,224 @@
+.wrapper {
+  width: 100%;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.title {
+  margin: 0;
+}
+
+.description {
+  margin: 0;
+  color: var(--node-editor-secondary-label-color, #4a5568);
+}
+
+.list {
+  margin: 0 0 12px;
+  padding-left: 24px;
+  color: var(--node-editor-secondary-label-color, #4a5568);
+}
+
+.portAnchor {
+  position: absolute;
+  cursor: crosshair;
+  pointer-events: all;
+}
+
+.portBadgeWrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  transition: transform 0.18s ease, filter 0.18s ease;
+  filter: drop-shadow(0 1px 3px rgba(15, 23, 42, 0.3));
+}
+
+.portBadgeWrapper[data-port-state="hovered"],
+.portBadgeWrapper[data-port-state="candidate"] {
+  filter: drop-shadow(0 8px 22px rgba(15, 23, 42, 0.35));
+}
+
+.portBadgeSvg {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.portBadgeCanvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.portBadgeHalo {
+  animation: portHaloPulse 2.6s ease-in-out infinite;
+}
+
+.portDirectionPath {
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+}
+
+.portBadgeWrapper[data-port-type="input"] .portDirectionPath {
+  filter: drop-shadow(-2px 0 6px rgba(59, 130, 246, 0.32));
+}
+
+.portBadgeWrapper[data-port-type="output"] .portDirectionPath {
+  filter: drop-shadow(2px 0 6px rgba(249, 115, 22, 0.32));
+}
+
+.portBadgeIcon {
+  pointer-events: none;
+}
+
+.portTypeGlyph {
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  text-transform: uppercase;
+  fill: rgba(17, 24, 39, 0.9);
+}
+
+.portBadgeWrapper[data-port-type="input"] .portTypeGlyph {
+  fill: rgba(37, 99, 235, 0.9);
+}
+
+.portBadgeWrapper[data-port-type="output"] .portTypeGlyph {
+  fill: rgba(194, 65, 12, 0.95);
+}
+
+.portLabel {
+  position: absolute;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+  color: var(--node-editor-secondary-label-color, #4a5568);
+  background: rgba(255, 255, 255, 0.92);
+  padding: 2px 8px;
+  border-radius: 999px;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(4px);
+}
+
+.portLabel[data-port-label-position="left"] {
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.portLabel[data-port-label-position="right"] {
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.portLabel[data-port-label-position="top"] {
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.portLabel[data-port-label-position="bottom"] {
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.connectionInteractiveBase {
+  opacity: 0;
+}
+
+.connectionInteractiveBase path {
+  opacity: 0;
+}
+
+.connectionLayer {
+  pointer-events: none;
+}
+
+.connectionHaloPath {
+  filter: blur(0.6px);
+}
+
+.connectionMainPath {
+  filter: drop-shadow(0 0 6px rgba(15, 23, 42, 0.25));
+}
+
+.connectionEnergyPath {
+  stroke-linecap: round;
+  animation-name: connectionFlow;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.connectionOverlayData {
+  fill: none;
+  stroke-width: 2.2px;
+  stroke-dasharray: 6 13;
+  stroke-linecap: round;
+  opacity: 0.58;
+  mix-blend-mode: multiply;
+}
+
+.connectionOverlayImage {
+  pointer-events: none;
+}
+
+.connectionOverlayImage rect {
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.connectionOverlayAudio {
+  pointer-events: none;
+}
+
+.connectionOverlayAudio circle {
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.connectionOverlayVideo {
+  pointer-events: none;
+}
+
+.connectionOverlayVideo path {
+  mix-blend-mode: screen;
+}
+
+.connectionBadge text {
+  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+@keyframes portHaloPulse {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes connectionFlow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: -220;
+  }
+}
