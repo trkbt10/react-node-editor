@@ -17,7 +17,7 @@ export type SelectionManagerProps = {
  */
 export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) => {
   const { state: nodeEditorState } = useNodeEditor();
-  const { state: actionState, dispatch: actionDispatch, actions } = useEditorActionState();
+  const { dispatch: actionDispatch, actions } = useEditorActionState();
   const { state: canvasState } = useNodeCanvas();
 
   const containerRef = React.useRef<HTMLDivElement>(null);

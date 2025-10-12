@@ -17,7 +17,7 @@ export type CanvasBaseProps = {
  * This component receives events and provides visual support with grid display
  * Does not trap events unless necessary for its own operations
  */
-export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className, showGrid = true }) => {
+export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) => {
   const { state: canvasState, dispatch: canvasDispatch, actions: canvasActions, canvasRef, utils } = useNodeCanvas();
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
   const { state: nodeEditorState } = useNodeEditor();

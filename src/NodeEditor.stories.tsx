@@ -11,7 +11,7 @@ const meta = {
     layout: "fullscreen",
   },
   decorators: [
-    (Story: any) => (
+    (Story: React.ComponentType) => (
       <div style={{ width: "100vw", height: "100vh" }}>
         <Story />
       </div>

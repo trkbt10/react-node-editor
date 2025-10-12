@@ -176,10 +176,6 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
         y: (e.clientY - rect.top) / canvasState.viewport.scale - canvasState.viewport.offset.y,
       };
 
-      // Calculate distance from midpoint
-      const distance = Math.sqrt(Math.pow(clickPos.x - midPoint.x, 2) + Math.pow(clickPos.y - midPoint.y, 2));
-
-      const connectionLength = Math.sqrt(Math.pow(toPos.x - fromPos.x, 2) + Math.pow(toPos.y - fromPos.y, 2));
 
       // Select the connection
       const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey;
