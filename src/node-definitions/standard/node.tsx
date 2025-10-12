@@ -19,6 +19,7 @@ export function StandardNodeRenderer({
       data-is-selected={isSelected}
       data-is-dragging={isDragging}
       onDoubleClick={onStartEdit}
+      style={{ width: node.size?.width, height: node.size?.height }}
     >
       <h3 className={styles.nodeTitle}>
         {node.data.title && node.data.title.trim().length > 0 ? node.data.title : t("untitled")}

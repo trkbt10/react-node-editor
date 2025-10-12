@@ -3,6 +3,8 @@
   border-radius: var(--node-editor-card-border-radius);
   background-color: var(--node-editor-control-background);
   cursor: grab;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .standardNodeRenderer[data-is-selected="true"] {
