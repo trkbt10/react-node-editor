@@ -303,7 +303,6 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
     [config.rows, config.columns, trackSizes],
   );
 
-
   // Find resizable tracks and their positions
   const resizableColumns = React.useMemo(() => {
     return config.columns.map((track, index) => ({ track, index })).filter(({ track }) => track.resizable);
@@ -363,20 +362,20 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
     }
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (!dragStartRef.current) {
+      const dragStart = dragStartRef.current;
+      if (!dragStart) {
         return;
       }
-
-      const deltaX = e.clientX - dragStartRef.current.x;
-      const deltaY = e.clientY - dragStartRef.current.y;
+      const deltaX = e.clientX - dragStart.x;
+      const deltaY = e.clientY - dragStart.y;
       const newPos = {
-        x: dragStartRef.current.initialX + deltaX,
-        y: dragStartRef.current.initialY + deltaY,
+        x: dragStart.initialX + deltaX,
+        y: dragStart.initialY + deltaY,
       };
 
-      setLayerPositions((prev) => ({ ...prev, [dragStartRef.current!.layerId]: newPos }));
+      setLayerPositions((prev) => ({ ...prev, [dragStart.layerId]: newPos }));
 
-      const layer = layers.find((l) => l.id === dragStartRef.current!.layerId);
+      const layer = layers.find((l) => l.id === dragStart.layerId);
       layer?.onPositionChange?.(newPos);
     };
 
