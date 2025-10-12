@@ -2,7 +2,7 @@ import * as React from "react";
 import type { Node, Connection } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import { nodeHasGroupBehavior } from "../../types/behaviors";
-import styles from "./Minimap.module.css";
+import styles from "./NodeMapRenderer.module.css";
 
 export type NodeMapRendererProps = {
   nodes: Record<string, Node>;

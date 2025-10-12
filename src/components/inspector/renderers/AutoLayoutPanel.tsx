@@ -1,9 +1,9 @@
 import * as React from "react";
-import { useNodeEditor } from "../../contexts/node-editor";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { Button } from "../elements";
-import { InspectorDefinitionList, InspectorDefinitionItem, PropertySection } from "./parts";
-import { calculateAutoLayout, calculateHierarchicalLayout, calculateGridLayout, calculateNodesBoundingBox } from "../../utils/autoLayout";
+import { useNodeEditor } from "../../../contexts/node-editor";
+import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { Button } from "../../elements";
+import { InspectorDefinitionList, InspectorDefinitionItem, PropertySection } from "../parts";
+import { calculateAutoLayout, calculateHierarchicalLayout, calculateGridLayout, calculateNodesBoundingBox } from "../../../utils/autoLayout";
 import styles from "./AutoLayoutPanel.module.css";
 
 export type AutoLayoutPanelProps = {

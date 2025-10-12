@@ -1,7 +1,7 @@
 import * as React from "react";
-import { useFeatureFlags, setFeatureFlags, type NodeEditorFeatureFlags } from "../../config/featureFlags";
-import { SwitchInput, Button } from "../elements";
-import { InspectorDefinitionList, InspectorDefinitionItem, PropertySection } from "./parts";
+import { useFeatureFlags, setFeatureFlags, type NodeEditorFeatureFlags } from "../../../config/featureFlags";
+import { SwitchInput, Button } from "../../elements";
+import { InspectorDefinitionList, InspectorDefinitionItem, PropertySection } from "../parts";
 import styles from "./FeatureFlagsPanel.module.css";
 
 export type FeatureFlagsPanelProps = {

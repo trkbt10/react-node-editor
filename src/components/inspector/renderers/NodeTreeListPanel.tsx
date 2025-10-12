@@ -1,14 +1,14 @@
 import * as React from "react";
-import { useNodeEditor } from "../../contexts/node-editor";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeDefinitionList } from "../../contexts/NodeDefinitionContext";
-import { hasGroupBehavior } from "../../types/behaviors";
-import { Node, NodeId } from "../../types/core";
-import { getNodeIcon } from "../../utils/nodeUtils";
-import { CloseIcon, classNames, LockIcon, UnlockIcon } from "../elements";
-import { PropertySection } from "./parts";
+import { useNodeEditor } from "../../../contexts/node-editor";
+import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useNodeDefinitionList } from "../../../contexts/NodeDefinitionContext";
+import { hasGroupBehavior } from "../../../types/behaviors";
+import { Node, NodeId } from "../../../types/core";
+import { getNodeIcon } from "../../../utils/nodeUtils";
+import { CloseIcon, classNames, LockIcon, UnlockIcon } from "../../elements";
+import { PropertySection } from "../parts";
 import styles from "./NodeTreeListPanel.module.css";
-import { useI18n } from "../../i18n";
+import { useI18n } from "../../../i18n";
 
 type DragState = {
   draggingNodeId: NodeId | null;
