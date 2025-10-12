@@ -12,13 +12,12 @@ import classes from "./ParticleSystemNode.module.css";
 import {
   createDefaultParticleData,
   defaultPhysics,
-  getLocalParticleSystemData,
   getRegisteredParticleSystemStore,
   sanitizeParticleData,
-  setLocalParticleSystemData,
   type ParticleData,
 } from "./ParticleSystemDataStore";
 export type { ParticleData } from "./ParticleSystemDataStore";
+import { useParticleSystemStore } from "../contexts/ParticleSystemStoreContext";
 
 type Particle = {
   x: number;
@@ -31,9 +30,8 @@ type Particle = {
 
 const colorToRgba = (color: string, alpha: number) => {
   if (color.startsWith("#")) {
-    const normalized = color.length === 4
-      ? `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`
-      : color;
+    const normalized =
+      color.length === 4 ? `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}` : color;
     const r = parseInt(normalized.slice(1, 3), 16);
     const g = parseInt(normalized.slice(3, 5), 16);
     const b = parseInt(normalized.slice(5, 7), 16);
@@ -51,7 +49,7 @@ const colorToRgba = (color: string, alpha: number) => {
   return color;
 };
 
-export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRenderProps) => {
+export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalData }: NodeRenderProps) => {
   const particleData = externalData as ParticleData | undefined;
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const particlesRef = React.useRef<Particle[]>([]);
@@ -67,129 +65,66 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
   const physicsCodeInput = node.data["physics-code-input"] as string | undefined;
   const sizeInput = node.data["size-input"] as number | undefined;
   const colorInput = node.data["color-input"] as string | undefined;
+  const store = useParticleSystemStore();
   const externalRefId = (node.data["externalRefId"] as string | undefined) ?? particleData?.id ?? node.id;
 
-  const storedConfig = node.data["particleConfig"] as ParticleData | undefined;
-  const externalConfig = particleData
-    ? sanitizeParticleData(particleData, particleData.id, storedConfig ?? getLocalParticleSystemData(particleData.id))
-    : undefined;
-  const baseConfig = storedConfig ?? externalConfig ?? createDefaultParticleData(externalRefId);
-  const initializedRef = React.useRef(false);
+  const initialConfigRef = React.useRef<ParticleData | null>(null);
+
+  if (initialConfigRef.current === null) {
+    const stored = store.getData(externalRefId);
+    const externalSanitized = particleData ? sanitizeParticleData(particleData, externalRefId, stored) : undefined;
+    const resolved = sanitizeParticleData(
+      stored ?? externalSanitized ?? createDefaultParticleData(externalRefId),
+      externalRefId,
+      stored ?? externalSanitized,
+    );
+    store.setData(externalRefId, resolved);
+    initialConfigRef.current = resolved;
+  }
+
+  const [particleConfig, setParticleConfig] = React.useState<ParticleData>(initialConfigRef.current);
+
+  const configSnapshot = React.useMemo(() => JSON.stringify(particleConfig), [particleConfig]);
 
   React.useEffect(() => {
-    if (initializedRef.current) {
-      return;
+    const stored = store.getData(externalRefId);
+    const externalSanitized = particleData
+      ? sanitizeParticleData(particleData, externalRefId, stored ?? particleConfig)
+      : undefined;
+    const resolved = sanitizeParticleData(
+      stored ?? externalSanitized ?? particleConfig,
+      externalRefId,
+      stored ?? externalSanitized ?? particleConfig,
+    );
+    if (JSON.stringify(resolved) !== configSnapshot) {
+      setParticleConfig(resolved);
     }
+  }, [configSnapshot, externalRefId, particleData, store]);
 
-    if (storedConfig) {
-      initializedRef.current = true;
-      return;
+  React.useEffect(() => {
+    const stored = store.getData(externalRefId);
+    const storedSnapshot = stored ? JSON.stringify(stored) : null;
+    if (storedSnapshot !== configSnapshot) {
+      store.setData(externalRefId, particleConfig);
     }
+  }, [configSnapshot, externalRefId, particleConfig, store]);
 
-    if (externalConfig) {
-      initializedRef.current = true;
-      setLocalParticleSystemData(externalConfig.id, externalConfig);
-      onUpdateNode({
-        data: {
-          ...node.data,
-          particleConfig: externalConfig,
-        },
+  const updateParticleConfig = React.useCallback(
+    (updater: (current: ParticleData) => ParticleData) => {
+      setParticleConfig((current) => {
+        const next = sanitizeParticleData(updater(current), externalRefId, current);
+        store.setData(externalRefId, next);
+        return next;
       });
-      return;
-    }
-
-    const fallbackConfig = createDefaultParticleData(externalRefId);
-    initializedRef.current = true;
-    onUpdateNode({
-      data: {
-        ...node.data,
-        particleConfig: fallbackConfig,
-      },
-    });
-    setLocalParticleSystemData(fallbackConfig.id, fallbackConfig);
-  }, [externalConfig, externalRefId, node.data, onUpdateNode, storedConfig]);
-
-  React.useEffect(() => {
-    if (!externalConfig || !storedConfig) {
-      return;
-    }
-
-    const storedSnapshot = JSON.stringify(storedConfig);
-    const externalSnapshot = JSON.stringify(externalConfig);
-
-    if (storedSnapshot === externalSnapshot) {
-      return;
-    }
-
-    setLocalParticleSystemData(externalConfig.id, externalConfig);
-    onUpdateNode({
-      data: {
-        ...node.data,
-        particleConfig: externalConfig,
-      },
-    });
-  }, [externalConfig, storedConfig, node.data, onUpdateNode]);
-
-  React.useEffect(() => {
-    setLocalParticleSystemData(baseConfig.id, baseConfig);
-  }, [baseConfig]);
-
-  const lastEmitCountFromNode = node.data["lastEmitCount"] as number | undefined;
-  const particleConfig = React.useMemo(() => {
-    if (lastEmitCountFromNode === undefined) {
-      return baseConfig;
-    }
-    if (baseConfig.lastEmitCount === lastEmitCountFromNode) {
-      return baseConfig;
-    }
-    return {
-      ...baseConfig,
-      lastEmitCount: lastEmitCountFromNode,
-    };
-  }, [baseConfig, lastEmitCountFromNode]);
+    },
+    [externalRefId, store],
+  );
 
   const targetEmitCount = emitCountInput ?? particleConfig.emitCount ?? 0;
   const resolvedParticleSize = sizeInput ?? particleConfig.particleSize ?? 4;
   const resolvedParticleColor = colorInput ?? particleConfig.particleColor ?? "rgb(168, 85, 247)";
 
-  const [pendingEmitCount, setPendingEmitCount] = React.useState<number | null>(null);
-
-  React.useEffect(() => {
-    if (pendingEmitCount === null) {
-      return;
-    }
-
-    if (lastEmitCountFromNode === pendingEmitCount) {
-      setPendingEmitCount(null);
-    }
-  }, [pendingEmitCount, lastEmitCountFromNode]);
-
-  const displayEmitCount = pendingEmitCount ?? lastEmitCountFromNode ?? particleConfig.lastEmitCount ?? targetEmitCount;
-
-  const updateEmissionMetadata = React.useCallback(
-    (count: number, nextConfig: ParticleData) => {
-      onUpdateNode({
-        data: {
-          ...node.data,
-          lastEmit: Date.now(),
-          lastEmitCount: count,
-          particleConfig: nextConfig,
-        },
-      });
-    },
-    [node.data, onUpdateNode]
-  );
-
-  const persistExternalConfig = React.useCallback((config: ParticleData) => {
-    const store = getRegisteredParticleSystemStore();
-    const sanitized = sanitizeParticleData(config, config.id, config);
-
-    if (store) {
-      store.setData(config.id, sanitized);
-    }
-
-    setLocalParticleSystemData(config.id, sanitized);
-  }, []);
+  const displayEmitCount = particleConfig.lastEmitCount ?? targetEmitCount;
 
   // Update emit position from position input
   React.useEffect(() => {
@@ -223,20 +158,12 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
         });
       }
 
-      const nextConfig = sanitizeParticleData(
-        {
-          ...particleConfig,
-          lastEmitCount: resolvedCount,
-        },
-        particleConfig.id,
-        particleConfig,
-      );
-
-      setPendingEmitCount(resolvedCount);
-      persistExternalConfig(nextConfig);
-      updateEmissionMetadata(resolvedCount, nextConfig);
+      updateParticleConfig((current) => ({
+        ...current,
+        lastEmitCount: resolvedCount,
+      }));
     },
-    [emitCountInput, emitPosition, particleConfig, persistExternalConfig, updateEmissionMetadata]
+    [emitCountInput, emitPosition, particleConfig, updateParticleConfig],
   );
 
   // Handle emit triggers from A and B inputs
@@ -262,18 +189,17 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
   const physicsUpdate = React.useMemo(() => {
     const code = physicsCodeInput || particleConfig.physicsCode || defaultPhysics;
     try {
-      return new Function(
-        "particle",
-        "gravity",
-        "lifetime",
-        code
-      ) as (particle: Particle, gravity: number, lifetime: number) => void;
+      return new Function("particle", "gravity", "lifetime", code) as (
+        particle: Particle,
+        gravity: number,
+        lifetime: number,
+      ) => void;
     } catch (error) {
       console.error("Failed to compile physics code:", error);
       return new Function("particle", "gravity", "lifetime", defaultPhysics) as (
         particle: Particle,
         gravity: number,
-        lifetime: number
+        lifetime: number,
       ) => void;
     }
   }, [physicsCodeInput, particleConfig.physicsCode]);
@@ -324,7 +250,7 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
               particle.x - resolvedParticleSize / 2,
               particle.y - resolvedParticleSize / 2,
               resolvedParticleSize,
-              resolvedParticleSize
+              resolvedParticleSize,
             );
             break;
           case "star":
@@ -370,7 +296,15 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [emitParticles, physicsUpdate, emitPosition, particleConfig, positionInput, resolvedParticleColor, resolvedParticleSize]);
+  }, [
+    emitParticles,
+    physicsUpdate,
+    emitPosition,
+    particleConfig,
+    positionInput,
+    resolvedParticleColor,
+    resolvedParticleSize,
+  ]);
 
   const handleEmit = () => {
     emitParticles(targetEmitCount);
@@ -407,20 +341,10 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
             B: {emitTriggerB ? "🟢" : "⚫"}
           </div>
         )}
-        <div className={classes.inputItem}>
-          Count: {displayEmitCount}
-        </div>
-        <div className={classes.inputItem}>
-          Size: {resolvedParticleSize}px
-        </div>
-        <div className={classes.inputItem}>
-          Color: {resolvedParticleColor}
-        </div>
-        {physicsCodeInput && (
-          <div className={classes.inputItem}>
-            📝 Custom Physics
-          </div>
-        )}
+        <div className={classes.inputItem}>Count: {displayEmitCount}</div>
+        <div className={classes.inputItem}>Size: {resolvedParticleSize}px</div>
+        <div className={classes.inputItem}>Color: {resolvedParticleColor}</div>
+        {physicsCodeInput && <div className={classes.inputItem}>📝 Custom Physics</div>}
       </div>
 
       <div className={classes.controls}>
@@ -432,45 +356,33 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
   );
 };
 
-export const ParticleSystemInspectorRenderer = ({ node, externalData, onUpdateExternalData, onUpdateNode }: InspectorRenderProps) => {
+export const ParticleSystemInspectorRenderer = ({ node, externalData, onUpdateExternalData }: InspectorRenderProps) => {
+  const store = useParticleSystemStore();
+  const externalRefId =
+    (node.data["externalRefId"] as string | undefined) ?? (externalData as ParticleData | undefined)?.id ?? node.id;
   const particleData = externalData as ParticleData | undefined;
-  const storedConfig = node.data["particleConfig"] as ParticleData | undefined;
-  const sourceData = storedConfig ?? particleData;
-  const lastEmitCount = (node.data["lastEmitCount"] as number | undefined) ?? sourceData?.lastEmitCount;
+  const storeConfig = store.getData(externalRefId);
+  const sourceData = storeConfig ?? particleData;
   const [editedData, setEditedData] = React.useState<ParticleData>(
-    sourceData ? sanitizeParticleData(sourceData, sourceData.id, storedConfig) : createDefaultParticleData(node.id)
+    sourceData
+      ? sanitizeParticleData(sourceData, externalRefId, storeConfig)
+      : createDefaultParticleData(externalRefId),
   );
 
   React.useEffect(() => {
     if (!sourceData) {
       return;
     }
-    setEditedData(sanitizeParticleData(sourceData, sourceData.id, storedConfig));
-  }, [sourceData, storedConfig]);
+    setEditedData(sanitizeParticleData(sourceData, externalRefId, storeConfig));
+  }, [externalRefId, sourceData, storeConfig]);
 
   const handleSave = async () => {
     if (onUpdateExternalData) {
-      const targetId = sourceData?.id ?? editedData.id ?? node.id;
-      const prepared = sanitizeParticleData(
-        {
-          ...editedData,
-          id: targetId,
-          lastEmitCount,
-        },
-        targetId,
-        storedConfig,
-      );
+      const targetId = externalRefId;
+      const prepared = sanitizeParticleData({ ...editedData, id: targetId }, targetId, storeConfig);
       setEditedData(prepared);
-      setLocalParticleSystemData(targetId, prepared);
+      store.setData(targetId, prepared);
       await onUpdateExternalData(prepared);
-      if (onUpdateNode) {
-        onUpdateNode({
-          data: {
-            ...node.data,
-            particleConfig: prepared,
-          },
-        });
-      }
     }
   };
 
@@ -492,7 +404,8 @@ export const ParticleSystemInspectorRenderer = ({ node, externalData, onUpdateEx
           <div className={classes.label}>Connected Inputs:</div>
           {node.data["position-input"] ? (
             <div className={classes.inputValue}>
-              Position: ({Math.round((node.data["position-input"] as { x: number; y: number }).x)}, {Math.round((node.data["position-input"] as { x: number; y: number }).y)})
+              Position: ({Math.round((node.data["position-input"] as { x: number; y: number }).x)},{" "}
+              {Math.round((node.data["position-input"] as { x: number; y: number }).y)})
             </div>
           ) : null}
           {node.data["emit-a-input"] !== undefined && (
@@ -519,7 +432,7 @@ export const ParticleSystemInspectorRenderer = ({ node, externalData, onUpdateEx
       <div className={classes.inputInfo}>
         <div className={classes.label}>Last Emission:</div>
         <div className={classes.inputValue}>
-          {lastEmitCount !== undefined ? `${lastEmitCount} particles` : "No emissions yet"}
+          {storeConfig?.lastEmitCount !== undefined ? `${storeConfig.lastEmitCount} particles` : "No emissions yet"}
         </div>
       </div>
 
@@ -756,26 +669,16 @@ export const ParticleSystemNodeDefinition: NodeDefinition = {
   loadExternalData: async (ref: ExternalDataReference) => {
     await new Promise((resolve) => setTimeout(resolve, 200));
     const store = getRegisteredParticleSystemStore();
-    if (store) {
-      const current = store.getData(ref.id);
-      const resolved = sanitizeParticleData(current, ref.id, current);
-      return store.setData(ref.id, resolved);
-    }
-
-    const existing = getLocalParticleSystemData(ref.id);
+    const existing = store.getData(ref.id);
     const resolved = sanitizeParticleData(existing, ref.id, existing);
-    return setLocalParticleSystemData(ref.id, resolved);
+    return store.setData(ref.id, resolved);
   },
   updateExternalData: async (ref: ExternalDataReference, data: unknown) => {
     const store = getRegisteredParticleSystemStore();
-    const current = store?.getData(ref.id) ?? getLocalParticleSystemData(ref.id);
+    const current = store.getData(ref.id);
     const sanitized = sanitizeParticleData(data, ref.id, current ?? undefined);
 
-    if (store) {
-      store.setData(ref.id, sanitized);
-    } else {
-      setLocalParticleSystemData(ref.id, sanitized);
-    }
+    store.setData(ref.id, sanitized);
 
     Object.assign(data as Record<string, unknown>, sanitized);
     await new Promise((resolve) => setTimeout(resolve, 200));

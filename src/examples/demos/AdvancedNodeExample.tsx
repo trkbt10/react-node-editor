@@ -19,6 +19,7 @@ import { AIChatNodeDefinition } from "./advanced/nodes/AIChatNode";
 import { GamePadNodeDefinition } from "./advanced/nodes/GamePadNode";
 import { NumberInputNodeDefinition } from "./advanced/nodes/NumberInputNode";
 import { JavaScriptCodeNodeDefinition } from "./advanced/nodes/JavaScriptCodeNode";
+import { ParticleSystemStoreProvider } from "./advanced/contexts/ParticleSystemStoreContext";
 import classes from "./AdvancedNodeExample.module.css";
 
 // =============================================
@@ -197,7 +198,6 @@ export const AdvancedNodeExample: React.FC = () => {
     // Propagate data through connections
     const updatedNodes = { ...data.nodes };
     let hasChanges = false;
-
     Object.values(data.connections).forEach((connection) => {
       const fromNode = updatedNodes[connection.fromNodeId];
       const toNode = updatedNodes[connection.toNodeId];
@@ -279,32 +279,34 @@ export const AdvancedNodeExample: React.FC = () => {
   );
 
   return (
-    <div className={classes.content}>
-      <NodeEditor
-        gridConfig={gridConfig}
-        gridLayers={gridLayers}
-        data={editorData}
-        nodeDefinitions={[
-          CodeNodeDefinition,
-          ChartNodeDefinition,
-          FormNodeDefinition,
-          MusicPlayerNodeDefinition,
-          ParticleSystemNodeDefinition,
-          ParticleSizeNodeDefinition,
-          ParticleColorNodeDefinition,
-          AIChatNodeDefinition,
-          GamePadNodeDefinition,
-          NumberInputNodeDefinition,
-          JavaScriptCodeNodeDefinition,
-        ]}
-        externalDataRefs={advancedExternalDataRefs}
-        onDataChange={onDataChange}
-        onSave={async (data) => {
-          console.log("Saving advanced editor data:", data);
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-        }}
-      />
-    </div>
+    <ParticleSystemStoreProvider>
+      <div className={classes.content}>
+        <NodeEditor
+          gridConfig={gridConfig}
+          gridLayers={gridLayers}
+          data={editorData}
+          nodeDefinitions={[
+            CodeNodeDefinition,
+            ChartNodeDefinition,
+            FormNodeDefinition,
+            MusicPlayerNodeDefinition,
+            ParticleSystemNodeDefinition,
+            ParticleSizeNodeDefinition,
+            ParticleColorNodeDefinition,
+            AIChatNodeDefinition,
+            GamePadNodeDefinition,
+            NumberInputNodeDefinition,
+            JavaScriptCodeNodeDefinition,
+          ]}
+          externalDataRefs={advancedExternalDataRefs}
+          onDataChange={onDataChange}
+          onSave={async (data) => {
+            console.log("Saving advanced editor data:", data);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+          }}
+        />
+      </div>
+    </ParticleSystemStoreProvider>
   );
 };
 

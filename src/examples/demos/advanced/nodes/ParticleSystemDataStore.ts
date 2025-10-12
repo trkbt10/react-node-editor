@@ -95,17 +95,29 @@ export type ParticleSystemDataStore = {
 
 const localStore = new Map<string, ParticleData>();
 
-let particleSystemDataStore: ParticleSystemDataStore | null = null;
-
-export const registerParticleSystemDataStore = (store: ParticleSystemDataStore | null) => {
-  particleSystemDataStore = store;
-};
-
-export const getRegisteredParticleSystemStore = (): ParticleSystemDataStore | null => particleSystemDataStore;
-
 export const getLocalParticleSystemData = (refId: string): ParticleData | undefined => localStore.get(refId);
 
 export const setLocalParticleSystemData = (refId: string, data: ParticleData): ParticleData => {
   localStore.set(refId, data);
   return data;
 };
+
+export const getLocalStoreEntries = (): Array<[string, ParticleData]> => Array.from(localStore.entries());
+
+export const getLocalStoreAdapter = (): ParticleSystemDataStore => ({
+  getData: getLocalParticleSystemData,
+  setData: setLocalParticleSystemData,
+  updateData: (refId, updater) => {
+    const next = updater(localStore.get(refId));
+    localStore.set(refId, next);
+    return next;
+  },
+});
+
+let registeredStore: ParticleSystemDataStore | null = null;
+
+export const registerParticleSystemDataStore = (store: ParticleSystemDataStore | null) => {
+  registeredStore = store;
+};
+
+export const getRegisteredParticleSystemStore = (): ParticleSystemDataStore => registeredStore ?? getLocalStoreAdapter();

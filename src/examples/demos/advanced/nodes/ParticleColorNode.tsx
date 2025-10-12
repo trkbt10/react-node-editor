@@ -52,6 +52,7 @@ export const ParticleColorRenderer = ({ node, isSelected, isDragging, externalDa
   const colorData = externalData as ParticleColorData | undefined;
   const rgbColor = ensureRgb(colorData?.color ?? "rgb(249, 115, 22)");
   const [hexColor, setHexColor] = React.useState(rgbToHex(rgbColor));
+  const lastExternalColorRef = React.useRef<string | undefined>(undefined);
 
   React.useEffect(() => {
     setHexColor(rgbToHex(ensureRgb(colorData?.color ?? rgbColor)));
@@ -59,15 +60,17 @@ export const ParticleColorRenderer = ({ node, isSelected, isDragging, externalDa
 
   React.useEffect(() => {
     if (!colorData?.color) {
+      lastExternalColorRef.current = undefined;
       return;
     }
 
-    const currentOutput = node.data["color-output"] as string | undefined;
     const currentColor = ensureRgb(colorData.color);
 
-    if (currentOutput === currentColor) {
+    if (lastExternalColorRef.current === currentColor || node.data["color-output"] === currentColor) {
       return;
     }
+
+    lastExternalColorRef.current = currentColor;
 
     onUpdateNode({
       data: {
@@ -76,7 +79,7 @@ export const ParticleColorRenderer = ({ node, isSelected, isDragging, externalDa
         "color-output": currentColor,
       },
     });
-  }, [colorData?.color, node, onUpdateNode]);
+  }, [colorData?.color, node.data, onUpdateNode]);
 
   const applyColor = (nextHex: string) => {
     const nextRgb = ensureRgb(nextHex);

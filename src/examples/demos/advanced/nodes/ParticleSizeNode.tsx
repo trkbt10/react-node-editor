@@ -21,23 +21,26 @@ export type ParticleSizeData = {
 export const ParticleSizeRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRenderProps) => {
   const sizeData = externalData as ParticleSizeData | undefined;
   const [value, setValue] = React.useState(sizeData?.value ?? 4);
+  const lastExternalValueRef = React.useRef<number | undefined>(undefined);
 
   React.useEffect(() => {
     if (sizeData?.value !== undefined) {
       setValue(sizeData.value);
+      lastExternalValueRef.current = sizeData.value;
     }
   }, [sizeData?.value]);
 
   React.useEffect(() => {
     if (sizeData?.value === undefined) {
+      lastExternalValueRef.current = undefined;
       return;
     }
 
-    const currentOutput = node.data["size-output"] as number | undefined;
-
-    if (currentOutput === sizeData.value) {
+    if (lastExternalValueRef.current === sizeData.value) {
       return;
     }
+
+    lastExternalValueRef.current = sizeData.value;
 
     onUpdateNode({
       data: {
@@ -46,7 +49,7 @@ export const ParticleSizeRenderer = ({ node, isSelected, isDragging, externalDat
         "size-output": sizeData.value,
       },
     });
-  }, [node, onUpdateNode, sizeData?.value]);
+  }, [node.data, onUpdateNode, sizeData?.value]);
 
   const handleChange = (newValue: number) => {
     setValue(newValue);

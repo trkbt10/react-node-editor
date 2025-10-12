@@ -22,6 +22,7 @@ export type NumberInputData = {
 export const NumberInputRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRenderProps) => {
   const numberData = externalData as NumberInputData | undefined;
   const [value, setValue] = React.useState(numberData?.value || 0);
+  const lastExternalValueRef = React.useRef<number | undefined>(undefined);
 
   React.useEffect(() => {
     if (numberData?.value !== undefined) {
@@ -31,14 +32,15 @@ export const NumberInputRenderer = ({ node, isSelected, isDragging, externalData
 
   React.useEffect(() => {
     if (numberData?.value === undefined) {
+      lastExternalValueRef.current = undefined;
       return;
     }
 
-    const currentValueOutput = node.data["value-output"] as number | undefined;
-
-    if (currentValueOutput === numberData.value) {
+    if (lastExternalValueRef.current === numberData.value) {
       return;
     }
+
+    lastExternalValueRef.current = numberData.value;
 
     onUpdateNode({
       data: {
@@ -47,7 +49,7 @@ export const NumberInputRenderer = ({ node, isSelected, isDragging, externalData
         "value-output": numberData.value,
       },
     });
-  }, [node, numberData?.value, onUpdateNode]);
+  }, [node.data, numberData?.value, onUpdateNode]);
 
   const handleChange = (newValue: number) => {
     setValue(newValue);
