@@ -50,8 +50,8 @@
   --node-editor-font-size-sm: 0.75rem;
   --node-editor-font-size-xs: 0.6875rem;
 
-  --node-editor-grid-color: #3a6ea5;
-  --node-editor-grid-opacity: 0.25;
+  --node-editor-grid-color: #000080;
+  --node-editor-grid-opacity: 0.18;
 
   --node-editor-inspector-shadow: inset -2px -2px #ffffff, inset 2px 2px rgba(0, 0, 0, 0.4);
   --node-editor-inspector-header-shadow: inset -1px -1px #ffffff, inset 1px 1px rgba(0, 0, 0, 0.4);

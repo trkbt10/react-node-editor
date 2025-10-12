@@ -58,8 +58,8 @@
   --node-editor-font-size-xs: 0.75rem;
 
   /* Canvas grid - subtle CRT scan lines */
-  --node-editor-grid-color: rgba(0, 255, 0, 0.15);
-  --node-editor-grid-opacity: 0.3;
+  --node-editor-grid-color: #00ff41;
+  --node-editor-grid-opacity: 0.22;
 
   /* Inspector shadows - sharp CRT glow */
   --node-editor-inspector-shadow: 0 0 8px rgba(0, 255, 0, 0.5);

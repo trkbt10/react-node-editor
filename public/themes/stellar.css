@@ -61,8 +61,8 @@
   --node-editor-font-size-xs: 0.75rem;
 
   /* Canvas grid */
-  --node-editor-grid-color: rgba(0, 0, 0, 0.1);
-  --node-editor-grid-opacity: 0.15;
+  --node-editor-grid-color: #202020;
+  --node-editor-grid-opacity: 0.16;
 
   /* Inspector shadows - subtle */
   --node-editor-inspector-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
