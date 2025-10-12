@@ -1,13 +1,66 @@
-.connectionGroup { cursor: pointer; }
+.connectionGroup {
+  cursor: pointer;
+}
+
 /* Apply shadow only to the base stroke to avoid blurring stripes */
-.connectionGroup:hover .connectionBase { filter: drop-shadow(0 0 4px rgba(0,0,0,0.2)); }
-.connectionSelected .connectionBase { filter: drop-shadow(0 0 6px var(--node-editor-accent-color, #0066cc)); }
-.connectionHovered { opacity: 0.8; }
-.connectionDragging { opacity: 0.6; }
-.connectionFlowStripe { animation: connectionFlow 1.2s linear infinite; }
-@keyframes connectionFlow { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -24; } }
+.connectionGroup:hover .connectionBase {
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.2));
+}
+
+.connectionGroup[data-selected="true"] .connectionBase {
+  filter: drop-shadow(0 0 6px var(--node-editor-accent-color, #0066cc));
+}
+
+.connectionGroup[data-hovered="true"] {
+  opacity: 0.8;
+}
+
+.connectionGroup[data-dragging="true"] {
+  opacity: 0.6;
+}
+
+.connectionFlowStripe {
+  animation: connectionFlow 1.2s linear infinite;
+  pointer-events: none;
+  stroke-dasharray: 10 14;
+}
+
+.connectionFlowStripe[data-stripe-variant="accent"] {
+  stroke: var(--node-editor-accent-color, #0066cc);
+  stroke-opacity: 0.9;
+}
+
+.connectionFlowStripe[data-stripe-variant="background"] {
+  stroke: var(--node-editor-control-background, #ffffff);
+  stroke-dashoffset: -12;
+  stroke-opacity: 0.6;
+}
+
+.connectionBase {
+  transition: stroke 0.2s, stroke-width 0.2s;
+  pointer-events: stroke;
+}
+
+.connectionArrowHead {
+  transition: fill 0.2s;
+}
+
+.connectionDirection {
+  pointer-events: none;
+}
+
+.connectionArrowOverlay {
+  pointer-events: none;
+}
+
+@keyframes connectionFlow {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -24;
+  }
+}
 
 /* Specific path classes */
-.connectionBase {}
-.connectionStripeAccent {}
-.connectionStripeBg {}

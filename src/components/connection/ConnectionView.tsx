@@ -7,7 +7,6 @@ import { calculateBezierPath, calculateBezierControlPoints, cubicBezierPoint, cu
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
 import { useNodeDefinition } from "../../contexts/node-definitions";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
-import { classNames } from "../elements";
 import styles from "./ConnectionView.module.css";
 
 export type ConnectionViewProps = {
@@ -161,120 +160,108 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
   const defaultRender = React.useCallback(
     () => (
       <g
-      className={classNames(
-        styles.connectionGroup,
-        isSelected && styles.connectionSelected,
-        isHovered && styles.connectionHovered,
-        isDragging && styles.connectionDragging
-      )}
-      shapeRendering="geometricPrecision"
-      data-connection-id={connection.id}
-    >
-      {/* Base connection line (hit test only on stroke). Draw first, stripes overlay. */}
-      <path
-        d={pathData}
-        fill="none"
-        stroke={strokeColor}
-        strokeWidth={isSelected || isHovered ? 3 : 2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        vectorEffect="non-scaling-stroke"
-        style={{
-          transition: "stroke 0.2s, stroke-width 0.2s",
-          pointerEvents: "stroke",
-        }}
-        className={styles.connectionBase}
-        onPointerDown={handlePointerDown}
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
-        onContextMenu={(e) => {
-          e.stopPropagation();
-          onContextMenu?.(e, connection.id);
-        }}
-      />
-
-      {/* Flow stripes when hovered or selected (render after base so they appear on top) */}
-      {stripesActive && (
-        <>
-          {/* Accent stripes */}
-          <path
-            d={pathData}
-            fill="none"
-            stroke={"var(--node-editor-accent-color, #0066cc)"}
-            strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            vectorEffect="non-scaling-stroke"
-            className={classNames(styles.connectionFlowStripe, styles.connectionStripeAccent)}
-            style={{
-              pointerEvents: "none",
-              strokeDasharray: "10 14",
-              strokeOpacity: stripesActive ? 0.9 : 0.7,
-            }}
-            data-testid="connection-flow-stripe"
-          />
-          {/* Background stripes, phase-shifted */}
-          <path
-            d={pathData}
-            fill="none"
-            stroke={"var(--node-editor-control-background, #ffffff)"}
-            strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            vectorEffect="non-scaling-stroke"
-            className={classNames(styles.connectionFlowStripe, styles.connectionStripeBg)}
-            style={{
-              pointerEvents: "none",
-              strokeDasharray: "10 14",
-              strokeDashoffset: -12,
-              strokeOpacity: 0.6,
-            }}
-            data-testid="connection-flow-stripe"
-          />
-        </>
-      )}
-
-      {/* Direction chevron at mid-point, pointing to 'to' */}
-      <g
-        transform={`translate(${midAndAngle.x}, ${midAndAngle.y}) rotate(${midAndAngle.angle})`}
-        style={{ pointerEvents: "none" }}
+        className={styles.connectionGroup}
+        data-selected={isSelected}
+        data-hovered={isHovered}
+        data-dragging={isDragging}
+        data-adjacent-node-selected={isAdjacentToSelectedNode}
+        shapeRendering="geometricPrecision"
+        data-connection-id={connection.id}
       >
+        {/* Base connection line (hit test only on stroke). Draw first, stripes overlay. */}
         <path
-          d="M -6 -4 L 0 0 L -6 4"
+          d={pathData}
           fill="none"
           stroke={strokeColor}
-          strokeWidth={2}
+          strokeWidth={isSelected || isHovered ? 3 : 2}
           strokeLinecap="round"
           strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+          className={styles.connectionBase}
+          onPointerDown={handlePointerDown}
+          onPointerEnter={handlePointerEnter}
+          onPointerLeave={handlePointerLeave}
+          onContextMenu={(e) => {
+            e.stopPropagation();
+            onContextMenu?.(e, connection.id);
+          }}
+        />
+
+        {/* Flow stripes when hovered or selected (render after base so they appear on top) */}
+        {stripesActive && (
+          <>
+            {/* Accent stripes */}
+            <path
+              d={pathData}
+              fill="none"
+              strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+              className={styles.connectionFlowStripe}
+              data-stripe-variant="accent"
+              data-testid="connection-flow-stripe"
+            />
+            {/* Background stripes, phase-shifted */}
+            <path
+              d={pathData}
+              fill="none"
+              strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+              className={styles.connectionFlowStripe}
+              data-stripe-variant="background"
+              data-testid="connection-flow-stripe"
+            />
+          </>
+        )}
+
+        {/* Direction chevron at mid-point, pointing to 'to' */}
+        <g
+          transform={`translate(${midAndAngle.x}, ${midAndAngle.y}) rotate(${midAndAngle.angle})`}
+          className={styles.connectionDirection}
+        >
+          <path
+            d="M -6 -4 L 0 0 L -6 4"
+            fill="none"
+            stroke={strokeColor}
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+
+        {/* Arrow marker at the end */}
+        <defs>
+          <marker
+            id={`arrow-${connection.id}`}
+            viewBox="0 0 10 10"
+            refX="10"  
+            refY="5"
+            markerWidth="10"
+            markerHeight="10"
+            markerUnits="userSpaceOnUse"
+            orient="auto"
+          >
+            <path
+              d="M 0 0 L 10 5 L 0 10 z"
+              fill={strokeColor}
+              className={styles.connectionArrowHead}
+            />
+          </marker>
+        </defs>
+
+        {/* Apply arrow marker to the visible path */}
+        <path
+          d={pathData}
+          fill="none"
+          stroke="transparent"
+          markerEnd={`url(#arrow-${connection.id})`}
+          vectorEffect="non-scaling-stroke"
+          className={styles.connectionArrowOverlay}
         />
       </g>
-
-      {/* Arrow marker at the end */}
-      <defs>
-        <marker
-          id={`arrow-${connection.id}`}
-          viewBox="0 0 10 10"
-          refX="10"  
-          refY="5"
-          markerWidth="10"
-          markerHeight="10"
-          markerUnits="userSpaceOnUse"
-          orient="auto"
-        >
-          <path d="M 0 0 L 10 5 L 0 10 z" fill={strokeColor} style={{ transition: "fill 0.2s" }} />
-        </marker>
-      </defs>
-
-      {/* Apply arrow marker to the visible path */}
-      <path
-        d={pathData}
-        fill="none"
-        stroke="transparent"
-        markerEnd={`url(#arrow-${connection.id})`}
-        style={{ pointerEvents: "none" }}
-        vectorEffect="non-scaling-stroke"
-      />
-    </g>
     ),
     [
       connection.id,
@@ -286,6 +273,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
       isSelected,
       isHovered,
       isDragging,
+      isAdjacentToSelectedNode,
       handlePointerDown,
       handlePointerEnter,
       handlePointerLeave,
@@ -378,3 +366,5 @@ const areEqual = (prevProps: ConnectionViewProps, nextProps: ConnectionViewProps
 export const ConnectionView = React.memo(ConnectionViewComponent, areEqual);
 
 ConnectionView.displayName = "ConnectionView";
+
+// Debug note: Verified ConnectionRenderContext shape in src/types/NodeDefinition.ts while updating data-attribute driven connection styling.
