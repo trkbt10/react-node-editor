@@ -2,13 +2,10 @@ import * as React from "react";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { FloatingContainer } from "../shared/FloatingContainer";
 import styles from "./GridToolbox.module.css";
 
 export type GridToolboxProps = {
-  className?: string;
-  useFloatingContainer?: boolean;
-  position?: "top" | "bottom" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  // No props needed - layout is handled by GridLayout
 }
 
 const ZOOM_PRESETS = [5, 10, 25, 50, 100, 200, 400, 800] as const;
@@ -64,11 +61,7 @@ const StatusIndicator = React.memo<{
 ));
 StatusIndicator.displayName = "StatusIndicator";
 
-export const GridToolbox: React.FC<GridToolboxProps> = React.memo(({ 
-  className, 
-  useFloatingContainer = false,
-  position = "bottom"
-}) => {
+export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
   const { state: canvasState, actions: canvasActions, dispatch: canvasDispatch } = useNodeCanvas();
   const { state: editorState } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
@@ -258,8 +251,8 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(({
     return options;
   }, [zoomPercentage]);
 
-  const toolboxContent = (
-    <>
+  return (
+    <div className={styles.toolbar}>
       <div className={styles.toolbarSection}>
         {/* Zoom controls */}
         <ZoomButton
@@ -373,24 +366,10 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(({
       <div className={styles.toolbarSection}>
         {/* Node count indicator */}
         <StatusIndicator label="Nodes" value={nodeCount} />
-        
+
         {/* Connection count indicator */}
         <StatusIndicator label="Connections" value={connectionCount} />
       </div>
-    </>
-  );
-
-  if (useFloatingContainer) {
-    return (
-      <FloatingContainer position={position} className={className}>
-        {toolboxContent}
-      </FloatingContainer>
-    );
-  }
-
-  return (
-    <div className={`${styles.toolbar} ${className || ""}`}>
-      {toolboxContent}
     </div>
   );
 });

@@ -6,12 +6,6 @@ import { classNames } from "../elements";
 import styles from "./DebugOverlay.module.css";
 
 export type DebugOverlayProps = {
-  /** Position of the debug overlay */
-  position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
-  /** Custom className */
-  className?: string;
-  /** Show/hide the debug overlay */
-  visible?: boolean;
   /** Which debug information to show */
   showSections?: {
     viewport?: boolean;
@@ -27,9 +21,6 @@ export type DebugOverlayProps = {
  * Useful for development and debugging
  */
 export const DebugOverlay: React.FC<DebugOverlayProps> = ({
-  position = "top-left",
-  className,
-  visible = true,
   showSections = {
     viewport: true,
     nodes: true,
@@ -57,15 +48,6 @@ export const DebugOverlay: React.FC<DebugOverlayProps> = ({
     }
   }, [showSections.performance]);
 
-  if (!visible) {return null;}
-
-  const positionClass = {
-    "top-left": styles.topLeft,
-    "top-right": styles.topRight,
-    "bottom-left": styles.bottomLeft,
-    "bottom-right": styles.bottomRight,
-  }[position];
-
   const nodeCount = Object.keys(editorState.nodes).length;
   const connectionCount = Object.keys(editorState.connections).length;
   const selectedNodeCount = actionState.selectedNodeIds.length;
@@ -74,9 +56,7 @@ export const DebugOverlay: React.FC<DebugOverlayProps> = ({
     <div
       className={classNames(
         styles.debugOverlay,
-        positionClass,
-        isCollapsed && styles.collapsed,
-        className
+        isCollapsed && styles.collapsed
       )}
     >
       <div className={styles.debugHeader}>

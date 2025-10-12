@@ -6,23 +6,18 @@ import styles from "./Minimap.module.css";
 import { NodeMapRenderer } from "./NodeMapRenderer";
 
 export type MinimapProps = {
-  width?: number;
-  height?: number;
-  position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
-  className?: string;
-  /** Show/hide the minimap */
-  visible?: boolean;
   /** Scale factor for minimap rendering */
   scale?: number;
+  /** Width of the minimap (in pixels) */
+  width?: number;
+  /** Height of the minimap (in pixels) */
+  height?: number;
 }
 
 export const Minimap: React.FC<MinimapProps> = ({
+  scale = 0.1,
   width = 200,
-  height = 150,
-  position = "top-right",
-  className,
-  visible = true,
-  scale = 0.1
+  height = 150
 }) => {
   const { state } = useNodeEditor();
   const { state: canvasState, dispatch: canvasDispatch, actions: canvasActions, canvasRef: editorCanvasRef } = useNodeCanvas();
@@ -236,13 +231,9 @@ export const Minimap: React.FC<MinimapProps> = ({
     }
   }, [hasDragged, isDragging, dragStart, navigateToPosition]);
 
-  const positionClass = position.replace("-", "");
-
-  if (!visible) {return null;}
-
   return (
-    <div 
-      className={`${styles.minimapContainer} ${styles[positionClass]} ${className || ""}`}
+    <div
+      className={styles.minimapContainer}
       style={{ width, height }}
     >
       <div className={styles.minimapHeader}>
