@@ -61,13 +61,9 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   onPortPointerUp,
   onPortPointerEnter,
   onPortPointerLeave,
-  _connectingPort,
   hoveredPort,
   connectedPorts,
   connectablePorts,
-  _nodeRenderer,
-  _externalData,
-  _onUpdateNode,
 }) => {
   const { dispatch: nodeEditorDispatch, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
   const { state: actionState } = useEditorActionState();

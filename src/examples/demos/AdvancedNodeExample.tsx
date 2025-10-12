@@ -58,16 +58,34 @@ const CodeEditorRenderer = ({ node, isSelected, isDragging, externalData, onUpda
     }
   };
 
+  const getTextColor = (bgColor: string) => {
+    // Simple contrast calculation
+    const color = bgColor.replace("#", "");
+    const r = parseInt(color.slice(0, 2), 16);
+    const g = parseInt(color.slice(2, 4), 16);
+    const b = parseInt(color.slice(4, 6), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 128 ? "#000000" : "#ffffff";
+  };
+
+  const languageColor = getLanguageColor(codeData?.language);
+  const textColor = getTextColor(languageColor);
+
   return (
     <div
       style={{
         padding: "12px",
         borderRadius: "8px",
         backgroundColor: isSelected ? "#f3f4f6" : "#ffffff",
-        border: `2px solid ${getLanguageColor(codeData?.language)}`,
+        border: `2px solid ${languageColor}`,
         opacity: isDragging ? 0.7 : 1,
         minHeight: "120px",
+        width: node.size?.width,
+        height: node.size?.height,
         fontFamily: "monospace",
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
       }}
     >
       <div
@@ -82,7 +100,10 @@ const CodeEditorRenderer = ({ node, isSelected, isDragging, externalData, onUpda
           style={{
             fontSize: "12px",
             fontWeight: "bold",
-            color: getLanguageColor(codeData?.language),
+            backgroundColor: languageColor,
+            padding: "2px 8px",
+            borderRadius: "4px",
+            color: textColor,
           }}
         >
           {codeData?.language?.toUpperCase() || "CODE"}
@@ -139,7 +160,7 @@ const CodeEditorRenderer = ({ node, isSelected, isDragging, externalData, onUpda
   );
 };
 
-const CodeInspectorRenderer = ({ _node, externalData, onUpdateExternalData }: InspectorRenderProps) => {
+const CodeInspectorRenderer = ({ externalData, onUpdateExternalData }: InspectorRenderProps) => {
   const codeData = externalData as CodeData | undefined;
   const [editedData, setEditedData] = React.useState<CodeData>({
     id: codeData?.id || "",
@@ -315,7 +336,7 @@ type ChartData = {
   data: Array<{ label: string; value: number; color?: string }>;
 };
 
-const ChartRenderer = ({ _node, _isSelected, _isDragging, externalData }: NodeRenderProps) => {
+const ChartRenderer = ({ isSelected, isDragging, externalData }: NodeRenderProps) => {
   const chartData = externalData as ChartData | undefined;
 
   const renderMiniChart = () => {
@@ -345,7 +366,7 @@ const ChartRenderer = ({ _node, _isSelected, _isDragging, externalData }: NodeRe
           </div>
         );
 
-      case "line":
+      case "line": {
         const points = chartData.data
           .map((item, index) => {
             const x = (index / (chartData.data.length - 1)) * 100;
@@ -364,8 +385,9 @@ const ChartRenderer = ({ _node, _isSelected, _isDragging, externalData }: NodeRe
             })}
           </svg>
         );
+      }
 
-      case "pie":
+      case "pie": {
         let currentAngle = 0;
         const radius = chartHeight / 2 - 5;
         const centerX = 50;
@@ -398,6 +420,7 @@ const ChartRenderer = ({ _node, _isSelected, _isDragging, externalData }: NodeRe
             })}
           </svg>
         );
+      }
 
       default:
         return null;
@@ -611,7 +634,7 @@ type FormData = {
   }>;
 };
 
-const FormRenderer = ({ _node, _isSelected, _isDragging, externalData }: NodeRenderProps) => {
+const FormRenderer = ({ isSelected, isDragging, externalData }: NodeRenderProps) => {
   const formData = externalData as FormData | undefined;
 
   return (
@@ -876,7 +899,7 @@ const CodeNodeDefinition: NodeDefinition = {
       errors: [],
     };
   },
-  updateExternalData: async (_ref: _ExternalDataReference, data: unknown) => {
+  updateExternalData: async (_ref: ExternalDataReference, data: unknown) => {
     await new Promise((resolve) => setTimeout(resolve, 300));
     console.log("Updated code data:", data);
   },
@@ -921,7 +944,7 @@ const ChartNodeDefinition: NodeDefinition = {
       ],
     };
   },
-  updateExternalData: async (_ref: _ExternalDataReference, data: unknown) => {
+  updateExternalData: async (_ref: ExternalDataReference, data: unknown) => {
     await new Promise((resolve) => setTimeout(resolve, 200));
     console.log("Updated chart data:", data);
   },
@@ -970,7 +993,7 @@ const FormNodeDefinition: NodeDefinition = {
       ],
     };
   },
-  updateExternalData: async (_ref: _ExternalDataReference, data: unknown) => {
+  updateExternalData: async (_ref: ExternalDataReference, data: unknown) => {
     await new Promise((resolve) => setTimeout(resolve, 250));
     console.log("Updated form data:", data);
   },

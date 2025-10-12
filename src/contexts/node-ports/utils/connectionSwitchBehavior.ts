@@ -21,7 +21,7 @@ type BehaviorContext = {
   behavior: ConnectionSwitchBehavior;
   existingConnections: Connection[];
   maxConnections?: number;
-}
+};
 
 /**
  * Parameters required to plan how a drag between two ports should be handled.
@@ -32,7 +32,7 @@ export type ConnectionPlanParams = {
   nodes: Record<NodeId, Node>;
   connections: Record<string, Connection>;
   getNodeDefinition: (type: string) => NodeDefinition | undefined;
-}
+};
 
 /**
  * Result of evaluating how to handle a connection drag.
@@ -41,11 +41,15 @@ export type ConnectionPlan = {
   behavior: ConnectionSwitchBehavior;
   connection: Omit<Connection, "id"> | null;
   connectionIdsToReplace: string[];
-}
+};
 
 const normalizeMaxConnections = (value: number | "unlimited" | undefined): number | undefined => {
-  if (value === "unlimited") {return undefined;}
-  if (typeof value === "number") {return value;}
+  if (value === "unlimited") {
+    return undefined;
+  }
+  if (typeof value === "number") {
+    return value;
+  }
   return DEFAULT_MAX_CONNECTIONS;
 };
 
@@ -58,14 +62,14 @@ const collectConnectionsForPort = (port: Port, connections: Record<string, Conne
   Object.values(connections).filter((connection) =>
     port.type === "output"
       ? connection.fromNodeId === port.nodeId && connection.fromPortId === port.id
-      : connection.toNodeId === port.nodeId && connection.toPortId === port.id
+      : connection.toNodeId === port.nodeId && connection.toPortId === port.id,
   );
 
 const determineBehaviorForPort = (
   port: Port,
   nodes: Record<NodeId, Node>,
   connections: Record<string, Connection>,
-  getNodeDefinition: (type: string) => NodeDefinition | undefined
+  getNodeDefinition: (type: string) => NodeDefinition | undefined,
 ): BehaviorContext => {
   const node = nodes[port.nodeId];
   const definition = node ? getNodeDefinition(node.type) : undefined;
@@ -90,9 +94,11 @@ const determineBehaviorForPort = (
 
 const createConnectionMapWithout = (
   connections: Record<string, Connection>,
-  toRemove: Connection[]
+  toRemove: Connection[],
 ): Record<string, Connection> => {
-  if (toRemove.length === 0) {return connections;}
+  if (toRemove.length === 0) {
+    return connections;
+  }
   const filtered: Record<string, Connection> = { ...connections };
   toRemove.forEach((connection) => {
     delete filtered[connection.id];
@@ -128,7 +134,7 @@ export const planConnectionChange = ({
       }
 
       const duplicatesExisting = behaviorContext.existingConnections.some((existingConnection) =>
-        isSameConnection(existingConnection, connection)
+        isSameConnection(existingConnection, connection),
       );
 
       if (duplicatesExisting) {
@@ -163,10 +169,10 @@ export const getConnectionSwitchContext = (
   port: Port,
   nodes: Record<NodeId, Node>,
   connections: Record<string, Connection>,
-  getNodeDefinition: (type: string) => NodeDefinition | undefined
+  getNodeDefinition: (type: string) => NodeDefinition | undefined,
 ): BehaviorContext => determineBehaviorForPort(port, nodes, connections, getNodeDefinition);
 
 export const createConnectionSnapshotWithout = (
   connections: Record<string, Connection>,
-  toRemove: Connection[]
+  toRemove: Connection[],
 ): Record<string, Connection> => createConnectionMapWithout(connections, toRemove);

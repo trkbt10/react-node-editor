@@ -82,4 +82,18 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
     // a1Out cannot make a second connection due to output default=1
     expect(canConnectPorts(a1Out, bIn, reg.get("A"), reg.get("B"), conns)).toBe(false);
   });
+
+  it("allows identical port ids between different nodes", () => {
+    const defA = baseNodeDef("ColorSource", [
+      { id: "color", type: "output", label: "Color", position: "right", dataType: "color" },
+    ]);
+    const defB = baseNodeDef("ColorTarget", [
+      { id: "color", type: "input", label: "Color", position: "left", dataType: "color" },
+    ]);
+    const reg = mkRegistry([defA, defB]);
+
+    const sourcePort: Port = { id: "color", nodeId: "source-node", type: "output", label: "Color", position: "right" };
+    const targetPort: Port = { id: "color", nodeId: "target-node", type: "input", label: "Color", position: "left" };
+    expect(canConnectPorts(sourcePort, targetPort, reg.get("ColorSource"), reg.get("ColorTarget"), {})).toBe(true);
+  });
 });

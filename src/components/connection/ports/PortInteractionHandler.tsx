@@ -5,9 +5,11 @@ import { useEditorActionState } from "../../../contexts/EditorActionStateContext
 import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
 import { useNodeDefinitions } from "../../../contexts/node-definitions";
 import { usePointerDrag } from "../../../hooks/usePointerDrag";
+import { usePortPositions } from "../../../contexts/node-ports/context";
 import { isPortConnectable } from "../../../contexts/node-ports/utils/portConnectability";
 import { planConnectionChange, ConnectionSwitchBehavior } from "../../../contexts/node-ports/utils/connectionSwitchBehavior";
 import { computeConnectablePortIds, type ConnectablePortsResult } from "../../../contexts/node-ports/utils/connectablePortPlanner";
+import { findNearestConnectablePort } from "../../../contexts/node-ports/utils/connectionCandidate";
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
 
 const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
@@ -39,6 +41,7 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
   const { state: canvasState } = useNodeCanvas();
   const { registry } = useNodeDefinitions();
+  const { getPortPosition, computePortPosition } = usePortPositions();
 
   // Check port states
   const isHovered = actionState.hoveredPort?.id === port.id;
@@ -61,6 +64,47 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
       allowedPortTypes: port.allowedPortTypes,
     }),
     [port],
+  );
+
+  const resolveConnectionPoint = React.useCallback(
+    (nodeId: string, portId: string) => {
+      const stored = getPortPosition(nodeId, portId);
+      if (stored) {
+        return stored.connectionPoint;
+      }
+      const node = nodeEditorState.nodes[nodeId];
+      if (!node) {
+        return null;
+      }
+      const ports = getNodePorts(nodeId);
+      const targetPort = ports.find((candidate) => candidate.id === portId);
+      if (!targetPort) {
+        return null;
+      }
+      const computed = computePortPosition({ ...node, ports }, targetPort);
+      return computed.connectionPoint;
+    },
+    [getPortPosition, nodeEditorState.nodes, getNodePorts, computePortPosition],
+  );
+
+  const resolveCandidatePort = React.useCallback(
+    (canvasPosition: Position) => {
+      if (!actionState.connectionDragState) {
+        return null;
+      }
+      return findNearestConnectablePort({
+        pointerCanvasPosition: canvasPosition,
+        connectablePorts: actionState.connectablePorts,
+        nodes: nodeEditorState.nodes,
+        getNodePorts,
+        getConnectionPoint: resolveConnectionPoint,
+        excludePort: {
+          nodeId: actionState.connectionDragState.fromPort.nodeId,
+          portId: actionState.connectionDragState.fromPort.id,
+        },
+      });
+    },
+    [actionState.connectionDragState, actionState.connectablePorts, nodeEditorState.nodes, getNodePorts, resolveConnectionPoint],
   );
 
 
@@ -108,10 +152,10 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
         x: (currentPos.x - containerRect.left) / canvasState.viewport.scale - canvasState.viewport.offset.x,
         y: (currentPos.y - containerRect.top) / canvasState.viewport.scale - canvasState.viewport.offset.y,
       };
-
-      actionDispatch(actionActions.updateConnectionDrag(canvasPos, null));
+      const candidate = resolveCandidatePort(canvasPos);
+      actionDispatch(actionActions.updateConnectionDrag(canvasPos, candidate));
     },
-    [canvasState.viewport, actionDispatch, actionActions],
+    [canvasState.viewport, actionDispatch, actionActions, resolveCandidatePort],
   );
 
   const handleConnectionDragEnd = React.useCallback(
@@ -225,3 +269,5 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     </>
   );
 };
+
+// Note: Reviewed connectionCandidate.ts and NodeLayer.tsx to align candidate detection flow.

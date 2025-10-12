@@ -25,7 +25,6 @@ type ExtendedInspectorRenderProps = {
 export function NodeBehaviorInspector({
   node,
   onUpdateNode,
-  _onDeleteNode,
   selectedNodes = [],
   onAlignNodes,
 }: ExtendedInspectorRenderProps): React.ReactElement {

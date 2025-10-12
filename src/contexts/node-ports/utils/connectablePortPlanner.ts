@@ -20,7 +20,7 @@ type ResolveSourcePortParams = {
   dragStatePort?: Port | null;
   disconnectFixedPort?: Port | null;
   fallbackPort?: Port | null;
-}
+};
 
 export type ComputeConnectablePortsParams = {
   dragState?: ConnectionDragState | null;
@@ -30,14 +30,14 @@ export type ComputeConnectablePortsParams = {
   connections: Record<string, Connection>;
   getNodePorts: (nodeId: string) => Port[];
   getNodeDefinition: (type: string) => NodeDefinition | undefined;
-}
+};
 
 export type ConnectablePortSourceInfo = {
   nodeId: NodeId;
   portId: PortId;
   portType: PortType;
   portIndex: number;
-}
+};
 
 export type ConnectablePortDescriptor = {
   key: string;
@@ -47,21 +47,25 @@ export type ConnectablePortDescriptor = {
   portIndex: number;
   source: ConnectablePortSourceInfo;
   behavior: ConnectionSwitchBehavior;
-}
+};
 
 export type ConnectablePortsResult = {
   ids: Set<string>;
   descriptors: Map<string, ConnectablePortDescriptor>;
   source: ConnectablePortSourceInfo | null;
-}
+};
 
 const resolveSourcePort = ({
   dragStatePort,
   disconnectFixedPort,
   fallbackPort,
 }: ResolveSourcePortParams): Port | null => {
-  if (dragStatePort) {return dragStatePort;}
-  if (disconnectFixedPort) {return disconnectFixedPort;}
+  if (dragStatePort) {
+    return dragStatePort;
+  }
+  if (disconnectFixedPort) {
+    return disconnectFixedPort;
+  }
   return fallbackPort ?? null;
 };
 
@@ -71,8 +75,7 @@ const createEmptyResult = (): ConnectablePortsResult => ({
   source: null,
 });
 
-const findPortIndex = (port: Port, ports: Port[]): number =>
-  ports.findIndex((candidate) => candidate.id === port.id);
+const findPortIndex = (port: Port, ports: Port[]): number => ports.findIndex((candidate) => candidate.id === port.id);
 
 /**
  * Determine the ports that can accept a connection for the current interaction context.
@@ -107,31 +110,23 @@ export const computeConnectablePortIds = ({
     portIndex: sourceIndex,
   };
 
-  const behaviorContext = getConnectionSwitchContext(
-    sourcePort,
-    nodes,
-    connections,
-    getNodeDefinition
-  );
+  const behaviorContext = getConnectionSwitchContext(sourcePort, nodes, connections, getNodeDefinition);
 
-  const evaluationConnections = behaviorContext.behavior === ConnectionSwitchBehavior.Replace
-    ? createConnectionSnapshotWithout(connections, behaviorContext.existingConnections)
-    : connections;
+  const evaluationConnections =
+    behaviorContext.behavior === ConnectionSwitchBehavior.Replace
+      ? createConnectionSnapshotWithout(connections, behaviorContext.existingConnections)
+      : connections;
 
-  const candidateIds = getConnectablePortIds(
-    sourcePort,
-    nodes,
-    getNodePorts,
-    evaluationConnections,
-    getNodeDefinition
-  );
+  const candidateIds = getConnectablePortIds(sourcePort, nodes, getNodePorts, evaluationConnections, getNodeDefinition);
 
   candidateIds.forEach((key) => {
     const [nodeId, portId] = key.split(":");
     const ports = getNodePorts(nodeId);
     const portIndex = ports.findIndex((port) => port.id === portId);
     const port = ports[portIndex];
-    if (!port) {return;}
+    if (!port) {
+      return;
+    }
 
     result.ids.add(key);
     result.descriptors.set(key, {

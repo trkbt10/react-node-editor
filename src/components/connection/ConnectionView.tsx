@@ -46,8 +46,6 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
   isAdjacentToSelectedNode = false,
   fromNodePosition,
   toNodePosition,
-  _fromNodeSize,
-  _toNodeSize,
   onPointerDown,
   onPointerEnter,
   onPointerLeave,

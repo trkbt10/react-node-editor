@@ -7,11 +7,15 @@ import { canConnectPorts } from "./connectionValidation";
  */
 export function createConnection(
   fromPort: Port,
-  toPort: Port
+  toPort: Port,
 ): { fromNodeId: string; fromPortId: string; toNodeId: string; toPortId: string } | null {
   // Check compatibility
-  if (fromPort.type === toPort.type) {return null;}
-  if (fromPort.nodeId === toPort.nodeId) {return null;}
+  if (fromPort.type === toPort.type) {
+    return null;
+  }
+  if (fromPort.nodeId === toPort.nodeId) {
+    return null;
+  }
 
   if (fromPort.type === "output") {
     return {
@@ -38,7 +42,7 @@ export function createValidatedConnection(
   toPort: Port,
   nodes: Record<string, Node>,
   connections: Record<string, Connection>,
-  getNodeDefinition: (type: string) => NodeDefinition | undefined
+  getNodeDefinition: (type: string) => NodeDefinition | undefined,
 ): { fromNodeId: string; fromPortId: string; toNodeId: string; toPortId: string } | null {
   const src = fromPort.type === "output" ? fromPort : toPort;
   const dst = fromPort.type === "output" ? toPort : fromPort;
@@ -48,7 +52,9 @@ export function createValidatedConnection(
   const fromDef = fromNode ? getNodeDefinition(fromNode.type) : undefined;
   const toDef = toNode ? getNodeDefinition(toNode.type) : undefined;
 
-  if (!canConnectPorts(src, dst, fromDef, toDef, connections)) {return null;}
+  if (!canConnectPorts(src, dst, fromDef, toDef, connections)) {
+    return null;
+  }
 
   return {
     fromNodeId: src.nodeId,

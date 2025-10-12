@@ -49,13 +49,11 @@ const mockTaskDatabase = new Map<string, TaskData>([
 
 // Custom Task Node Renderer
 const TaskNodeRenderer = ({
-  _node,
   isSelected,
   isDragging,
   externalData,
   isLoadingExternalData,
   onStartEdit,
-  onUpdateNode: _onUpdateNode,
 }: NodeRenderProps) => {
   const task = externalData as TaskData | undefined;
 
@@ -104,10 +102,8 @@ const TaskNodeRenderer = ({
 
 // Custom Task Inspector
 const TaskInspectorRenderer = ({
-  _node,
   externalData,
   isLoadingExternalData,
-  onUpdateNode: _onUpdateNode,
   onUpdateExternalData,
   onDeleteNode,
 }: InspectorRenderProps) => {

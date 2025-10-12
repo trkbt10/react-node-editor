@@ -21,7 +21,7 @@ export const canConnectPorts = (
   // Basic connection rules
   if (fromPort.type === toPort.type) {return false;} // Same type cannot connect
   if (fromPort.nodeId === toPort.nodeId) {return false;} // Same node cannot connect
-  if (fromPort.id === toPort.id) {return false;} // Same port cannot connect
+  // Same-node connections are already blocked above; allow identical port ids on different nodes
   
   // Ensure proper input/output pairing
   if (fromPort.type === "output" && toPort.type !== "input") {return false;}
