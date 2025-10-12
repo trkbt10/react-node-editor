@@ -1,3 +1,6 @@
+/**
+ * @file Hooks providing pre-bound action creators for editor action state management
+ */
 import * as React from "react";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
 

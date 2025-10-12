@@ -1,3 +1,6 @@
+/**
+ * @file Hook providing automatic node layout algorithms (force-directed, hierarchical, grid)
+ */
 import * as React from "react";
 import { useNodeEditor } from "../contexts/node-editor";
 import { useNodeCanvas } from "../contexts/NodeCanvasContext";
