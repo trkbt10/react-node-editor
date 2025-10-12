@@ -1,3 +1,6 @@
+/**
+ * @file SelectionOverlay component
+ */
 import * as React from "react";
 import { SelectionBox } from "../canvas/SelectionBox";
 import { classNames } from "../elements";

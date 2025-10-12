@@ -1,3 +1,6 @@
+/**
+ * @file AlignmentControls component
+ */
 import * as React from "react";
 import type { Node } from "../../../types/core";
 import { InspectorLabel } from "../../inspector/parts/InspectorLabel";

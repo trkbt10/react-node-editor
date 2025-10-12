@@ -1,3 +1,6 @@
+/**
+ * @file Feature flags panel component
+ */
 import * as React from "react";
 import { useFeatureFlags, setFeatureFlags, type NodeEditorFeatureFlags } from "../../../config/featureFlags";
 import { SwitchInput, Button } from "../../elements";

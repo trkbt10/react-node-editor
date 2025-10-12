@@ -1,3 +1,6 @@
+/**
+ * @file Inspector section title component
+ */
 import * as React from "react";
 import { H4 } from "../../elements";
 import styles from "./InspectorSectionTitle.module.css";

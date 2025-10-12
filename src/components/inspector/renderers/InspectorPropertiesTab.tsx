@@ -1,3 +1,6 @@
+/**
+ * @file Inspector properties tab component
+ */
 import * as React from "react";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../../contexts/node-editor";

@@ -1,3 +1,6 @@
+/**
+ * @file Group behavior inspector component
+ */
 import * as React from "react";
 import type { InspectorRenderProps } from "../../../types/NodeDefinition";
 import { Input } from "../../../components/elements";

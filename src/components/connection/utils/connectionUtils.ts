@@ -1,3 +1,6 @@
+/**
+ * @file Connection utilities
+ */
 import type { Position } from "../../../types/core";
 import { getDistance } from "../../../utils/vectorUtils";
 

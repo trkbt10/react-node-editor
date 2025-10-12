@@ -1,3 +1,6 @@
+/**
+ * @file Node inspector component
+ */
 import * as React from "react";
 import type { Node } from "../../../types/core";
 import { useNodeEditor } from "../../../contexts/node-editor";

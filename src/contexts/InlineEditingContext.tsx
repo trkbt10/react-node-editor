@@ -1,3 +1,6 @@
+/**
+ * @file Context for managing inline editing state of node titles and data
+ */
 import * as React from "react";
 
 // Inline editing types

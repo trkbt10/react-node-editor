@@ -344,13 +344,6 @@ export const NodeEditorContent: React.FC<{
         />
       </PortPositionProvider>
 
-      {/* Loading/Saving indicators */}
-      {(isLoading || isSaving) && (
-        <div className={styles.loadingOverlay}>
-          <div className={styles.loadingIndicator}>{isLoading ? "Loading..." : "Saving..."}</div>
-        </div>
-      )}
-
       {/* Context Menus */}
       {actionState.contextMenu.visible && actionState.contextMenu.mode === "search" && (
         <NodeSearchMenu

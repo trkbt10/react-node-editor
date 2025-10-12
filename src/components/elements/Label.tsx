@@ -1,3 +1,6 @@
+/**
+ * @file Label component
+ */
 import React from 'react';
 import styles from './Label.module.css';
 

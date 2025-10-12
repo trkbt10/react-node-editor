@@ -1,3 +1,6 @@
+/**
+ * @file Node ports renderer component
+ */
 import * as React from "react";
 import type { Port } from "../../types/core";
 import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";

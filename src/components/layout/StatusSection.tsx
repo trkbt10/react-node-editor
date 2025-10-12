@@ -1,3 +1,6 @@
+/**
+ * @file Status section component
+ */
 import * as React from "react";
 import { classNames } from "../elements";
 import styles from "./StatusSection.module.css";

@@ -1,3 +1,6 @@
+/**
+ * @file Inspector definition list component
+ */
 import * as React from "react";
 import styles from "./InspectorDefinitionList.module.css";
 

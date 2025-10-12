@@ -1,3 +1,6 @@
+/**
+ * @file ConnectionView component
+ */
 import * as React from "react";
 import type { Connection, Node, Port } from "../../types/core";
 import { calculateBezierPath, calculateBezierControlPoints, cubicBezierPoint, cubicBezierTangent } from "./utils/connectionUtils";

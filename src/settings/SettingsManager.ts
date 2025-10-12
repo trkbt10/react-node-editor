@@ -1,3 +1,6 @@
+/**
+ * @file Settings manager implementation
+ */
 import type {
   SettingsManager as ISettingsManager,
   SettingDefinition,
@@ -8,13 +11,7 @@ import type {
   SettingsValidationResult,
   SettingsStorage,
   BuiltInCategories,
-  EditorSettings,
 } from "./types";
-
-/**
- * @file Settings Manager Implementation
- * Provides comprehensive settings management with validation, persistence, and event handling
- */
 
 /**
  * Event emitter for settings

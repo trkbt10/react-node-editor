@@ -1,3 +1,6 @@
+/**
+ * @file Read-only field component
+ */
 import * as React from "react";
 import styles from "./ReadOnlyField.module.css";
 

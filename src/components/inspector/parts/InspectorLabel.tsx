@@ -1,3 +1,6 @@
+/**
+ * @file Inspector label component
+ */
 import * as React from "react";
 import styles from "./InspectorLabel.module.css";
 

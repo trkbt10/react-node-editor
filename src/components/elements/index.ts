@@ -1,3 +1,7 @@
+/**
+ * @file Re-export file (to be removed)
+ */
+
 // Form components
 export { Button, type ButtonProps } from './Button';
 export { Input, type InputProps } from './Input';

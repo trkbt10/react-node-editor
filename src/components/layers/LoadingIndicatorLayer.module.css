@@ -1,0 +1,13 @@
+.loadingIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--node-editor-control-background);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
+  padding: var(--node-editor-space-lg) var(--node-editor-space-xxl);
+  font-size: 14px;
+  color: var(--node-editor-control-text-color);
+  box-shadow: var(--node-editor-card-hover-box-shadow);
+  box-sizing: border-box;
+}

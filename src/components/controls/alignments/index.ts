@@ -1,6 +1,5 @@
 /**
- * Alignment controls for node editor
- * Provides alignment and distribution functionality for multiple selected nodes
+ * @file Re-export file (to be removed)
  */
 
 export { AlignmentControls } from "./AlignmentControls";

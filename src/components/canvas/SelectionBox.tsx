@@ -1,3 +1,6 @@
+/**
+ * @file SelectionBox component
+ */
 import * as React from "react";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { classNames } from "../elements";

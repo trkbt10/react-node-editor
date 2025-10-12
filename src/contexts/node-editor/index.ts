@@ -1,3 +1,6 @@
+/**
+ * @file Re-export file (to be removed)
+ */
 export type { NodeEditorData } from "../../types/core";
 
 export { nodeEditorActions } from "./actions";

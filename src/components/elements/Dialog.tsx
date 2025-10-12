@@ -1,3 +1,6 @@
+/**
+ * @file Dialog component
+ */
 import React, { useEffect, useRef } from 'react';
 import styles from './Dialog.module.css';
 

@@ -1,3 +1,6 @@
+/**
+ * @file NodeCanvas component
+ */
 import * as React from "react";
 import { CanvasBase } from "./CanvasBase";
 import { ConnectionLayer } from "../connection/ConnectionLayer";

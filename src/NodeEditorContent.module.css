@@ -591,30 +591,6 @@
   flex: 0 0 auto;
 }
 
-.loadingOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-}
-
-.loadingIndicator {
-  background-color: var(--node-editor-control-background);
-  border: var(--node-editor-input-border);
-  border-radius: var(--node-editor-control-border-radius);
-  padding: var(--node-editor-space-lg) var(--node-editor-space-xxl);
-  font-size: 14px;
-  color: var(--node-editor-control-text-color);
-  box-shadow: var(--node-editor-card-hover-box-shadow);
-  box-sizing: border-box;
-}
-
 /* Custom Node Content */
 .customNodeContent {
   width: 100%;

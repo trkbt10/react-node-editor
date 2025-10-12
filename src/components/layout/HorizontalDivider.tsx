@@ -1,3 +1,6 @@
+/**
+ * @file Horizontal divider component
+ */
 import * as React from "react";
 import styles from "./HorizontalDivider.module.css";
 

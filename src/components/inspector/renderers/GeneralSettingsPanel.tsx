@@ -1,3 +1,6 @@
+/**
+ * @file General settings panel component
+ */
 import * as React from "react";
 import { useNodeEditor } from "../../../contexts/node-editor";
 import { SwitchInput } from "../../elements";

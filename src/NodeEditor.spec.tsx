@@ -1,3 +1,6 @@
+/**
+ * @file NodeEditor spec
+ */
 import { render, screen, fireEvent } from "@testing-library/react";
 import { JSX, useState } from "react";
 import { NodeEditor } from "./NodeEditor";

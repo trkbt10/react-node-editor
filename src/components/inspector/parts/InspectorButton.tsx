@@ -1,3 +1,6 @@
+/**
+ * @file Inspector button component
+ */
 import * as React from "react";
 import { Button, type ButtonProps } from "../../elements/Button";
 

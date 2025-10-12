@@ -1,3 +1,6 @@
+/**
+ * @file Property section component
+ */
 import * as React from "react";
 import { H4 } from "../../elements";
 import styles from "./PropertySection.module.css";

@@ -1,3 +1,6 @@
+/**
+ * @file Node editor toolbar component
+ */
 import * as React from "react";
 import { useNodeDefinitionList } from "../../contexts/node-definitions";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";

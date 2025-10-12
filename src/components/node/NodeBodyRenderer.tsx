@@ -1,3 +1,6 @@
+/**
+ * @file Node body renderer component
+ */
 import * as React from "react";
 import type { Node } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";

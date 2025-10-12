@@ -1,3 +1,6 @@
+/**
+ * @file Inspector panel component
+ */
 import * as React from "react";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { NodeTreeListPanel } from "./renderers/NodeTreeListPanel";

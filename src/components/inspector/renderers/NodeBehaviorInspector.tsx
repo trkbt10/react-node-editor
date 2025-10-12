@@ -1,3 +1,6 @@
+/**
+ * @file Node behavior inspector component
+ */
 import * as React from "react";
 import type { InspectorRenderProps } from "../../../types/NodeDefinition";
 import type { Node } from "../../../types/core";

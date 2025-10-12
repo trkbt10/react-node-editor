@@ -1,3 +1,6 @@
+/**
+ * @file Position inputs grid component
+ */
 import * as React from "react";
 import styles from "./PositionInputsGrid.module.css";
 

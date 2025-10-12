@@ -6,7 +6,7 @@ import styles from "./standard.module.css";
 /**
  * Standard node renderer
  */
-export function StandardNodeRenderer({ node, isSelected, isDragging, isEditing, onStartEdit }: NodeRenderProps): React.ReactElement {
+export function StandardNodeRenderer({ node, isSelected, isDragging, onStartEdit }: NodeRenderProps): React.ReactElement {
   const { t } = useI18n();
   return (
     <div

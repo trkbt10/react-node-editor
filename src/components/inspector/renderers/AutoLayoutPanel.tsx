@@ -1,3 +1,6 @@
+/**
+ * @file Auto layout panel component
+ */
 import * as React from "react";
 import { useNodeEditor } from "../../../contexts/node-editor";
 import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";

@@ -1,3 +1,6 @@
+/**
+ * @file Node renderer component
+ */
 import * as React from "react";
 import { Node, NodeId } from "../../types/core";
 import { NodeDragHandler } from "./NodeDragHandler";

@@ -1,3 +1,6 @@
+/**
+ * @file Inspector number input component
+ */
 import * as React from "react";
 import { Input } from "../../elements/Input";
 import styles from "./InspectorNumberInput.module.css";

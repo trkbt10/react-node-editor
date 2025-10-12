@@ -1,3 +1,6 @@
+/**
+ * @file History panel component
+ */
 import * as React from "react";
 import { useHistory } from "../../../contexts/HistoryContext";
 import { Button } from "../../elements";

@@ -1,3 +1,6 @@
+/**
+ * @file Dialog utilities
+ */
 export type ViewportInfo = {
   width: number;
   height: number;

@@ -1,3 +1,6 @@
+/**
+ * @file Context for managing node drag state during drag operations
+ */
 import * as React from "react";
 import type { NodeId, Position } from "../types/core";
 

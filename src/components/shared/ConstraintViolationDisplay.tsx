@@ -1,3 +1,6 @@
+/**
+ * @file Constraint violation display component
+ */
 import * as React from "react";
 import type { ConstraintViolation } from "../../types/NodeDefinition";
 import { classNames } from "../elements";

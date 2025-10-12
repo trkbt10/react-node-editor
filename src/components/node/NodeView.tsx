@@ -1,3 +1,6 @@
+/**
+ * @file Node view component
+ */
 import * as React from "react";
 import type { Node, Position, Port } from "../../types/core";
 import { useInlineEditing } from "../../contexts/InlineEditingContext";

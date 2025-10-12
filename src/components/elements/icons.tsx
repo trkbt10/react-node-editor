@@ -1,3 +1,6 @@
+/**
+ * @file Icon components
+ */
 import React from 'react';
 import styles from './icons.module.css';
 

@@ -1,3 +1,6 @@
+/**
+ * @file Node actions behavior inspector component
+ */
 import * as React from "react";
 import type { InspectorRenderProps } from "../../../types/NodeDefinition";
 import { InspectorLabel } from "../parts/InspectorLabel";

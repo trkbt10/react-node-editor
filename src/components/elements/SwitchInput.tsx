@@ -1,3 +1,6 @@
+/**
+ * @file SwitchInput component
+ */
 import React from 'react';
 import styles from './SwitchInput.module.css';
 

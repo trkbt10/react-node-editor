@@ -1,3 +1,6 @@
+/**
+ * @file Inspector input component
+ */
 import * as React from 'react';
 import { Input, type InputProps } from '../../elements/Input';
 import styles from './InspectorInput.module.css';

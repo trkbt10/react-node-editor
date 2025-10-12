@@ -1,3 +1,6 @@
+/**
+ * @file Node drag handler component
+ */
 import * as React from "react";
 import { NodeId, Position } from "../../types/core";
 import { usePointerDrag } from "../../hooks/usePointerDrag";

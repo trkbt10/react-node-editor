@@ -1,4 +1,4 @@
-import type { Node, Port, NodeId, PortId, Position, Size } from "./core";
+import type { Node, Port, NodeId, PortId, Position } from "./core";
 
 /**
  * Computed position information for a port

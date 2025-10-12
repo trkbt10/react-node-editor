@@ -1,3 +1,6 @@
+/**
+ * @file Alignment utilities
+ */
 import type { Node, Position } from "../../../types/core";
 
 /**

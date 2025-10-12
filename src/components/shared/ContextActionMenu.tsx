@@ -1,3 +1,6 @@
+/**
+ * @file Context action menu component
+ */
 import * as React from "react";
 import { classNames, calculateContextMenuPosition, getViewportInfo } from "../elements";
 import { EditIcon, PlusIcon, PasteIcon } from "../elements/icons";

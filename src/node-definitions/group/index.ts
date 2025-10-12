@@ -1,5 +1,4 @@
 import type { NodeDefinition } from "../../types/NodeDefinition";
-import { GroupNodeRenderer } from "./node";
 
 type GroupNodeData = {
   title: string;

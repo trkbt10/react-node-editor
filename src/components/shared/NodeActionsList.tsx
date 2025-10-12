@@ -1,3 +1,6 @@
+/**
+ * @file Node actions list component
+ */
 import * as React from "react";
 import styles from "./NodeActionsList.module.css";
 import { DuplicateIcon, CopyIcon, CutIcon, PasteIcon, DeleteIcon } from "../elements/icons";

@@ -1,3 +1,6 @@
+/**
+ * @file CanvasBase component
+ */
 import * as React from "react";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";

@@ -1,3 +1,6 @@
+/**
+ * @file NodeEditor autosave spec
+ */
 import { render, screen } from "@testing-library/react";
 import { NodeEditor } from "./NodeEditor";
 

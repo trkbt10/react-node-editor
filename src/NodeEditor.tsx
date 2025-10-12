@@ -1,3 +1,6 @@
+/**
+ * @file NodeEditor component
+ */
 import * as React from "react";
 import { ConnectionView as DefaultConnectionView } from "./components/connection/ConnectionView";
 import { PortView as DefaultPortView } from "./components/connection/ports/PortView";

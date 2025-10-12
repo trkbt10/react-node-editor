@@ -1,3 +1,6 @@
+/**
+ * @file Resize handle component
+ */
 import * as React from "react";
 import { classNames } from "../elements";
 import styles from "./ResizeHandle.module.css";

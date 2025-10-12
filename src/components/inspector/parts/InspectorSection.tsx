@@ -1,3 +1,6 @@
+/**
+ * @file Inspector section component
+ */
 import * as React from "react";
 import styles from "./InspectorSection.module.css";
 

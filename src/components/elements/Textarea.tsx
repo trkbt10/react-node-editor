@@ -1,3 +1,6 @@
+/**
+ * @file Textarea component
+ */
 import React from 'react';
 import styles from './Textarea.module.css';
 

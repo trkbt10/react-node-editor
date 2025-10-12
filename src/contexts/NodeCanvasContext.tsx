@@ -1,3 +1,6 @@
+/**
+ * @file Context for managing canvas viewport, panning, zooming, and grid settings
+ */
 import * as React from "react";
 import type { Position, Viewport, GridSettings } from "../types/core";
 

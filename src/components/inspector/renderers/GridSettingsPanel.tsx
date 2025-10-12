@@ -1,3 +1,6 @@
+/**
+ * @file Grid settings panel component
+ */
 import * as React from "react";
 import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
 import { SwitchInput } from "../../elements";

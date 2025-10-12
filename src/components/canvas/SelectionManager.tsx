@@ -1,3 +1,6 @@
+/**
+ * @file SelectionManager component
+ */
 import * as React from "react";
 import { NodeId, Position } from "../../types/core";
 import { useNodeEditor } from "../../contexts/node-editor";

@@ -1,3 +1,6 @@
+/**
+ * @file Node editor base component
+ */
 import * as React from "react";
 import { classNames } from "../elements";
 import { useNodeEditorShortcuts } from "../../hooks/useNodeEditorShortcuts";

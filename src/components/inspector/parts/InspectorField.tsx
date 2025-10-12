@@ -1,3 +1,6 @@
+/**
+ * @file Inspector field component
+ */
 import * as React from "react";
 import styles from "./InspectorField.module.css";
 

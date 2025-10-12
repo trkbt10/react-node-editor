@@ -1,3 +1,6 @@
+/**
+ * @file Node map renderer component
+ */
 import * as React from "react";
 import type { Node, Connection } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";

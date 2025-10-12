@@ -1,3 +1,6 @@
+/**
+ * @file Alignment types
+ */
 import type { ComponentType } from "react";
 
 /**

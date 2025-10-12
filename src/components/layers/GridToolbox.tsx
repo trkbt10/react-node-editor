@@ -1,3 +1,6 @@
+/**
+ * @file Grid toolbox component
+ */
 import * as React from "react";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeEditor } from "../../contexts/node-editor";

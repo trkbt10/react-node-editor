@@ -1,3 +1,6 @@
+/**
+ * @file Alignment constants
+ */
 import {
   AlignLeftIcon,
   AlignCenterIcon,

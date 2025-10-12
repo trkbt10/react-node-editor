@@ -1,3 +1,6 @@
+/**
+ * @file Grid layout component
+ */
 import * as React from "react";
 import type { GridLayoutConfig, LayerDefinition, GridTrack } from "../../types/panels";
 import { ResizeHandle } from "./ResizeHandle";

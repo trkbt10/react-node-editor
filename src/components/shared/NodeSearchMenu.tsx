@@ -1,3 +1,6 @@
+/**
+ * @file Node search menu component
+ */
 import * as React from "react";
 import { classNames, calculateContextMenuPosition, getViewportInfo, Input } from "../elements";
 import type { NodeDefinition } from "../../types/NodeDefinition";
