@@ -4,6 +4,8 @@
 
 Node Editor is a React-based component for building node editors. It bundles node and connection rendering, an inspector, a status bar, and more into a single `NodeEditor`.
 
+Demo: https://trkbt10.github.io/react-node-editor/
+
 ## Basic Usage
 
 Pass graph data and callbacks to `NodeEditor`, and it will render the canvas along with the accompanying panels. The following example shows how to use the controlled mode.
