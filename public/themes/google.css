@@ -198,4 +198,31 @@
   --node-editor-segment-control-active-background-color: #e8f0fe;
   --node-editor-segment-control-active-text-color: #1a73e8;
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+
+  /* Connection styling - Google theme */
+  --node-editor-connection-base-stroke-width: 2;
+  --node-editor-connection-active-stroke-width: 3;
+  --node-editor-connection-flow-stripe-stroke-width: 1.5;
+  --node-editor-connection-flow-stripe-active-stroke-width: 2.5;
+  --node-editor-connection-direction-stroke-width: 2;
+  --node-editor-connection-hover-shadow: drop-shadow(0 2px 4px rgba(60, 64, 67, 0.3));
+  --node-editor-connection-selected-shadow: drop-shadow(0 2px 8px rgba(26, 115, 232, 0.4));
+  --node-editor-connection-hover-opacity: 0.8;
+  --node-editor-connection-dragging-opacity: 0.6;
+  --node-editor-connection-stripe-dash-array: 10 14;
+  --node-editor-connection-stripe-dash-offset-bg: -12;
+  --node-editor-connection-stripe-opacity-accent: 0.9;
+  --node-editor-connection-stripe-opacity-background: 0.6;
+  --node-editor-connection-flow-animation-duration: 1.2s;
+  --node-editor-connection-flow-animation-distance: -24;
+  --node-editor-connection-base-transition: stroke 0.2s ease-out, stroke-width 0.2s ease-out;
+  --node-editor-connection-arrow-transition: fill 0.2s ease-out;
+
+  /* Connection drag styling - Google theme */
+  --node-editor-connection-drag-stroke-width-connecting: 2;
+  --node-editor-connection-drag-stroke-width-disconnecting: 3;
+  --node-editor-connection-drag-dash-array-connecting: 5 5;
+  --node-editor-connection-drag-dash-array-disconnecting: 8 4;
+  --node-editor-connection-drag-animation-duration: 0.5s;
+  --node-editor-connection-drag-animation-distance: -10;
 }
