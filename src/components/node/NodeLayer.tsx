@@ -1,3 +1,6 @@
+/**
+ * @file Main node layer rendering and interaction handler for the node editor canvas.
+ */
 import * as React from "react";
 import { classNames } from "../elements";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";

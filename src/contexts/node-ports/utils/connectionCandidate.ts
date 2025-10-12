@@ -1,3 +1,6 @@
+/**
+ * @file Utilities for resolving the nearest connectable port during connection interactions.
+ */
 import type { Node, NodeId, Port, PortId, Position } from "../../../types/core";
 import type { ConnectablePortsResult } from "./connectablePortPlanner";
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";

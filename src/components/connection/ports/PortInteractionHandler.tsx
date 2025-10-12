@@ -1,3 +1,6 @@
+/**
+ * @file Port-level interaction handler used by the connection system.
+ */
 import * as React from "react";
 import { Port, NodeId, Position } from "../../../types/core";
 import { useNodeEditor } from "../../../contexts/node-editor";

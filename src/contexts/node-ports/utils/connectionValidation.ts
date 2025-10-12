@@ -1,3 +1,6 @@
+/**
+ * @file Connection validation helpers for node port compatibility checks.
+ */
 import type { Port, Connection } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 

@@ -1,4 +1,6 @@
-import { describe, it, expect } from "vitest";
+/**
+ * @file Three.js node definition connection compatibility tests.
+ */
 import type { Connection, Node } from "../../../types/core";
 import { createNodeDefinitionRegistry } from "../../../types/NodeDefinitionRegistry";
 import { getNodePorts } from "./portResolution";

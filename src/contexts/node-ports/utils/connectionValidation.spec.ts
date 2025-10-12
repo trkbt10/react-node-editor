@@ -1,3 +1,6 @@
+/**
+ * @file Unit tests for connection validation utilities.
+ */
 import { canConnectPorts } from "./connectionValidation";
 import type { Connection, Port } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
