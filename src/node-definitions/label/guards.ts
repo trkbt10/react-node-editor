@@ -1,12 +1,9 @@
-import type { NodeRenderProps, InspectorRenderProps, NodeDataTypeMap } from "../../types/NodeDefinition";
-import type { LabelNodeData, LabelNodeDataMap } from "./types";
+import type { NodeRenderProps, InspectorRenderProps } from "../../types/NodeDefinition";
+import type { LabelNodeData } from "./types";
 
 function isStringOrUndefined(v: unknown): v is string | undefined {
   return typeof v === "string" || typeof v === "undefined";
 }
-
-
-
 
 
 
@@ -45,8 +42,8 @@ export function isLabelNodeData(data: unknown): data is LabelNodeData {
  * Type guard: render props is for label node with correct data shape
  */
 export function isLabelNodeRenderProps(
-  props: NodeRenderProps<string, NodeDataTypeMap & LabelNodeDataMap>
-): props is NodeRenderProps<"label", LabelNodeDataMap> {
+  props: NodeRenderProps
+): props is NodeRenderProps<LabelNodeData> {
   return props.node.type === "label" && isLabelNodeData(props.node.data);
 }
 
@@ -54,7 +51,7 @@ export function isLabelNodeRenderProps(
  * Type guard: inspector props is for label node with correct data shape
  */
 export function isLabelInspectorProps(
-  props: InspectorRenderProps<string, NodeDataTypeMap & LabelNodeDataMap>
-): props is InspectorRenderProps<"label", LabelNodeDataMap> {
+  props: InspectorRenderProps
+): props is InspectorRenderProps<LabelNodeData> {
   return props.node.type === "label" && isLabelNodeData(props.node.data);
 }

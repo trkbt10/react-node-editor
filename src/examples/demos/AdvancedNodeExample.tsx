@@ -1101,7 +1101,6 @@ export const AdvancedNodeExample: React.FC = () => {
           onSave={async (data) => {
             console.log("Saving advanced editor data:", data);
             await new Promise((resolve) => setTimeout(resolve, 1000));
-            alert("Advanced editor data saved!");
           }}
         />
       </div>

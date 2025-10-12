@@ -1,11 +1,15 @@
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import { GroupNodeRenderer } from "./node";
 
+type GroupNodeData = {
+  title: string;
+};
+
 /**
  * Group node definition
  * A container node that can hold other nodes
  */
-export const GroupNodeDefinition: NodeDefinition<"group"> = {
+export const GroupNodeDefinition: NodeDefinition<GroupNodeData> = {
   type: "group",
   displayName: "Group",
   description: "A container node that can hold other nodes",

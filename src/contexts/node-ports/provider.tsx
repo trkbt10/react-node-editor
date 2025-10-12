@@ -1,8 +1,6 @@
 import * as React from "react";
 import type { Port } from "../../types/core";
-import {
-  DEFAULT_PORT_POSITION_CONFIG,
-} from "../../types/portPosition";
+import { DEFAULT_PORT_POSITION_CONFIG } from "../../types/portPosition";
 import type {
   EditorPortPositions,
   NodePortPositions,
@@ -23,7 +21,7 @@ export type PortPositionProviderProps = {
   behavior?: PortPositionBehavior;
   config?: PortPositionConfig;
   children: React.ReactNode;
-}
+};
 
 export const PortPositionProvider: React.FC<PortPositionProviderProps> = ({
   portPositions,
@@ -58,10 +56,14 @@ export const PortPositionProvider: React.FC<PortPositionProviderProps> = ({
       },
       computePortPosition: (node: PortPositionNode, port: Port) => {
         const stored = portPositions.get(node.id)?.get(port.id);
-        if (stored) {return stored;}
+        if (stored) {
+          return stored;
+        }
 
         const calculated = calculateNodePortPositions(node).get(port.id);
-        if (calculated) {return calculated;}
+        if (calculated) {
+          return calculated;
+        }
 
         // Simple fallback aligned to node position
         return {
@@ -74,9 +76,5 @@ export const PortPositionProvider: React.FC<PortPositionProviderProps> = ({
     };
   }, [portPositions, behavior, effectiveConfig]);
 
-  return (
-    <PortPositionContext.Provider value={value}>
-      {children}
-    </PortPositionContext.Provider>
-  );
+  return <PortPositionContext.Provider value={value}>{children}</PortPositionContext.Provider>;
 };

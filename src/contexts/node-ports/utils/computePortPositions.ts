@@ -1,3 +1,6 @@
+/**
+ * @file Port position computation utilities
+ */
 import type { Node, Port, Position, Size } from "../../../types/core";
 import type { PortPosition, NodePortPositions, EditorPortPositions, PortPositionConfig } from "../../../types/portPosition";
 import { DEFAULT_PORT_POSITION_CONFIG } from "../../../types/portPosition";
@@ -138,23 +141,28 @@ function calculatePortConnectionPoint(
 
 /**
  * Compute all port positions for a single node
+ * @param node - The node to compute port positions for (may include ports property from PortPositionNode)
+ * @param config - Port position configuration
+ * @param ports - Optional explicit port array (if not provided, uses node.ports, node._ports, or empty array)
  */
 export function computeNodePortPositions(
-  node: Node,
+  node: Node & { ports?: Port[] },
   config: PortPositionConfig = DEFAULT_PORT_POSITION_CONFIG,
+  ports?: Port[],
 ): NodePortPositions {
   const positions = new Map<string, PortPosition>();
-  const ports = node._ports || [];
+  // Priority: explicit ports parameter > node.ports (from PortPositionNode) > node._ports (legacy) > empty array
+  const effectivePorts = ports || node.ports || node._ports || [];
 
-  if (ports.length === 0) {
+  if (effectivePorts.length === 0) {
     return positions;
   }
 
   const nodeSize = getNodeSize(node);
-  const portsByPosition = groupPortsByPosition(ports);
+  const portsByPosition = groupPortsByPosition(effectivePorts);
 
   // Calculate positions for each port
-  for (const [position, portsOnSide] of portsByPosition) {
+  for (const [_position, portsOnSide] of portsByPosition) {
     portsOnSide.forEach((port, index) => {
       const renderPosition = calculatePortRenderPosition(port, index, portsOnSide.length, nodeSize, config);
 
@@ -173,9 +181,11 @@ export function computeNodePortPositions(
 
 /**
  * Compute port positions for all nodes in the editor
+ * @param nodes - Array of nodes (may include ports property from PortPositionNode)
+ * @param config - Port position configuration
  */
 export function computeAllPortPositions(
-  nodes: Node[],
+  nodes: Array<Node & { ports?: Port[] }>,
   config: PortPositionConfig = DEFAULT_PORT_POSITION_CONFIG,
 ): EditorPortPositions {
   const allPositions = new Map<string, NodePortPositions>();
@@ -192,10 +202,13 @@ export function computeAllPortPositions(
 
 /**
  * Update port positions for specific nodes
+ * @param currentPositions - Current port positions map
+ * @param nodesToUpdate - Array of nodes to update (may include ports property from PortPositionNode)
+ * @param config - Port position configuration
  */
 export function updatePortPositions(
   currentPositions: EditorPortPositions,
-  nodesToUpdate: Node[],
+  nodesToUpdate: Array<Node & { ports?: Port[] }>,
   config: PortPositionConfig = DEFAULT_PORT_POSITION_CONFIG,
 ): EditorPortPositions {
   const updated = new Map(currentPositions);

@@ -11,6 +11,7 @@
 .content {
   flex: 1;
   background-color: #ffffff;
+  height: 100%;
 }
 
 .contentDark {

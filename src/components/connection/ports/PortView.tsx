@@ -1,6 +1,8 @@
+/**
+ * @file PortView component for rendering connection ports on nodes
+ */
 import * as React from "react";
 import type { Port } from "../../../types/core";
-import { classNames } from "../../elements";
 import { useDynamicPortPosition } from "../../../hooks/usePortPosition";
 import { useNodeEditor } from "../../../contexts/node-editor";
 import { useNodeDefinition } from "../../../contexts/node-definitions";
@@ -58,23 +60,35 @@ export const PortView: React.FC<PortViewProps> = ({
     };
   };
 
-  const handlePointerDown = (e: React.PointerEvent) => {
-    e.stopPropagation();
-    onPointerDown?.(e, port);
-  };
+  const handlePointerDown = React.useCallback(
+    (e: React.PointerEvent) => {
+      e.stopPropagation();
+      onPointerDown?.(e, port);
+    },
+    [onPointerDown, port]
+  );
 
-  const handlePointerUp = (e: React.PointerEvent) => {
-    e.stopPropagation();
-    onPointerUp?.(e, port);
-  };
+  const handlePointerUp = React.useCallback(
+    (e: React.PointerEvent) => {
+      e.stopPropagation();
+      onPointerUp?.(e, port);
+    },
+    [onPointerUp, port]
+  );
 
-  const handlePointerEnter = (e: React.PointerEvent) => {
-    onPointerEnter?.(e, port);
-  };
+  const handlePointerEnter = React.useCallback(
+    (e: React.PointerEvent) => {
+      onPointerEnter?.(e, port);
+    },
+    [onPointerEnter, port]
+  );
 
-  const handlePointerLeave = (e: React.PointerEvent) => {
-    onPointerLeave?.(e, port);
-  };
+  const handlePointerLeave = React.useCallback(
+    (e: React.PointerEvent) => {
+      onPointerLeave?.(e, port);
+    },
+    [onPointerLeave, port]
+  );
 
   // Get node editor state for custom renderer context
   const { state } = useNodeEditor();
@@ -88,16 +102,7 @@ export const PortView: React.FC<PortViewProps> = ({
   const defaultRender = React.useCallback(
     () => (
       <div
-        className={classNames(
-          styles.port,
-          styles[`port${port.type.charAt(0).toUpperCase()}${port.type.slice(1)}`],
-          styles[`port${port.position.charAt(0).toUpperCase()}${port.position.slice(1)}`],
-          isConnecting && styles.portConnecting,
-          isConnectable && styles.portConnectable,
-          isCandidate && styles.portCandidate,
-          isHovered && styles.portHovered,
-          isConnected && styles.portConnected
-        )}
+        className={styles.port}
         style={getPortPosition()}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
@@ -105,16 +110,20 @@ export const PortView: React.FC<PortViewProps> = ({
         onPointerLeave={handlePointerLeave}
         data-port-id={port.id}
         data-port-type={port.type}
+        data-port-position={port.position}
         data-node-id={port.nodeId}
+        data-port-connecting={isConnecting}
+        data-port-connectable={isConnectable}
+        data-port-candidate={isCandidate}
+        data-port-hovered={isHovered}
+        data-port-connected={isConnected}
         title={port.label}
       >
         <div className={styles.portInner} />
         {port.label && (
           <span
-            className={classNames(
-              styles.portLabel,
-              styles[`portLabel${port.position.charAt(0).toUpperCase()}${port.position.slice(1)}`]
-            )}
+            className={styles.portLabel}
+            data-port-label-position={port.position}
           >
             {port.label}
           </span>

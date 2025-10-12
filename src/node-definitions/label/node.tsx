@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { NodeRenderProps } from "../../types/NodeDefinition";
-import type { LabelNodeDataMap } from "./types";
+import type { LabelNodeData } from "./types";
 import styles from "./label.module.css";
 
 
@@ -33,7 +33,7 @@ import styles from "./label.module.css";
 
 
 
-export function LabelNodeRenderer({ node, onStartEdit }: NodeRenderProps<"label", LabelNodeDataMap>): React.ReactElement {
+export function LabelNodeRenderer({ node, onStartEdit }: NodeRenderProps<LabelNodeData>): React.ReactElement {
   const d = node.data;
   const title = typeof d.title === "string" ? d.title : undefined;
   const subtitle = typeof d.subtitle === "string" ? d.subtitle : undefined;

@@ -11,8 +11,6 @@ export type { NodeEditorRenderers, NodeEditorRendererOverrides } from "./types/r
 
 // Node definition helpers for custom nodes and inspectors
 export {
-  asOriginalInspectorRender,
-  asOriginalNodeRender,
   createNodeDataUpdater,
   createNodeDefinition,
   getTypedNodeData,

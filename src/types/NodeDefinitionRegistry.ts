@@ -1,37 +1,32 @@
 import type { NodeDefinition } from "./NodeDefinition";
-import type { NodeDataTypeMap } from "./NodeDefinition";
 
 /**
  * Node definitions registry
- * @template TNodeDataTypeMap - The node data type map
  */
-export type NodeDefinitionRegistry<TNodeDataTypeMap = NodeDataTypeMap> = {
+export type NodeDefinitionRegistry = {
   /** Map of type to definition */
-  definitions: Map<string, NodeDefinition<string, TNodeDataTypeMap>>;
+  definitions: Map<string, NodeDefinition>;
   /** Register a new node type */
-  register: (definition: NodeDefinition<string, TNodeDataTypeMap>) => void;
+  register: <TData extends Record<string, unknown> = Record<string, unknown>>(definition: NodeDefinition<TData>) => void;
   /** Unregister a node type */
   unregister: (type: string) => void;
   /** Get a node definition by type */
-  get: (type: string) => NodeDefinition<string, TNodeDataTypeMap> | undefined;
+  get: (type: string) => NodeDefinition | undefined;
   /** Get all definitions */
-  getAll: () => NodeDefinition<string, TNodeDataTypeMap>[];
+  getAll: () => NodeDefinition[];
   /** Get definitions by category */
-  getByCategory: (category: string) => NodeDefinition<string, TNodeDataTypeMap>[];
+  getByCategory: (category: string) => NodeDefinition[];
 };
 
 /**
  * Create a node definition registry
- * @template TNodeDataTypeMap - The node data type map
  */
-export function createNodeDefinitionRegistry<
-  TNodeDataTypeMap extends NodeDataTypeMap,
->(): NodeDefinitionRegistry<TNodeDataTypeMap> {
-  const definitions = new Map<string, NodeDefinition<string, TNodeDataTypeMap>>();
+export function createNodeDefinitionRegistry(): NodeDefinitionRegistry {
+  const definitions = new Map<string, NodeDefinition>();
 
   return {
     definitions,
-    register(definition: NodeDefinition<string, TNodeDataTypeMap>) {
+    register(definition: NodeDefinition) {
       definitions.set(definition.type, definition);
     },
     unregister(type: string) {

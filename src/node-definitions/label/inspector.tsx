@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { InspectorRenderProps } from "../../types/NodeDefinition";
-import type { LabelNodeDataMap, LabelNodeData } from "./types";
+import type { LabelNodeData } from "./types";
 import { PropertySection } from "../../components/inspector/parts/PropertySection";
 import { InspectorInput } from "../../components/inspector/parts/InspectorInput";
 import { InspectorTextarea } from "../../components/inspector/parts/InspectorTextarea";
@@ -38,7 +38,7 @@ import { useI18n } from "../../i18n";
 
 
 
-export function LabelInspectorRenderer({ node, onUpdateNode }: InspectorRenderProps<"label", LabelNodeDataMap>): React.ReactElement {
+export function LabelInspectorRenderer({ node, onUpdateNode }: InspectorRenderProps<LabelNodeData>): React.ReactElement {
   const { t } = useI18n();
   const data: LabelNodeData = node.data || {};
 

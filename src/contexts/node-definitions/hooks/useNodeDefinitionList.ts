@@ -1,15 +1,10 @@
-import type { NodeDefinition, NodeDataTypeMap } from "../../../types/NodeDefinition";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { useNodeDefinitions } from "../context";
 
 /**
  * Hook to get all node definitions as an array
- * @template TNodeDataTypeMap - The node data type map
  */
-export const useNodeDefinitionList = <
-  TNodeDataTypeMap extends {
-    [key: string]: Record<string, unknown>;
-  } = NodeDataTypeMap,
->(): NodeDefinition<string, TNodeDataTypeMap>[] => {
-  const { registry } = useNodeDefinitions<TNodeDataTypeMap>();
+export const useNodeDefinitionList = (): NodeDefinition[] => {
+  const { registry } = useNodeDefinitions();
   return registry.getAll();
 };

@@ -1,11 +1,16 @@
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import { StandardNodeRenderer } from "./node";
 
+type StandardNodeData = {
+  title: string;
+  content: string;
+};
+
 /**
  * Standard node definition
  * A basic node with title and content
  */
-export const StandardNodeDefinition: NodeDefinition<"standard"> = {
+export const StandardNodeDefinition: NodeDefinition<StandardNodeData> = {
   type: "standard",
   displayName: "Standard Node",
   description: "A basic node with customizable properties",

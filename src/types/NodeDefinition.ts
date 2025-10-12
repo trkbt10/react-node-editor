@@ -3,17 +3,10 @@ import type { Node, NodeId, Port, Connection, ConnectionId, NodeData } from "./c
 import type { NodeBehavior } from "./behaviors";
 
 /**
- * Base node data type map interface
- * This can be extended through generic parameters instead of module augmentation
- * @example
- * // Instead of module augmentation, use as generic parameter:
- * type MyNodeTypes = {
- *   'my-custom-node': { title: string; value: number; };
- * };
- * // Then use with NodeDefinitionProvider<MyNodeTypes>
+ * @deprecated NodeDataTypeMap is no longer used. Node data defaults to Record<string, unknown>.
+ * This type is kept for backward compatibility only.
  */
 export type NodeDataTypeMap = {
-  // This interface is intentionally empty - users should use generic parameters
   [key: string]: Record<string, unknown>;
 };
 
@@ -34,17 +27,11 @@ export type ExternalDataReference = {
 
 /**
  * Node render props for custom node visualization
- * @template TNodeType - The specific node type
- * @template TNodeDataTypeMap - The node data type map
+ * @template TData - The node data type (defaults to Record<string, unknown>)
  */
-export type NodeRenderProps<TNodeType extends string = string, TNodeDataTypeMap = NodeDataTypeMap> = {
-  /** The node data with type-safe data property */
-  node: TNodeType extends keyof TNodeDataTypeMap
-    ? Node & {
-        type: TNodeType;
-        data: TNodeDataTypeMap[TNodeType];
-      }
-    : Node;
+export type NodeRenderProps<TData extends Record<string, unknown> = Record<string, unknown>> = {
+  /** The node data */
+  node: Node & { data: TData };
   /** Whether the node is selected */
   isSelected: boolean;
   /** Whether the node is being dragged */
@@ -65,17 +52,11 @@ export type NodeRenderProps<TNodeType extends string = string, TNodeDataTypeMap 
 
 /**
  * Inspector panel render props
- * @template TNodeType - The specific node type
- * @template TNodeDataTypeMap - The node data type map
+ * @template TData - The node data type (defaults to Record<string, unknown>)
  */
-export type InspectorRenderProps<TNodeType extends string = string, TNodeDataTypeMap = NodeDataTypeMap> = {
-  /** The selected node with type-safe data property */
-  node: TNodeType extends keyof TNodeDataTypeMap
-    ? Node & {
-        type: TNodeType;
-        data: TNodeDataTypeMap[TNodeType];
-      }
-    : Node;
+export type InspectorRenderProps<TData extends Record<string, unknown> = Record<string, unknown>> = {
+  /** The selected node */
+  node: Node & { data: TData };
   /** External data if loaded */
   externalData: unknown;
   /** Loading state for external data */
@@ -259,12 +240,11 @@ export type NodeConstraint = {
 
 /**
  * Node type definition
- * @template TNodeType - The specific node type
- * @template TNodeDataTypeMap - The node data type map
+ * @template TData - The node data type (defaults to Record<string, unknown>)
  */
-export type NodeDefinition<TNodeType extends string = string, TNodeDataTypeMap = NodeDataTypeMap> = {
+export type NodeDefinition<TData extends Record<string, unknown> = Record<string, unknown>> = {
   /** Unique type identifier */
-  type: TNodeType;
+  type: string;
   /** Display name for the node type */
   displayName: string;
   /** Description of the node type */
@@ -279,7 +259,7 @@ export type NodeDefinition<TNodeType extends string = string, TNodeDataTypeMap =
    */
   maxPerFlow?: number;
   /** Default data when creating a new node */
-  defaultData?: TNodeType extends keyof TNodeDataTypeMap ? TNodeDataTypeMap[TNodeType] : Record<string, unknown>;
+  defaultData?: TData;
   /** Default size for new nodes */
   defaultSize?: { width: number; height: number };
   /** Port definitions */
@@ -294,14 +274,14 @@ export type NodeDefinition<TNodeType extends string = string, TNodeDataTypeMap =
    * it will be invoked as a JSX component, allowing the use of React hooks.
    * Otherwise, it will be called as a regular function for backwards compatibility.
    */
-  renderNode?: (props: NodeRenderProps<TNodeType, TNodeDataTypeMap>) => ReactElement;
+  renderNode?: (props: NodeRenderProps<TData>) => ReactElement;
   /**
    * Custom render function for the inspector panel.
    * If the function name starts with an uppercase letter (React component convention),
    * it will be invoked as a JSX component, allowing the use of React hooks.
    * Otherwise, it will be called as a regular function for backwards compatibility.
    */
-  renderInspector?: (props: InspectorRenderProps<TNodeType, TNodeDataTypeMap>) => ReactElement;
+  renderInspector?: (props: InspectorRenderProps<TData>) => ReactElement;
   /** External data loader */
   loadExternalData?: (ref: ExternalDataReference) => unknown | Promise<unknown>;
   /** External data updater */
@@ -316,68 +296,42 @@ export type NodeDefinition<TNodeType extends string = string, TNodeDataTypeMap =
 
 /**
  * Helper function to create a type-safe node definition
- * @template TNodeType - The specific node type
- * @template TNodeDataTypeMap - The node data type map
+ * @template TData - The node data type
  */
-export function createNodeDefinition<TNodeType extends string, TNodeDataTypeMap = NodeDataTypeMap>(
-  definition: NodeDefinition<TNodeType, TNodeDataTypeMap>,
-): NodeDefinition<TNodeType, TNodeDataTypeMap> {
+export function createNodeDefinition<TData extends Record<string, unknown> = Record<string, unknown>>(
+  definition: NodeDefinition<TData>,
+): NodeDefinition<TData> {
   return definition;
 }
 
 /**
  * Helper function to get typed node data
- * @template TNodeType - The specific node type
- * @template TNodeDataTypeMap - The node data type map
+ * @template TData - The node data type
+ * @deprecated Use node.data directly with type assertion if needed
  */
-export function getTypedNodeData<TNodeType extends keyof TNodeDataTypeMap, TNodeDataTypeMap = NodeDataTypeMap>(
-  node: Node & { type: TNodeType },
-): TNodeDataTypeMap[TNodeType] {
-  return node.data as TNodeDataTypeMap[TNodeType];
+export function getTypedNodeData<TData extends Record<string, unknown> = Record<string, unknown>>(
+  node: Node,
+): TData {
+  return node.data as TData;
 }
 
 /**
  * Helper function to create a type-safe node data updater
- * @template TNodeType - The specific node type
- * @template TNodeDataTypeMap - The node data type map
+ * @template TData - The node data type
  */
-export function createNodeDataUpdater<TNodeType extends keyof TNodeDataTypeMap, TNodeDataTypeMap = NodeDataTypeMap>(
+export function createNodeDataUpdater<TData extends Record<string, unknown> = Record<string, unknown>>(
   onUpdateNode: (updates: Partial<Node>) => void,
 ) {
-  return (data: Partial<TNodeDataTypeMap[TNodeType]>) => {
+  return (data: Partial<TData>) => {
     onUpdateNode({ data: data as NodeData });
   };
 }
 
 /**
- * Compatibility bridge: Convert typed node render to original interface
- * @template TNodeType - The specific node type from NodeDataTypeMap
+ * @deprecated No longer needed - NodeDefinition is already compatible
  */
-export function asOriginalNodeRender<TNodeType extends string>(
-  render: (props: NodeRenderProps<TNodeType>) => ReactElement,
-): (props: NodeRenderProps) => ReactElement {
-  return (props: NodeRenderProps) => render(props as NodeRenderProps<TNodeType>);
-}
-
-/**
- * Compatibility bridge: Convert typed inspector render to original interface
- * @template TNodeType - The specific node type from NodeDataTypeMap
- */
-export function asOriginalInspectorRender<TNodeType extends string>(
-  render: (props: InspectorRenderProps<TNodeType>) => ReactElement,
-): (props: InspectorRenderProps) => ReactElement {
-  return (props: InspectorRenderProps) => render(props as InspectorRenderProps<TNodeType>);
-}
-
-/**
- * Create a widened, untyped node definition suitable for heterogeneous registries.
- * This function is now a simple identity function for backward compatibility.
- * Type widening is handled automatically by the registry.
- * @deprecated This function is no longer necessary and will be removed in a future version.
- */
-export function toUntypedDefinition<TNodeType extends string, TMap = NodeDataTypeMap>(
-  def: NodeDefinition<TNodeType, TMap>,
-): NodeDefinition<string, NodeDataTypeMap> {
-  // Type widening with unknown cast for compatibility
-  return def as unknown as NodeDefinition<string, NodeDataTypeMap>;
+export function toUntypedDefinition<TData extends Record<string, unknown> = Record<string, unknown>>(
+  def: NodeDefinition<TData>,
+): NodeDefinition {
+  return def as NodeDefinition<Record<string, unknown>>;
 }

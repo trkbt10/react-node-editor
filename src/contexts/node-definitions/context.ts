@@ -1,22 +1,16 @@
 import * as React from "react";
-import type { NodeDataTypeMap } from "../../types/NodeDefinition";
 import type { NodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
 
 /**
  * Context value for node definitions
- * @template TNodeDataTypeMap - The node data type map
  */
-export type NodeDefinitionContextValue<T extends NodeDataTypeMap> = { registry: NodeDefinitionRegistry<T> };
+export type NodeDefinitionContextValue = { registry: NodeDefinitionRegistry };
 
 /**
  * Node definition context
  */
-export const NodeDefinitionContext = React.createContext<
-  NodeDefinitionContextValue<{
-    [key: string]: Record<string, unknown>;
-  }>
->(
-  new Proxy({} as NodeDefinitionContextValue<{ [key: string]: Record<string, unknown> }>, {
+export const NodeDefinitionContext = React.createContext<NodeDefinitionContextValue>(
+  new Proxy({} as NodeDefinitionContextValue, {
     get: () => {
       throw new Error(
         "NodeDefinitionContext is not provided. Make sure to wrap your component tree with NodeDefinitionProvider.",
@@ -27,16 +21,11 @@ export const NodeDefinitionContext = React.createContext<
 
 /**
  * Hook to use node definitions
- * @template TNodeDataTypeMap - The node data type map
  */
-export function useNodeDefinitions<
-  TNodeDataTypeMap extends {
-    [key: string]: Record<string, unknown>;
-  } = NodeDataTypeMap,
->(): NodeDefinitionContextValue<TNodeDataTypeMap> {
+export function useNodeDefinitions(): NodeDefinitionContextValue {
   const context = React.useContext(NodeDefinitionContext);
   if (!context) {
     throw new Error("useNodeDefinitions must be used within a NodeDefinitionProvider");
   }
-  return context as unknown as NodeDefinitionContextValue<TNodeDataTypeMap>;
+  return context;
 }

@@ -1,5 +1,5 @@
 import type { NodeDefinition } from "../../types/NodeDefinition";
-import type { LabelNodeDataMap } from "./types";
+import type { LabelNodeData } from "./types";
 import { LabelNodeRenderer } from "./node";
 import { LabelInspectorRenderer } from "./inspector";
 
@@ -7,7 +7,7 @@ import { LabelInspectorRenderer } from "./inspector";
  * Label node definition
  * A decoration-less text label with optional subtitle and caption
  */
-export const LabelNodeDefinition: NodeDefinition<"label", LabelNodeDataMap> = {
+export const LabelNodeDefinition: NodeDefinition<LabelNodeData> = {
   type: "label",
   displayName: "Label",
   description: "A decoration-less text label with optional subtitle and caption",

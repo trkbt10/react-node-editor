@@ -19,13 +19,7 @@ import type { GridLayoutConfig, LayerDefinition } from "./types/panels";
 import { type PortPositionBehavior } from "./types/portPosition";
 import type { NodeEditorRendererOverrides } from "./types/renderers";
 
-export type NodeEditorProps<
-  TNodeDataTypeMap extends {
-    [key: string]: Record<string, unknown>;
-  } = {
-    [key: string]: Record<string, unknown>;
-  },
-> = {
+export type NodeEditorProps = {
   /** Initial data for uncontrolled mode (like defaultValue) */
   initialData?: Partial<NodeEditorData>;
   /** Data for controlled mode (like value) */
@@ -35,7 +29,7 @@ export type NodeEditorProps<
   onLoad?: () => NodeEditorData | Promise<NodeEditorData>;
   className?: string;
   /** Custom node definitions */
-  nodeDefinitions?: NodeDefinition<string, TNodeDataTypeMap>[];
+  nodeDefinitions?: NodeDefinition[];
   /** Whether to include default node definitions */
   includeDefaultDefinitions?: boolean;
   /** External data references for nodes */
@@ -66,13 +60,7 @@ export type NodeEditorProps<
  * NodeEditor - Main component that integrates all node editor functionality
  * Provides three separate contexts for managing different aspects of the editor
  */
-export function NodeEditor<
-  TNodeDataTypeMap extends {
-    [key: string]: Record<string, unknown>;
-  } = {
-    [key: string]: Record<string, unknown>;
-  },
->({
+export function NodeEditor({
   initialData,
   data,
   onDataChange,
@@ -93,7 +81,7 @@ export function NodeEditor<
   historyMaxEntries = 40,
   renderers,
   portPositionBehavior,
-}: NodeEditorProps<TNodeDataTypeMap>) {
+}: NodeEditorProps) {
   const mergedRenderers = React.useMemo(
     () => ({
       node: renderers?.node ?? DefaultNodeView,
@@ -106,7 +94,7 @@ export function NodeEditor<
   return (
     <I18nProvider initialLocale={locale} fallbackLocale={fallbackLocale} messagesOverride={messagesOverride}>
       <RendererProvider renderers={mergedRenderers}>
-        <NodeDefinitionProvider<TNodeDataTypeMap>
+        <NodeDefinitionProvider
           nodeDefinitions={nodeDefinitions}
           includeDefaults={includeDefaultDefinitions}
         >

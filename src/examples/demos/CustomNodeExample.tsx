@@ -6,7 +6,9 @@ import type {
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../types/NodeDefinition";
+import { toUntypedDefinition } from "../../types/NodeDefinition";
 import type { NodeEditorData } from "../../types/core";
+import { StandardNodeDefinition } from "../../node-definitions/standard";
 import classes from "./CustomNodeExample.module.css";
 
 // Example external data type
@@ -299,7 +301,7 @@ export const CustomNodeExample: React.FC = () => {
   return (
     <NodeEditor
       initialData={initialData}
-      nodeDefinitions={[TaskNodeDefinition]}
+      nodeDefinitions={[TaskNodeDefinition, toUntypedDefinition(StandardNodeDefinition)]}
       externalDataRefs={externalDataRefs}
       onDataChange={(data) => {
         console.log("Editor data changed:", data);
