@@ -1,3 +1,6 @@
+/**
+ * @file Inspector panel renderer for label nodes
+ */
 import * as React from "react";
 import type { InspectorRenderProps } from "../../types/NodeDefinition";
 import type { LabelNodeData } from "./types";

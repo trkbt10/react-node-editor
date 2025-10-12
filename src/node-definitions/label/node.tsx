@@ -1,3 +1,6 @@
+/**
+ * @file Renderer component for label nodes
+ */
 import * as React from "react";
 import type { NodeRenderProps } from "../../types/NodeDefinition";
 import type { LabelNodeData } from "./types";

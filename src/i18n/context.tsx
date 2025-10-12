@@ -1,3 +1,6 @@
+/**
+ * @file Internationalization provider and hooks for the node editor
+ */
 import * as React from "react";
 import type { Locale, I18nKey, I18nContextValue, I18nMessages } from "./types";
 import { messages } from "./messages";

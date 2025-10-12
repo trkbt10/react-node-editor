@@ -1,3 +1,6 @@
+/**
+ * @file Central collection of all translation messages by locale
+ */
 import type { Locale, I18nMessages } from "../types";
 import { enMessages } from "./en";
 import { jaMessages } from "./ja";

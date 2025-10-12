@@ -1,3 +1,6 @@
+/**
+ * @file Type definitions for label node data
+ */
 import type { NodeData } from "../../types/core";
 
 export type LabelNodeData = {

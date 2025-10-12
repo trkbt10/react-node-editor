@@ -1,3 +1,6 @@
+/**
+ * @file Label node definition - a text label with title, subtitle, and caption
+ */
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import type { LabelNodeData } from "./types";
 import { LabelNodeRenderer } from "./node";

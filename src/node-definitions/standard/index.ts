@@ -1,3 +1,6 @@
+/**
+ * @file Standard node definition - the basic node type with title and content
+ */
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import { StandardNodeRenderer } from "./node";
 

@@ -1,3 +1,6 @@
+/**
+ * @file Group node definition - a container for organizing other nodes
+ */
 import type { NodeDefinition } from "../../types/NodeDefinition";
 
 type GroupNodeData = {

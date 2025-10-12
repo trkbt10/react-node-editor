@@ -1,3 +1,6 @@
+/**
+ * @file Renderer component for standard nodes
+ */
 import * as React from "react";
 import type { NodeRenderProps } from "../../types/NodeDefinition";
 import { useI18n } from "../../i18n";

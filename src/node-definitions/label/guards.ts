@@ -1,3 +1,6 @@
+/**
+ * @file Type guards for label node data validation
+ */
 import type { NodeRenderProps, InspectorRenderProps } from "../../types/NodeDefinition";
 import type { LabelNodeData } from "./types";
 

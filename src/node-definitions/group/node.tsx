@@ -1,3 +1,6 @@
+/**
+ * @file Renderer component for group nodes
+ */
 import * as React from "react";
 import type { Node } from "../../types/core";
 import styles from "./group.module.css";
