@@ -365,6 +365,11 @@ const areEqual = (prevProps: ConnectionViewProps, nextProps: ConnectionViewProps
     return false;
   }
 
+  // Re-render when node data changes so custom renderers receive fresh values
+  if (prevProps.fromNode.data !== nextProps.fromNode.data || prevProps.toNode.data !== nextProps.toNode.data) {
+    return false;
+  }
+
   // Props are equal, skip re-render
   return true;
 };
