@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import type { Node } from "../../../types/core";
+import type { InspectorRenderProps } from "../../../types/NodeDefinition";
 import { useNodeEditor } from "../../../contexts/node-editor";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
 import { useNodeDefinition } from "../../../contexts/node-definitions";
@@ -93,10 +94,13 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
     }, [nodeDefinition]);
 
     // Check if a function is likely a React component (by naming convention)
-    const isReactComponent = React.useCallback((fn: (...args: unknown[]) => unknown): boolean => {
-      // React components should start with an uppercase letter
-      return /^[A-Z]/.test(fn.name || "");
-    }, []);
+    const isReactComponent = React.useCallback(
+      (fn: (props: InspectorRenderProps<Record<string, unknown>>) => React.ReactElement): boolean => {
+        // React components should start with an uppercase letter
+        return /^[A-Z]/.test(fn.name || "");
+      },
+      [],
+    );
 
     // Render custom inspector with proper component handling
     const customInspectorElement = React.useMemo(() => {
