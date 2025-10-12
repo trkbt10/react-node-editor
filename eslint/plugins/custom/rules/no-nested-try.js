@@ -17,7 +17,9 @@ export default {
       TryStatement(node) {
         const findNestedTry = (startNode) => {
           const searchParent = (current) => {
-            if (!current) {return null;}
+            if (!current) {
+              return null;
+            }
             if (current.type === "TryStatement") {
               return current;
             }

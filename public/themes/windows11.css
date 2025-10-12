@@ -41,16 +41,18 @@
   --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
 
   /* Font families & typography */
-  --node-editor-theme-default-font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
-  --node-editor-theme-control-font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
-  --node-editor-theme-label-font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
-  --node-editor-system-font: 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
-  --node-editor-font-mono: 'Cascadia Code', 'Consolas', monospace;
+  --node-editor-theme-default-font-family: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --node-editor-theme-control-font-family: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --node-editor-theme-label-font-family: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --node-editor-system-font: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --node-editor-font-mono: "Cascadia Code", "Consolas", monospace;
   --node-editor-title-font: 600 0.875rem/1.333 var(--node-editor-theme-label-font-family);
   --node-editor-subtitle-font: 400 0.875rem/1.333 var(--node-editor-theme-label-font-family);
   --node-editor-caption-font: 400 0.75rem/1.333 var(--node-editor-theme-default-font-family);
-  --node-editor-control-text-font: 600 var(--node-editor-inspector-font-size-body)/1.429 var(--node-editor-theme-control-font-family);
-  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body)/1.429 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 600 var(--node-editor-inspector-font-size-body) / 1.429
+    var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.429
+    var(--node-editor-theme-default-font-family);
   --node-editor-font-size-lg: 1rem;
   --node-editor-font-size-sm: 0.875rem;
   --node-editor-font-size-xs: 0.75rem;
@@ -121,8 +123,7 @@
   --node-editor-control-hover-background-primary: linear-gradient(135deg, #6fb2ff 0%, #0c5edc 100%);
   --node-editor-hover-background: rgba(11, 108, 240, 0.1);
   --node-editor-control-box-shadow-primary: 0 18px 42px rgba(11, 108, 240, 0.35);
-  --node-editor-control-box-shadow-secondary: 0 1px 0 rgba(255, 255, 255, 0.6),
-    inset 0 0 0 1px rgba(15, 23, 42, 0.08);
+  --node-editor-control-box-shadow-secondary: 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 0 0 1px rgba(15, 23, 42, 0.08);
   --node-editor-disabled-control-text-color: rgba(31, 31, 39, 0.38);
 
   /* Input surfaces */
@@ -217,7 +218,8 @@
   --node-editor-connection-stripe-opacity-background: 0.6;
   --node-editor-connection-flow-animation-duration: 1.3s;
   --node-editor-connection-flow-animation-distance: -24;
-  --node-editor-connection-base-transition: stroke 0.2s cubic-bezier(0.4, 0, 0.2, 1), stroke-width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --node-editor-connection-base-transition:
+    stroke 0.2s cubic-bezier(0.4, 0, 0.2, 1), stroke-width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   --node-editor-connection-arrow-transition: fill 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Connection drag styling - Windows11 theme */

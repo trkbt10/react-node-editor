@@ -49,8 +49,10 @@
   --node-editor-title-font: 700 0.875rem/1.2 var(--node-editor-theme-label-font-family);
   --node-editor-subtitle-font: 400 0.8125rem/1.2 var(--node-editor-theme-label-font-family);
   --node-editor-caption-font: 400 0.75rem/1.2 var(--node-editor-theme-default-font-family);
-  --node-editor-control-text-font: 400 var(--node-editor-inspector-font-size-body)/1.2 var(--node-editor-theme-control-font-family);
-  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body)/1.25 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 400 var(--node-editor-inspector-font-size-body) / 1.2
+    var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.25
+    var(--node-editor-theme-default-font-family);
   --node-editor-font-size-lg: 1rem;
   --node-editor-font-size-sm: 0.875rem;
   --node-editor-font-size-xs: 0.75rem;
@@ -120,10 +122,8 @@
   --node-editor-control-hover-background: rgba(0, 255, 65, 0.2);
   --node-editor-control-hover-background-primary: #00ff6e;
   --node-editor-hover-background: rgba(0, 255, 65, 0.18);
-  --node-editor-control-box-shadow-primary: 0 0 8px rgba(0, 255, 65, 0.6),
-    inset 0 0 4px rgba(0, 255, 65, 0.3);
-  --node-editor-control-box-shadow-secondary: 0 0 4px rgba(0, 255, 65, 0.4),
-    inset 0 0 2px rgba(0, 255, 65, 0.2);
+  --node-editor-control-box-shadow-primary: 0 0 8px rgba(0, 255, 65, 0.6), inset 0 0 4px rgba(0, 255, 65, 0.3);
+  --node-editor-control-box-shadow-secondary: 0 0 4px rgba(0, 255, 65, 0.4), inset 0 0 2px rgba(0, 255, 65, 0.2);
   --node-editor-disabled-control-text-color: rgba(0, 255, 65, 0.3);
 
   /* Input surfaces - terminal style */

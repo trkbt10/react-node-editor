@@ -41,16 +41,21 @@
   --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
 
   /* Font families & typography */
-  --node-editor-theme-default-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  --node-editor-theme-control-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  --node-editor-theme-label-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-  --node-editor-system-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  --node-editor-font-mono: 'SF Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --node-editor-theme-default-font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  --node-editor-theme-control-font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  --node-editor-theme-label-font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif;
+  --node-editor-system-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
+  --node-editor-font-mono: "SF Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
   --node-editor-title-font: 700 0.9375rem/1.333 var(--node-editor-theme-label-font-family);
   --node-editor-subtitle-font: 400 0.9375rem/1.333 var(--node-editor-theme-label-font-family);
   --node-editor-caption-font: 400 0.8125rem/1.231 var(--node-editor-theme-default-font-family);
-  --node-editor-control-text-font: 700 var(--node-editor-inspector-font-size-body)/1.333 var(--node-editor-theme-control-font-family);
-  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body)/1.333 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 700 var(--node-editor-inspector-font-size-body) / 1.333
+    var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.333
+    var(--node-editor-theme-default-font-family);
   --node-editor-font-size-lg: 1.25rem;
   --node-editor-font-size-sm: 0.875rem;
   --node-editor-font-size-xs: 0.75rem;

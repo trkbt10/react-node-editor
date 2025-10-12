@@ -39,12 +39,7 @@ export default defineConfig({
     react(),
     dts({
       include: ["src/**/*.ts", "src/**/*.tsx"],
-      exclude: [
-        "src/**/*.spec.ts",
-        "src/**/*.spec.tsx",
-        "src/**/*.stories.tsx",
-        "src/examples/**/*",
-      ],
+      exclude: ["src/**/*.spec.ts", "src/**/*.spec.tsx", "src/**/*.stories.tsx", "src/examples/**/*"],
       rollupTypes: true,
     }),
     dedupeLibraryCss(),

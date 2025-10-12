@@ -41,16 +41,20 @@
   --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
 
   /* Font families & typography */
-  --node-editor-theme-default-font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-  --node-editor-theme-control-font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-  --node-editor-theme-label-font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-  --node-editor-system-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif;
-  --node-editor-font-mono: 'SF Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
+  --node-editor-theme-default-font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+  --node-editor-theme-control-font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  --node-editor-theme-label-font-family:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  --node-editor-system-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+  --node-editor-font-mono: "SF Mono", "SFMono-Regular", Menlo, Consolas, monospace;
   --node-editor-title-font: 600 0.9375rem/1.4 var(--node-editor-theme-label-font-family);
   --node-editor-subtitle-font: 500 0.875rem/1.4 var(--node-editor-theme-label-font-family);
   --node-editor-caption-font: 400 0.6875rem/1.35 var(--node-editor-theme-default-font-family);
   --node-editor-control-text-font: 500 0.8125rem/1.4 var(--node-editor-theme-control-font-family);
-  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body)/1.45 var(--node-editor-theme-default-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.45
+    var(--node-editor-theme-default-font-family);
   --node-editor-font-size-lg: 1.125rem;
   --node-editor-font-size-sm: 0.875rem;
   --node-editor-font-size-xs: 0.75rem;
@@ -216,7 +220,8 @@
   --node-editor-connection-stripe-opacity-background: 0.65;
   --node-editor-connection-flow-animation-duration: 1.4s;
   --node-editor-connection-flow-animation-distance: -24;
-  --node-editor-connection-base-transition: stroke 0.3s cubic-bezier(0.4, 0, 0.2, 1), stroke-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --node-editor-connection-base-transition:
+    stroke 0.3s cubic-bezier(0.4, 0, 0.2, 1), stroke-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --node-editor-connection-arrow-transition: fill 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Connection drag styling - Apple theme */

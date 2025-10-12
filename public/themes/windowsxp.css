@@ -41,16 +41,18 @@
   --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
 
   /* Font families & typography */
-  --node-editor-theme-default-font-family: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif;
-  --node-editor-theme-control-font-family: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif;
-  --node-editor-theme-label-font-family: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif;
-  --node-editor-system-font: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif;
-  --node-editor-font-mono: 'Lucida Console', 'Courier New', monospace;
+  --node-editor-theme-default-font-family: "Tahoma", "Verdana", "MS Sans Serif", sans-serif;
+  --node-editor-theme-control-font-family: "Tahoma", "Verdana", "MS Sans Serif", sans-serif;
+  --node-editor-theme-label-font-family: "Tahoma", "Verdana", "MS Sans Serif", sans-serif;
+  --node-editor-system-font: "Tahoma", "Verdana", "MS Sans Serif", sans-serif;
+  --node-editor-font-mono: "Lucida Console", "Courier New", monospace;
   --node-editor-title-font: 700 0.6875rem/1.2 var(--node-editor-theme-label-font-family);
   --node-editor-subtitle-font: 700 0.6875rem/1.2 var(--node-editor-theme-label-font-family);
   --node-editor-caption-font: 400 0.6875rem/1.2 var(--node-editor-theme-default-font-family);
-  --node-editor-control-text-font: 700 var(--node-editor-inspector-font-size-body)/1.2 var(--node-editor-theme-control-font-family);
-  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body)/1.385 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 700 var(--node-editor-inspector-font-size-body) / 1.2
+    var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.385
+    var(--node-editor-theme-default-font-family);
   --node-editor-font-size-lg: 0.875rem;
   --node-editor-font-size-sm: 0.8125rem;
   --node-editor-font-size-xs: 0.6875rem;
@@ -120,10 +122,9 @@
   --node-editor-control-hover-background: linear-gradient(180deg, #ffffff 0%, #c9dcff 100%);
   --node-editor-control-hover-background-primary: linear-gradient(180deg, #6ca4e0 0%, #2057bc 100%);
   --node-editor-hover-background: rgba(36, 96, 215, 0.12);
-  --node-editor-control-box-shadow-primary: inset 0 1px 0 rgba(255, 255, 255, 0.75),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-  --node-editor-control-box-shadow-secondary: inset 0 1px 0 rgba(255, 255, 255, 0.8),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+  --node-editor-control-box-shadow-primary: inset 0 1px 0 rgba(255, 255, 255, 0.75), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  --node-editor-control-box-shadow-secondary:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(0, 0, 0, 0.08);
   --node-editor-disabled-control-text-color: rgba(27, 42, 74, 0.4);
 
   /* Input surfaces */

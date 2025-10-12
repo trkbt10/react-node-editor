@@ -7,14 +7,16 @@ import { builtinModules } from "node:module";
 
 // Build a set of bare core module names (without the `node:` prefix)
 const CORE_MODULES = new Set(
-  builtinModules
-    .map((m) => (m.startsWith("node:") ? m.slice(5) : m))
-    .filter((m) => !m.includes("/"))
+  builtinModules.map((m) => (m.startsWith("node:") ? m.slice(5) : m)).filter((m) => !m.includes("/")),
 );
 
 function needsNodePrefix(specifier) {
-  if (typeof specifier !== "string") {return false;}
-  if (specifier.startsWith("node:")) {return false;} // already using protocol
+  if (typeof specifier !== "string") {
+    return false;
+  }
+  if (specifier.startsWith("node:")) {
+    return false;
+  } // already using protocol
   const base = specifier.split("/")[0];
   return CORE_MODULES.has(base);
 }
@@ -102,4 +104,3 @@ export default {
     };
   },
 };
-
