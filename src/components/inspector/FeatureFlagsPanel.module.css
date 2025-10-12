@@ -49,47 +49,12 @@
 }
 
 .description {
-  margin-bottom: var(--node-editor-space-xl);
+  margin-bottom: var(--node-editor-inspector-section-gap);
   color: var(--node-editor-text-secondary);
   font-size: var(--node-editor-font-size-sm);
 }
 
-.flags {
-  margin-bottom: var(--node-editor-space-xl);
-}
-
-.flagsList {
-  padding: var(--node-editor-space-lg);
-  background: var(--node-editor-surface-secondary);
-  border-radius: var(--node-editor-radius-sm);
-  border: 1px solid var(--node-editor-border-color);
-}
-
-.flagsList :global(dt + dd) {
-  border-top: 1px solid var(--node-editor-border-color);
-  padding-top: var(--node-editor-space-sm);
-}
-
-.flagsList :global(dt:first-of-type + dd) {
-  border-top: none;
-  padding-top: 0;
-}
-
-.currentState {
-  margin-bottom: var(--node-editor-space-xl);
-  padding: var(--node-editor-space-lg);
-  background: var(--node-editor-surface-secondary);
-  border-radius: var(--node-editor-radius-sm);
-}
-
-.currentState h4 {
-  margin: 0 0 var(--node-editor-space-sm) 0;
-  font-size: var(--node-editor-font-size-sm);
-  font-weight: 600;
-  color: var(--node-editor-text-color);
-}
-
-.currentState pre {
+.currentStateCode {
   margin: 0;
   padding: var(--node-editor-space-sm);
   background: var(--node-editor-surface-tertiary);

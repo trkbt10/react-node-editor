@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useFeatureFlags, setFeatureFlags, type NodeEditorFeatureFlags } from "../../config/featureFlags";
 import { SwitchInput, Button } from "../elements";
-import { InspectorDefinitionList, InspectorDefinitionItem } from "./parts";
+import { InspectorDefinitionList, InspectorDefinitionItem, PropertySection } from "./parts";
 import styles from "./FeatureFlagsPanel.module.css";
 
 export type FeatureFlagsPanelProps = {
@@ -61,13 +61,13 @@ export const FeatureFlagsPanel: React.FC<FeatureFlagsPanelProps> = ({ className,
       </div>
 
       <div className={styles.content}>
-        <div className={styles.description}>
-          Configure feature flags for the node editor migration. These settings are stored in localStorage for
-          development.
-        </div>
+        <PropertySection title="Settings">
+          <div className={styles.description}>
+            Configure feature flags for the node editor migration. These settings are stored in localStorage for
+            development.
+          </div>
 
-        <div className={styles.flags}>
-          <InspectorDefinitionList className={styles.flagsList}>
+          <InspectorDefinitionList>
             <InspectorDefinitionItem
               label="Use Inferred Ports Only"
               description={
@@ -84,12 +84,11 @@ export const FeatureFlagsPanel: React.FC<FeatureFlagsPanelProps> = ({ className,
               />
             </InspectorDefinitionItem>
           </InspectorDefinitionList>
-        </div>
+        </PropertySection>
 
-        <div className={styles.currentState}>
-          <h4>Current State</h4>
-          <pre>{JSON.stringify(currentFlags, null, 2)}</pre>
-        </div>
+        <PropertySection title="Current State">
+          <pre className={styles.currentStateCode}>{JSON.stringify(currentFlags, null, 2)}</pre>
+        </PropertySection>
 
         <div className={styles.actions}>
           <Button onClick={handleApply} variant="primary" disabled={!hasChanges}>

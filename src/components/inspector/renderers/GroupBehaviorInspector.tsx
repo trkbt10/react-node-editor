@@ -12,10 +12,13 @@ import styles from "./GroupBehaviorInspector.module.css";
 export function GroupBehaviorInspector({ node, onUpdateNode }: InspectorRenderProps<"group">): React.ReactElement {
   const { t } = useI18n();
   const groupBackground = typeof node.data.groupBackground === "string" ? node.data.groupBackground : "#000000";
-  const groupOpacity = typeof (node.data as Record<string, unknown>).groupOpacity === "number" ? (node.data as Record<string, unknown>).groupOpacity as number : 1;
+  const groupOpacity =
+    typeof (node.data as Record<string, unknown>).groupOpacity === "number"
+      ? ((node.data as Record<string, unknown>).groupOpacity as number)
+      : 1;
   const handleBackground = (color: string) => onUpdateNode({ data: { ...node.data, groupBackground: color } });
   const handleReset = () => {
-    const { groupBackground: _remove, ...rest } = node.data;
+    const { ...rest } = node.data;
     onUpdateNode({ data: rest });
   };
 
