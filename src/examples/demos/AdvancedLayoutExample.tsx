@@ -105,7 +105,7 @@ const FloatingSidebar: React.FC<{ showMinimap: boolean; onToggleMinimap: () => v
         <h3 className={classes.sidebarTitle}>Settings</h3>
         <button
           className={classes.toggleButton}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setIsOpen((prev) => !prev)}
           aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
         >
           {isOpen ? "◀" : "▶"}
@@ -185,83 +185,93 @@ const AdvancedStatusBar: React.FC = () => {
  */
 export const AdvancedLayoutExample: React.FC = () => {
   // Custom grid configuration for advanced layout
-  const gridConfig: GridLayoutConfig = {
-    areas: [
-      ["toolbar", "toolbar", "toolbar"],
-      ["canvas", "canvas", "canvas"],
-      ["statusbar", "statusbar", "statusbar"],
-    ],
-    rows: [{ size: "auto" }, { size: "1fr" }, { size: "auto" }],
-    columns: [{ size: "1fr" }, { size: "1fr" }, { size: "320px", resizable: true, minSize: 250, maxSize: 500 }],
-    gap: "0",
-  };
-
-  // Create floating overlays component
-  const [showMinimap, setShowMinimap] = React.useState(true);
-
-  const FloatingOverlays: React.FC = () => (
-    <>
-      {/* Floating sidebar overlay */}
-      <FloatingSidebar showMinimap={showMinimap} onToggleMinimap={() => setShowMinimap(!showMinimap)} />
-    </>
+  const gridConfig = React.useMemo<GridLayoutConfig>(
+    () => ({
+      areas: [
+        ["toolbar", "toolbar", "toolbar"],
+        ["canvas", "canvas", "canvas"],
+        ["statusbar", "statusbar", "statusbar"],
+      ],
+      rows: [{ size: "auto" }, { size: "1fr" }, { size: "auto" }],
+      columns: [{ size: "1fr" }, { size: "1fr" }, { size: "320px", resizable: true, minSize: 250, maxSize: 500 }],
+      gap: "0",
+    }),
+    [],
   );
-  const gridLayers: LayerDefinition[] = [
-    {
-      id: "toolbar",
-      component: <GridToolbox />,
-      gridArea: "toolbar",
-      zIndex: 10,
-      positionMode: "fixed",
-      position: {
-        bottom: 0,
+
+  const [showMinimap, setShowMinimap] = React.useState(true);
+  const handleToggleMinimap = React.useCallback(() => {
+    setShowMinimap((prev) => !prev);
+  }, []);
+
+  const gridLayers = React.useMemo<LayerDefinition[]>(
+    () => [
+      {
+        id: "toolbar",
+        component: <GridToolbox />,
+        gridArea: "toolbar",
+        zIndex: 200,
+        positionMode: "fixed",
+        position: {
+          bottom: 20,
+          left: "50%",
+        },
+        style: {
+          transform: "translateX(-50%)",
+        },
       },
-    },
-    {
-      id: "minimap",
-      component: showMinimap ? <Minimap width={200} height={150} /> : null,
-      positionMode: "absolute",
-      position: { right: 10, bottom: 10 },
-      zIndex: 20,
-      draggable: true,
-      width: 200,
-      height: 150,
-    },
-    {
-      id: "canvas",
-      component: <NodeCanvas />,
-      gridArea: "canvas",
-      zIndex: 0,
-    },
-    {
-      id: "inspector",
-      component: <InspectorPanel />,
-      gridArea: "canvas",
-      zIndex: 50,
-      positionMode: "absolute",
-      position: {
-        right: 0,
-        top: 0,
+      {
+        id: "minimap",
+        component: showMinimap ? <Minimap width={200} height={150} /> : null,
+        positionMode: "absolute",
+        position: { right: 10, bottom: 10 },
+        zIndex: 20,
+        draggable: true,
+        width: 200,
+        height: 150,
       },
-      pointerEvents: "auto",
-      width: 320,
-      height: 520,
-      draggable: true,
-    },
-    {
-      id: "statusbar",
-      component: <AdvancedStatusBar />,
-      gridArea: "statusbar",
-      zIndex: 10,
-    },
-    {
-      id: "floating-overlays",
-      component: <FloatingOverlays />,
-      gridArea: "canvas",
-      zIndex: 100,
-      draggable: true,
-      positionMode: "absolute",
-    },
-  ];
+      {
+        id: "canvas",
+        component: <NodeCanvas />,
+        gridArea: "canvas",
+        zIndex: 0,
+      },
+      {
+        id: "inspector",
+        component: <InspectorPanel />,
+        gridArea: "canvas",
+        zIndex: 50,
+        positionMode: "absolute",
+        position: {
+          right: 0,
+          top: 0,
+        },
+        pointerEvents: "auto",
+        width: 320,
+        height: 520,
+        draggable: true,
+      },
+      {
+        id: "statusbar",
+        component: <AdvancedStatusBar />,
+        gridArea: "statusbar",
+        zIndex: 10,
+      },
+      {
+        id: "floating-sidebar",
+        component: <FloatingSidebar showMinimap={showMinimap} onToggleMinimap={handleToggleMinimap} />,
+        positionMode: "absolute",
+        position: {
+          top: "var(--node-editor-space-xxl)",
+          left: "var(--node-editor-space-lg)",
+        },
+        zIndex: 1000,
+        draggable: true,
+        pointerEvents: "auto",
+      },
+    ],
+    [showMinimap, handleToggleMinimap],
+  );
 
   return (
     <div className={classes.wrapper}>
@@ -274,3 +284,11 @@ export const AdvancedLayoutExample: React.FC = () => {
     </div>
   );
 };
+
+/*
+debug-notes:
+- Reviewed src/components/layout/GridLayout.tsx to verify absolute positioning behaviour for LayerDefinition overlays.
+- Reviewed src/examples/demos/ColumnLayoutExample.tsx to compare grid layer patterns used across demos.
+- Reviewed src/examples/demos/threejs/ThreeJsExample.tsx to confirm useMemo usage for grid configuration and layers.
+- Reviewed src/NodeEditorContent.tsx to check project utilities for composing class names.
+*/

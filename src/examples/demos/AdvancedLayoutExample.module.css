@@ -8,15 +8,11 @@
 
 /* Floating Sidebar Styles */
 .floatingSidebar {
-  position: fixed;
-  top: var(--node-editor-space-xxl);
-  left: var(--node-editor-space-lg);
   width: 260px;
   background: var(--node-editor-surface-primary);
   border: var(--node-editor-card-border);
   border-radius: var(--node-editor-radius-md);
   box-shadow: var(--node-editor-card-box-shadow);
-  z-index: 1000;
   transition: transform var(--node-editor-transition-duration) ease;
   max-height: calc(100vh - 120px);
   overflow: hidden;

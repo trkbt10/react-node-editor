@@ -5,8 +5,6 @@ import * as React from "react";
 import { NodeEditor } from "../../NodeEditor";
 import type { ExternalDataReference } from "../../types/NodeDefinition";
 import type { NodeEditorData } from "../../types/core";
-import { ExampleLayout } from "./parts/ExampleLayout";
-import { ExampleHeader } from "./parts/ExampleHeader";
 import { CodeNodeDefinition } from "./advanced/nodes/CodeEditorNode";
 import { ChartNodeDefinition } from "./advanced/nodes/ChartNode";
 import { FormNodeDefinition } from "./advanced/nodes/FormBuilderNode";
@@ -158,98 +156,73 @@ const advancedExternalDataRefs: Record<string, ExternalDataReference> = {
 // =============================================
 
 export const AdvancedNodeExample: React.FC = () => {
-  const [currentTheme, setCurrentTheme] = React.useState("default");
   const [editorData, setEditorData] = React.useState<NodeEditorData>(advancedInitialData);
 
-  const themeActions = (
-    <>
-      <label className={classes.themeLabel}>Theme:</label>
-      <select value={currentTheme} onChange={(e) => setCurrentTheme(e.target.value)} className={classes.themeSelect}>
-        <option value="default">Default</option>
-        <option value="dark">Dark</option>
-        <option value="high-contrast">High Contrast</option>
-      </select>
-    </>
-  );
+  const onDataChange = React.useCallback((data: NodeEditorData) => {
+    // Propagate data through connections
+    const updatedNodes = { ...data.nodes };
+    let hasChanges = false;
 
-  const contentClass = currentTheme === "dark" ? `${classes.content} ${classes.contentDark}` : classes.content;
+    Object.values(data.connections).forEach((connection) => {
+      const fromNode = updatedNodes[connection.fromNodeId];
+      const toNode = updatedNodes[connection.toNodeId];
 
-  return (
-    <ExampleLayout
-      header={
-        <ExampleHeader
-          title="Advanced Node Editor"
-          description="Custom renderers: Code, Chart, Form, Music Player, Particles, AI Chat, Game Pad"
-          actions={themeActions}
-        />
+      if (fromNode && toNode) {
+        // Get data from output port
+        const outputData = fromNode.data[connection.fromPortId];
+
+        // Set data to input port
+        if (outputData !== undefined) {
+          const currentInputData = toNode.data[connection.toPortId];
+
+          // Only update if data changed
+          if (JSON.stringify(currentInputData) !== JSON.stringify(outputData)) {
+            updatedNodes[connection.toNodeId] = {
+              ...toNode,
+              data: {
+                ...toNode.data,
+                [connection.toPortId]: outputData,
+              },
+            };
+            hasChanges = true;
+          }
+        }
       }
-    >
-      <div className={contentClass}>
-        <NodeEditor
-          data={editorData}
-          nodeDefinitions={[
-            CodeNodeDefinition,
-            ChartNodeDefinition,
-            FormNodeDefinition,
-            MusicPlayerNodeDefinition,
-            ParticleSystemNodeDefinition,
-            AIChatNodeDefinition,
-            GamePadNodeDefinition,
-            NumberInputNodeDefinition,
-            JavaScriptCodeNodeDefinition,
-          ]}
-          externalDataRefs={advancedExternalDataRefs}
-          onDataChange={(data) => {
-            console.log("Advanced editor data changed:", data);
+    });
 
-            // Propagate data through connections
-            const updatedNodes = { ...data.nodes };
-            let hasChanges = false;
-
-            Object.values(data.connections).forEach((connection) => {
-              const fromNode = updatedNodes[connection.fromNodeId];
-              const toNode = updatedNodes[connection.toNodeId];
-
-              if (fromNode && toNode) {
-                // Get data from output port
-                const outputData = fromNode.data[connection.fromPortId];
-
-                // Set data to input port
-                if (outputData !== undefined) {
-                  const currentInputData = toNode.data[connection.toPortId];
-
-                  // Only update if data changed
-                  if (JSON.stringify(currentInputData) !== JSON.stringify(outputData)) {
-                    updatedNodes[connection.toNodeId] = {
-                      ...toNode,
-                      data: {
-                        ...toNode.data,
-                        [connection.toPortId]: outputData,
-                      },
-                    };
-                    hasChanges = true;
-                  }
-                }
-              }
-            });
-
-            // Update editor data if there were changes
-            if (hasChanges) {
-              setEditorData({
-                ...data,
-                nodes: updatedNodes,
-              });
-            } else {
-              setEditorData(data);
-            }
-          }}
-          onSave={async (data) => {
-            console.log("Saving advanced editor data:", data);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-          }}
-        />
-      </div>
-    </ExampleLayout>
+    // Update editor data if there were changes
+    if (hasChanges) {
+      setEditorData({
+        ...data,
+        nodes: updatedNodes,
+      });
+    } else {
+      setEditorData(data);
+    }
+  }, []);
+  return (
+    <div className={classes.content}>
+      <NodeEditor
+        data={editorData}
+        nodeDefinitions={[
+          CodeNodeDefinition,
+          ChartNodeDefinition,
+          FormNodeDefinition,
+          MusicPlayerNodeDefinition,
+          ParticleSystemNodeDefinition,
+          AIChatNodeDefinition,
+          GamePadNodeDefinition,
+          NumberInputNodeDefinition,
+          JavaScriptCodeNodeDefinition,
+        ]}
+        externalDataRefs={advancedExternalDataRefs}
+        onDataChange={onDataChange}
+        onSave={async (data) => {
+          console.log("Saving advanced editor data:", data);
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }}
+      />
+    </div>
   );
 };
 
