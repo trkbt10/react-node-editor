@@ -1,16 +1,6 @@
 /**
  * @file Runtime helpers for loading and switching example themes.
  */
-import defaultThemeCss from "../../themes/default.css?inline";
-import window98ThemeCss from "../../themes/window98.css?inline";
-import googleThemeCss from "../../themes/google.css?inline";
-import appleThemeCss from "../../themes/apple.css?inline";
-import xcorpThemeCss from "../../themes/xcorp.css?inline";
-import githubThemeCss from "../../themes/github.css?inline";
-import windowsXpThemeCss from "../../themes/windowsxp.css?inline";
-import windows11ThemeCss from "../../themes/windows11.css?inline";
-import minecraftThemeCss from "../../themes/minecraft.css?inline";
-import wargamesThemeCss from "../../themes/wargames.css?inline";
 
 export type NodeEditorThemeId =
   | "default"
@@ -22,13 +12,14 @@ export type NodeEditorThemeId =
   | "windowsxp"
   | "windows11"
   | "minecraft"
-  | "wargames";
+  | "wargames"
+  | "stellar";
 
 export type NodeEditorTheme = {
   id: NodeEditorThemeId;
   label: string;
   description: string;
-  cssText: string;
+  cssPath: string;
 };
 
 const NODE_EDITOR_THEME_STYLE_ELEMENT_ID = "node-editor-theme-style";
@@ -39,61 +30,67 @@ const AVAILABLE_THEMES: NodeEditorTheme[] = [
     id: "default",
     label: "Default",
     description: "Modern defaults with rounded cards and soft shadows.",
-    cssText: defaultThemeCss,
+    cssPath: "",
   },
   {
     id: "window98",
     label: "Windows 98",
     description: "Pixel-perfect nostalgia with flat widgets and crisp blue chrome.",
-    cssText: window98ThemeCss,
+    cssPath: "/themes/window98.css",
   },
   {
     id: "google",
     label: "Google",
     description: "Light, friendly surfaces with bold primary accent and Material-inspired shapes.",
-    cssText: googleThemeCss,
+    cssPath: "/themes/google.css",
   },
   {
     id: "apple",
     label: "Apple",
     description: "Translucent layers, spacious typography, and vibrant blue accent inspired by apple.com.",
-    cssText: appleThemeCss,
+    cssPath: "/themes/apple.css",
   },
   {
     id: "xcorp",
     label: "X",
     description: "High-contrast dark theme with electric blue highlights and glassy surfaces.",
-    cssText: xcorpThemeCss,
+    cssPath: "/themes/xcorp.css",
   },
   {
     id: "github",
     label: "GitHub",
     description: "Dark dimmed look with desaturated neutrals and punchy blue call-to-action.",
-    cssText: githubThemeCss,
+    cssPath: "/themes/github.css",
   },
   {
     id: "windowsxp",
     label: "Windows XP",
     description: "Blissful gradients, bold blues, and playful glass buttons from the XP era.",
-    cssText: windowsXpThemeCss,
+    cssPath: "/themes/windowsxp.css",
   },
   {
     id: "windows11",
     label: "Windows 11",
     description: "Soft acrylic surfaces, centered layouts, and fluent blue accent of modern Windows.",
-    cssText: windows11ThemeCss,
+    cssPath: "/themes/windows11.css",
   },
   {
     id: "minecraft",
     label: "Minecraft",
     description: "Pixel-crafted UI with earthy neutrals and vibrant emerald highlight.",
-    cssText: minecraftThemeCss,
+    cssPath: "/themes/minecraft.css",
   },
   {
     id: "wargames",
     label: "WarGames",
     description: "CRT terminal with glowing green phosphor wireframes inspired by WOPR and DEFCON.",
-    cssText: wargamesThemeCss,
+    cssPath: "/themes/wargames.css",
+  },
+  {
+    id: "stellar",
+    label: "Stellar",
+    description: "Gray background with dark cards, warm orange accents, and clean flat design.",
+    cssPath: "/themes/stellar.css",
   },
 ];
 
@@ -133,18 +130,29 @@ export function applyTheme(themeId: NodeEditorThemeId): NodeEditorTheme {
     throw new Error("Cannot apply node editor theme because document.head is not available.");
   }
 
-  let styleElement = document.getElementById(
+  const existingLinkElement = document.getElementById(
     NODE_EDITOR_THEME_STYLE_ELEMENT_ID,
-  ) as HTMLStyleElement | null;
+  ) as HTMLLinkElement | null;
 
-  if (styleElement === null) {
-    styleElement = document.createElement("style");
-    styleElement.id = NODE_EDITOR_THEME_STYLE_ELEMENT_ID;
-    headElement.appendChild(styleElement);
+  if (theme.cssPath === "") {
+    // Default theme: remove any existing theme link element
+    if (existingLinkElement !== null) {
+      existingLinkElement.remove();
+    }
+  } else {
+    // Custom theme: create or update link element
+    let linkElement = existingLinkElement;
+
+    if (linkElement === null) {
+      linkElement = document.createElement("link");
+      linkElement.id = NODE_EDITOR_THEME_STYLE_ELEMENT_ID;
+      linkElement.rel = "stylesheet";
+      headElement.appendChild(linkElement);
+    }
+
+    linkElement.href = theme.cssPath;
+    linkElement.dataset.themeId = theme.id;
   }
-
-  styleElement.textContent = theme.cssText;
-  styleElement.dataset.themeId = theme.id;
 
   document.documentElement.setAttribute("data-node-editor-theme", theme.id);
 
