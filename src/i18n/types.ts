@@ -104,6 +104,18 @@ export type I18nMessages = {
   inspectorTabSettings?: string;
   inspectorActions?: string;
 
+  // Auto Layout Panel
+  autoLayoutPanelDescription: string;
+  autoLayoutPanelNodeCount: string;
+  autoLayoutPanelNoNodes: string;
+  autoLayoutPanelPrimaryAction: string;
+  autoLayoutPanelPrimaryHint: string;
+  autoLayoutPanelRun: string;
+  autoLayoutPanelGridTitle: string;
+  autoLayoutPanelGridDescription: string;
+  autoLayoutPanelForceTitle: string;
+  autoLayoutPanelForceDescription: string;
+
   // History Panel
   historyUndo?: string;
   historyRedo?: string;

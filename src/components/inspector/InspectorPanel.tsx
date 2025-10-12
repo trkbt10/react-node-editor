@@ -12,6 +12,9 @@ import { classNames } from "../elements";
 import { InspectorSection } from "./parts/InspectorSection";
 import styles from "./InspectorPanel.module.css";
 import { useI18n } from "../../i18n";
+import { GeneralSettingsPanel } from "./renderers/GeneralSettingsPanel";
+import { GridSettingsPanel } from "./renderers/GridSettingsPanel";
+import { PropertySection } from "./parts/PropertySection";
 
 export type InspectorPanelTabConfig = {
   id: string;
@@ -128,7 +131,16 @@ export const InspectorSettingsTab: React.FC<InspectorSettingsTabProps> = ({ pane
     // Default panels
     return [
       {
+        title: "Auto Layout",
         component: AutoLayoutPanel,
+      },
+      {
+        title: "Feature Flags",
+        component: GeneralSettingsPanel,
+      },
+      {
+        title: "General Settings",
+        component: GridSettingsPanel,
       },
     ];
   }, [panels]);
@@ -136,7 +148,9 @@ export const InspectorSettingsTab: React.FC<InspectorSettingsTabProps> = ({ pane
   return (
     <>
       {effectivePanels.map((panel, index) => (
-        <panel.component key={index} />
+        <PropertySection title={panel.title} key={index}>
+          <panel.component />
+        </PropertySection>
       ))}
     </>
   );

@@ -1,0 +1,201 @@
+:root {
+  /* Core spacing scale */
+  --node-editor-space-xs: 4px;
+  --node-editor-space-sm: 8px;
+  --node-editor-space-md: 12px;
+  --node-editor-space-lg: 16px;
+  --node-editor-space-xl: 24px;
+  --node-editor-space-xxl: 32px;
+
+  /* Layout spacing */
+  --node-editor-control-padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+
+  /* Inspector spacing system */
+  --node-editor-inspector-space-xs: var(--node-editor-space-xs);
+  --node-editor-inspector-space-sm: var(--node-editor-space-sm);
+  --node-editor-inspector-space-md: var(--node-editor-space-md);
+  --node-editor-inspector-space-lg: var(--node-editor-space-lg);
+  --node-editor-inspector-space-xl: var(--node-editor-space-xl);
+  --node-editor-inspector-space-xxl: var(--node-editor-space-xxl);
+  --node-editor-inspector-content-padding: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-xs);
+  --node-editor-inspector-header-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-section-gap: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-field-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
+  --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+  --node-editor-inspector-input-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+
+  /* Inspector typography */
+  --node-editor-inspector-font-size-title: 0.6875rem;
+  --node-editor-inspector-line-height-title: 1.429;
+  --node-editor-inspector-font-size-body: 0.875rem;
+  --node-editor-inspector-line-height-body: 1.429;
+  --node-editor-inspector-font-size-meta: 0.75rem;
+  --node-editor-inspector-line-height-meta: 1.333;
+  --node-editor-inspector-font-weight-medium: 500;
+  --node-editor-inspector-font-size-heading: 0.875rem;
+  --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
+  --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+  /* Font families & typography */
+  --node-editor-theme-default-font-family: 'Roboto', 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
+  --node-editor-theme-control-font-family: 'Google Sans', 'Roboto', 'Noto Sans', Arial, sans-serif;
+  --node-editor-theme-label-font-family: 'Google Sans', 'Roboto', 'Noto Sans', Arial, sans-serif;
+  --node-editor-system-font: 'Roboto', 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
+  --node-editor-font-mono: 'Roboto Mono', 'Courier New', monospace;
+  --node-editor-title-font: 500 0.875rem/1.429 var(--node-editor-theme-label-font-family);
+  --node-editor-subtitle-font: 400 0.875rem/1.429 var(--node-editor-theme-label-font-family);
+  --node-editor-caption-font: 400 0.75rem/1.333 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 500 var(--node-editor-inspector-font-size-body)/1.429 var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body)/1.429 var(--node-editor-theme-default-font-family);
+  --node-editor-font-size-lg: 1rem;
+  --node-editor-font-size-sm: 0.875rem;
+  --node-editor-font-size-xs: 0.75rem;
+
+  /* Canvas grid */
+  --node-editor-grid-color: rgba(95, 99, 104, 0.24);
+  --node-editor-grid-opacity: 0.12;
+
+  /* Inspector shadows */
+  --node-editor-inspector-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  --node-editor-inspector-header-shadow: 0 1px 0 rgba(0, 0, 0, 0.12);
+
+  /* Tree & List Components */
+  --node-editor-tree-item-height: 28px;
+  --node-editor-tree-indent: 16px;
+
+  /* Control Buttons */
+  --node-editor-control-button-size-sm: 16px;
+  --node-editor-control-button-size: 20px;
+
+  /* Icons */
+  --node-editor-icon-size-sm: 14px;
+  --node-editor-icon-selected-brightness: 1.25;
+
+  /* Text colors */
+  --node-editor-text-color: #202124;
+  --node-editor-text-secondary: #5f6368;
+  --node-editor-header-text-color: #1a73e8;
+  --node-editor-label-color: var(--node-editor-text-color);
+  --node-editor-secondary-label-color: #5f6368;
+  --node-editor-tertiary-label-color: #80868b;
+  --node-editor-quaternary-label-color: #bdc1c6;
+  --node-editor-control-text-color: var(--node-editor-text-color);
+  --node-editor-control-text-color-primary: #ffffff;
+  --node-editor-control-text-color-secondary: var(--node-editor-text-color);
+  --node-editor-control-hover-text-color-primary: #ffffff;
+  --node-editor-input-text-color: var(--node-editor-text-color);
+  --node-editor-selected-control-text-color: #174ea6;
+  --node-editor-selected-menu-item-text-color: #ffffff;
+
+  /* Status & accent colors */
+  --node-editor-accent-color: #1a73e8;
+  --node-editor-accent-color-hover: #185abc;
+  --node-editor-color-primary: #1a73e8;
+  --node-editor-keyboard-focus-indicator-color: rgba(26, 115, 232, 0.35);
+  --node-editor-success-color: #34a853;
+  --node-editor-warning-color: #fbbc04;
+  --node-editor-caution-color: #ea4335;
+  --node-editor-caution-hover-background: rgba(234, 67, 53, 0.16);
+  --node-editor-system-orange-color: #fbbc04;
+  --node-editor-system-red-color: #ea4335;
+  --node-editor-connection-color: #1a73e8;
+
+  /* Surface colors */
+  --node-editor-surface-primary: #ffffff;
+  --node-editor-surface-secondary: #f8f9fa;
+  --node-editor-surface-tertiary: #e8eaed;
+  --node-editor-selected-content-background-color: rgba(26, 115, 232, 0.12);
+  --node-editor-selected-control-color: rgba(26, 115, 232, 0.16);
+  --node-editor-under-page-background-color: #f1f3f4;
+  --node-editor-window-background-color: #ffffff;
+
+  /* Control surfaces */
+  --node-editor-control-background: #ffffff;
+  --node-editor-control-background-primary: #1a73e8;
+  --node-editor-control-background-secondary: #f8f9fa;
+  --node-editor-control-hover-background: #e8f0fe;
+  --node-editor-control-hover-background-primary: #174ea6;
+  --node-editor-hover-background: rgba(60, 64, 67, 0.08);
+  --node-editor-control-box-shadow-primary: 0 1px 2px rgba(26, 115, 232, 0.4);
+  --node-editor-control-box-shadow-secondary: inset 0 0 0 1px rgba(60, 64, 67, 0.1);
+  --node-editor-disabled-control-text-color: rgba(60, 64, 67, 0.45);
+
+  /* Input surfaces */
+  --node-editor-input-background: #ffffff;
+  --node-editor-input-border: 1px solid rgba(60, 64, 67, 0.2);
+  --node-editor-input-border-hover: rgba(26, 115, 232, 0.6);
+  --node-editor-input-box-shadow: 0 1px 2px rgba(60, 64, 67, 0.08);
+  --node-editor-input-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  /* Card & panel styling */
+  --node-editor-card-border-color: rgba(60, 64, 67, 0.16);
+  --node-editor-card-border: 1px solid var(--node-editor-card-border-color);
+  --node-editor-card-border-radius: var(--node-editor-radius-md);
+  --node-editor-card-box-shadow: 0 12px 24px rgba(60, 64, 67, 0.18);
+  --node-editor-card-hover-box-shadow: 0 16px 32px rgba(26, 115, 232, 0.16);
+  --node-editor-card-elevated-box-shadow: 0 24px 48px rgba(26, 115, 232, 0.2);
+  --node-editor-card-focus-box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
+  --node-editor-card-disabled-background: rgba(60, 64, 67, 0.08);
+  --node-editor-card-filled-background: rgba(26, 115, 232, 0.08);
+  --node-editor-card-filled-hover-background: rgba(26, 115, 232, 0.12);
+  --node-editor-card-hover-border-color: rgba(26, 115, 232, 0.4);
+
+  /* Dialogs & overlays */
+  --node-editor-dialog-background: var(--node-editor-surface-primary);
+  --node-editor-dialog-box-shadow: 0 32px 64px rgba(60, 64, 67, 0.28);
+  --node-editor-dialog-level-elevation: 1000;
+
+  /* Scrollbars */
+  --node-editor-scroll-bar-thumb-color: rgba(95, 99, 104, 0.4);
+  --node-editor-active-scroll-bar-thumb-color: rgba(26, 115, 232, 0.55);
+
+  /* Selected State Colors */
+  --node-editor-selected-secondary-color: rgba(255, 255, 255, 0.9);
+  --node-editor-selected-hover-background: rgba(26, 115, 232, 0.18);
+
+  /* Tables & list accents */
+  --node-editor-table-header-background-color: #e8f0fe;
+  --node-editor-table-header-background-color-hover: #d2e3fc;
+  --node-editor-table-header-background-color-active: #aecbfa;
+
+  /* Node-specific colors */
+  --node-editor-group-node-background: rgba(26, 115, 232, 0.06);
+  --node-editor-group-node-border: rgba(26, 115, 232, 0.24);
+  --node-editor-group-node-active-background: rgba(26, 115, 232, 0.14);
+  --node-editor-group-node-active-color: rgba(26, 115, 232, 0.6);
+  --node-editor-node-port-input-color: #34a853;
+  --node-editor-node-port-output-color: #1a73e8;
+
+  /* System fills */
+  --node-editor-tertiary-system-background: rgba(60, 64, 67, 0.08);
+  --node-editor-tertiary-system-fill-color: rgba(60, 64, 67, 0.1);
+  --node-editor-quaternary-system-fill-color: rgba(60, 64, 67, 0.12);
+
+  /* Border Radii */
+  --node-editor-border-radius-xxs: 2px;
+  --node-editor-border-radius-xs: 4px;
+  --node-editor-radius-xs: 4px;
+  --node-editor-radius-sm: 4px;
+  --node-editor-radius-md: 8px;
+  --node-editor-control-border-radius: var(--node-editor-radius-sm);
+  --node-editor-segment-control-border-radius: 100px;
+
+  /* Borders */
+  --node-editor-border-width: 1px;
+  --node-editor-border-color: rgba(60, 64, 67, 0.16);
+  --node-editor-divider-color: rgba(60, 64, 67, 0.16);
+  --node-editor-separator-color: rgba(60, 64, 67, 0.12);
+
+  /* Segment controls */
+  --node-editor-segment-backdrop-filter: none;
+  --node-editor-segment-control-background: rgba(60, 64, 67, 0.08);
+  --node-editor-segment-control-background-color: transparent;
+  --node-editor-segment-control-text-color: #5f6368;
+  --node-editor-segment-control-active-background-color: #e8f0fe;
+  --node-editor-segment-control-active-text-color: #1a73e8;
+  --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+}

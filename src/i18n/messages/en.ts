@@ -99,6 +99,18 @@ export const enMessages: I18nMessages = {
   inspectorTabSettings: "Settings",
   inspectorActions: "Actions",
 
+  // Auto Layout Panel
+  autoLayoutPanelDescription: "Arrange nodes automatically using the built-in layout presets.",
+  autoLayoutPanelNodeCount: "{{count}} nodes",
+  autoLayoutPanelNoNodes: "No nodes",
+  autoLayoutPanelPrimaryAction: "Apply Auto Layout",
+  autoLayoutPanelPrimaryHint: "Auto Layout uses the hierarchical layout by default.",
+  autoLayoutPanelRun: "Apply",
+  autoLayoutPanelGridTitle: "Grid layout",
+  autoLayoutPanelGridDescription: "Place nodes in an even grid to keep spacing consistent.",
+  autoLayoutPanelForceTitle: "Force-directed layout",
+  autoLayoutPanelForceDescription: "Use a physics simulation to cluster connected nodes.",
+
   // History Panel
   historyUndo: "Undo",
   historyRedo: "Redo",

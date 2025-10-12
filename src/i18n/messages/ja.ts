@@ -99,6 +99,18 @@ export const jaMessages: I18nMessages = {
   inspectorTabSettings: "設定",
   inspectorActions: "操作",
 
+  // Auto Layout Panel
+  autoLayoutPanelDescription: "プリセットの自動レイアウトを使ってノードを整列します。",
+  autoLayoutPanelNodeCount: "{{count}} ノード",
+  autoLayoutPanelNoNodes: "ノードはありません",
+  autoLayoutPanelPrimaryAction: "オートレイアウトを実行",
+  autoLayoutPanelPrimaryHint: "オートレイアウトは既定で階層レイアウトを使用します。",
+  autoLayoutPanelRun: "適用",
+  autoLayoutPanelGridTitle: "グリッドレイアウト",
+  autoLayoutPanelGridDescription: "ノードを均等なグリッド状に配置し、間隔を揃えます。",
+  autoLayoutPanelForceTitle: "力学レイアウト",
+  autoLayoutPanelForceDescription: "物理シミュレーションで接続されたノードをまとまりとして配置します。",
+
   // History Panel
   historyUndo: "元に戻す",
   historyRedo: "やり直し",

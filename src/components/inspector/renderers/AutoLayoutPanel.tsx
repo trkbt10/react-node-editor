@@ -4,24 +4,25 @@
 import * as React from "react";
 import { useNodeEditor } from "../../../contexts/node-editor";
 import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
-import { Button } from "../../elements";
+import { useTranslation } from "../../../i18n";
 import { InspectorDefinitionList, InspectorDefinitionItem } from "../parts/InspectorDefinitionList";
-import { PropertySection } from "../parts/PropertySection";
-import { calculateAutoLayout, calculateHierarchicalLayout, calculateGridLayout, calculateNodesBoundingBox } from "../../../contexts/node-editor/utils/autoLayout";
-import styles from "./AutoLayoutPanel.module.css";
-
-export type AutoLayoutPanelProps = {
-  className?: string;
-}
+import { InspectorButton } from "../parts/InspectorButton";
+import {
+  calculateAutoLayout,
+  calculateHierarchicalLayout,
+  calculateGridLayout,
+  calculateNodesBoundingBox,
+} from "../../../contexts/node-editor/utils/autoLayout";
 
 type LayoutAlgorithm = "hierarchical" | "grid" | "force";
 
 /**
  * Panel for auto-layout functionality
  */
-export const AutoLayoutPanel: React.FC<AutoLayoutPanelProps> = ({ className }) => {
+export const AutoLayoutPanel: React.FC = () => {
   const { state, dispatch, actions } = useNodeEditor();
   const { state: canvasState, actions: canvasActions } = useNodeCanvas();
+  const { t } = useTranslation();
   const [isProcessing, setIsProcessing] = React.useState(false);
 
   const handleAutoLayout = React.useCallback(
@@ -71,66 +72,25 @@ export const AutoLayoutPanel: React.FC<AutoLayoutPanelProps> = ({ className }) =
         setIsProcessing(false);
       }
     },
-    [state, dispatch, actions, canvasState.viewport.scale, canvasActions]
+    [state, dispatch, actions, canvasState.viewport.scale, canvasActions],
   );
 
   const nodeCount = Object.keys(state.nodes).length;
 
   return (
-    <PropertySection
-      title="Auto Layout"
-      className={className}
-      headerRight={
-        <span className={styles.nodeCount}>
-          {nodeCount > 0 ? `${nodeCount} nodes` : "No nodes"}
-        </span>
-      }
-    >
-      <div className={styles.description}>
-        自動レイアウト機能を使用して、ノードを整列させます。
-      </div>
-
+    <>
       <InspectorDefinitionList>
-        <InspectorDefinitionItem
-          label="階層レイアウト"
-          description="ノードを階層構造に基づいて整列します。フローやツリー構造に最適です。"
-        >
-          <Button
+        <InspectorDefinitionItem label={t("autoLayoutPanelPrimaryHint")}>
+          <InspectorButton
             onClick={() => handleAutoLayout("hierarchical")}
             disabled={isProcessing || nodeCount === 0}
             variant="secondary"
           >
-            実行
-          </Button>
-        </InspectorDefinitionItem>
-
-        <InspectorDefinitionItem
-          label="グリッドレイアウト"
-          description="ノードを均等なグリッド状に整列します。"
-        >
-          <Button
-            onClick={() => handleAutoLayout("grid")}
-            disabled={isProcessing || nodeCount === 0}
-            variant="secondary"
-          >
-            実行
-          </Button>
-        </InspectorDefinitionItem>
-
-        <InspectorDefinitionItem
-          label="力学的レイアウト"
-          description="物理シミュレーションを使用してノードを配置します。接続されたノードが近くに配置されます。"
-        >
-          <Button
-            onClick={() => handleAutoLayout("force")}
-            disabled={isProcessing || nodeCount === 0}
-            variant="secondary"
-          >
-            実行
-          </Button>
+            {t("autoLayoutPanelRun")}
+          </InspectorButton>
         </InspectorDefinitionItem>
       </InspectorDefinitionList>
-    </PropertySection>
+    </>
   );
 };
 
