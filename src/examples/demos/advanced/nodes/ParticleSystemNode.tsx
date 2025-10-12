@@ -2,20 +2,9 @@
  * @file Particle System Node - Interactive particle effect simulator with custom physics
  */
 import * as React from "react";
-import type {
-  NodeDefinition,
-  NodeRenderProps,
-  InspectorRenderProps,
-  ExternalDataReference,
-} from "../../../../types/NodeDefinition";
+import type { NodeDefinition, NodeRenderProps, InspectorRenderProps } from "../../../../types/NodeDefinition";
 import classes from "./ParticleSystemNode.module.css";
-import {
-  createDefaultParticleData,
-  defaultPhysics,
-  getRegisteredParticleSystemStore,
-  sanitizeParticleData,
-  type ParticleData,
-} from "./ParticleSystemDataStore";
+import { createDefaultParticleData, defaultPhysics, sanitizeParticleData, type ParticleData } from "./ParticleSystemDataStore";
 export type { ParticleData } from "./ParticleSystemDataStore";
 import { useParticleSystemStore } from "../contexts/ParticleSystemStoreContext";
 
@@ -49,8 +38,17 @@ const colorToRgba = (color: string, alpha: number) => {
   return color;
 };
 
-export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalData }: NodeRenderProps) => {
-  const particleData = externalData as ParticleData | undefined;
+const areParticleConfigsEqual = (a?: ParticleData | null, b?: ParticleData | null): boolean => {
+  if (a === b) {
+    return true;
+  }
+  if (!a || !b) {
+    return false;
+  }
+  return JSON.stringify(a) === JSON.stringify(b);
+};
+
+export const ParticleSystemRenderer = ({ node, isSelected, isDragging }: NodeRenderProps) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const particlesRef = React.useRef<Particle[]>([]);
   const animationRef = React.useRef<number | undefined>(undefined);
@@ -66,55 +64,38 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
   const sizeInput = node.data["size-input"] as number | undefined;
   const colorInput = node.data["color-input"] as string | undefined;
   const store = useParticleSystemStore();
-  const externalRefId = (node.data["externalRefId"] as string | undefined) ?? particleData?.id ?? node.id;
+  const externalRefId = (node.data["externalRefId"] as string | undefined) ?? node.id;
 
-  const initialConfigRef = React.useRef<ParticleData | null>(null);
-
-  if (initialConfigRef.current === null) {
-    const stored = store.getData(externalRefId);
-    const externalSanitized = particleData ? sanitizeParticleData(particleData, externalRefId, stored) : undefined;
-    const resolved = sanitizeParticleData(
-      stored ?? externalSanitized ?? createDefaultParticleData(externalRefId),
-      externalRefId,
-      stored ?? externalSanitized,
-    );
-    store.setData(externalRefId, resolved);
-    initialConfigRef.current = resolved;
-  }
-
-  const [particleConfig, setParticleConfig] = React.useState<ParticleData>(initialConfigRef.current);
-
-  const configSnapshot = React.useMemo(() => JSON.stringify(particleConfig), [particleConfig]);
+  const rawConfig = store.getData(externalRefId);
+  const particleConfig = React.useMemo(
+    () =>
+      sanitizeParticleData(
+        rawConfig ?? createDefaultParticleData(externalRefId),
+        externalRefId,
+        rawConfig ?? undefined,
+      ),
+    [externalRefId, rawConfig],
+  );
 
   React.useEffect(() => {
-    const stored = store.getData(externalRefId);
-    const externalSanitized = particleData
-      ? sanitizeParticleData(particleData, externalRefId, stored ?? particleConfig)
-      : undefined;
-    const resolved = sanitizeParticleData(
-      stored ?? externalSanitized ?? particleConfig,
-      externalRefId,
-      stored ?? externalSanitized ?? particleConfig,
-    );
-    if (JSON.stringify(resolved) !== configSnapshot) {
-      setParticleConfig(resolved);
+    if (!rawConfig) {
+      store.setData(externalRefId, particleConfig);
+      return;
     }
-  }, [configSnapshot, externalRefId, particleData, store]);
-
-  React.useEffect(() => {
-    const stored = store.getData(externalRefId);
-    const storedSnapshot = stored ? JSON.stringify(stored) : null;
-    if (storedSnapshot !== configSnapshot) {
+    if (!areParticleConfigsEqual(rawConfig, particleConfig)) {
       store.setData(externalRefId, particleConfig);
     }
-  }, [configSnapshot, externalRefId, particleConfig, store]);
+  }, [externalRefId, particleConfig, rawConfig, store]);
 
   const updateParticleConfig = React.useCallback(
     (updater: (current: ParticleData) => ParticleData) => {
-      setParticleConfig((current) => {
-        const next = sanitizeParticleData(updater(current), externalRefId, current);
-        store.setData(externalRefId, next);
-        return next;
+      store.updateData(externalRefId, (current) => {
+        const baseline = sanitizeParticleData(
+          current ?? createDefaultParticleData(externalRefId),
+          externalRefId,
+          current ?? undefined,
+        );
+        return sanitizeParticleData(updater(baseline), externalRefId, baseline);
       });
     },
     [externalRefId, store],
@@ -356,34 +337,26 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
   );
 };
 
-export const ParticleSystemInspectorRenderer = ({ node, externalData, onUpdateExternalData }: InspectorRenderProps) => {
+export const ParticleSystemInspectorRenderer = ({ node }: InspectorRenderProps) => {
   const store = useParticleSystemStore();
-  const externalRefId =
-    (node.data["externalRefId"] as string | undefined) ?? (externalData as ParticleData | undefined)?.id ?? node.id;
-  const particleData = externalData as ParticleData | undefined;
+  const externalRefId = (node.data["externalRefId"] as string | undefined) ?? node.id;
   const storeConfig = store.getData(externalRefId);
-  const sourceData = storeConfig ?? particleData;
   const [editedData, setEditedData] = React.useState<ParticleData>(
-    sourceData
-      ? sanitizeParticleData(sourceData, externalRefId, storeConfig)
-      : createDefaultParticleData(externalRefId),
+    storeConfig ? sanitizeParticleData(storeConfig, externalRefId, storeConfig) : createDefaultParticleData(externalRefId),
   );
 
   React.useEffect(() => {
-    if (!sourceData) {
+    if (!storeConfig) {
       return;
     }
-    setEditedData(sanitizeParticleData(sourceData, externalRefId, storeConfig));
-  }, [externalRefId, sourceData, storeConfig]);
+    setEditedData(sanitizeParticleData(storeConfig, externalRefId, storeConfig));
+  }, [externalRefId, storeConfig]);
 
-  const handleSave = async () => {
-    if (onUpdateExternalData) {
-      const targetId = externalRefId;
-      const prepared = sanitizeParticleData({ ...editedData, id: targetId }, targetId, storeConfig);
-      setEditedData(prepared);
-      store.setData(targetId, prepared);
-      await onUpdateExternalData(prepared);
-    }
+  const handleSave = () => {
+    const targetId = externalRefId;
+    const prepared = sanitizeParticleData({ ...editedData, id: targetId }, targetId, storeConfig);
+    setEditedData(prepared);
+    store.setData(targetId, prepared);
   };
 
   const hasInputs =
@@ -666,27 +639,8 @@ export const ParticleSystemNodeDefinition: NodeDefinition = {
   ],
   renderNode: ParticleSystemRenderer,
   renderInspector: ParticleSystemInspectorRenderer,
-  loadExternalData: async (ref: ExternalDataReference) => {
-    await new Promise((resolve) => setTimeout(resolve, 200));
-    const store = getRegisteredParticleSystemStore();
-    const existing = store.getData(ref.id);
-    const resolved = sanitizeParticleData(existing, ref.id, existing);
-    return store.setData(ref.id, resolved);
-  },
-  updateExternalData: async (ref: ExternalDataReference, data: unknown) => {
-    const store = getRegisteredParticleSystemStore();
-    const current = store.getData(ref.id);
-    const sanitized = sanitizeParticleData(data, ref.id, current ?? undefined);
-
-    store.setData(ref.id, sanitized);
-
-    Object.assign(data as Record<string, unknown>, sanitized);
-    await new Promise((resolve) => setTimeout(resolve, 200));
-  },
 };
 
 // Debug Notes:
-// - Reviewed src/components/node/NodeView.tsx to confirm how externalData flows into custom renderers and why
-//   onUpdateExternalData is unavailable within NodeRenderProps during runtime updates.
-// - Checked src/types/NodeDefinition.ts to understand existing InspectorRenderProps and ensure onUpdateNode can
-//   be used from the inspector for synchronizing persisted particle configuration.
+// - Revisited src/components/node/NodeView.tsx to ensure removing loadExternalData would not break renderer updates.
+// - Checked src/types/NodeDefinition.ts to confirm optional load/update fields keep type safety after the refactor.

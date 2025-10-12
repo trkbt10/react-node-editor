@@ -45,7 +45,8 @@ export const createDefaultParticleData = (id: string): ParticleData => ({
 
 const isFiniteNumber = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
-const isValidShape = (value: unknown): value is ParticleData["shape"] => value === "circle" || value === "square" || value === "star";
+const isValidShape = (value: unknown): value is ParticleData["shape"] =>
+  value === "circle" || value === "square" || value === "star";
 
 export const sanitizeParticleData = (candidate: unknown, id: string, fallback?: ParticleData): ParticleData => {
   const baseline = fallback ?? createDefaultParticleData(id);
@@ -86,38 +87,3 @@ export const sanitizeParticleData = (candidate: unknown, id: string, fallback?: 
     particleColorInput: data.particleColorInput,
   };
 };
-
-export type ParticleSystemDataStore = {
-  getData: (refId: string) => ParticleData | undefined;
-  setData: (refId: string, data: ParticleData) => ParticleData;
-  updateData: (refId: string, updater: (current: ParticleData | undefined) => ParticleData) => ParticleData;
-};
-
-const localStore = new Map<string, ParticleData>();
-
-export const getLocalParticleSystemData = (refId: string): ParticleData | undefined => localStore.get(refId);
-
-export const setLocalParticleSystemData = (refId: string, data: ParticleData): ParticleData => {
-  localStore.set(refId, data);
-  return data;
-};
-
-export const getLocalStoreEntries = (): Array<[string, ParticleData]> => Array.from(localStore.entries());
-
-export const getLocalStoreAdapter = (): ParticleSystemDataStore => ({
-  getData: getLocalParticleSystemData,
-  setData: setLocalParticleSystemData,
-  updateData: (refId, updater) => {
-    const next = updater(localStore.get(refId));
-    localStore.set(refId, next);
-    return next;
-  },
-});
-
-let registeredStore: ParticleSystemDataStore | null = null;
-
-export const registerParticleSystemDataStore = (store: ParticleSystemDataStore | null) => {
-  registeredStore = store;
-};
-
-export const getRegisteredParticleSystemStore = (): ParticleSystemDataStore => registeredStore ?? getLocalStoreAdapter();
