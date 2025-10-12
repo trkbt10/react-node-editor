@@ -1,3 +1,6 @@
+/**
+ * @file Example demonstrating custom port and connection rendering with data type-based styling
+ */
 import * as React from "react";
 import { NodeEditor } from "../../NodeEditor";
 import { createNodeDefinition, toUntypedDefinition, type ConnectionRenderContext } from "../../types/NodeDefinition";

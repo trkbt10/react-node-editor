@@ -1,0 +1,178 @@
+.container {
+  padding: var(--node-editor-space-md);
+  border-radius: var(--node-editor-radius-sm);
+  min-height: 120px;
+  font-family: var(--node-editor-font-mono);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.container.selected {
+  background-color: #f3f4f6;
+}
+
+.container.dragging {
+  opacity: 0.7;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.languageLabel {
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: bold;
+  padding: 2px var(--node-editor-space-sm);
+  border-radius: var(--node-editor-radius-xs);
+  box-sizing: border-box;
+}
+
+.compiledStatus {
+  font-size: var(--node-editor-inspector-font-size-body);
+  color: var(--node-editor-success-color);
+}
+
+.textarea {
+  width: 100%;
+  height: 80px;
+  font-family: var(--node-editor-font-mono);
+  font-size: 11px;
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-radius-xs);
+  padding: var(--node-editor-space-sm);
+  resize: none;
+  box-sizing: border-box;
+}
+
+.buttonGroup {
+  margin-top: var(--node-editor-space-sm);
+  display: flex;
+  gap: var(--node-editor-space-xs);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.codePreview {
+  font-size: 11px;
+  color: #374151;
+  margin: 0;
+  white-space: pre-wrap;
+  max-height: 60px;
+  overflow: hidden;
+}
+
+.errorCount {
+  font-size: 10px;
+  color: #ef4444;
+}
+
+.inspector {
+  padding: var(--node-editor-space-lg);
+  box-sizing: border-box;
+}
+
+.inspector h3 {
+  margin-top: 0;
+}
+
+.formGroup {
+  margin-bottom: var(--node-editor-space-md);
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--node-editor-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  box-sizing: border-box;
+}
+
+.inspectorTextarea {
+  width: 100%;
+  height: 120px;
+  font-family: var(--node-editor-font-mono);
+  font-size: 11px;
+  padding: var(--node-editor-space-sm);
+  box-sizing: border-box;
+}
+
+.actionButtons {
+  display: flex;
+  gap: var(--node-editor-space-xs);
+  margin-bottom: var(--node-editor-space-sm);
+}
+
+.actionButton {
+  padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+  font-size: 11px;
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.compileButton {
+  background-color: #8b5cf6;
+}
+
+.runButton {
+  background-color: var(--node-editor-success-color);
+}
+
+.testButton {
+  background-color: var(--node-editor-warning-color);
+}
+
+.status {
+  font-size: 11px;
+}
+
+.statusSuccess {
+  color: var(--node-editor-success-color);
+}
+
+.statusError {
+  color: var(--node-editor-caution-color);
+}
+
+.errorList {
+  margin-top: var(--node-editor-space-sm);
+}
+
+.errorList strong {
+  font-size: 11px;
+  color: var(--node-editor-caution-color);
+}
+
+.errorList ul {
+  margin: var(--node-editor-space-xs) 0;
+  padding-left: var(--node-editor-space-lg);
+  font-size: 10px;
+  color: var(--node-editor-caution-color);
+}
+
+.saveButton {
+  width: 100%;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  background-color: var(--node-editor-color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}

@@ -1,3 +1,6 @@
+/**
+ * @file Example node definitions with various constraint types for demonstrating validation
+ */
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import { ConstraintFactory } from "./constraintFactory";
 

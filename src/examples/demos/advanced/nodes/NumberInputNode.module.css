@@ -1,0 +1,119 @@
+.container {
+  padding: var(--node-editor-space-md);
+  border-radius: var(--node-editor-radius-sm);
+  background-color: var(--node-editor-surface-primary);
+  border: 2px solid #14b8a6;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  gap: var(--node-editor-space-sm);
+}
+
+.container.selected {
+  background-color: #f0fdfa;
+}
+
+.container.dragging {
+  opacity: 0.7;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #14b8a6;
+  font-family: monospace;
+}
+
+.sliderContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.slider {
+  width: 100%;
+  height: 6px;
+  border-radius: var(--node-editor-border-radius-xs);
+  outline: none;
+  -webkit-appearance: none;
+  background: #e5e7eb;
+  box-sizing: border-box;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #14b8a6;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #14b8a6;
+  cursor: pointer;
+  border: none;
+}
+
+.range {
+  font-size: 10px;
+  color: #6b7280;
+  text-align: center;
+  font-family: monospace;
+}
+
+.inspector {
+  padding: var(--node-editor-space-lg);
+  box-sizing: border-box;
+}
+
+.inspector h3 {
+  margin-top: 0;
+}
+
+.formGroup {
+  margin-bottom: var(--node-editor-space-md);
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--node-editor-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 600;
+  color: #374151;
+}
+
+.input {
+  width: 100%;
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-radius-xs);
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.saveButton {
+  width: 100%;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  background-color: var(--node-editor-color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}

@@ -1,0 +1,223 @@
+.container {
+  padding: var(--node-editor-space-md);
+  border-radius: var(--node-editor-radius-sm);
+  background-color: var(--node-editor-surface-primary);
+  border: 2px solid #a855f7;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  gap: var(--node-editor-space-sm);
+}
+
+.container.selected {
+  background-color: #f3e8ff;
+}
+
+.container.dragging {
+  opacity: 0.7;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.badge {
+  font-size: 10px;
+  padding: 2px var(--node-editor-space-sm);
+  border-radius: var(--node-editor-radius-xs);
+  font-weight: 600;
+  background-color: #a855f7;
+  color: white;
+  box-sizing: border-box;
+}
+
+.canvas {
+  background-color: #000000;
+  border-radius: var(--node-editor-radius-xs);
+  width: 100%;
+  height: auto;
+}
+
+.inputDisplay {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--node-editor-space-xs);
+  padding: var(--node-editor-space-xs) 0;
+  min-height: 24px;
+}
+
+.inputItem {
+  font-size: 10px;
+  padding: 2px var(--node-editor-space-xs);
+  border-radius: var(--node-editor-border-radius-xs);
+  background-color: #f3f4f6;
+  color: #374151;
+  font-weight: 500;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.inputItem.triggerActive {
+  background-color: #d1fae5;
+  color: #065f46;
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.emitButton {
+  padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+  background-color: #a855f7;
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 600;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.emitButton:hover {
+  background-color: #9333ea;
+}
+
+.emitButton:active {
+  transform: scale(0.95);
+}
+
+.info {
+  font-size: 10px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.inspector {
+  padding: var(--node-editor-space-lg);
+  box-sizing: border-box;
+}
+
+.inspector h3 {
+  margin-top: 0;
+}
+
+.formGroup {
+  margin-bottom: var(--node-editor-space-md);
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--node-editor-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+}
+
+.slider {
+  width: 100%;
+}
+
+.colorInput {
+  width: 100%;
+  height: 40px;
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.select {
+  width: 100%;
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  box-sizing: border-box;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.checkboxLabel input {
+  margin: 0;
+}
+
+.inputInfo {
+  margin-bottom: var(--node-editor-space-lg);
+  padding: var(--node-editor-space-md);
+  background-color: #eef2ff;
+  border-radius: var(--node-editor-radius-xs);
+  border-left: 3px solid #6366f1;
+  box-sizing: border-box;
+}
+
+.inputValue {
+  font-size: var(--node-editor-inspector-font-size-body);
+  color: #4338ca;
+  font-family: var(--node-editor-font-mono);
+  margin-top: var(--node-editor-space-xs);
+}
+
+.codeEditor {
+  width: 100%;
+  min-height: 120px;
+  font-family: var(--node-editor-font-mono);
+  font-size: 11px;
+  padding: var(--node-editor-space-sm);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-radius-xs);
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.codeHint {
+  font-size: 10px;
+  color: #6b7280;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.usage {
+  margin-top: var(--node-editor-space-lg);
+  padding: var(--node-editor-space-md);
+  background-color: #f0fdf4;
+  border-radius: var(--node-editor-radius-xs);
+  border-left: 3px solid #10b981;
+  box-sizing: border-box;
+}
+
+.usage strong {
+  font-size: var(--node-editor-inspector-font-size-body);
+  color: #065f46;
+}
+
+.usage ul {
+  margin: var(--node-editor-space-sm) 0 0 0;
+  padding-left: 20px;
+  font-size: 11px;
+  color: #047857;
+  line-height: 1.6;
+}
+
+.saveButton {
+  width: 100%;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  background-color: var(--node-editor-color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}

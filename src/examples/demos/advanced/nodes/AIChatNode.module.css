@@ -1,0 +1,244 @@
+.container {
+  border-radius: 8px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.container.selected {
+  background-color: #ecfeff;
+}
+
+.container.dragging {
+  opacity: 0.7;
+}
+
+.header {
+  padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  box-sizing: border-box;
+}
+
+.botInfo {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-space-sm);
+}
+
+.botAvatar {
+  font-size: 24px;
+}
+
+.botDetails {
+  display: flex;
+  flex-direction: column;
+}
+
+.botName {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.botStatus {
+  font-size: 10px;
+  opacity: 0.9;
+}
+
+.modelBadge {
+  font-size: 10px;
+  padding: 2px var(--node-editor-space-xs);
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: var(--node-editor-radius-xs);
+  box-sizing: border-box;
+}
+
+.messagesContainer {
+  flex: 1;
+  padding: var(--node-editor-space-md);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-sm);
+  background-color: var(--node-editor-surface-secondary);
+  box-sizing: border-box;
+}
+
+.message {
+  max-width: 80%;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+  border-radius: var(--node-editor-radius-md);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+
+.userMessage {
+  align-self: flex-end;
+  background-color: #06b6d4;
+  color: white;
+  border-bottom-right-radius: var(--node-editor-radius-xs);
+}
+
+.assistantMessage {
+  align-self: flex-start;
+  background-color: #e5e7eb;
+  color: var(--node-editor-text-color);
+  border-bottom-left-radius: var(--node-editor-radius-xs);
+}
+
+.messageContent {
+  word-wrap: break-word;
+}
+
+.typingIndicator {
+  align-self: flex-start;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+  background-color: #e5e7eb;
+  border-radius: var(--node-editor-radius-md);
+  border-bottom-left-radius: var(--node-editor-radius-xs);
+  display: flex;
+  gap: var(--node-editor-space-xs);
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background-color: #6b7280;
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+.inputArea {
+  padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+  border-top: var(--node-editor-border-width) solid var(--node-editor-border-color);
+  background-color: var(--node-editor-surface-primary);
+  box-sizing: border-box;
+}
+
+.inputPlaceholder {
+  font-size: var(--node-editor-inspector-font-size-body);
+  color: #9ca3af;
+}
+
+.inspector {
+  padding: var(--node-editor-space-lg);
+  box-sizing: border-box;
+}
+
+.inspector h3 {
+  margin-top: 0;
+}
+
+.formGroup {
+  margin-bottom: var(--node-editor-space-md);
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--node-editor-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  box-sizing: border-box;
+}
+
+.slider {
+  width: 100%;
+}
+
+.messageInput {
+  width: 100%;
+  min-height: 60px;
+  padding: var(--node-editor-space-sm);
+  font-size: var(--node-editor-inspector-font-size-body);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-radius-xs);
+  resize: vertical;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.messageButtons {
+  display: flex;
+  gap: var(--node-editor-space-xs);
+  margin-top: var(--node-editor-space-xs);
+}
+
+.userButton,
+.assistantButton {
+  flex: 1;
+  padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+  font-size: 11px;
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.userButton {
+  background-color: #06b6d4;
+}
+
+.assistantButton {
+  background-color: #6b7280;
+}
+
+.checkbox {
+  margin-right: 8px;
+}
+
+.clearButton {
+  width: 100%;
+  padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+  background-color: var(--node-editor-caution-color);
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  font-size: 11px;
+  box-sizing: border-box;
+}
+
+.saveButton {
+  width: 100%;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  background-color: var(--node-editor-color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}

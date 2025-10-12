@@ -1,0 +1,168 @@
+.container {
+  padding: var(--node-editor-space-md);
+  border-radius: var(--node-editor-radius-sm);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 2px solid #f59e0b;
+}
+
+.container.selected {
+  background-color: #fef3c7;
+}
+
+.container.dragging {
+  opacity: 0.7;
+}
+
+.header {
+  margin-bottom: 8px;
+}
+
+.title {
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 2px var(--node-editor-space-sm);
+  border-radius: var(--node-editor-radius-xs);
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
+.fieldsList {
+  font-size: 10px;
+  color: #6b7280;
+  flex: 1;
+  overflow: auto;
+}
+
+.fieldItem {
+  margin-bottom: 2px;
+}
+
+.inspector {
+  padding: var(--node-editor-space-lg);
+  box-sizing: border-box;
+}
+
+.inspector h3 {
+  margin-top: 0;
+}
+
+.formGroup {
+  margin-bottom: var(--node-editor-space-md);
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--node-editor-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  box-sizing: border-box;
+}
+
+.fieldsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.addFieldButton {
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  font-size: 11px;
+  background-color: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.fieldListContainer {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.fieldCard {
+  border: var(--node-editor-border-width) solid var(--node-editor-border-color);
+  border-radius: var(--node-editor-radius-xs);
+  padding: var(--node-editor-space-sm);
+  margin-bottom: var(--node-editor-space-sm);
+  box-sizing: border-box;
+}
+
+.fieldCardHeader {
+  display: flex;
+  gap: var(--node-editor-space-xs);
+  margin-bottom: var(--node-editor-space-xs);
+}
+
+.fieldLabelInput {
+  flex: 1;
+  padding: 2px var(--node-editor-space-xs);
+  font-size: 11px;
+  box-sizing: border-box;
+}
+
+.removeFieldButton {
+  padding: 2px var(--node-editor-space-xs);
+  font-size: 11px;
+  background-color: var(--node-editor-caution-color);
+  color: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.fieldCardBody {
+  display: flex;
+  gap: var(--node-editor-space-xs);
+  align-items: center;
+}
+
+.fieldTypeSelect {
+  flex: 1;
+  padding: 2px var(--node-editor-space-xs);
+  font-size: 11px;
+  box-sizing: border-box;
+}
+
+.requiredCheckbox {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+}
+
+.requiredCheckbox input {
+  margin-right: var(--node-editor-space-xs);
+}
+
+.optionsInput {
+  margin-top: var(--node-editor-space-xs);
+  width: 100%;
+  padding: 2px var(--node-editor-space-xs);
+  font-size: 11px;
+  box-sizing: border-box;
+}
+
+.saveButton {
+  width: 100%;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  background-color: #f59e0b;
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}

@@ -1,0 +1,221 @@
+.container {
+  padding: var(--node-editor-space-md);
+  border-radius: var(--node-editor-radius-sm);
+  background-color: var(--node-editor-surface-primary);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  gap: var(--node-editor-space-sm);
+}
+
+.container.selected {
+  background-color: #f0f9ff;
+}
+
+.container.dragging {
+  opacity: 0.7;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.titleInfo {
+  flex: 1;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.status {
+  font-size: 10px;
+  color: #6b7280;
+}
+
+.controllerLayout {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex: 1;
+}
+
+.leftSection,
+.rightSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.dpad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.dpadCenter {
+  display: flex;
+  gap: 2px;
+}
+
+.dpadButton {
+  width: 24px;
+  height: 24px;
+  background-color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  border-radius: var(--node-editor-radius-xs);
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.dpadButton.active {
+  background-color: #3b82f6;
+  color: white;
+  transform: scale(0.9);
+}
+
+.faceButtons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.faceButtonRow {
+  display: flex;
+  gap: 2px;
+}
+
+.faceButton {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.faceButton.active {
+  transform: scale(0.85);
+  color: white;
+}
+
+.stick {
+  width: 60px;
+  height: 60px;
+}
+
+.triggers {
+  display: flex;
+  gap: 8px;
+}
+
+.trigger {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.triggerLabel {
+  font-size: 10px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.triggerBar {
+  flex: 1;
+  height: 6px;
+  background-color: #e5e7eb;
+  border-radius: var(--node-editor-border-radius-xs);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.triggerFill {
+  height: 100%;
+  transition: width 0.2s;
+}
+
+.inspector {
+  padding: var(--node-editor-space-lg);
+  box-sizing: border-box;
+}
+
+.inspector h3 {
+  margin-top: 0;
+}
+
+.formGroup {
+  margin-bottom: var(--node-editor-space-md);
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--node-editor-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+}
+
+.select {
+  width: 100%;
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  box-sizing: border-box;
+}
+
+.slider {
+  width: 100%;
+}
+
+.buttonGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.checkboxLabel input {
+  margin: 0;
+}
+
+.randomButton {
+  width: 100%;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+  background-color: #8b5cf6;
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  margin-bottom: var(--node-editor-space-sm);
+  font-size: var(--node-editor-inspector-font-size-body);
+  box-sizing: border-box;
+}
+
+.saveButton {
+  width: 100%;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  background-color: var(--node-editor-color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}

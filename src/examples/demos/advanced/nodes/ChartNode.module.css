@@ -1,0 +1,169 @@
+.container {
+  padding: var(--node-editor-space-md);
+  border-radius: var(--node-editor-radius-sm);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 2px solid #10b981;
+}
+
+.container.selected {
+  background-color: #f0fdf4;
+}
+
+.container.dragging {
+  opacity: 0.7;
+}
+
+.header {
+  margin-bottom: 8px;
+}
+
+.title {
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 2px var(--node-editor-space-sm);
+  border-radius: var(--node-editor-radius-xs);
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
+.chartContainer {
+  margin-bottom: var(--node-editor-space-sm);
+  flex: 1;
+  overflow: hidden;
+}
+
+.barChart {
+  display: flex;
+  align-items: end;
+  height: 60px;
+  gap: 2px;
+}
+
+.barItem {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+}
+
+.lineChart {
+  width: 100%;
+  height: 60px;
+  border: var(--node-editor-border-width) solid var(--node-editor-border-color);
+  box-sizing: border-box;
+}
+
+.pieChart {
+  width: 100%;
+  height: 60px;
+}
+
+.range {
+  font-size: 10px;
+  color: #6b7280;
+}
+
+.inspector {
+  padding: var(--node-editor-space-lg);
+  box-sizing: border-box;
+}
+
+.inspector h3 {
+  margin-top: 0;
+}
+
+.formGroup {
+  margin-bottom: var(--node-editor-space-md);
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--node-editor-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  box-sizing: border-box;
+}
+
+.dataPointsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.addButton {
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  font-size: 11px;
+  background-color: #10b981;
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.dataPointsList {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.dataPointItem {
+  display: flex;
+  gap: var(--node-editor-space-xs);
+  margin-bottom: var(--node-editor-space-xs);
+  align-items: center;
+}
+
+.dataPointLabel {
+  flex: 1;
+  padding: 2px var(--node-editor-space-xs);
+  font-size: 11px;
+  box-sizing: border-box;
+}
+
+.dataPointValue {
+  width: 60px;
+  padding: 2px var(--node-editor-space-xs);
+  font-size: 11px;
+  box-sizing: border-box;
+}
+
+.dataPointColor {
+  width: 30px;
+  height: 24px;
+  border: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.removeButton {
+  padding: 2px var(--node-editor-space-xs);
+  font-size: 11px;
+  background-color: var(--node-editor-caution-color);
+  color: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.saveButton {
+  width: 100%;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  background-color: var(--node-editor-color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}
