@@ -19,7 +19,7 @@
   border-radius: var(--node-editor-radius-md);
   box-shadow: var(--node-editor-card-box-shadow);
   transition: box-shadow var(--node-editor-transition-duration);
-
+  overflow: hidden;
 }
 
 .gridLayer[data-draggable="true"]:hover {

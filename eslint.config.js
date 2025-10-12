@@ -51,6 +51,18 @@ export default [
         "custom/prefer-node-protocol": "off",
         "custom/no-as-outside-guard": "off",
         "custom/no-nested-try": "off",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            args: "all",
+            argsIgnorePattern: "^_",
+            caughtErrors: "all",
+            caughtErrorsIgnorePattern: "^_",
+            destructuredArrayIgnorePattern: "^_",
+            varsIgnorePattern: "^_",
+            ignoreRestSiblings: true,
+          },
+        ],
         // Spread from modular groups
         ...rulesJSDoc,
         //        ...rulesRestrictedSyntax,
