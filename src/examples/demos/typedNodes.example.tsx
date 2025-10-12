@@ -1,6 +1,5 @@
 /**
- * Example: Using the enhanced NodeRenderProps with optional generics
- * This demonstrates how to create type-safe node definitions
+ * @file Example demonstrating type-safe node definitions using generics
  */
 
 import React from "react";

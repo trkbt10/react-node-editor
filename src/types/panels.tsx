@@ -1,3 +1,6 @@
+/**
+ * @file Type definitions for panel and grid-based layout system
+ */
 import * as React from "react";
 
 /**

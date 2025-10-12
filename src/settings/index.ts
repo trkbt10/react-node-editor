@@ -1,3 +1,6 @@
+/**
+ * @file Central export point for settings management system
+ */
 export { SettingsManager, LocalSettingsStorage } from "./SettingsManager";
 export { defaultSettings } from "./defaultSettings";
 export { GridSettingsPanel } from "../components/inspector/renderers/GridSettingsPanel";

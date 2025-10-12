@@ -1,3 +1,6 @@
+/**
+ * @file Utilities for calculating and manipulating bounding boxes of nodes
+ */
 import type { Node, Position, Size } from "../types/core";
 
 export type BoundingBox = {

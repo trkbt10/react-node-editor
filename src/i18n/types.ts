@@ -1,5 +1,5 @@
 /**
- * Internationalization types for Node Editor
+ * @file Type definitions for internationalization system
  */
 
 export type Locale = "en" | "ja" | "zh" | "ko" | "es" | "fr" | "de";

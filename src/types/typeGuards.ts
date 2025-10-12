@@ -1,3 +1,6 @@
+/**
+ * @file Type guard factory utilities for safely checking node render and inspector props
+ */
 import type { NodeRenderProps, InspectorRenderProps } from "./NodeDefinition";
 
 /**

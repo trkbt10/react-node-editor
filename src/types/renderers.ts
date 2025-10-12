@@ -1,3 +1,6 @@
+/**
+ * @file Type definitions for customizable renderer components (nodes, ports, connections)
+ */
 import type { ComponentType } from "react";
 import type { NodeViewProps } from "../components/node/NodeView";
 import type { PortViewProps } from "../components/connection/ports/PortView";

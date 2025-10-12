@@ -1,6 +1,5 @@
 /**
- * Built-in node definitions
- * This is the single source of truth for all default node types
+ * @file Central export module for all built-in node definitions
  */
 
 export { StandardNodeDefinition } from "./standard";

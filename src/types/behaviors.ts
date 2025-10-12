@@ -1,3 +1,6 @@
+/**
+ * @file Node behavior types and utilities for defining how nodes behave (group, appearance, etc.)
+ */
 import type { NodeDefinition } from "./NodeDefinition";
 import type { Node } from "./core";
 

@@ -1,3 +1,6 @@
+/**
+ * @file Default settings configuration for the node editor including appearance, behavior, and keyboard shortcuts
+ */
 import type { SettingDefinition } from "./types";
 
 /**

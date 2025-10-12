@@ -1,3 +1,6 @@
+/**
+ * @file Main type export module - re-exports core types and context-specific types
+ */
 // Re-export core types
 export type {
   NodeId,

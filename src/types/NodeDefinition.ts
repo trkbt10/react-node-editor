@@ -1,3 +1,6 @@
+/**
+ * @file Core node definition types including render props, constraints, and external data handling
+ */
 import React, { type ReactNode, type ReactElement } from "react";
 import type { Node, NodeId, Port, Connection, ConnectionId, NodeData } from "./core";
 import type { NodeBehavior } from "./behaviors";

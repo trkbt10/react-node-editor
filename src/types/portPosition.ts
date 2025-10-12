@@ -1,3 +1,6 @@
+/**
+ * @file Type definitions for port positioning and calculation behavior
+ */
 import type { Node, Port, NodeId, PortId, Position } from "./core";
 
 /**

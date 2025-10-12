@@ -1,3 +1,6 @@
+/**
+ * @file Registry for managing and accessing node type definitions
+ */
 import type { NodeDefinition } from "./NodeDefinition";
 
 /**

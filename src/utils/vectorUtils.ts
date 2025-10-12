@@ -1,3 +1,6 @@
+/**
+ * @file Vector mathematics utilities for position calculations and transformations
+ */
 import type { Position } from "../types/core";
 
 /**
