@@ -27,6 +27,14 @@ export type NodeEditorTheme = {
 const NODE_EDITOR_THEME_STYLE_ELEMENT_ID = "node-editor-theme-style";
 const NODE_EDITOR_THEME_STORAGE_KEY = "node-editor-example-theme";
 
+function resolveThemeCssHref(cssPath: string): string {
+  const baseUrl = import.meta.env.BASE_URL ?? "/";
+  const normalizedBaseUrl = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
+  const normalizedCssPath = cssPath.startsWith("/") ? cssPath.slice(1) : cssPath;
+
+  return `${normalizedBaseUrl}${normalizedCssPath}`;
+}
+
 const AVAILABLE_THEMES: NodeEditorTheme[] = [
   {
     id: "default",
@@ -164,7 +172,7 @@ export function applyTheme(themeId: NodeEditorThemeId): NodeEditorTheme {
       headElement.appendChild(linkElement);
     }
 
-    linkElement.href = theme.cssPath;
+    linkElement.href = resolveThemeCssHref(theme.cssPath);
     linkElement.dataset.themeId = theme.id;
   }
 
