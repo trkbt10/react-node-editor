@@ -4,28 +4,8 @@
  */
 
 import React from "react";
-import type { NodeDataTypeMap, NodeRenderProps, InspectorRenderProps } from "../../types/NodeDefinition";
-import { createNodeDefinition, createNodeDataUpdater } from "../../types/NodeDefinition";
 import classes from "./TypedNodesExample.module.css";
-
-// Step 1: Extend the NodeDataTypeMap interface
-// NOTE: In a real application, you would declare this in a separate types file
-// that is imported by your application, not in the example file.
-// 
-// declare module "@tanuki-ui/node-editor" {
-//   interface NodeDataTypeMap {
-//     "counter-node": {
-//       label: string;
-//       count: number;
-//       step: number;
-//     };
-//     "text-display": {
-//       title: string;
-//       content: string;
-//       fontSize: number;
-//     };
-//   }
-// }
+import { NodeRenderProps, InspectorRenderProps, createNodeDefinition } from "../../types/NodeDefinition";
 
 // For this example, we'll define the types directly
 type CounterNodeData = {
@@ -41,40 +21,37 @@ type TextDisplayData = {
 };
 
 // Step 2: Create type-safe node renderers (without module augmentation for this example)
-const CounterNodeRenderer = ({ 
-  node, 
-  isSelected,
-  onUpdateNode 
-}: NodeRenderProps): React.ReactElement => {
+const CounterNodeRenderer = ({ node, onUpdateNode }: NodeRenderProps): React.ReactElement => {
   // For the example, we'll use type assertions
   const { label, count, step } = node.data as CounterNodeData;
-  
+
   const handleIncrement = () => {
     onUpdateNode({ data: { ...node.data, count: count + step } });
   };
-  
+
   const handleDecrement = () => {
     onUpdateNode({ data: { ...node.data, count: count - step } });
   };
-  
+
   return (
     <div className={classes.counterNode}>
       <h3 className={classes.counterHeader}>{label}</h3>
       <div className={classes.counterDisplay}>{count}</div>
       <div className={classes.counterControls}>
-        <button className={classes.counterButton} onClick={handleDecrement}>-{step}</button>
-        <button className={classes.counterButton} onClick={handleIncrement}>+{step}</button>
+        <button className={classes.counterButton} onClick={handleDecrement}>
+          -{step}
+        </button>
+        <button className={classes.counterButton} onClick={handleIncrement}>
+          +{step}
+        </button>
       </div>
     </div>
   );
 };
 
-const CounterNodeInspector = ({ 
-  node, 
-  onUpdateNode 
-}: InspectorRenderProps): React.ReactElement => {
+const CounterNodeInspector = ({ node, onUpdateNode }: InspectorRenderProps): React.ReactElement => {
   const { label, count, step } = node.data as CounterNodeData;
-  
+
   return (
     <div className={classes.inspectorContainer}>
       <div className={classes.formGroup}>
@@ -133,24 +110,20 @@ export const CounterNodeDefinition = createNodeDefinition({
 });
 
 // Text Display Node
-const TextDisplayRenderer = ({
-  node,
-  isSelected
-}: NodeRenderProps): React.ReactElement => {
+const TextDisplayRenderer = ({ node }: NodeRenderProps): React.ReactElement => {
   const { title, content, fontSize } = node.data as TextDisplayData;
 
   return (
     <div className={classes.textDisplayNode}>
       <h4 className={classes.textDisplayTitle}>{title}</h4>
-      <p className={classes.textDisplayContent} style={{ fontSize: `${fontSize}px` }}>{content}</p>
+      <p className={classes.textDisplayContent} style={{ fontSize: `${fontSize}px` }}>
+        {content}
+      </p>
     </div>
   );
 };
 
-const TextDisplayInspector = ({
-  node,
-  onUpdateNode
-}: InspectorRenderProps): React.ReactElement => {
+const TextDisplayInspector = ({ node, onUpdateNode }: InspectorRenderProps): React.ReactElement => {
   const { title, content, fontSize } = node.data as TextDisplayData;
 
   return (
@@ -212,9 +185,9 @@ export const TextDisplayDefinition = createNodeDefinition({
 });
 
 // Example of using with existing non-typed nodes (backward compatibility)
-const LegacyNodeRenderer = ({ node, isSelected }: NodeRenderProps): React.ReactElement => {
+const LegacyNodeRenderer = ({ node }: NodeRenderProps): React.ReactElement => {
   // For non-typed nodes, node.data is just NodeData (Record<string, unknown>)
-  const title = node.data.title as string || "Legacy Node";
+  const title = (node.data.title as string) || "Legacy Node";
 
   return (
     <div className={classes.legacyNode}>

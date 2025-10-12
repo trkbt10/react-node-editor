@@ -2,7 +2,6 @@ import * as React from "react";
 import { NodeEditor, type GridLayoutConfig, type LayerDefinition } from "../../index";
 import { InspectorPanel } from "../../components/inspector/InspectorPanel";
 import { NodeCanvas } from "../../components/canvas/NodeCanvas";
-import { StatusBar } from "../../components/layout/StatusBar";
 import classes from "./ColumnLayoutExample.module.css";
 
 // Example: Default layout (canvas + inspector)

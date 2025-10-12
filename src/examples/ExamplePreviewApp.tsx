@@ -15,6 +15,7 @@ import {
   WithToolbarExample,
 } from "./demos/ColumnLayoutExample";
 import { AdvancedLayoutExample } from "./demos/AdvancedLayoutExample";
+import { ThreeJsExample } from "./demos/threejs/ThreeJsExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -25,6 +26,12 @@ type ExampleEntry = {
 };
 
 const examples: ExampleEntry[] = [
+  {
+    id: "threejs-integration",
+    title: "Three.js Integration",
+    description: "Drive a Three.js scene by connecting node outputs to a live preview.",
+    component: ThreeJsExample,
+  },
   {
     id: "custom-node",
     title: "Custom Nodes with External Data",

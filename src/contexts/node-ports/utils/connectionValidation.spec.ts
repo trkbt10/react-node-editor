@@ -1,10 +1,8 @@
 import { canConnectPorts } from "./connectionValidation";
-import type { Node, Connection, Port } from "../../../types/core";
+import type { Connection, Port } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import type { NodeDefinitionRegistry } from "../../../types/NodeDefinitionRegistry";
 import { createNodeDefinitionRegistry } from "../../../types/NodeDefinitionRegistry";
-
-const makeNode = (id: string, type: string): Node => ({ id, type, position: { x: 0, y: 0 }, data: {} });
 
 describe("canConnectPorts - maxConnections default/unlimited", () => {
   const mkRegistry = (defs: NodeDefinition[]): NodeDefinitionRegistry => {

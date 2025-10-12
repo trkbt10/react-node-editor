@@ -1,0 +1,89 @@
+.controlNode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background: var(--node-editor-node-surface, #ffffff);
+  border-radius: 10px;
+}
+
+.nodeTitle {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--node-editor-foreground, #111827);
+}
+
+.colorPreview {
+  height: 48px;
+  border-radius: 8px;
+}
+
+.colorInfo {
+  font-size: 12px;
+  color: var(--node-editor-muted-foreground, #6b7280);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sliderValue {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--node-editor-foreground, #111827);
+}
+
+.sliderTrack {
+  width: 100%;
+}
+
+.inspectorSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.inspectorLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--node-editor-muted-foreground, #6b7280);
+}
+
+.inspectorInput {
+  display: block;
+  width: 100%;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  padding: 4px 8px;
+  background: var(--node-editor-node-surface, #ffffff);
+  font-size: 12px;
+  color: var(--node-editor-foreground, #111827);
+}
+
+.threeScene {
+  position: relative;
+  height: 320px;
+  overflow: hidden;
+  background: radial-gradient(circle at top, rgba(96, 165, 250, 0.28), rgba(30, 64, 175, 0.42));
+}
+
+.threeOverlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.65);
+  color: #e2e8f0;
+  font-size: 12px;
+}
+
+.threeCanvasHost {
+  position: absolute;
+  inset: 0;
+}

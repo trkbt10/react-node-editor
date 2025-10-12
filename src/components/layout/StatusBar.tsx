@@ -2,7 +2,7 @@ import * as React from "react";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import type { SettingsManager } from "../../settings/SettingsManager";
+import type { SettingsManager as _SettingsManager } from "../../settings/SettingsManager";
 import { classNames } from "../elements";
 import { StatusSection, statusSectionStyles } from "./StatusSection";
 import styles from "./StatusBar.module.css";
@@ -11,7 +11,7 @@ export type StatusBarProps = {
   className?: string;
   autoSave?: boolean;
   isSaving?: boolean;
-  settingsManager?: SettingsManager;
+  settingsManager?: _SettingsManager;
 }
 
 /**

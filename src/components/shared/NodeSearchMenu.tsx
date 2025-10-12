@@ -227,7 +227,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
           </div>
         ) : (
           <div className={styles.categoryList}>
-            {filteredResults.map((category, categoryIndex) => (
+            {filteredResults.map((category) => (
               <div key={category.name} className={styles.categoryGroup}>
                 <div
                   className={classNames(styles.categoryHeader, selectedCategory === category.name && styles.selectedCategory)}
@@ -238,7 +238,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
                 </div>
 
                 <div className={styles.nodeList}>
-                  {category.nodes.map((node, nodeIndex) => {
+                  {category.nodes.map((node) => {
                     const globalIndex = allNodes.findIndex((item) => item.node.type === node.type);
                     const isSelected = globalIndex === selectedIndex;
                     const isDisabled = disabledSet.has(node.type);

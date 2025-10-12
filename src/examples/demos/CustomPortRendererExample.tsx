@@ -12,7 +12,7 @@ import classes from "./CustomPortRendererExample.module.css";
  */
 
 // Custom port renderer example - changes color based on data type
-const customPortRenderer = (context: any, defaultRender: () => React.ReactElement) => {
+const customPortRenderer = (context: any, _defaultRender: () => React.ReactElement) => {
   const { port, isConnected, isHovered } = context;
 
   // Define colors for different data types

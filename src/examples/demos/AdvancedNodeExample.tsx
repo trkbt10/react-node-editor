@@ -139,7 +139,7 @@ const CodeEditorRenderer = ({ node, isSelected, isDragging, externalData, onUpda
   );
 };
 
-const CodeInspectorRenderer = ({ node, externalData, onUpdateExternalData }: InspectorRenderProps) => {
+const CodeInspectorRenderer = ({ _node, externalData, onUpdateExternalData }: InspectorRenderProps) => {
   const codeData = externalData as CodeData | undefined;
   const [editedData, setEditedData] = React.useState<CodeData>({
     id: codeData?.id || "",
@@ -315,7 +315,7 @@ type ChartData = {
   data: Array<{ label: string; value: number; color?: string }>;
 };
 
-const ChartRenderer = ({ node, isSelected, isDragging, externalData }: NodeRenderProps) => {
+const ChartRenderer = ({ _node, _isSelected, _isDragging, externalData }: NodeRenderProps) => {
   const chartData = externalData as ChartData | undefined;
 
   const renderMiniChart = () => {
@@ -611,7 +611,7 @@ type FormData = {
   }>;
 };
 
-const FormRenderer = ({ node, isSelected, isDragging, externalData }: NodeRenderProps) => {
+const FormRenderer = ({ _node, _isSelected, _isDragging, externalData }: NodeRenderProps) => {
   const formData = externalData as FormData | undefined;
 
   return (
@@ -632,7 +632,7 @@ const FormRenderer = ({ node, isSelected, isDragging, externalData }: NodeRender
       </div>
 
       <div style={{ fontSize: "10px", color: "#6b7280" }}>
-        {formData?.fields?.slice(0, 3).map((field, index) => (
+        {formData?.fields?.slice(0, 3).map((field, _index) => (
           <div key={field.id} style={{ marginBottom: "2px" }}>
             • {field.label} ({field.type}) {field.required && "*"}
           </div>
@@ -876,7 +876,7 @@ const CodeNodeDefinition: NodeDefinition = {
       errors: [],
     };
   },
-  updateExternalData: async (ref: ExternalDataReference, data: unknown) => {
+  updateExternalData: async (_ref: _ExternalDataReference, data: unknown) => {
     await new Promise((resolve) => setTimeout(resolve, 300));
     console.log("Updated code data:", data);
   },
@@ -921,7 +921,7 @@ const ChartNodeDefinition: NodeDefinition = {
       ],
     };
   },
-  updateExternalData: async (ref: ExternalDataReference, data: unknown) => {
+  updateExternalData: async (_ref: _ExternalDataReference, data: unknown) => {
     await new Promise((resolve) => setTimeout(resolve, 200));
     console.log("Updated chart data:", data);
   },
@@ -970,7 +970,7 @@ const FormNodeDefinition: NodeDefinition = {
       ],
     };
   },
-  updateExternalData: async (ref: ExternalDataReference, data: unknown) => {
+  updateExternalData: async (_ref: _ExternalDataReference, data: unknown) => {
     await new Promise((resolve) => setTimeout(resolve, 250));
     console.log("Updated form data:", data);
   },

@@ -1,4 +1,4 @@
-import type { Node, Port, PortId, NodeId } from "../../../types/core";
+import type { Node, Port, NodeId } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { getNodePorts } from "./portResolution";
 

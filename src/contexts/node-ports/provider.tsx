@@ -4,7 +4,6 @@ import { DEFAULT_PORT_POSITION_CONFIG } from "../../types/portPosition";
 import type {
   EditorPortPositions,
   NodePortPositions,
-  PortPosition,
   PortPositionBehavior,
   PortPositionConfig,
   PortPositionNode,

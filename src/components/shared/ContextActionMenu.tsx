@@ -109,7 +109,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
     [editorActions, onClose, selectedNodes, showAlignmentControls]
   );
 
-  const handleDuplicateNode = () => {
+  const _handleDuplicateNode = () => {
     if (target.type !== "node") {return;}
     const node = editorState.nodes[target.id];
     if (!node) {return;}
@@ -122,7 +122,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
     onClose();
   };
 
-  const handleCutSelected = () => {
+  const _handleCutSelected = () => {
     let selected = actionState.selectedNodeIds;
     if (target.type === 'node' && !selected.includes(target.id)) {
       selected = [target.id];

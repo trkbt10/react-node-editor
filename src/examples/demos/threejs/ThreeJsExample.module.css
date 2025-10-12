@@ -1,0 +1,44 @@
+.exampleContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: 100%;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.exampleHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--node-editor-muted-foreground, #6b7280);
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--node-editor-muted-foreground, #6b7280);
+}
+
+.editorSurface {
+  flex: 1;
+  min-height: 0;
+  border: 1px solid var(--node-editor-border, #d1d5db);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--node-editor-surface, #f9fafb);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+}
