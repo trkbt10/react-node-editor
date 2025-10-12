@@ -19,6 +19,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 6px 12px;
+  box-sizing: border-box;
   background: var(--node-editor-control-hover-background, rgba(0, 0, 0, 0.05));
   border-bottom: 1px solid var(--node-editor-input-border, rgba(0, 0, 0, 0.1));
   font-size: 11px;
@@ -42,7 +43,7 @@
   flex: 1;
   overflow: auto;
   padding: 8px;
-  background: var(--node-editor-window-background-color, #f5f5f5);
+  box-sizing: border-box;
 }
 
 .jsonDisplay {
@@ -54,4 +55,5 @@
   white-space: pre;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  box-sizing: border-box;
 }
