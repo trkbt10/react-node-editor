@@ -3,7 +3,8 @@
  */
 import * as React from "react";
 
-import CustomNodeExample from "./demos/CustomNodeExample";
+import { applyTheme, getStoredThemeId, listAvailableThemes } from "./themes/registry";
+import type { NodeEditorThemeId } from "./themes/registry";
 import { ConstrainedNodeExample } from "./demos/ConstrainedNodeExample";
 import { TypedNodesExample } from "./demos/TypedNodesExample";
 import { AdvancedNodeExample } from "./demos/AdvancedNodeExample";
@@ -16,6 +17,8 @@ import {
 } from "./demos/ColumnLayoutExample";
 import { AdvancedLayoutExample } from "./demos/AdvancedLayoutExample";
 import { ThreeJsExample } from "./demos/threejs/ThreeJsExample";
+import CustomNodeExample from "./demos/CustomNodeExample";
+import { ThemeShowcaseExample } from "./demos/design/ThemeShowcaseExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -23,7 +26,7 @@ type ExampleEntry = {
   title: string;
   description: string;
   component: React.ComponentType;
-  category: "basic" | "advanced" | "layout";
+  category: "basic" | "advanced" | "layout" | "design";
 };
 
 const examples: ExampleEntry[] = [
@@ -104,6 +107,13 @@ const examples: ExampleEntry[] = [
     component: AdvancedLayoutExample,
     category: "layout",
   },
+  {
+    id: "design-theme-showcase",
+    title: "Design: Theme Showcase",
+    description: "Preview core design tokens and UI components under the active theme.",
+    component: ThemeShowcaseExample,
+    category: "design",
+  },
 ];
 
 if (examples.length === 0) {
@@ -132,6 +142,11 @@ function getInitialExampleId(): string {
  * Renders the preview shell with example selection controls.
  */
 export function ExamplePreviewApp(): React.ReactElement {
+  const themeOptions = React.useMemo(() => listAvailableThemes(), []);
+  const [selectedThemeId, setSelectedThemeId] = React.useState<NodeEditorThemeId>(
+    () => getStoredThemeId() ?? "default",
+  );
+
   const [selectedExampleId, setSelectedExampleId] = React.useState(getInitialExampleId);
 
   const selectedExample = React.useMemo(
@@ -170,11 +185,16 @@ export function ExamplePreviewApp(): React.ReactElement {
 
   const ExampleComponent = selectedExample.component;
 
+  React.useEffect(() => {
+    applyTheme(selectedThemeId);
+  }, [selectedThemeId]);
+
   const groupedExamples = React.useMemo(() => {
     const groups: Record<string, ExampleEntry[]> = {
       basic: [],
       advanced: [],
       layout: [],
+      design: [],
     };
 
     for (const example of examples) {
@@ -188,6 +208,7 @@ export function ExamplePreviewApp(): React.ReactElement {
     basic: "Basic Examples",
     advanced: "Advanced Examples",
     layout: "Layout Examples",
+    design: "Design Examples",
   };
 
   return (
@@ -197,22 +218,36 @@ export function ExamplePreviewApp(): React.ReactElement {
           <h1 className={classes.title}>Node Editor Examples - {selectedExample.title}</h1>
           <span className={classes.description}>{selectedExample.description}</span>
         </div>
-        <select
-          aria-label="Select example"
-          value={selectedExampleId}
-          onChange={(event) => handleExampleChange(event.target.value)}
-          className={classes.select}
-        >
-          {Object.entries(groupedExamples).map(([category, categoryExamples]) => (
-            <optgroup key={category} label={categoryLabels[category]}>
-              {categoryExamples.map((example) => (
-                <option key={example.id} value={example.id}>
-                  {example.title}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
+        <div className={classes.controls}>
+          <select
+            aria-label="Select theme"
+            value={selectedThemeId}
+            onChange={(event) => setSelectedThemeId(event.target.value as NodeEditorThemeId)}
+            className={classes.select}
+          >
+            {themeOptions.map((theme) => (
+              <option key={theme.id} value={theme.id}>
+                {theme.label}
+              </option>
+            ))}
+          </select>
+          <select
+            aria-label="Select example"
+            value={selectedExampleId}
+            onChange={(event) => handleExampleChange(event.target.value)}
+            className={classes.select}
+          >
+            {Object.entries(groupedExamples).map(([category, categoryExamples]) => (
+              <optgroup key={category} label={categoryLabels[category]}>
+                {categoryExamples.map((example) => (
+                  <option key={example.id} value={example.id}>
+                    {example.title}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </div>
       </header>
       <main className={classes.main} key={selectedExample.id}>
         <ExampleComponent />

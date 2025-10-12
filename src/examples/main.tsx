@@ -5,8 +5,11 @@ import * as React from "react";
 import { createRoot } from "react-dom/client";
 
 import "../global.css";
+import { ensureInitialTheme } from "./themes/registry";
 
 import { ExamplePreviewApp } from "./ExamplePreviewApp";
+
+ensureInitialTheme();
 
 const container = document.getElementById("root");
 

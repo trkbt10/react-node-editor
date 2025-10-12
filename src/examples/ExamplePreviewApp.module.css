@@ -1,8 +1,24 @@
+:root {
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
 body,
-html {
+#root {
+  height: 100%;
+}
+
+body {
   margin: 0;
-  padding: 0;
-  font-family: var(--node-editor-theme-default-font-family)
+  font-family: var(--node-editor-theme-default-font-family, system-ui, sans-serif);
+  background-color: var(--node-editor-window-background-color, #ffffff);
+  color: var(--node-editor-text-color, #0f172a);
 }
 
 .container {
@@ -10,18 +26,28 @@ html {
   flex-direction: column;
   height: 100vh;
   width: 100vw;
-  background-color: #0f172a;
-  color: #f8fafc;
+  background: linear-gradient(135deg,
+      var(--node-editor-under-page-background-color, #0f172a),
+      var(--node-editor-surface-secondary, #1e293b));
+  color: var(--node-editor-text-color, #0f172a);
 }
 
 .header {
   padding: 8px 16px;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  border-bottom: 1px solid var(--node-editor-divider-color, rgba(148, 163, 184, 0.25));
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   box-sizing: border-box;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 .headerContent {
@@ -32,27 +58,28 @@ html {
 
 .title {
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font: var(--node-editor-title-font, 600 16px/1.25 system-ui);
 }
 
 .description {
   font-size: 12px;
-  color: #cbd5f5;
+  color: var(--node-editor-secondary-label-color, #64748b);
 }
 
 .select {
-  background-color: #1e293b;
-  color: #f8fafc;
-  border: 1px solid rgba(148, 163, 184, 0.4);
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 14px;
+  background-color: var(--node-editor-control-background, #1e293b);
+  color: var(--node-editor-control-text-color, #f8fafc);
+  border: 1px solid var(--node-editor-input-border, rgba(148, 163, 184, 0.4));
+  border-radius: var(--node-editor-control-border-radius, 6px);
+  padding: var(--node-editor-space-sm, 6px) var(--node-editor-space-md, 12px);
+  font: var(--node-editor-control-text-font, 600 14px/1.4 system-ui);
   box-sizing: border-box;
+  min-width: 180px;
 }
 
 .main {
   flex: 1;
   overflow: hidden;
-  background-color: #0b1120;
+  background-color: var(--node-editor-window-background-color, #0b1120);
+  position: relative;
 }
