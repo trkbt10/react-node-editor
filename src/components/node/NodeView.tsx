@@ -255,12 +255,18 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   // Handle pointer down on node
   const handleNodePointerDown = React.useCallback(
     (e: React.PointerEvent) => {
+      const target = e.target as HTMLElement;
+
+      // Prevent dragging when clicking on input elements
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+        return;
+      }
+
       // Check if this is an interactive node from the definition
       const isInteractive = nodeDefinition?.interactive;
 
       // For interactive nodes, check if we're clicking on the drag handle area
       if (isInteractive && !isSelected) {
-        const target = e.target as HTMLElement;
         const isDragHandle = target.closest('[data-drag-handle="true"]');
 
         // Only allow dragging from drag handle for interactive nodes when not multi-selected
