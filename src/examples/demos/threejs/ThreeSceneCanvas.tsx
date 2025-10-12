@@ -1,7 +1,9 @@
+/**
+ * @file Three.js canvas that renders a rotating teapot preview.
+ */
 import * as React from "react";
 import {
   AmbientLight,
-  BoxGeometry,
   Color,
   DirectionalLight,
   Mesh,
@@ -11,6 +13,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
+import { TeapotGeometry } from "three/examples/jsm/geometries/TeapotGeometry.js";
 
 /**
  * Encapsulated Three.js scene with rotating geometry.
@@ -31,6 +34,8 @@ type SceneRefs = {
 
 const MIN_SCALE = 0.1;
 const MAX_SCALE = 8;
+const TEAPOT_SIZE = 0.7;
+const TEAPOT_SEGMENTS = 14;
 
 export const ThreeSceneCanvas: React.FC<ThreeSceneCanvasProps> = ({ color, scale }) => {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -53,8 +58,10 @@ export const ThreeSceneCanvas: React.FC<ThreeSceneCanvasProps> = ({ color, scale
 
     const camera = new PerspectiveCamera(45, host.clientWidth / host.clientHeight, 0.1, 100);
     camera.position.set(0, 1.6, 4.5);
+    camera.lookAt(new Vector3(0, 0, 0));
 
-    const geometry = new BoxGeometry(1, 1, 1);
+    const geometry = new TeapotGeometry(TEAPOT_SIZE, TEAPOT_SEGMENTS, true, true, true, false, true);
+    geometry.center();
     const material = new MeshStandardMaterial({ color: new Color(color) });
     const mesh = new Mesh(geometry, material);
     mesh.castShadow = true;
