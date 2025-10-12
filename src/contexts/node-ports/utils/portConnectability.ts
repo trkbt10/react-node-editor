@@ -1,3 +1,6 @@
+/**
+ * @file Utilities for determining which ports can connect to a given source port
+ */
 import type { Port, Node, Connection } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import type { ConnectablePortsResult } from "./connectablePortPlanner";

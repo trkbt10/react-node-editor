@@ -1,3 +1,6 @@
+/**
+ * @file Tests for connection switch behavior logic based on port capacity constraints
+ */
 import type { Connection, Node, Port } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { planConnectionChange, ConnectionSwitchBehavior } from "./connectionSwitchBehavior";

@@ -1,3 +1,6 @@
+/**
+ * @file Port lookup utilities for creating fast access maps and cached port resolution
+ */
 import type { Node, Port, NodeId } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { getNodePorts } from "./portResolution";
