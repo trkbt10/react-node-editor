@@ -177,14 +177,14 @@
   --node-editor-quaternary-system-fill-color: rgba(11, 108, 240, 0.18);
 
   /* Border Radii */
-  --node-editor-border-radius-xxs: 4px;
-  --node-editor-border-radius-xs: 8px;
-  --node-editor-radius-xs: 10px;
-  --node-editor-radius-sm: 14px;
-  --node-editor-radius-md: 18px;
-  --node-editor-radius-xl: 24px;
-  --node-editor-control-border-radius: var(--node-editor-radius-md);
-  --node-editor-segment-control-border-radius: var(--node-editor-radius-md);
+  --node-editor-border-radius-xxs: 2px;
+  --node-editor-border-radius-xs: 4px;
+  --node-editor-radius-xs: 4px;
+  --node-editor-radius-sm: 4px;
+  --node-editor-radius-md: 8px;
+  --node-editor-radius-xl: 8px;
+  --node-editor-control-border-radius: var(--node-editor-radius-sm);
+  --node-editor-segment-control-border-radius: var(--node-editor-radius-sm);
 
   /* Borders */
   --node-editor-border-width: 1px;
@@ -193,11 +193,11 @@
   --node-editor-separator-color: rgba(15, 23, 42, 0.12);
 
   /* Segment controls */
-  --node-editor-segment-backdrop-filter: blur(26px) saturate(160%);
-  --node-editor-segment-control-background: rgba(255, 255, 255, 0.62);
-  --node-editor-segment-control-background-color: rgba(255, 255, 255, 0.7);
-  --node-editor-segment-control-text-color: rgba(15, 23, 42, 0.7);
-  --node-editor-segment-control-active-background-color: linear-gradient(135deg, #5aa5ff 0%, #0b6cf0 100%);
-  --node-editor-segment-control-active-text-color: #ffffff;
-  --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  --node-editor-segment-backdrop-filter: blur(30px) saturate(180%);
+  --node-editor-segment-control-background: rgba(243, 243, 243, 0.7);
+  --node-editor-segment-control-background-color: transparent;
+  --node-editor-segment-control-text-color: rgba(0, 0, 0, 0.6);
+  --node-editor-segment-control-active-background-color: rgba(255, 255, 255, 0.9);
+  --node-editor-segment-control-active-text-color: rgba(0, 0, 0, 0.9);
+  --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
 }

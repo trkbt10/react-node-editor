@@ -29,39 +29,39 @@
   --node-editor-inspector-input-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
 
   /* Inspector typography */
-  --node-editor-inspector-font-size-title: 0.7rem;
+  --node-editor-inspector-font-size-title: 0.6875rem;
   --node-editor-inspector-line-height-title: 1.2;
-  --node-editor-inspector-font-size-body: 0.78rem;
-  --node-editor-inspector-line-height-body: 1.4;
+  --node-editor-inspector-font-size-body: 0.8125rem;
+  --node-editor-inspector-line-height-body: 1.385;
   --node-editor-inspector-font-size-meta: 0.6875rem;
-  --node-editor-inspector-line-height-meta: 1.3;
-  --node-editor-inspector-font-weight-medium: 600;
-  --node-editor-inspector-font-size-heading: 0.85rem;
+  --node-editor-inspector-line-height-meta: 1.273;
+  --node-editor-inspector-font-weight-medium: 700;
+  --node-editor-inspector-font-size-heading: 0.8125rem;
   --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
   --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
 
   /* Font families & typography */
-  --node-editor-theme-default-font-family: "Segoe UI", "Tahoma", "Verdana", sans-serif;
-  --node-editor-theme-control-font-family: "Segoe UI", "Tahoma", "Verdana", sans-serif;
-  --node-editor-theme-label-font-family: "Segoe UI", "Tahoma", "Verdana", sans-serif;
-  --node-editor-system-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Tahoma", sans-serif;
-  --node-editor-font-mono: "Consolas", "Lucida Console", Monaco, monospace;
-  --node-editor-title-font: 700 1rem/1.3 var(--node-editor-theme-label-font-family);
-  --node-editor-subtitle-font: 600 0.9rem/1.35 var(--node-editor-theme-label-font-family);
-  --node-editor-caption-font: 400 0.75rem/1.2 var(--node-editor-theme-default-font-family);
-  --node-editor-control-text-font: 600 var(--node-editor-inspector-font-size-body)/1.35 var(--node-editor-theme-control-font-family);
-  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body)/1.4 var(--node-editor-theme-default-font-family);
-  --node-editor-font-size-lg: 1.1rem;
-  --node-editor-font-size-sm: 0.85rem;
-  --node-editor-font-size-xs: 0.72rem;
+  --node-editor-theme-default-font-family: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif;
+  --node-editor-theme-control-font-family: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif;
+  --node-editor-theme-label-font-family: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif;
+  --node-editor-system-font: 'Tahoma', 'Verdana', 'MS Sans Serif', sans-serif;
+  --node-editor-font-mono: 'Lucida Console', 'Courier New', monospace;
+  --node-editor-title-font: 700 0.6875rem/1.2 var(--node-editor-theme-label-font-family);
+  --node-editor-subtitle-font: 700 0.6875rem/1.2 var(--node-editor-theme-label-font-family);
+  --node-editor-caption-font: 400 0.6875rem/1.2 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 700 var(--node-editor-inspector-font-size-body)/1.2 var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body)/1.385 var(--node-editor-theme-default-font-family);
+  --node-editor-font-size-lg: 0.875rem;
+  --node-editor-font-size-sm: 0.8125rem;
+  --node-editor-font-size-xs: 0.6875rem;
 
   /* Canvas grid */
-  --node-editor-grid-color: rgba(0, 45, 150, 0.25);
-  --node-editor-grid-opacity: 0.28;
+  --node-editor-grid-color: rgba(59, 123, 191, 0.2);
+  --node-editor-grid-opacity: 0.12;
 
   /* Inspector shadows */
-  --node-editor-inspector-shadow: 0 10px 24px rgba(43, 87, 151, 0.2);
-  --node-editor-inspector-header-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+  --node-editor-inspector-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.25), inset 1px 1px 0 rgba(255, 255, 255, 0.7);
+  --node-editor-inspector-header-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 
   /* Tree & List Components */
   --node-editor-tree-item-height: 28px;
@@ -178,13 +178,13 @@
   --node-editor-quaternary-system-fill-color: rgba(91, 155, 213, 0.24);
 
   /* Border Radii */
-  --node-editor-border-radius-xxs: 2px;
-  --node-editor-border-radius-xs: 6px;
-  --node-editor-radius-xs: 8px;
-  --node-editor-radius-sm: 10px;
-  --node-editor-radius-md: 14px;
+  --node-editor-border-radius-xxs: 0;
+  --node-editor-border-radius-xs: 0;
+  --node-editor-radius-xs: 3px;
+  --node-editor-radius-sm: 3px;
+  --node-editor-radius-md: 3px;
   --node-editor-control-border-radius: var(--node-editor-radius-sm);
-  --node-editor-segment-control-border-radius: var(--node-editor-radius-md);
+  --node-editor-segment-control-border-radius: var(--node-editor-radius-sm);
 
   /* Borders */
   --node-editor-border-width: 1px;
@@ -193,11 +193,11 @@
   --node-editor-separator-color: rgba(27, 77, 165, 0.16);
 
   /* Segment controls */
-  --node-editor-segment-backdrop-filter: blur(8px) saturate(160%);
-  --node-editor-segment-control-background: linear-gradient(180deg, rgba(91, 155, 213, 0.36) 0%, rgba(36, 96, 215, 0.24) 100%);
-  --node-editor-segment-control-background-color: #ffffff;
-  --node-editor-segment-control-text-color: rgba(27, 77, 165, 0.8);
-  --node-editor-segment-control-active-background-color: linear-gradient(180deg, #5b9bd5 0%, #1b4da5 100%);
+  --node-editor-segment-backdrop-filter: none;
+  --node-editor-segment-control-background: linear-gradient(180deg, #ece9d8 0%, #dfdbc7 100%);
+  --node-editor-segment-control-background-color: #ece9d8;
+  --node-editor-segment-control-text-color: #000000;
+  --node-editor-segment-control-active-background-color: linear-gradient(180deg, #0054e3 0%, #003c99 100%);
   --node-editor-segment-control-active-text-color: #ffffff;
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
 }

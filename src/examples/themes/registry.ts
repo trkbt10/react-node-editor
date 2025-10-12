@@ -3,8 +3,26 @@
  */
 import defaultThemeCss from "../../themes/default.css?inline";
 import window98ThemeCss from "../../themes/window98.css?inline";
+import googleThemeCss from "../../themes/google.css?inline";
+import appleThemeCss from "../../themes/apple.css?inline";
+import xcorpThemeCss from "../../themes/xcorp.css?inline";
+import githubThemeCss from "../../themes/github.css?inline";
+import windowsXpThemeCss from "../../themes/windowsxp.css?inline";
+import windows11ThemeCss from "../../themes/windows11.css?inline";
+import minecraftThemeCss from "../../themes/minecraft.css?inline";
+import wargamesThemeCss from "../../themes/wargames.css?inline";
 
-export type NodeEditorThemeId = "default" | "window98";
+export type NodeEditorThemeId =
+  | "default"
+  | "window98"
+  | "google"
+  | "apple"
+  | "xcorp"
+  | "github"
+  | "windowsxp"
+  | "windows11"
+  | "minecraft"
+  | "wargames";
 
 export type NodeEditorTheme = {
   id: NodeEditorThemeId;
@@ -28,6 +46,54 @@ const AVAILABLE_THEMES: NodeEditorTheme[] = [
     label: "Windows 98",
     description: "Pixel-perfect nostalgia with flat widgets and crisp blue chrome.",
     cssText: window98ThemeCss,
+  },
+  {
+    id: "google",
+    label: "Google",
+    description: "Light, friendly surfaces with bold primary accent and Material-inspired shapes.",
+    cssText: googleThemeCss,
+  },
+  {
+    id: "apple",
+    label: "Apple",
+    description: "Translucent layers, spacious typography, and vibrant blue accent inspired by apple.com.",
+    cssText: appleThemeCss,
+  },
+  {
+    id: "xcorp",
+    label: "X",
+    description: "High-contrast dark theme with electric blue highlights and glassy surfaces.",
+    cssText: xcorpThemeCss,
+  },
+  {
+    id: "github",
+    label: "GitHub",
+    description: "Dark dimmed look with desaturated neutrals and punchy blue call-to-action.",
+    cssText: githubThemeCss,
+  },
+  {
+    id: "windowsxp",
+    label: "Windows XP",
+    description: "Blissful gradients, bold blues, and playful glass buttons from the XP era.",
+    cssText: windowsXpThemeCss,
+  },
+  {
+    id: "windows11",
+    label: "Windows 11",
+    description: "Soft acrylic surfaces, centered layouts, and fluent blue accent of modern Windows.",
+    cssText: windows11ThemeCss,
+  },
+  {
+    id: "minecraft",
+    label: "Minecraft",
+    description: "Pixel-crafted UI with earthy neutrals and vibrant emerald highlight.",
+    cssText: minecraftThemeCss,
+  },
+  {
+    id: "wargames",
+    label: "WarGames",
+    description: "CRT terminal with glowing green phosphor wireframes inspired by WOPR and DEFCON.",
+    cssText: wargamesThemeCss,
   },
 ];
 
