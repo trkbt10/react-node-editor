@@ -245,6 +245,14 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
 
   // Handle double click to open Node Search
   const handleDoubleClick = React.useCallback((e: React.MouseEvent) => {
+    // Exclude double clicks on nodes
+    const target = e.target as Element;
+    const isOnNode = target?.closest?.('[data-node-id]');
+
+    if (isOnNode) {
+      return;
+    }
+
     // Convert screen coordinates to canvas coordinates using utils
     const canvasPosition = utils.screenToCanvas(e.clientX, e.clientY);
     const position = { x: e.clientX, y: e.clientY };
