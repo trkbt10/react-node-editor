@@ -6,6 +6,7 @@
 import React from "react";
 import type { NodeDataTypeMap, NodeRenderProps, InspectorRenderProps } from "../../types/NodeDefinition";
 import { createNodeDefinition, createNodeDataUpdater } from "../../types/NodeDefinition";
+import classes from "./TypedNodesExample.module.css";
 
 // Step 1: Extend the NodeDataTypeMap interface
 // NOTE: In a real application, you would declare this in a separate types file
@@ -57,12 +58,12 @@ const CounterNodeRenderer = ({
   };
   
   return (
-    <div className={`node-content ${isSelected ? 'selected' : ''}`}>
-      <h3>{label}</h3>
-      <div className="counter-display">{count}</div>
-      <div className="counter-controls">
-        <button onClick={handleDecrement}>-{step}</button>
-        <button onClick={handleIncrement}>+{step}</button>
+    <div className={classes.counterNode}>
+      <h3 className={classes.counterHeader}>{label}</h3>
+      <div className={classes.counterDisplay}>{count}</div>
+      <div className={classes.counterControls}>
+        <button className={classes.counterButton} onClick={handleDecrement}>-{step}</button>
+        <button className={classes.counterButton} onClick={handleIncrement}>+{step}</button>
       </div>
     </div>
   );
@@ -75,28 +76,31 @@ const CounterNodeInspector = ({
   const { label, count, step } = node.data as CounterNodeData;
   
   return (
-    <div className="inspector-content">
-      <div className="form-group">
-        <label>Label</label>
-        <input 
-          type="text" 
-          value={label} 
+    <div className={classes.inspectorContainer}>
+      <div className={classes.formGroup}>
+        <label className={classes.formLabel}>Label</label>
+        <input
+          className={classes.formInput}
+          type="text"
+          value={label}
           onChange={(e) => onUpdateNode({ data: { ...node.data, label: e.target.value } })}
         />
       </div>
-      <div className="form-group">
-        <label>Current Count</label>
-        <input 
-          type="number" 
-          value={count} 
+      <div className={classes.formGroup}>
+        <label className={classes.formLabel}>Current Count</label>
+        <input
+          className={classes.formInput}
+          type="number"
+          value={count}
           onChange={(e) => onUpdateNode({ data: { ...node.data, count: Number(e.target.value) } })}
         />
       </div>
-      <div className="form-group">
-        <label>Step Size</label>
-        <input 
-          type="number" 
-          value={step} 
+      <div className={classes.formGroup}>
+        <label className={classes.formLabel}>Step Size</label>
+        <input
+          className={classes.formInput}
+          type="number"
+          value={step}
           onChange={(e) => onUpdateNode({ data: { ...node.data, step: Number(e.target.value) } })}
         />
       </div>
@@ -129,16 +133,57 @@ export const CounterNodeDefinition = createNodeDefinition({
 });
 
 // Text Display Node
-const TextDisplayRenderer = ({ 
-  node, 
-  isSelected 
+const TextDisplayRenderer = ({
+  node,
+  isSelected
 }: NodeRenderProps): React.ReactElement => {
   const { title, content, fontSize } = node.data as TextDisplayData;
-  
+
   return (
-    <div className={`node-content ${isSelected ? 'selected' : ''}`}>
-      <h4>{title}</h4>
-      <p style={{ fontSize: `${fontSize}px` }}>{content}</p>
+    <div className={classes.textDisplayNode}>
+      <h4 className={classes.textDisplayTitle}>{title}</h4>
+      <p className={classes.textDisplayContent} style={{ fontSize: `${fontSize}px` }}>{content}</p>
+    </div>
+  );
+};
+
+const TextDisplayInspector = ({
+  node,
+  onUpdateNode
+}: InspectorRenderProps): React.ReactElement => {
+  const { title, content, fontSize } = node.data as TextDisplayData;
+
+  return (
+    <div className={classes.inspectorContainer}>
+      <div className={classes.formGroup}>
+        <label className={classes.formLabel}>Title</label>
+        <input
+          className={classes.formInput}
+          type="text"
+          value={title}
+          onChange={(e) => onUpdateNode({ data: { ...node.data, title: e.target.value } })}
+        />
+      </div>
+      <div className={classes.formGroup}>
+        <label className={classes.formLabel}>Content</label>
+        <textarea
+          className={classes.formInput}
+          value={content}
+          onChange={(e) => onUpdateNode({ data: { ...node.data, content: e.target.value } })}
+          rows={4}
+        />
+      </div>
+      <div className={classes.formGroup}>
+        <label className={classes.formLabel}>Font Size (px)</label>
+        <input
+          className={classes.formInput}
+          type="number"
+          value={fontSize}
+          min={8}
+          max={32}
+          onChange={(e) => onUpdateNode({ data: { ...node.data, fontSize: Number(e.target.value) } })}
+        />
+      </div>
     </div>
   );
 };
@@ -155,17 +200,26 @@ export const TextDisplayDefinition = createNodeDefinition({
   },
   defaultSize: { width: 250, height: 120 },
   renderNode: TextDisplayRenderer,
+  renderInspector: TextDisplayInspector,
+  ports: [
+    {
+      id: "text-input",
+      type: "input",
+      label: "Text In",
+      position: "left",
+    },
+  ],
 });
 
 // Example of using with existing non-typed nodes (backward compatibility)
 const LegacyNodeRenderer = ({ node, isSelected }: NodeRenderProps): React.ReactElement => {
   // For non-typed nodes, node.data is just NodeData (Record<string, unknown>)
   const title = node.data.title as string || "Legacy Node";
-  
+
   return (
-    <div className={`node-content ${isSelected ? 'selected' : ''}`}>
-      <h4>{title}</h4>
-      <p>This is a legacy node without type safety</p>
+    <div className={classes.legacyNode}>
+      <h4 className={classes.legacyTitle}>{title}</h4>
+      <p className={classes.legacyDescription}>This is a legacy node without type safety</p>
     </div>
   );
 };

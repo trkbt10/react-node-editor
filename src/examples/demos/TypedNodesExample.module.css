@@ -3,3 +3,151 @@
   width: 100%;
   display: flex;
 }
+
+/* Counter Node Styles */
+.counterNode {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.counterHeader {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.counterDisplay {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: #3b82f6;
+  background: #eff6ff;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.counterControls {
+  display: flex;
+  gap: 8px;
+}
+
+.counterButton {
+  flex: 1;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  background: #3b82f6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.counterButton:hover {
+  background: #2563eb;
+}
+
+.counterButton:active {
+  background: #1d4ed8;
+}
+
+/* Text Display Node Styles */
+.textDisplayNode {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.textDisplayTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.textDisplayContent {
+  flex: 1;
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+/* Legacy Node Styles */
+.legacyNode {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+}
+
+.legacyTitle {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.legacyDescription {
+  margin: 0;
+  font-size: 12px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Inspector Styles */
+.inspectorContainer {
+  padding: 16px;
+}
+
+.inspectorTitle {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.formInput,
+.formInput[type="text"],
+.formInput[type="number"] {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+  font-family: inherit;
+}
+
+textarea.formInput {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}

@@ -1,0 +1,258 @@
+.wrapper {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Floating Sidebar Styles */
+.floatingSidebar {
+  position: absolute;
+  top: 60px;
+  left: 20px;
+  width: 280px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  max-height: calc(100vh - 120px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.floatingSidebar.open {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.floatingSidebar.closed {
+  transform: translateX(-260px);
+  opacity: 0.9;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.sidebarTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.toggleButton {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.toggleButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.sidebarContent {
+  padding: 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.settingsGroup {
+  margin-bottom: 20px;
+}
+
+.settingsGroup:last-child {
+  margin-bottom: 0;
+}
+
+.settingsTitle {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.settingRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.settingRow input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.settingRow label {
+  flex: 1;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.numberInput {
+  width: 80px;
+  padding: 4px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.rangeInput {
+  flex: 1;
+  height: 4px;
+  cursor: pointer;
+}
+
+.themeSelect {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+
+.actionButton {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 8px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.actionButton:hover {
+  background: #e5e7eb;
+  border-color: #d1d5db;
+}
+
+.actionButton:active {
+  background: #d1d5db;
+}
+
+.actionButton:last-child {
+  margin-bottom: 0;
+}
+
+/* Minimap Wrapper */
+.minimapWrapper {
+  position: absolute;
+  bottom: 40px;
+  right: 340px;
+  z-index: 90;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: right 0.3s ease;
+}
+
+/* Help Button */
+.helpButton {
+  position: absolute;
+  bottom: 40px;
+  left: 20px;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  z-index: 100;
+  transition: all 0.3s ease;
+}
+
+.helpButton:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+}
+
+.helpButton:active {
+  transform: scale(0.95);
+}
+
+/* Status Bar Styles */
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.statusSection {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.statusLabel {
+  font-weight: 600;
+  color: #10b981;
+}
+
+.statusItem {
+  display: inline-block;
+}
+
+.statusDivider {
+  color: #d1d5db;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .floatingSidebar {
+    width: 240px;
+  }
+
+  .minimapWrapper {
+    right: 280px;
+  }
+}
+
+@media (max-width: 900px) {
+  .floatingSidebar.closed {
+    transform: translateX(-220px);
+  }
+
+  .minimapWrapper {
+    bottom: 20px;
+    right: 20px;
+  }
+}

@@ -14,6 +14,7 @@ import {
   CanvasOnlyExample,
   WithToolbarExample,
 } from "./demos/ColumnLayoutExample";
+import { AdvancedLayoutExample } from "./demos/AdvancedLayoutExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -77,6 +78,12 @@ const examples: ExampleEntry[] = [
     title: "Layout: With Toolbar",
     description: "Layout with custom toolbar and inspector.",
     component: WithToolbarExample,
+  },
+  {
+    id: "layout-advanced",
+    title: "Layout: Advanced (Kitchen Sink)",
+    description: "Advanced layout with floating sidebar, minimap, grid toolbox, status bar, and more.",
+    component: AdvancedLayoutExample,
   },
 ];
 

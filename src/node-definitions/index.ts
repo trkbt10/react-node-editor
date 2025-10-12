@@ -18,9 +18,13 @@ export { LabelNodeRenderer } from "./label/node";
 // Import definitions for default array
 import { GroupNodeDefinition } from "./group";
 import { LabelNodeDefinition } from "./label";
+import type { NodeDefinition } from "../types/NodeDefinition";
 
 /**
  * Array of all default node definitions
  * Use this when you need to register all built-in node types
  */
-export const defaultNodeDefinitions = [GroupNodeDefinition, LabelNodeDefinition] as const;
+export const defaultNodeDefinitions: NodeDefinition[] = [
+  GroupNodeDefinition as unknown as NodeDefinition,
+  LabelNodeDefinition as unknown as NodeDefinition,
+];

@@ -26,8 +26,8 @@ export function createNodeDefinitionRegistry(): NodeDefinitionRegistry {
 
   return {
     definitions,
-    register(definition: NodeDefinition) {
-      definitions.set(definition.type, definition);
+    register<TData extends Record<string, unknown> = Record<string, unknown>>(definition: NodeDefinition<TData>) {
+      definitions.set(definition.type, definition as NodeDefinition);
     },
     unregister(type: string) {
       definitions.delete(type);
