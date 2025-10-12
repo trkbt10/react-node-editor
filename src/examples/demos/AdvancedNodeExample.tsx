@@ -336,7 +336,7 @@ type ChartData = {
   data: Array<{ label: string; value: number; color?: string }>;
 };
 
-const ChartRenderer = ({ isSelected, isDragging, externalData }: NodeRenderProps) => {
+const ChartRenderer = ({ node, isSelected, isDragging, externalData }: NodeRenderProps) => {
   const chartData = externalData as ChartData | undefined;
 
   const renderMiniChart = () => {
@@ -427,25 +427,49 @@ const ChartRenderer = ({ isSelected, isDragging, externalData }: NodeRenderProps
     }
   };
 
+  const chartColor = "#10b981";
+  const getTextColor = (bgColor: string) => {
+    const color = bgColor.replace("#", "");
+    const r = parseInt(color.slice(0, 2), 16);
+    const g = parseInt(color.slice(2, 4), 16);
+    const b = parseInt(color.slice(4, 6), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 128 ? "#000000" : "#ffffff";
+  };
+
   return (
     <div
       style={{
         padding: "12px",
         borderRadius: "8px",
         backgroundColor: isSelected ? "#f0fdf4" : "#ffffff",
-        border: "2px solid #10b981",
+        border: `2px solid ${chartColor}`,
         opacity: isDragging ? 0.7 : 1,
-        minHeight: "120px",
+        width: node.size?.width,
+        height: node.size?.height,
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
+        overflow: "hidden",
       }}
     >
       <div style={{ marginBottom: "8px" }}>
         <h4 style={{ margin: "0 0 4px", fontSize: "13px" }}>{chartData?.title || "Chart"}</h4>
-        <span style={{ fontSize: "11px", color: "#6b7280" }}>
+        <span
+          style={{
+            fontSize: "11px",
+            backgroundColor: chartColor,
+            color: getTextColor(chartColor),
+            padding: "2px 8px",
+            borderRadius: "4px",
+            fontWeight: "600",
+          }}
+        >
           {chartData?.type?.toUpperCase() || "CHART"} • {chartData?.data?.length || 0} items
         </span>
       </div>
 
-      <div style={{ marginBottom: "8px" }}>{renderMiniChart()}</div>
+      <div style={{ marginBottom: "8px", flex: 1, overflow: "hidden" }}>{renderMiniChart()}</div>
 
       {chartData?.data && (
         <div style={{ fontSize: "10px", color: "#6b7280" }}>
@@ -634,8 +658,18 @@ type FormData = {
   }>;
 };
 
-const FormRenderer = ({ isSelected, isDragging, externalData }: NodeRenderProps) => {
+const FormRenderer = ({ node, isSelected, isDragging, externalData }: NodeRenderProps) => {
   const formData = externalData as FormData | undefined;
+
+  const formColor = "#f59e0b";
+  const getTextColor = (bgColor: string) => {
+    const color = bgColor.replace("#", "");
+    const r = parseInt(color.slice(0, 2), 16);
+    const g = parseInt(color.slice(2, 4), 16);
+    const b = parseInt(color.slice(4, 6), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 128 ? "#000000" : "#ffffff";
+  };
 
   return (
     <div
@@ -643,18 +677,33 @@ const FormRenderer = ({ isSelected, isDragging, externalData }: NodeRenderProps)
         padding: "12px",
         borderRadius: "8px",
         backgroundColor: isSelected ? "#fef3c7" : "#ffffff",
-        border: "2px solid #f59e0b",
+        border: `2px solid ${formColor}`,
         opacity: isDragging ? 0.7 : 1,
-        minHeight: "100px",
-        maxWidth: "250px",
+        width: node.size?.width,
+        height: node.size?.height,
+        display: "flex",
+        flexDirection: "column",
+        boxSizing: "border-box",
+        overflow: "hidden",
       }}
     >
       <div style={{ marginBottom: "8px" }}>
         <h4 style={{ margin: "0 0 4px", fontSize: "13px" }}>📝 {formData?.title || "Form"}</h4>
-        <span style={{ fontSize: "11px", color: "#6b7280" }}>{formData?.fields?.length || 0} fields</span>
+        <span
+          style={{
+            fontSize: "11px",
+            backgroundColor: formColor,
+            color: getTextColor(formColor),
+            padding: "2px 8px",
+            borderRadius: "4px",
+            fontWeight: "600",
+          }}
+        >
+          {formData?.fields?.length || 0} fields
+        </span>
       </div>
 
-      <div style={{ fontSize: "10px", color: "#6b7280" }}>
+      <div style={{ fontSize: "10px", color: "#6b7280", flex: 1, overflow: "auto" }}>
         {formData?.fields?.slice(0, 3).map((field, _index) => (
           <div key={field.id} style={{ marginBottom: "2px" }}>
             • {field.label} ({field.type}) {field.required && "*"}
