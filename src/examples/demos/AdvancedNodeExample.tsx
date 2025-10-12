@@ -2,7 +2,10 @@
  * @file Advanced Node Editor Example - Demonstrates custom node renderers
  */
 import * as React from "react";
-import { NodeEditor } from "../../NodeEditor";
+import { NodeEditor, type GridLayoutConfig, type LayerDefinition } from "../../index";
+import { NodeCanvas } from "../../components/canvas/NodeCanvas";
+import { Minimap } from "../../components/layers/Minimap";
+import { EditorDataPreview } from "./advanced/layout/EditorDataPreview";
 import type { ExternalDataReference } from "../../types/NodeDefinition";
 import type { NodeEditorData } from "../../types/core";
 import { CodeNodeDefinition } from "./advanced/nodes/CodeEditorNode";
@@ -10,6 +13,8 @@ import { ChartNodeDefinition } from "./advanced/nodes/ChartNode";
 import { FormNodeDefinition } from "./advanced/nodes/FormBuilderNode";
 import { MusicPlayerNodeDefinition } from "./advanced/nodes/MusicPlayerNode";
 import { ParticleSystemNodeDefinition } from "./advanced/nodes/ParticleSystemNode";
+import { ParticleSizeNodeDefinition } from "./advanced/nodes/ParticleSizeNode";
+import { ParticleColorNodeDefinition } from "./advanced/nodes/ParticleColorNode";
 import { AIChatNodeDefinition } from "./advanced/nodes/AIChatNode";
 import { GamePadNodeDefinition } from "./advanced/nodes/GamePadNode";
 import { NumberInputNodeDefinition } from "./advanced/nodes/NumberInputNode";
@@ -71,6 +76,20 @@ const advancedInitialData: NodeEditorData = {
       size: { width: 200, height: 140 },
       data: { title: "Emit Count" },
     },
+    "size-1": {
+      id: "size-1",
+      type: "particle-size",
+      position: { x: 270, y: 780 },
+      size: { width: 220, height: 140 },
+      data: { title: "Particle Size" },
+    },
+    "color-1": {
+      id: "color-1",
+      type: "particle-color",
+      position: { x: 720, y: 780 },
+      size: { width: 220, height: 160 },
+      data: { title: "Particle Color" },
+    },
     "particle-1": {
       id: "particle-1",
       type: "particle-system",
@@ -129,6 +148,20 @@ const advancedInitialData: NodeEditorData = {
       toNodeId: "particle-1",
       toPortId: "physics-code-input",
     },
+    "conn-8": {
+      id: "conn-8",
+      fromNodeId: "size-1",
+      fromPortId: "size-output",
+      toNodeId: "particle-1",
+      toPortId: "size-input",
+    },
+    "conn-9": {
+      id: "conn-9",
+      fromNodeId: "color-1",
+      fromPortId: "color-output",
+      toNodeId: "particle-1",
+      toPortId: "color-input",
+    },
     "conn-3": {
       id: "conn-3",
       fromNodeId: "music-1",
@@ -148,6 +181,8 @@ const advancedExternalDataRefs: Record<string, ExternalDataReference> = {
   "gamepad-1": { id: "gamepad", type: "gamepad" },
   "form-1": { id: "registration-form", type: "form" },
   "number-1": { id: "number-input", type: "number" },
+  "size-1": { id: "particle-size", type: "particle-size" },
+  "color-1": { id: "particle-color", type: "particle-color" },
   "js-code-1": { id: "physics-code", type: "javascript-code" },
 };
 
@@ -200,9 +235,54 @@ export const AdvancedNodeExample: React.FC = () => {
       setEditorData(data);
     }
   }, []);
+
+  const gridConfig = React.useMemo<GridLayoutConfig>(
+    () => ({
+      areas: [["canvas"]],
+      rows: [{ size: "1fr" }],
+      columns: [{ size: "1fr" }],
+      gap: "0",
+    }),
+    [],
+  );
+
+  const gridLayers = React.useMemo<LayerDefinition[]>(
+    () => [
+      {
+        id: "canvas",
+        component: <NodeCanvas />,
+        gridArea: "canvas",
+        zIndex: 0,
+      },
+      {
+        id: "minimap",
+        component: <Minimap width={200} height={150} />,
+        positionMode: "absolute",
+        position: { right: 10, bottom: 10 },
+        zIndex: 20,
+        draggable: true,
+        width: 200,
+        height: 150,
+      },
+      {
+        id: "data-preview",
+        component: <EditorDataPreview width={300} height={400} />,
+        positionMode: "absolute",
+        position: { right: 10, top: 10 },
+        zIndex: 20,
+        draggable: true,
+        width: 300,
+        height: 400,
+      },
+    ],
+    [],
+  );
+
   return (
     <div className={classes.content}>
       <NodeEditor
+        gridConfig={gridConfig}
+        gridLayers={gridLayers}
         data={editorData}
         nodeDefinitions={[
           CodeNodeDefinition,
@@ -210,6 +290,8 @@ export const AdvancedNodeExample: React.FC = () => {
           FormNodeDefinition,
           MusicPlayerNodeDefinition,
           ParticleSystemNodeDefinition,
+          ParticleSizeNodeDefinition,
+          ParticleColorNodeDefinition,
           AIChatNodeDefinition,
           GamePadNodeDefinition,
           NumberInputNodeDefinition,

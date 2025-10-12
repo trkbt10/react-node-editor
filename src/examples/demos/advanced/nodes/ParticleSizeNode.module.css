@@ -1,0 +1,86 @@
+.container {
+  padding: var(--node-editor-space-md);
+  border-radius: var(--node-editor-radius-sm);
+  background-color: var(--node-editor-surface-primary);
+  border: 2px solid #6366f1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-sm);
+  box-sizing: border-box;
+}
+
+.container.selected {
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3) inset;
+}
+
+.container.dragging {
+  opacity: 0.8;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #312e81;
+}
+
+.value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #6366f1;
+  font-family: monospace;
+}
+
+.slider {
+  width: 100%;
+  accent-color: #6366f1;
+}
+
+.range {
+  font-size: 11px;
+  color: #6b7280;
+  text-align: center;
+  font-family: monospace;
+}
+
+.inspector {
+  padding: var(--node-editor-space-lg);
+  box-sizing: border-box;
+}
+
+.formGroup {
+  margin-bottom: var(--node-editor-space-md);
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--node-editor-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 600;
+  color: #374151;
+}
+
+.input {
+  width: 100%;
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-radius-xs);
+  font-size: 13px;
+  box-sizing: border-box;
+}
+
+.saveButton {
+  width: 100%;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  background-color: #6366f1;
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}

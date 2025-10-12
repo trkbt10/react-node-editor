@@ -1,0 +1,110 @@
+.container {
+  padding: var(--node-editor-space-md);
+  border-radius: var(--node-editor-radius-sm);
+  background-color: var(--node-editor-surface-primary);
+  border: 2px solid #f97316;
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-sm);
+  box-sizing: border-box;
+}
+
+.container.selected {
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2) inset;
+}
+
+.container.dragging {
+  opacity: 0.8;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #7c2d12;
+}
+
+.previewWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-space-xs);
+}
+
+.colorPreview {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.previewText {
+  font-size: 12px;
+  font-family: monospace;
+  color: #6b7280;
+}
+
+.picker {
+  width: 100%;
+  height: 40px;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  padding: 0;
+  cursor: pointer;
+}
+
+.palette {
+  display: flex;
+  gap: var(--node-editor-space-xs);
+}
+
+.paletteButton {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.inspector {
+  padding: var(--node-editor-space-lg);
+  box-sizing: border-box;
+}
+
+.formGroup {
+  margin-bottom: var(--node-editor-space-md);
+}
+
+.label {
+  display: block;
+  margin-bottom: var(--node-editor-space-xs);
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 600;
+  color: #374151;
+}
+
+.input {
+  width: 100%;
+  padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-radius-xs);
+  font-size: 13px;
+  box-sizing: border-box;
+  font-family: monospace;
+}
+
+.saveButton {
+  width: 100%;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  background-color: #f97316;
+  color: white;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  cursor: pointer;
+  box-sizing: border-box;
+}

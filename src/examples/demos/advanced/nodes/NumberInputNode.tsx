@@ -29,12 +29,33 @@ export const NumberInputRenderer = ({ node, isSelected, isDragging, externalData
     }
   }, [numberData?.value]);
 
+  React.useEffect(() => {
+    if (numberData?.value === undefined) {
+      return;
+    }
+
+    const currentValueOutput = node.data["value-output"] as number | undefined;
+
+    if (currentValueOutput === numberData.value) {
+      return;
+    }
+
+    onUpdateNode({
+      data: {
+        ...node.data,
+        value: numberData.value,
+        "value-output": numberData.value,
+      },
+    });
+  }, [node, numberData?.value, onUpdateNode]);
+
   const handleChange = (newValue: number) => {
     setValue(newValue);
     onUpdateNode({
       data: {
         ...node.data,
         value: newValue,
+        "value-output": newValue,
         timestamp: Date.now(),
       },
     });

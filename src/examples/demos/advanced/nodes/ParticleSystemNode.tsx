@@ -28,6 +28,8 @@ export type ParticleData = {
   emitTriggerB?: boolean;
   emitCountInput?: number;
   physicsCodeInput?: string; // Physics code from JavaScript node
+  particleSizeInput?: number;
+  particleColorInput?: string;
 };
 
 type Particle = {
@@ -48,6 +50,28 @@ particle.vy += gravity * 0.1;
 particle.life -= 1 / (lifetime * 60);
 `;
 
+const colorToRgba = (color: string, alpha: number) => {
+  if (color.startsWith("#")) {
+    const normalized = color.length === 4
+      ? `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`
+      : color;
+    const r = parseInt(normalized.slice(1, 3), 16);
+    const g = parseInt(normalized.slice(3, 5), 16);
+    const b = parseInt(normalized.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  if (color.startsWith("rgba")) {
+    return color.replace(/rgba\(([^,]+),\s*([^,]+),\s*([^,]+),[^)]+\)/, `rgba($1, $2, $3, ${alpha})`);
+  }
+
+  if (color.startsWith("rgb")) {
+    return color.replace("rgb", "rgba").replace(")", `, ${alpha})`);
+  }
+
+  return color;
+};
+
 export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRenderProps) => {
   const particleData = externalData as ParticleData | undefined;
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
@@ -62,6 +86,31 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
   const emitTriggerB = node.data["emit-b-input"] as boolean | undefined;
   const emitCountInput = node.data["count-input"] as number | undefined;
   const physicsCodeInput = node.data["physics-code-input"] as string | undefined;
+  const sizeInput = node.data["size-input"] as number | undefined;
+  const colorInput = node.data["color-input"] as string | undefined;
+
+  const targetEmitCount = emitCountInput ?? particleData?.emitCount ?? 0;
+  const resolvedParticleSize = sizeInput ?? particleData?.particleSize ?? 4;
+  const resolvedParticleColor = colorInput ?? particleData?.particleColor ?? "rgb(168, 85, 247)";
+  const [lastEmitCount, setLastEmitCount] = React.useState(() => targetEmitCount);
+  const hasEmittedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (hasEmittedRef.current) {
+      return;
+    }
+
+    if (emitCountInput !== undefined && emitCountInput !== lastEmitCount) {
+      setLastEmitCount(emitCountInput);
+      return;
+    }
+
+    if (emitCountInput === undefined && particleData?.emitCount !== undefined && particleData.emitCount !== lastEmitCount) {
+      setLastEmitCount(particleData.emitCount);
+    }
+  }, [emitCountInput, lastEmitCount, particleData?.emitCount]);
+
+  const displayEmitCount = hasEmittedRef.current ? lastEmitCount : targetEmitCount;
 
   // Update emit position from position input
   React.useEffect(() => {
@@ -81,9 +130,9 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
       const canvas = canvasRef.current;
       const emitX = (emitPosition.x / 100) * canvas.width;
       const emitY = (emitPosition.y / 100) * canvas.height;
-      const particleCount = count || emitCountInput || particleData.emitCount;
+      const resolvedCount = count ?? emitCountInput ?? particleData.emitCount ?? 0;
 
-      for (let i = 0; i < particleCount; i++) {
+      for (let i = 0; i < resolvedCount; i++) {
         particlesRef.current.push({
           x: emitX,
           y: emitY,
@@ -93,6 +142,9 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
           maxLife: particleData.lifetime,
         });
       }
+
+      setLastEmitCount(resolvedCount);
+      hasEmittedRef.current = true;
     },
     [particleData, emitPosition, emitCountInput]
   );
@@ -104,12 +156,12 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
 
     // Detect rising edge (false -> true transition)
     if (currentA && !prevTriggersRef.current.a) {
-      const count = emitCountInput || particleData?.emitCount || 10;
+      const count = emitCountInput ?? particleData?.emitCount ?? 10;
       emitParticles(count);
     }
 
     if (currentB && !prevTriggersRef.current.b) {
-      const count = (emitCountInput || particleData?.emitCount || 10) * 2;
+      const count = (emitCountInput ?? particleData?.emitCount ?? 10) * 2;
       emitParticles(count);
     }
 
@@ -169,24 +221,24 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
         }
 
         const alpha = particle.life;
-        ctx.fillStyle = particleData.particleColor.replace(")", `, ${alpha})`).replace("rgb", "rgba");
+        ctx.fillStyle = colorToRgba(resolvedParticleColor, alpha);
 
         switch (particleData.shape) {
           case "circle":
             ctx.beginPath();
-            ctx.arc(particle.x, particle.y, particleData.particleSize, 0, Math.PI * 2);
+            ctx.arc(particle.x, particle.y, resolvedParticleSize, 0, Math.PI * 2);
             ctx.fill();
             break;
           case "square":
             ctx.fillRect(
-              particle.x - particleData.particleSize / 2,
-              particle.y - particleData.particleSize / 2,
-              particleData.particleSize,
-              particleData.particleSize
+              particle.x - resolvedParticleSize / 2,
+              particle.y - resolvedParticleSize / 2,
+              resolvedParticleSize,
+              resolvedParticleSize
             );
             break;
           case "star":
-            ctx.font = `${particleData.particleSize}px Arial`;
+            ctx.font = `${resolvedParticleSize}px Arial`;
             ctx.fillText("⭐", particle.x, particle.y);
             break;
         }
@@ -228,10 +280,10 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [particleData, emitParticles, physicsUpdate, emitPosition, positionInput]);
+  }, [particleData, emitParticles, physicsUpdate, emitPosition, positionInput, resolvedParticleColor, resolvedParticleSize]);
 
   const handleEmit = () => {
-    emitParticles();
+    emitParticles(targetEmitCount);
     onUpdateNode({
       data: {
         ...node.data,
@@ -239,8 +291,6 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
       },
     });
   };
-
-  const effectiveEmitCount = emitCountInput || particleData?.emitCount || 0;
 
   return (
     <div
@@ -273,9 +323,19 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
             B: {emitTriggerB ? "🟢" : "⚫"}
           </div>
         )}
-        {emitCountInput !== undefined && (
+        {particleData && (
           <div className={classes.inputItem}>
-            Count: {emitCountInput}
+            Count: {displayEmitCount}
+          </div>
+        )}
+        {sizeInput !== undefined && (
+          <div className={classes.inputItem}>
+            Size: {resolvedParticleSize}px
+          </div>
+        )}
+        {colorInput && (
+          <div className={classes.inputItem}>
+            Color: {resolvedParticleColor}
           </div>
         )}
         {physicsCodeInput && (
@@ -287,7 +347,7 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging, externalD
 
       <div className={classes.controls}>
         <button onClick={handleEmit} className={classes.emitButton} type="button">
-          💥 Emit ({effectiveEmitCount})
+          💥 Emit ({targetEmitCount})
         </button>
       </div>
     </div>
@@ -317,7 +377,13 @@ export const ParticleSystemInspectorRenderer = ({ node, externalData, onUpdateEx
   };
 
   const hasInputs =
-    node.data["position-input"] || node.data["emit-a-input"] !== undefined || node.data["emit-b-input"] !== undefined || node.data["count-input"] !== undefined;
+    node.data["position-input"] !== undefined ||
+    node.data["emit-a-input"] !== undefined ||
+    node.data["emit-b-input"] !== undefined ||
+    node.data["count-input"] !== undefined ||
+    node.data["size-input"] !== undefined ||
+    node.data["color-input"] !== undefined ||
+    node.data["physics-code-input"] !== undefined;
 
   return (
     <div className={classes.inspector}>
@@ -339,6 +405,15 @@ export const ParticleSystemInspectorRenderer = ({ node, externalData, onUpdateEx
           )}
           {node.data["count-input"] !== undefined && (
             <div className={classes.inputValue}>Emit Count: {String(node.data["count-input"])}</div>
+          )}
+          {node.data["size-input"] !== undefined && (
+            <div className={classes.inputValue}>Particle Size: {String(node.data["size-input"])}px</div>
+          )}
+          {node.data["color-input"] !== undefined && (
+            <div className={classes.inputValue}>Particle Color: {String(node.data["color-input"])}</div>
+          )}
+          {node.data["physics-code-input"] !== undefined && (
+            <div className={classes.inputValue}>Physics Code Input: Connected</div>
           )}
         </div>
       )}
@@ -544,6 +619,18 @@ export const ParticleSystemNodeDefinition: NodeDefinition = {
       id: "count-input",
       type: "input",
       label: "Count",
+      position: "left",
+    },
+    {
+      id: "size-input",
+      type: "input",
+      label: "Size",
+      position: "left",
+    },
+    {
+      id: "color-input",
+      type: "input",
+      label: "Color",
       position: "left",
     },
     {
