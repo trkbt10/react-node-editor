@@ -18,14 +18,29 @@ import { snapMultipleToGrid } from "../../contexts/node-editor/utils/gridSnap";
 import { useRenderers } from "../../contexts/RendererContext";
 import { hasGroupBehavior } from "../../types/behaviors";
 import { usePortPositions } from "../../contexts/node-ports/context";
-import { getPortConnections, isValidReconnection, getOtherPortInfo } from "../../contexts/node-ports/utils/portConnectionQueries";
+import {
+  getPortConnections,
+  isValidReconnection,
+  getOtherPortInfo,
+} from "../../contexts/node-ports/utils/portConnectionQueries";
 import { createValidatedConnection } from "../../contexts/node-ports/utils/connectionOperations";
 import type { Port as CorePort } from "../../types/core";
 import { canConnectPorts } from "../../contexts/node-ports/utils/connectionValidation";
-import { planConnectionChange, ConnectionSwitchBehavior } from "../../contexts/node-ports/utils/connectionSwitchBehavior";
-import { computeConnectablePortIds, type ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
+import {
+  planConnectionChange,
+  ConnectionSwitchBehavior,
+} from "../../contexts/node-ports/utils/connectionSwitchBehavior";
+import {
+  computeConnectablePortIds,
+  type ConnectablePortsResult,
+} from "../../contexts/node-ports/utils/connectablePortPlanner";
 import { findNearestConnectablePort } from "../../contexts/node-ports/utils/connectionCandidate";
-import { getNodesToDrag, collectInitialPositions, calculateNewPositions, handleGroupMovement } from "../../contexts/node-editor/utils/nodeDragHelpers";
+import {
+  getNodesToDrag,
+  collectInitialPositions,
+  calculateNewPositions,
+  handleGroupMovement,
+} from "../../contexts/node-editor/utils/nodeDragHelpers";
 
 const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
   ids: new Set<string>(),
@@ -36,13 +51,18 @@ const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
 export type NodeLayerProps = {
   className?: string;
   doubleClickToEdit?: boolean;
-}
+};
 
 /**
  * NodeLayer - Renders all nodes with optimized performance
  */
 export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
-  const { state: nodeEditorState, dispatch: nodeEditorDispatch, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
+  const {
+    state: nodeEditorState,
+    dispatch: nodeEditorDispatch,
+    actions: nodeEditorActions,
+    getNodePorts,
+  } = useNodeEditor();
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
   const { state: canvasState, utils } = useNodeCanvas();
   const { node: NodeComponent } = useRenderers();
@@ -103,7 +123,13 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         },
       });
     },
-    [actionState.connectionDragState, actionState.connectablePorts, nodeEditorState.nodes, getNodePorts, resolveConnectionPoint],
+    [
+      actionState.connectionDragState,
+      actionState.connectablePorts,
+      nodeEditorState.nodes,
+      getNodePorts,
+      resolveConnectionPoint,
+    ],
   );
 
   const resolveDisconnectCandidate = React.useCallback(
@@ -123,7 +149,13 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         },
       });
     },
-    [actionState.connectionDisconnectState, actionState.connectablePorts, nodeEditorState.nodes, getNodePorts, resolveConnectionPoint],
+    [
+      actionState.connectionDisconnectState,
+      actionState.connectablePorts,
+      nodeEditorState.nodes,
+      getNodePorts,
+      resolveConnectionPoint,
+    ],
   );
 
   // Get only visible nodes for virtualization
@@ -138,8 +170,12 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
       const bDef = defs.registry.get(b.type);
       const aGroup = hasGroupBehavior(aDef);
       const bGroup = hasGroupBehavior(bDef);
-      if (aGroup && !bGroup) {return -1;}
-      if (!aGroup && bGroup) {return 1;}
+      if (aGroup && !bGroup) {
+        return -1;
+      }
+      if (!aGroup && bGroup) {
+        return 1;
+      }
       return 0;
     });
   }, [visibleNodes, defs.registry]);
@@ -169,14 +205,20 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
       const canvasPos = utils.screenToCanvas(e.clientX, e.clientY);
       actionDispatch(actionActions.showContextMenu(position, nodeId, canvasPos));
     },
-    [actionDispatch, actionActions, utils]
+    [actionDispatch, actionActions, utils],
   );
 
   const handleNodePointerDown = React.useCallback(
     (e: React.PointerEvent, nodeId: string, isDragAllowed: boolean = true) => {
-      if (e.button !== 0) {return;}
-
+      if (e.button !== 0) {
+        return;
+      }
       e.stopPropagation();
+      const isInputElement =
+        e.target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(e.target.tagName);
+      if (isInputElement) {
+        return;
+      }
 
       const clickedNode = nodeEditorState.nodes[nodeId];
       const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey;
@@ -204,7 +246,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         actionState.selectedNodeIds,
         nodeEditorState.nodes,
         isInteractive,
-        isDragAllowed
+        isDragAllowed,
       );
 
       // Handle selection if not already selected
@@ -212,7 +254,9 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         actionDispatch(actionActions.selectNode(nodeId, isMultiSelect));
       }
 
-      if (nodesToDrag.length === 0) {return;}
+      if (nodesToDrag.length === 0) {
+        return;
+      }
 
       const startPosition = {
         x: e.clientX,
@@ -224,12 +268,12 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         nodesToDrag,
         nodeEditorState.nodes,
         groupManager.getGroupChildren,
-        nodeDefinitions
+        nodeDefinitions,
       );
 
       actionDispatch(actionActions.startNodeDrag(nodesToDrag, startPosition, initialPositions, affectedChildNodes));
     },
-    [actionDispatch, actionActions, actionState.selectedNodeIds, nodeEditorState.nodes, groupManager, getNodeDef]
+    [actionDispatch, actionActions, actionState.selectedNodeIds, nodeEditorState.nodes, groupManager, getNodeDef],
   );
 
   // Track drag start for disconnect threshold
@@ -241,7 +285,9 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
       e.stopPropagation();
 
       const node = nodeEditorState.nodes[port.nodeId];
-      if (!node) {return;}
+      if (!node) {
+        return;
+      }
 
       // Calculate port position dynamically
       const nodeWithPorts = {
@@ -293,7 +339,9 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
 
       // Setup drag tracking for disconnect threshold
       const handlePointerMove = (e: PointerEvent) => {
-        if (!portDragStartRef.current) {return;}
+        if (!portDragStartRef.current) {
+          return;
+        }
 
         const dx = e.clientX - portDragStartRef.current.x;
         const dy = e.clientY - portDragStartRef.current.y;
@@ -321,8 +369,10 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         // Handle disconnect
         const connection = existingConnections[0];
         const portInfo = getOtherPortInfo(connection, port, nodeEditorState.nodes, getNodePorts);
-        
-        if (!portInfo) {return;}
+
+        if (!portInfo) {
+          return;
+        }
 
         const { otherNode, otherPort, isFromPort } = portInfo;
         const fixedPort: Port = {
@@ -351,12 +401,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         };
 
         actionDispatch(
-          actionActions.startConnectionDisconnect(
-            originalConnectionSnapshot,
-            disconnectedEnd,
-            fixedPort,
-            portPosition
-          )
+          actionActions.startConnectionDisconnect(originalConnectionSnapshot, disconnectedEnd, fixedPort, portPosition),
         );
 
         const disconnectConnectable = computeConnectablePortIds({
@@ -386,7 +431,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
       nodeEditorDispatch,
       nodeEditorActions,
       getNodePorts,
-    ]
+    ],
   );
 
   const handlePortPointerUp = React.useCallback(
@@ -398,19 +443,17 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         const disconnectState = actionState.connectionDisconnectState;
         const fixedPort = disconnectState.fixedPort;
 
-        if (isValidReconnection(
-          fixedPort,
-          port,
-          nodeEditorState.nodes,
-          nodeEditorState.connections,
-          (type: string) => getNodeDef.registry.get(type)
-        )) {
+        if (
+          isValidReconnection(fixedPort, port, nodeEditorState.nodes, nodeEditorState.connections, (type: string) =>
+            getNodeDef.registry.get(type),
+          )
+        ) {
           const newConnection = createValidatedConnection(
             fixedPort,
             port,
             nodeEditorState.nodes,
             nodeEditorState.connections,
-            (type: string) => getNodeDef.registry.get(type)
+            (type: string) => getNodeDef.registry.get(type),
           );
           if (newConnection) {
             nodeEditorDispatch(nodeEditorActions.addConnection(newConnection));
@@ -423,7 +466,9 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
       }
 
       // Handle new connection
-      if (!actionState.connectionDragState) {return;}
+      if (!actionState.connectionDragState) {
+        return;
+      }
 
       const fromPort = actionState.connectionDragState.fromPort;
       const plan = planConnectionChange({
@@ -465,7 +510,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
       actionActions,
       nodeEditorDispatch,
       nodeEditorActions,
-    ]
+    ],
   );
 
   const handlePortPointerEnter = React.useCallback(
@@ -502,7 +547,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
       nodeEditorState.connections,
       getNodeDef,
       getNodePorts,
-    ]
+    ],
   );
 
   const handlePortPointerLeave = React.useCallback(() => {
@@ -515,10 +560,14 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
 
   // Global drag handler
   React.useEffect(() => {
-    if (!actionState.dragState) {return;}
+    if (!actionState.dragState) {
+      return;
+    }
 
     const handlePointerMove = (e: PointerEvent) => {
-      if (!actionState.dragState) {return;}
+      if (!actionState.dragState) {
+        return;
+      }
       const deltaX = (e.clientX - actionState.dragState.startPosition.x) / canvasState.viewport.scale;
       const deltaY = (e.clientY - actionState.dragState.startPosition.y) / canvasState.viewport.scale;
 
@@ -526,7 +575,9 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
     };
 
     const handlePointerUp = () => {
-      if (!actionState.dragState) {return;}
+      if (!actionState.dragState) {
+        return;
+      }
       const { nodeIds, initialPositions, offset } = actionState.dragState;
 
       // Calculate new positions using helper
@@ -544,7 +595,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         snappedPositions,
         initialPositions,
         groupManager.moveGroupWithChildren,
-        nodeDefinitions
+        nodeDefinitions,
       );
 
       if (Object.keys(finalPositions).length > 0) {
@@ -599,27 +650,33 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         defs.forEach((def) => {
           const ports = def.ports || [];
           const ok = ports.some((p) => {
-            if (p.type === fromPort.type) {return false;}
-            const tempPort: CorePort = { id: p.id, type: p.type, label: p.label, nodeId: 'new', position: p.position };
+            if (p.type === fromPort.type) {
+              return false;
+            }
+            const tempPort: CorePort = { id: p.id, type: p.type, label: p.label, nodeId: "new", position: p.position };
             return canConnectPorts(
-              fromPort.type === 'output' ? fromPort : tempPort,
-              fromPort.type === 'output' ? tempPort : fromPort,
+              fromPort.type === "output" ? fromPort : tempPort,
+              fromPort.type === "output" ? tempPort : fromPort,
               fromDef,
               def,
-              nodeEditorState.connections
+              nodeEditorState.connections,
             );
           });
-          if (ok) {allowed.push(def.type);}
+          if (ok) {
+            allowed.push(def.type);
+          }
         });
-        actionDispatch(actionActions.showContextMenu(
-          { x: screen.x, y: screen.y },
-          undefined,
-          { x: toPosition.x, y: toPosition.y },
-          undefined,
-          'search',
-          allowed,
-          fromPort
-        ));
+        actionDispatch(
+          actionActions.showContextMenu(
+            { x: screen.x, y: screen.y },
+            undefined,
+            { x: toPosition.x, y: toPosition.y },
+            undefined,
+            "search",
+            allowed,
+            fromPort,
+          ),
+        );
       }
       actionDispatch(actionActions.endConnectionDrag());
       actionDispatch(actionActions.updateConnectablePorts(createEmptyConnectablePorts()));
