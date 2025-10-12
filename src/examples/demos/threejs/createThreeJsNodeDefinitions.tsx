@@ -1,3 +1,7 @@
+/**
+ * @file Three.js node definitions with custom connection renderers
+ * Demonstrates custom connection styling and label overlays for color and scale nodes
+ */
 import * as React from "react";
 import {
   createNodeDefinition,
@@ -5,10 +9,12 @@ import {
   type InspectorRenderProps,
   type NodeDefinition,
   type NodeRenderProps,
+  type ConnectionRenderContext,
 } from "../../../types/NodeDefinition";
 import { ThreeSceneCanvas } from "./ThreeSceneCanvas";
 import { useNodeEditor } from "../../../contexts/node-editor";
 import classes from "./ThreeJsNodes.module.css";
+import { calculateBezierPath } from "../../../components/connection/utils/connectionUtils";
 
 type ColorControlData = {
   title: string;
@@ -28,6 +34,95 @@ type ThreePreviewData = {
   background: string;
   color?: string;
   scale?: number;
+};
+
+/**
+ * Custom connection renderer for color output port
+ * Uses the color value from the source node to render the connection
+ */
+const ColorConnectionRenderer = (context: ConnectionRenderContext, defaultRender: () => React.ReactElement) => {
+  const { fromPosition, toPosition, fromPort, toPort, connection, fromNode } = context;
+
+  // Get color from source node
+  const nodeColor = (fromNode.data as ColorControlData).color || "#60a5fa";
+
+  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, toPort.position);
+
+  // Render default connection for interaction, then overlay custom colored visuals
+  return (
+    <g>
+      {/* Render default connection (invisible but interactive) */}
+      <g style={{ opacity: 0, pointerEvents: "auto" }}>{defaultRender()}</g>
+
+      {/* Custom colored connection visual */}
+      <g data-connection-id={connection.id} style={{ pointerEvents: "none" }}>
+        <path
+          d={pathData}
+          fill="none"
+          stroke={nodeColor}
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+        />
+        {/* Arrow marker at the end */}
+        <defs>
+          <marker
+            id={`arrow-color-${connection.id}`}
+            viewBox="0 0 10 10"
+            refX="10"
+            refY="5"
+            markerWidth="10"
+            markerHeight="10"
+            markerUnits="userSpaceOnUse"
+            orient="auto"
+          >
+            <path d="M 0 0 L 10 5 L 0 10 z" fill={nodeColor} />
+          </marker>
+        </defs>
+        <path
+          d={pathData}
+          fill="none"
+          stroke="transparent"
+          markerEnd={`url(#arrow-color-${connection.id})`}
+          vectorEffect="non-scaling-stroke"
+        />
+      </g>
+    </g>
+  );
+};
+
+/**
+ * Custom connection renderer for scale output port - renders label on connection
+ */
+const ScaleConnectionRenderer = (context: ConnectionRenderContext, defaultRender: () => React.ReactElement) => {
+  const { fromPosition, toPosition, fromNode } = context;
+
+  // Get scale value from the source node
+  const scaleValue = (fromNode.data as SliderControlData).value;
+
+  // Calculate midpoint for label placement
+  const midX = (fromPosition.x + toPosition.x) / 2;
+  const midY = (fromPosition.y + toPosition.y) / 2;
+
+  return (
+    <g>
+      {defaultRender()}
+      {/* Label text */}
+      <text
+        x={midX}
+        y={midY - 12}
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fill="var(--node-editor-text-color, #ffffff)"
+        fontSize={11}
+        fontWeight="600"
+        style={{ pointerEvents: "none", userSelect: "none" }}
+      >
+        {scaleValue.toFixed(1)}×
+      </text>
+    </g>
+  );
 };
 
 const ColorControlNodeRenderer = ({ node, onUpdateNode }: NodeRenderProps<ColorControlData>) => {
@@ -241,6 +336,7 @@ const ColorControlDefinition = createNodeDefinition<ColorControlData>({
       label: "Color",
       position: "right",
       dataType: "color",
+      renderConnection: ColorConnectionRenderer,
     },
   ],
 });
@@ -266,6 +362,7 @@ const ScaleControlDefinition = createNodeDefinition<SliderControlData>({
       label: "Value",
       position: "right",
       dataType: "number",
+      renderConnection: ScaleConnectionRenderer,
     },
   ],
 });
