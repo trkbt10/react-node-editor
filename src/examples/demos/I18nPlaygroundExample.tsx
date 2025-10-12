@@ -44,13 +44,23 @@ const playgroundInitialData: NodeEditorData = {
   },
 };
 
-type I18nOverrideKey = "addNode" | "inspectorTitle" | "statusSelection" | "inspectorTabProperties";
+type I18nOverrideKey =
+  | "addNode"
+  | "inspectorTitle"
+  | "statusSelection"
+  | "inspectorTabProperties"
+  | "alignmentTitle"
+  | "alignmentSelectPrompt"
+  | "alignmentCountLabel";
 
 const overrideLabels: Record<I18nOverrideKey, string> = {
   addNode: "Add node action label",
   inspectorTitle: "Inspector panel title",
   statusSelection: "Status bar selection label",
   inspectorTabProperties: "Inspector properties tab label",
+  alignmentTitle: "Alignment section title",
+  alignmentSelectPrompt: "Alignment prompt when disabled",
+  alignmentCountLabel: "Alignment count label",
 };
 
 const overrideKeys: readonly I18nOverrideKey[] = [
@@ -58,6 +68,9 @@ const overrideKeys: readonly I18nOverrideKey[] = [
   "inspectorTitle",
   "statusSelection",
   "inspectorTabProperties",
+  "alignmentTitle",
+  "alignmentSelectPrompt",
+  "alignmentCountLabel",
 ] as const;
 
 /**
@@ -188,24 +201,30 @@ export function I18nPlaygroundExample(): React.ReactElement {
             </select>
           </div>
 
-          {overrideKeys.map((overrideKey) => (
-            <div className={classes.field} key={overrideKey}>
-              <div className={classes.labelRow}>
-                <label className={classes.label} htmlFor={`override-${overrideKey}`}>
-                  {overrideLabels[overrideKey]}
-                </label>
-                <span className={classes.previewValue}>{resolvedMessages[overrideKey]}</span>
+          {overrideKeys.map((overrideKey) => {
+            const previewValue =
+              overrideKey === "alignmentCountLabel"
+                ? (resolvedMessages.alignmentCountLabel ?? "").replace(/{{count}}/g, "3")
+                : resolvedMessages[overrideKey] ?? "";
+            return (
+              <div className={classes.field} key={overrideKey}>
+                <div className={classes.labelRow}>
+                  <label className={classes.label} htmlFor={`override-${overrideKey}`}>
+                    {overrideLabels[overrideKey]}
+                  </label>
+                  <span className={classes.previewValue}>{previewValue}</span>
+                </div>
+                <input
+                  id={`override-${overrideKey}`}
+                  className={classes.input}
+                  type="text"
+                  value={messageOverrides[overrideLocale]?.[overrideKey] ?? ""}
+                  onChange={(event) => handleOverrideChange(overrideKey, event.target.value)}
+                  placeholder={`Custom ${overrideKey} message`}
+                />
               </div>
-              <input
-                id={`override-${overrideKey}`}
-                className={classes.input}
-                type="text"
-                value={messageOverrides[overrideLocale]?.[overrideKey] ?? ""}
-                onChange={(event) => handleOverrideChange(overrideKey, event.target.value)}
-                placeholder={`Custom ${overrideKey} message`}
-              />
-            </div>
-          ))}
+            );
+          })}
         </section>
       </aside>
 

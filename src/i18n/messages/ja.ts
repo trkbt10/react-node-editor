@@ -161,6 +161,11 @@ export const jaMessages: I18nMessages = {
   disconnectHint: "ドラッグして切断",
   snapHint: "グリッドにスナップ",
 
+  // Alignment Controls
+  alignmentTitle: "整列",
+  alignmentCountLabel: "{{count}} ノード",
+  alignmentSelectPrompt: "2 ノード以上を選択",
+
   // Error Messages
   errorNodeNotFound: "ノードが見つかりません",
   errorConnectionNotFound: "接続が見つかりません",

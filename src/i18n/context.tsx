@@ -40,6 +40,10 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({
     return result;
   }, [messagesOverride, fallbackLocale]);
 
+  React.useEffect(() => {
+    setLocale(initialLocale);
+  }, [initialLocale]);
+
   // Detect browser locale on mount
   React.useEffect(() => {
     if (typeof window !== "undefined" && !initialLocale) {

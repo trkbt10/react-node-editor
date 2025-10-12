@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import type { Node } from "../../../types/core";
+import { useI18n } from "../../../i18n";
 import { InspectorLabel } from "../../inspector/parts/InspectorLabel";
 import { ALIGNMENT_ACTIONS, ALIGNMENT_GROUPS } from "./constants";
 import type { AlignmentActionConfig, AlignmentActionGroup, AlignmentActionType } from "./types";
@@ -18,6 +19,7 @@ export type AlignmentControlsProps = {
  * Provides UI for aligning and distributing multiple nodes
  */
 export const AlignmentControls = React.memo<AlignmentControlsProps>(({ selectedNodes, onAlign }) => {
+  const { t } = useI18n();
   const isDisabled = selectedNodes.length < 2;
   const groupedActions = React.useMemo(() => {
     return ALIGNMENT_GROUPS.reduce<Record<AlignmentActionGroup, AlignmentActionConfig[]>>(
@@ -29,11 +31,15 @@ export const AlignmentControls = React.memo<AlignmentControlsProps>(({ selectedN
     );
   }, []);
 
+  const alignmentSuffix =
+    selectedNodes.length > 1
+      ? t("alignmentCountLabel", { count: selectedNodes.length })
+      : t("alignmentSelectPrompt");
+  const alignmentLabel = `${t("alignmentTitle")} (${alignmentSuffix})`;
+
   return (
     <div className={styles.alignmentControls}>
-      <InspectorLabel>
-        Alignment {selectedNodes.length > 1 ? `(${selectedNodes.length} nodes)` : "(select 2+ nodes)"}
-      </InspectorLabel>
+      <InspectorLabel>{alignmentLabel}</InspectorLabel>
       <div className={styles.alignmentGrid}>
         {ALIGNMENT_GROUPS.map((group) => (
           <div key={group} className={styles.alignmentRow}>
@@ -45,7 +51,7 @@ export const AlignmentControls = React.memo<AlignmentControlsProps>(({ selectedN
                   type="button"
                   onClick={() => !isDisabled && onAlign(button.type)}
                   className={styles.alignmentButton}
-                  title={isDisabled ? "Select 2 or more nodes to enable alignment" : button.title}
+                  title={isDisabled ? t("alignmentSelectPrompt") : button.title}
                   aria-label={button.title}
                   disabled={isDisabled}
                 >

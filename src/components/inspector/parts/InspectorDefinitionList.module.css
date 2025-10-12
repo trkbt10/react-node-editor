@@ -19,7 +19,6 @@
 
 .termLabel {
   display: block;
-  font-weight: 600;
   color: var(--node-editor-text-color);
 }
 

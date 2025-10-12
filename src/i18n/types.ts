@@ -182,6 +182,11 @@ export type I18nMessages = {
   fieldTitle?: string;
   fieldContent?: string;
 
+  // Alignment controls
+  alignmentTitle?: string;
+  alignmentCountLabel?: string;
+  alignmentSelectPrompt?: string;
+
   // Extended: Label/Group specific
   labelTitlePlaceholder?: string;
   labelSubtitlePlaceholder?: string;

@@ -161,6 +161,11 @@ export const enMessages: I18nMessages = {
   disconnectHint: "Drag to disconnect",
   snapHint: "Snap to grid",
 
+  // Alignment Controls
+  alignmentTitle: "Alignment",
+  alignmentCountLabel: "{{count}} nodes",
+  alignmentSelectPrompt: "Select 2+ nodes",
+
   // Error Messages
   errorNodeNotFound: "Node not found",
   errorConnectionNotFound: "Connection not found",

@@ -17,6 +17,7 @@
   background: transparent;
   color: var(--node-editor-segment-control-text-color);
   flex: 1;
+  white-space: nowrap;
   padding: var(--node-editor-segment-control-segment-padding);
   background: var(--node-editor-segment-control-background-color);
   border: none;
