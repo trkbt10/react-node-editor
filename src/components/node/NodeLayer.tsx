@@ -12,7 +12,7 @@ import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
 import { PORT_INTERACTION_THRESHOLD } from "../../constants/interaction";
 import styles from "./NodeLayer.module.css";
 import type { Port } from "../../types/core";
-import { snapMultipleToGrid } from "../../utils/gridSnap";
+import { snapMultipleToGrid } from "../../contexts/node-editor/utils/gridSnap";
 import { useRenderers } from "../../contexts/RendererContext";
 import { hasGroupBehavior } from "../../types/behaviors";
 import { usePortPositions } from "../../contexts/node-ports/context";
@@ -22,7 +22,7 @@ import type { Port as CorePort } from "../../types/core";
 import { canConnectPorts } from "../../contexts/node-ports/utils/connectionValidation";
 import { planConnectionChange, ConnectionSwitchBehavior } from "../../contexts/node-ports/utils/connectionSwitchBehavior";
 import { computeConnectablePortIds, type ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
-import { getNodesToDrag, collectInitialPositions, calculateNewPositions, handleGroupMovement } from "../../utils/nodeDragHelpers";
+import { getNodesToDrag, collectInitialPositions, calculateNewPositions, handleGroupMovement } from "../../contexts/node-editor/utils/nodeDragHelpers";
 
 const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
   ids: new Set<string>(),

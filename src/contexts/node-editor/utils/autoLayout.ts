@@ -1,5 +1,10 @@
-import type { NodeEditorData, NodeId, Position, Node, Connection } from "../types/core";
-import { getNodeSize } from "./boundingBoxUtils";
+/**
+ * @file Auto-layout algorithms for node positioning
+ * Provides force-directed, hierarchical, and grid layout algorithms
+ * for automatic arrangement of nodes based on connections
+ */
+import type { NodeEditorData, NodeId, Position, Node } from "../../../types/core";
+import { getNodeSize } from "../../../utils/boundingBoxUtils";
 
 export type LayoutOptions = {
   iterations?: number;

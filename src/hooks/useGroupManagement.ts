@@ -9,7 +9,7 @@ import {
   getGroupDescendants,
   isValidGroupMove,
   findContainingGroup,
-} from "../utils/groupUtils";
+} from "../contexts/node-editor/utils/groupOperations";
 
 export type UseGroupManagementOptions = {
   /** Whether to automatically update group membership when nodes move */

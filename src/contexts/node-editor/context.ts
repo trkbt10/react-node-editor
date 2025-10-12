@@ -1,12 +1,32 @@
 import * as React from "react";
-import type { Node, NodeEditorData, NodeId, Port } from "../../types/core";
-import type { nodeEditorActions as actions } from "./actions";
+import type { Node, NodeEditorData, NodeId, Port, Position, GridSettings } from "../../types/core";
+import type { nodeEditorActions as actions, NodeEditorAction } from "./actions";
 import type { Settings } from "../../hooks/useSettings";
 import type { SettingsManager } from "../../settings/SettingsManager";
+import type { NodeDefinition } from "../../types/NodeDefinition";
+
+export type NodeEditorUtils = {
+  /**
+   * Snap a position to grid based on grid settings
+   */
+  snapToGrid: (position: Position, gridSettings: GridSettings) => Position;
+  /**
+   * Find which group (if any) a node should belong to
+   */
+  findContainingGroup: (node: Node, allNodes: Record<NodeId, Node>, nodeDefinitions: NodeDefinition[]) => NodeId | null;
+  /**
+   * Get all child nodes of a group
+   */
+  getGroupChildren: (groupId: NodeId, allNodes: Record<NodeId, Node>) => Node[];
+  /**
+   * Check if a node is inside a group's bounds
+   */
+  isNodeInsideGroup: (node: Node, groupNode: Node, nodeDefinitions: NodeDefinition[]) => boolean;
+};
 
 export type NodeEditorContextValue = {
   state: NodeEditorData;
-  dispatch: React.Dispatch<ReturnType<typeof import('./actions')['nodeEditorActions']['addNode']>> | React.Dispatch<any>;
+  dispatch: React.Dispatch<NodeEditorAction>;
   actions: typeof actions;
   isLoading: boolean;
   isSaving: boolean;
@@ -26,6 +46,11 @@ export type NodeEditorContextValue = {
   settings: Settings;
   settingsManager?: SettingsManager;
   updateSetting: (key: string, value: unknown) => void;
+  /**
+   * Utility functions for common node editor operations
+   * These should be used instead of directly importing from utils
+   */
+  utils: NodeEditorUtils;
 }
 
 export const NodeEditorContext = React.createContext<NodeEditorContextValue | null>(null);

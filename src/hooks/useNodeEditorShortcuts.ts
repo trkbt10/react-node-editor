@@ -4,15 +4,15 @@ import { useNodeEditor } from "../contexts/node-editor";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
 import { useHistoryIntegration } from "./useHistoryIntegration";
 import { useAutoLayout } from "./useAutoLayout";
-import { filterDuplicableNodeIds } from "../utils/nodeTypeLimits";
-import { copyNodesToClipboard, pasteNodesFromClipboard } from "../utils/nodeClipboardOperations";
+import { filterDuplicableNodeIds } from "../contexts/node-definitions/utils/nodeTypeLimits";
+import { copyNodesToClipboard, pasteNodesFromClipboard } from "../contexts/node-editor/utils/nodeClipboardOperations";
 import { useNodeDefinitionList } from "../contexts/node-definitions";
 
 /**
  * Hook that registers all standard node editor keyboard shortcuts
  */
 export const useNodeEditorShortcuts = () => {
-  const { state: nodeEditorState, dispatch: nodeEditorDispatch, actions: nodeEditorActions } = useNodeEditor();
+  const { state: nodeEditorState, dispatch: nodeEditorDispatch, actions: nodeEditorActions, handleSave } = useNodeEditor();
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
   const { performUndo, performRedo, canUndo, canRedo } = useHistoryIntegration();
   const { applyLayout } = useAutoLayout();
@@ -165,14 +165,12 @@ export const useNodeEditorShortcuts = () => {
     }
   }, [nodeEditorState.lastDuplicatedNodeIds, actionDispatch, actionActions, nodeEditorDispatch, nodeEditorActions, nodeEditorState]);
 
-  // Save (placeholder - will be implemented with API integration)
+  // Save (Ctrl/Cmd+S)
   useRegisterShortcut(
-    { key: "s", ctrl: true },
-    React.useCallback((e) => {
-      console.log('Save shortcut triggered');
-      // TODO: Implement save functionality
-      console.log('Save not yet implemented');
-    }, [])
+    { key: "s", cmdOrCtrl: true },
+    React.useCallback(() => {
+      handleSave();
+    }, [handleSave])
   );
 
   // Auto layout with force-directed algorithm

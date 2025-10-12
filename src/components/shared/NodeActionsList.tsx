@@ -6,8 +6,8 @@ import { useNodeEditorActions } from "../../hooks/useNodeEditorActions";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useNodeDefinitionList } from "../../contexts/node-definitions";
-import { canAddNodeType, countNodesByType } from "../../utils/nodeTypeLimits";
-import { copyNodesToClipboard, pasteNodesFromClipboard } from "../../utils/nodeClipboardOperations";
+import { canAddNodeType, countNodesByType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
+import { copyNodesToClipboard, pasteNodesFromClipboard } from "../../contexts/node-editor/utils/nodeClipboardOperations";
 
 export type NodeActionsListProps = {
   targetNodeId: string;

@@ -1,6 +1,5 @@
 /**
- * Configurable Settings System for Node Editor
- *
+ * @file Configurable Settings System for Node Editor
  * This system provides a flexible way to manage editor settings,
  * user preferences, and configuration options.
  */
@@ -10,7 +9,7 @@ import type { Locale } from "../i18n";
 /**
  * Setting value types
  */
-export type SettingValue = string | number | boolean | string[] | number[] | Record<string, any>;
+export type SettingValue = string | number | boolean | string[] | number[] | Record<string, unknown>;
 
 /**
  * Setting input types for UI generation
@@ -157,11 +156,11 @@ export type SettingsManager = {
   import: (data: string) => void;
 
   // Events
-  on: (event: "change" | "validate" | "save" | "load", handler: (data: any) => void) => () => void;
-  emit: (event: string, data: any) => void;
+  on: (event: "change" | "validate" | "save" | "load", handler: (data: SettingsChangeEvent | SettingsValidationResult | SettingsValues) => void) => () => void;
+  emit: (event: string, data: unknown) => void;
 
   // Utilities
-  getSchema: () => Record<string, any>; // JSON Schema for the settings
+  getSchema: () => Record<string, unknown>; // JSON Schema for the settings
   reset: () => void;
 }
 

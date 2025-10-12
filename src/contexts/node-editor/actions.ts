@@ -16,7 +16,9 @@ export type NodeEditorAction =
   | { type: "UNGROUP_NODE"; payload: { groupId: NodeId } }
   | { type: "UPDATE_GROUP_MEMBERSHIP"; payload: { updates: Record<NodeId, { parentId?: NodeId }> } }
   | { type: "MOVE_GROUP_WITH_CHILDREN"; payload: { groupId: NodeId; delta: { x: number; y: number } } }
-  | { type: "AUTO_LAYOUT"; payload: { layoutType: "force" | "hierarchical" | "grid"; selectedOnly?: boolean } };
+  | { type: "AUTO_LAYOUT"; payload: { layoutType: "force" | "hierarchical" | "grid"; selectedOnly?: boolean } }
+  | { type: "COPY_NODES"; payload: { nodeIds: NodeId[] } }
+  | { type: "PASTE_NODES"; payload: { offsetX?: number; offsetY?: number } };
 
 export const nodeEditorActions = {
   addNode: (node: Omit<Node, "id">): NodeEditorAction => ({
@@ -82,6 +84,14 @@ export const nodeEditorActions = {
   autoLayout: (layoutType: "force" | "hierarchical" | "grid", selectedOnly?: boolean): NodeEditorAction => ({
     type: "AUTO_LAYOUT",
     payload: { layoutType, selectedOnly },
+  }),
+  copyNodes: (nodeIds: NodeId[]): NodeEditorAction => ({
+    type: "COPY_NODES",
+    payload: { nodeIds },
+  }),
+  pasteNodes: (offsetX?: number, offsetY?: number): NodeEditorAction => ({
+    type: "PASTE_NODES",
+    payload: { offsetX, offsetY },
   }),
 };
 

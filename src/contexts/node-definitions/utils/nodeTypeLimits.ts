@@ -1,5 +1,5 @@
-import type { NodeEditorData } from "../types/core";
-import type { NodeDefinition } from "../types/NodeDefinition";
+import type { NodeEditorData } from "../../../types/core";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
 
 /** Build a count map of node types present in the editor state */
 export function countNodesByType(state: NodeEditorData): Map<string, number> {

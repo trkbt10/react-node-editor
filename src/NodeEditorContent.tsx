@@ -24,7 +24,7 @@ import {
 } from "./types/portPosition";
 import { computeAllPortPositions, computeNodePortPositions } from "./contexts/node-ports/utils/computePortPositions";
 import { canConnectPorts } from "./contexts/node-ports/utils/connectionValidation";
-import { canAddNodeType, countNodesByType, getDisabledNodeTypes } from "./utils/nodeTypeLimits";
+import { canAddNodeType, countNodesByType, getDisabledNodeTypes } from "./contexts/node-definitions/utils/nodeTypeLimits";
 
 export const NodeEditorContent: React.FC<{
   className?: string;
@@ -37,7 +37,7 @@ export const NodeEditorContent: React.FC<{
   /** Grid layer definitions */
   gridLayers?: LayerDefinition[];
 }> = ({ className, settingsManager, portPositionBehavior, gridConfig, gridLayers }) => {
-  const { state: editorState, handleSave, dispatch, actions, isLoading, isSaving, getNodePorts } = useNodeEditor();
+  const { state: editorState, dispatch, actions, isLoading, isSaving, getNodePorts } = useNodeEditor();
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
 
@@ -275,62 +275,6 @@ export const NodeEditorContent: React.FC<{
     ]
   );
 
-  // Register keyboard shortcuts
-  React.useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Don't handle shortcuts when focused on input elements
-      const target = e.target as HTMLElement;
-      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
-        return;
-      }
-
-      // Save shortcut (Ctrl/Cmd + S)
-      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-        e.preventDefault();
-        handleSave();
-        return;
-      }
-
-      // Copy shortcut (Ctrl/Cmd + C)
-      if ((e.ctrlKey || e.metaKey) && e.key === "c") {
-        // Only prevent default if nodes are selected
-        if (actionState.selectedNodeIds.length > 0) {
-          e.preventDefault();
-          // TODO: Implement copy functionality
-          console.log("Copy nodes:", actionState.selectedNodeIds);
-        }
-        // If no nodes selected, allow browser default behavior
-        return;
-      }
-
-      // Cut shortcut (Ctrl/Cmd + X)
-      if ((e.ctrlKey || e.metaKey) && e.key === "x") {
-        // Only prevent default if nodes are selected
-        if (actionState.selectedNodeIds.length > 0) {
-          e.preventDefault();
-          // TODO: Implement cut functionality
-          console.log("Cut nodes:", actionState.selectedNodeIds);
-        }
-        return;
-      }
-
-      // Paste shortcut (Ctrl/Cmd + V)
-      if ((e.ctrlKey || e.metaKey) && e.key === "v") {
-        e.preventDefault();
-        // TODO: Implement paste functionality
-        console.log("Paste nodes");
-        return;
-      }
-
-      // Hide context menu on Escape
-      if (e.key === "Escape") {
-        actionDispatch(actionActions.hideContextMenu());
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [handleSave, actionDispatch, actionActions, actionState.selectedNodeIds]);
 
   // Track grid changes to force GridLayout re-render when needed
   const gridLayoutVersionRef = React.useRef(0);

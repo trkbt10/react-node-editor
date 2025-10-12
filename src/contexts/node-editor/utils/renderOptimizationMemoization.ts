@@ -1,7 +1,12 @@
+/**
+ * @file Render optimization utilities using memoization for the node editor
+ * Provides custom equality functions and hooks for optimizing React component re-renders
+ * during node and connection rendering, especially for performance-critical drag operations
+ */
 import * as React from "react";
-import { Node, Connection, NodeId, ConnectionId } from "../types/core";
-import type { NodeDefinition } from "../types/NodeDefinition";
-import { nodeHasGroupBehavior } from "../types/behaviors";
+import { Node, Connection, NodeId, ConnectionId } from "../../../types/core";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
+import { nodeHasGroupBehavior } from "../../../types/behaviors";
 
 /**
  * Custom equality function for nodes that ignores position changes during drag

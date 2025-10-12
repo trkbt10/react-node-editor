@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { NodeDefinition } from "../types/NodeDefinition";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
 
 /**
  * Get the icon for a node type from node definitions

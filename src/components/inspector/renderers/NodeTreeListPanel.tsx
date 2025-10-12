@@ -4,7 +4,7 @@ import { useEditorActionState } from "../../../contexts/EditorActionStateContext
 import { useNodeDefinitionList } from "../../../contexts/node-definitions";
 import { hasGroupBehavior } from "../../../types/behaviors";
 import { Node, NodeId } from "../../../types/core";
-import { getNodeIcon } from "../../../utils/nodeUtils";
+import { getNodeIcon } from "../../../contexts/node-definitions/utils/iconUtils";
 import { CloseIcon, classNames, LockIcon, UnlockIcon } from "../../elements";
 import { PropertySection } from "../parts/PropertySection";
 import styles from "./NodeTreeListPanel.module.css";

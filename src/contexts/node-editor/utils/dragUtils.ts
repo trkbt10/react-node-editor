@@ -1,4 +1,9 @@
-import type { NodeId, Position } from "../types/core";
+/**
+ * @file Drag operation utilities for node movement
+ * Provides functions for calculating drag offsets, bounds checking,
+ * and clamping during node drag operations
+ */
+import type { NodeId, Position } from "../../../types/core";
 
 export type DragState = {
   nodeIds: NodeId[];
@@ -34,7 +39,7 @@ export function calculateNodeDragOffsets(dragState: DragState | null): Record<No
  */
 export function getDraggedNodesBounds(
   nodeIds: NodeId[],
-  nodes: Record<NodeId, any>,
+  nodes: Record<NodeId, { position: Position; size?: { width: number; height: number } }>,
   offset: Position = { x: 0, y: 0 }
 ): { minX: number; minY: number; maxX: number; maxY: number } | null {
   if (nodeIds.length === 0) {return null;}
@@ -67,7 +72,7 @@ export function getDraggedNodesBounds(
  */
 export function isDragWithinBounds(
   nodeIds: NodeId[],
-  nodes: Record<NodeId, any>,
+  nodes: Record<NodeId, { position: Position; size?: { width: number; height: number } }>,
   offset: Position,
   canvasBounds: { width: number; height: number; margin?: number }
 ): boolean {
@@ -89,7 +94,7 @@ export function isDragWithinBounds(
  */
 export function clampDragToBounds(
   nodeIds: NodeId[],
-  nodes: Record<NodeId, any>,
+  nodes: Record<NodeId, { position: Position; size?: { width: number; height: number } }>,
   requestedOffset: Position,
   canvasBounds: { width: number; height: number; margin?: number }
 ): Position {

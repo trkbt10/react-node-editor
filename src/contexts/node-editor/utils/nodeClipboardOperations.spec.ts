@@ -5,8 +5,8 @@ import {
   copyNodesToClipboard,
   pasteNodesFromClipboard,
 } from "./nodeClipboardOperations";
-import { clearClipboard, getClipboard, setClipboard } from "./clipboard";
-import type { NodeEditorData } from "../types/core";
+import { clearClipboard, getClipboard, setClipboard } from "../../../utils/clipboard";
+import type { NodeEditorData } from "../../../types/core";
 
 describe("clipboard", () => {
   beforeEach(() => {

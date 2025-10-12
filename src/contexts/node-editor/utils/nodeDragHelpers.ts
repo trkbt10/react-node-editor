@@ -1,6 +1,11 @@
-import type { Node } from "../types/core";
-import type { NodeDefinition } from "../types/NodeDefinition";
-import { nodeHasGroupBehavior } from "../types/behaviors";
+/**
+ * @file Helper functions for node drag operations
+ * Provides utilities for determining draggable nodes, collecting positions,
+ * and handling group movement during drag interactions
+ */
+import type { Node } from "../../../types/core";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
+import { nodeHasGroupBehavior } from "../../../types/behaviors";
 
 /**
  * Determine which nodes should be dragged

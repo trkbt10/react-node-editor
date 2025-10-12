@@ -1,8 +1,13 @@
-import type { Node, NodeId } from "../types/core";
-import type { NodeDefinition } from "../types/NodeDefinition";
-import { getNodeBoundingBox, doRectanglesIntersect, isRectangleInsideAnother, type BoundingBox } from "./boundingBoxUtils";
-import { createParentToChildrenMap } from "./lookupUtils";
-import { nodeHasGroupBehavior, getGroupBehaviorOptions } from "../types/behaviors";
+/**
+ * @file Group node operations and utilities
+ * Provides functions for managing group nodes, membership, bounds calculation,
+ * and auto-grouping behavior in the node editor
+ */
+import type { Node, NodeId } from "../../../types/core";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
+import { getNodeBoundingBox, doRectanglesIntersect, isRectangleInsideAnother, type BoundingBox } from "../../../utils/boundingBoxUtils";
+import { createParentToChildrenMap } from "./nodeLookupUtils";
+import { nodeHasGroupBehavior, getGroupBehaviorOptions } from "../../../types/behaviors";
 
 // Keep GroupBounds for backwards compatibility
 export type GroupBounds = {
@@ -154,8 +159,8 @@ export const getGroupDescendants = (
  */
 export const calculateChildOffset = (
   groupDelta: { x: number; y: number },
-  child: Node,
-  group: Node
+  _child: Node,
+  _group: Node
 ): { x: number; y: number } => {
   // Children move exactly the same amount as their parent group
   return groupDelta;

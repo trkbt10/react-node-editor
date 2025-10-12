@@ -17,7 +17,7 @@ import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useI18n } from "../../i18n";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useNodeDefinitionList } from "../../contexts/node-definitions";
-import { canAddNodeType, countNodesByType } from "../../utils/nodeTypeLimits";
+import { canAddNodeType, countNodesByType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
 import { getClipboard, setClipboard } from "../../utils/clipboard";
 import { NodeActionsList } from "./NodeActionsList";
 

@@ -4,7 +4,7 @@ import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
 import { Button } from "../../elements";
 import { InspectorDefinitionList, InspectorDefinitionItem } from "../parts/InspectorDefinitionList";
 import { PropertySection } from "../parts/PropertySection";
-import { calculateAutoLayout, calculateHierarchicalLayout, calculateGridLayout, calculateNodesBoundingBox } from "../../../utils/autoLayout";
+import { calculateAutoLayout, calculateHierarchicalLayout, calculateGridLayout, calculateNodesBoundingBox } from "../../../contexts/node-editor/utils/autoLayout";
 import styles from "./AutoLayoutPanel.module.css";
 
 export type AutoLayoutPanelProps = {

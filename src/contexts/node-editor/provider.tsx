@@ -1,3 +1,8 @@
+/**
+ * @file Node editor provider
+ * Provides the node editor context with state management, actions, and utility functions
+ * Supports both controlled and uncontrolled modes with auto-save capabilities
+ */
 import * as React from "react";
 import type { Node, NodeEditorData, NodeId, Port } from "../../types/core";
 import { useSettings } from "../../hooks";
@@ -6,9 +11,11 @@ import type { SettingValue } from "../../settings/types";
 import { createCachedPortResolver } from "../node-ports/utils/portLookup";
 import { NodeDefinitionContext } from "../node-definitions";
 import { getFeatureFlags } from "../../config/featureFlags";
-import { nodeEditorActions } from "./actions";
+import { nodeEditorActions, type NodeEditorAction } from "./actions";
 import { nodeEditorReducer, defaultNodeEditorData } from "./reducer";
 import { NodeEditorContext } from "./context";
+import { snapToGrid } from "./utils/gridSnap";
+import { findContainingGroup, getGroupChildren, isNodeInsideGroup } from "./utils/groupOperations";
 
 export type NodeEditorProviderProps = {
   children: React.ReactNode;
@@ -54,7 +61,7 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
   const nodeDefinitions = React.useMemo(() => registry?.getAll() || [], [registry]);
 
   const reducerWithDefinitions = React.useCallback(
-    (state: NodeEditorData, action: any) => nodeEditorReducer(state, action, nodeDefinitions),
+    (state: NodeEditorData, action: NodeEditorAction) => nodeEditorReducer(state, action, nodeDefinitions),
     [nodeDefinitions],
   );
 
@@ -73,8 +80,8 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
   nodeDefinitionsRef.current = nodeDefinitions;
 
   // Stable dispatch that doesn't recreate per state change to reduce re-renders
-  const dispatch: React.Dispatch<any> = React.useCallback(
-    (action) => {
+  const dispatch: React.Dispatch<NodeEditorAction> = React.useCallback(
+    (action: NodeEditorAction) => {
       if (controlledData) {
         const newState = nodeEditorReducer(stateRef.current, action, nodeDefinitionsRef.current);
         onDataChangeRef.current?.(newState);
@@ -235,6 +242,16 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
     [settingsManager],
   );
 
+  const utils = React.useMemo(
+    () => ({
+      snapToGrid,
+      findContainingGroup,
+      getGroupChildren,
+      isNodeInsideGroup,
+    }),
+    [],
+  );
+
   const contextValue = React.useMemo(
     () => ({
       state,
@@ -248,6 +265,7 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
       settings,
       settingsManager,
       updateSetting,
+      utils,
     }),
     [
       state,
@@ -260,6 +278,7 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
       settings,
       settingsManager,
       updateSetting,
+      utils,
     ],
   );
 

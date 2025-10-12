@@ -1,7 +1,7 @@
 import * as React from "react";
-import { Node, NodeId, Port } from "../../types/core";
+import { Node, NodeId } from "../../types/core";
 import { NodeDragHandler } from "./NodeDragHandler";
-import { createMemoizedComponent, areNodesEqual } from "../../utils/memoization";
+import { createMemoizedComponent, areNodesEqual } from "../../contexts/node-editor/utils/renderOptimizationMemoization";
 import styles from "./NodeRenderer.module.css";
 import { NodeView } from "./NodeView";
 import { useOptionalRenderers } from "../../contexts/RendererContext";

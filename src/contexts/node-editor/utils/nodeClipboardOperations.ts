@@ -1,9 +1,10 @@
 /**
- * @file Node-specific clipboard operations
- * This module provides domain-specific logic for copying/pasting nodes using the generic clipboard
+ * @file Node clipboard operations for copy/paste functionality
+ * Provides domain-specific logic for copying and pasting nodes with their connections
+ * using the generic clipboard utility
  */
-import type { NodeEditorData, NodeData, Position, Size } from "../types/core";
-import { setClipboard, getClipboard, type ClipboardData } from "./clipboard";
+import type { NodeEditorData, NodeData, Position, Size } from "../../../types/core";
+import { setClipboard, getClipboard, type ClipboardData } from "../../../utils/clipboard";
 
 /**
  * Copy selected nodes to clipboard

@@ -4,8 +4,8 @@ import type {
   ConstraintValidationResult,
   ConstraintViolation,
   NodeDefinition,
-} from "../types/NodeDefinition";
-import type { Node, NodeId, Connection } from "../types/core";
+} from "../../../types/NodeDefinition";
+import type { Node, NodeId, Connection } from "../../../types/core";
 
 /**
  * Validate all constraints for a node

@@ -1,7 +1,13 @@
-import type { Node, NodeEditorData, NodeId, Position } from "../../types/core";
+/**
+ * @file Node editor reducer
+ * Handles all state transitions for the node editor including node/connection CRUD,
+ * group operations, clipboard operations, and layout triggers
+ */
+import type { Node, NodeEditorData, NodeId } from "../../types/core";
 import type { NodeEditorAction } from "./actions";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import { nodeHasGroupBehavior } from "../../types/behaviors";
+import { copyNodesToClipboard, pasteNodesFromClipboard } from "./utils/nodeClipboardOperations";
 
 export const nodeEditorReducer = (
   state: NodeEditorData,
@@ -28,8 +34,8 @@ export const nodeEditorReducer = (
       const propagateVisibility = Object.prototype.hasOwnProperty.call(updates, 'visible');
       const propagateLock = Object.prototype.hasOwnProperty.call(updates, 'locked');
       if ((propagateVisibility || propagateLock) && nodeHasGroupBehavior(node, nodeDefinitions)) {
-        const targetVisible = propagateVisibility ? (updates as any).visible as boolean | undefined : undefined;
-        const targetLocked = propagateLock ? (updates as any).locked as boolean | undefined : undefined;
+        const targetVisible = propagateVisibility ? updates.visible : undefined;
+        const targetLocked = propagateLock ? updates.locked : undefined;
 
         if (typeof targetVisible !== 'undefined' || typeof targetLocked !== 'undefined') {
           const isDescendant = (childId: NodeId, ancestorId: NodeId): boolean => {
@@ -180,6 +186,37 @@ export const nodeEditorReducer = (
     }
     case "AUTO_LAYOUT": {
       return state; // trigger-only; actual layout handled elsewhere
+    }
+    case "COPY_NODES": {
+      const { nodeIds } = action.payload;
+      copyNodesToClipboard(nodeIds, state);
+      return state; // No state change, only clipboard side effect
+    }
+    case "PASTE_NODES": {
+      const { offsetX = 40, offsetY = 40 } = action.payload;
+      const pasteResult = pasteNodesFromClipboard(offsetX, offsetY);
+      if (!pasteResult) {
+        return state;
+      }
+      const newNodes = { ...state.nodes };
+      const newConnections = { ...state.connections };
+
+      // Add pasted nodes
+      pasteResult.nodes.forEach((node) => {
+        newNodes[node.id] = node as Node;
+      });
+
+      // Add pasted connections
+      pasteResult.connections.forEach((conn) => {
+        const id = generateId();
+        newConnections[id] = { ...conn, id };
+      });
+
+      return {
+        ...state,
+        nodes: newNodes,
+        connections: newConnections,
+      };
     }
     default:
       return state;

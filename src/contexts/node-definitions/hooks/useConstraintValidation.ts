@@ -6,7 +6,7 @@ import {
   validateNodeConstraints,
   validateConnectionConstraints,
   hasBlockingViolations,
-} from "../../../utils/constraintUtils";
+} from "../utils/constraintValidation";
 import { useNodeDefinitions } from "../context";
 
 export type ConstraintValidationHook = {

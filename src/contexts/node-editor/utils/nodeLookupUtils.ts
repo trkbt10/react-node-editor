@@ -1,8 +1,9 @@
-import type { Node, NodeId, Connection, ConnectionId, Port, PortId } from "../types/core";
-
 /**
- * Utility for creating lookup maps for O(1) access patterns
+ * @file Node and connection lookup utilities for the node editor
+ * Provides optimized lookup maps and spatial indexing data structures
+ * for efficient O(1) access to nodes, connections, ports, and spatial queries
  */
+import type { Node, NodeId, Connection, ConnectionId, Port, PortId } from "../../../types/core";
 
 /**
  * Create a lookup map from port ID to node ID

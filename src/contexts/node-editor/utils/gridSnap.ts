@@ -1,5 +1,10 @@
-import type { Position } from "../types/core";
-import type { GridSettings } from "../types/core";
+/**
+ * @file Grid snapping utilities for node positioning
+ * Provides functions for snapping node positions to grid points
+ * and generating visual snap guides
+ */
+import type { Position } from "../../../types/core";
+import type { GridSettings } from "../../../types/core";
 
 /**
  * Snap a position to the nearest grid point

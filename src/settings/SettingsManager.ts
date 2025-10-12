@@ -12,12 +12,17 @@ import type {
 } from "./types";
 
 /**
+ * @file Settings Manager Implementation
+ * Provides comprehensive settings management with validation, persistence, and event handling
+ */
+
+/**
  * Event emitter for settings
  */
 class SettingsEventEmitter {
-  private listeners = new Map<string, ((data: any) => void)[]>();
+  private listeners = new Map<string, ((data: unknown) => void)[]>();
 
-  on(event: string, handler: (data: any) => void): () => void {
+  on(event: string, handler: (data: unknown) => void): () => void {
     if (!this.listeners.has(event)) {
       this.listeners.set(event, []);
     }
@@ -34,7 +39,7 @@ class SettingsEventEmitter {
     };
   }
 
-  emit(event: string, data: any): void {
+  emit(event: string, data: unknown): void {
     const handlers = this.listeners.get(event);
     if (handlers) {
       handlers.forEach((handler) => {
@@ -499,15 +504,15 @@ export class SettingsManager extends SettingsEventEmitter implements ISettingsMa
   }
 
   // Utilities
-  getSchema(): Record<string, any> {
-    const schema: Record<string, any> = {
+  getSchema(): Record<string, unknown> {
+    const schema: Record<string, unknown> = {
       type: "object",
       properties: {},
       required: [],
     };
 
     this.settings.forEach((setting, key) => {
-      const propertySchema: any = {
+      const propertySchema: Record<string, unknown> = {
         title: setting.label,
         description: setting.description,
         default: setting.defaultValue,

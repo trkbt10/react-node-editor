@@ -1,6 +1,11 @@
+/**
+ * @file History Integration Hook
+ * Provides undo/redo functionality integrated with node editor state management
+ */
 import * as React from "react";
 import { useHistory } from "../contexts/HistoryContext";
 import { useNodeEditor } from "../contexts/node-editor";
+import type { NodeEditorAction } from "../contexts/node-editor/actions";
 
 /**
  * Hook that integrates history tracking with node editor state changes
@@ -8,7 +13,7 @@ import { useNodeEditor } from "../contexts/node-editor";
 export const useHistoryIntegration = () => {
   const { state: nodeEditorState, dispatch: nodeEditorDispatch, actions: nodeEditorActions } = useNodeEditor();
   const { pushEntry, undo, redo, canUndo, canRedo } = useHistory();
-  
+
   // Track previous state to detect changes
   const previousStateRef = React.useRef(nodeEditorState);
   const actionNameRef = React.useRef<string | null>(null);
@@ -17,9 +22,9 @@ export const useHistoryIntegration = () => {
   React.useEffect(() => {
     const currentState = nodeEditorState;
     const previousState = previousStateRef.current;
-    
+
     // Skip if this is the initial state or if states are identical
-    if (previousState === currentState || 
+    if (previousState === currentState ||
         JSON.stringify(previousState) === JSON.stringify(currentState)) {
       return;
     }
@@ -27,14 +32,14 @@ export const useHistoryIntegration = () => {
     // Push the previous state to history (before the change)
     const actionName = actionNameRef.current || 'Unknown Action';
     pushEntry(actionName, previousState);
-    
+
     // Update reference
     previousStateRef.current = currentState;
     actionNameRef.current = null;
   }, [nodeEditorState, pushEntry]);
 
   // Enhanced dispatch that records action names
-  const dispatchWithHistory = React.useCallback((action: any) => {
+  const dispatchWithHistory = React.useCallback((action: NodeEditorAction) => {
     // Extract action name for history
     if (action && typeof action === 'object' && action.type) {
       actionNameRef.current = action.type;

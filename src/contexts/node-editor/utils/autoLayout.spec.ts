@@ -1,13 +1,15 @@
-import { describe, it, expect } from "vitest";
+/**
+ * @file Tests for auto-layout algorithms
+ */
 import { calculateAutoLayout, calculateHierarchicalLayout, calculateGridLayout } from "./autoLayout";
-import type { NodeEditorData } from "../types/core";
+import type { NodeEditorData } from "../../../types/core";
 
 describe("autoLayout", () => {
   describe("calculateAutoLayout", () => {
     it("should handle single node at origin", () => {
       const data: NodeEditorData = {
         nodes: {
-          "node1": {
+          node1: {
             id: "node1",
             type: "default",
             position: { x: 0, y: 0 },
@@ -24,14 +26,14 @@ describe("autoLayout", () => {
     it("should calculate bounding box correctly including node sizes", () => {
       const data: NodeEditorData = {
         nodes: {
-          "node1": {
+          node1: {
             id: "node1",
             type: "default",
             position: { x: 0, y: 0 },
             size: { width: 200, height: 100 },
             data: { title: "Node 1" },
           },
-          "node2": {
+          node2: {
             id: "node2",
             type: "default",
             position: { x: 300, y: 300 },
@@ -74,14 +76,14 @@ describe("autoLayout", () => {
     it("should center nodes around origin with proper padding", () => {
       const data: NodeEditorData = {
         nodes: {
-          "node1": {
+          node1: {
             id: "node1",
             type: "default",
             position: { x: -500, y: -500 },
             size: { width: 150, height: 50 },
             data: { title: "Node 1" },
           },
-          "node2": {
+          node2: {
             id: "node2",
             type: "default",
             position: { x: 500, y: 500 },
@@ -96,8 +98,8 @@ describe("autoLayout", () => {
       const result = calculateAutoLayout(data, { iterations: 0, padding });
 
       // Calculate expected bounds including node sizes
-      const node1Right = -500 + 150; // -350
-      const node1Bottom = -500 + 50; // -450
+      const _node1Right = -500 + 150; // -350
+      const _node1Bottom = -500 + 50; // -450
       const node2Right = 500 + 150; // 650
       const node2Bottom = 500 + 50; // 550
 
@@ -120,19 +122,19 @@ describe("autoLayout", () => {
     it("should apply force-directed layout with connections", () => {
       const data: NodeEditorData = {
         nodes: {
-          "node1": {
+          node1: {
             id: "node1",
             type: "default",
             position: { x: 0, y: 0 },
             data: { title: "Node 1" },
           },
-          "node2": {
+          node2: {
             id: "node2",
             type: "default",
             position: { x: 100, y: 0 },
             data: { title: "Node 2" },
           },
-          "node3": {
+          node3: {
             id: "node3",
             type: "default",
             position: { x: 50, y: 100 },
@@ -140,14 +142,14 @@ describe("autoLayout", () => {
           },
         },
         connections: {
-          "conn1": {
+          conn1: {
             id: "conn1",
             fromNodeId: "node1",
             fromPortId: "out",
             toNodeId: "node2",
             toPortId: "in",
           },
-          "conn2": {
+          conn2: {
             id: "conn2",
             fromNodeId: "node1",
             fromPortId: "out",
@@ -165,7 +167,7 @@ describe("autoLayout", () => {
       expect(result.nodePositions["node3"]).toBeDefined();
 
       // Positions should be within reasonable bounds (considering padding)
-      Object.values(result.nodePositions).forEach(pos => {
+      Object.values(result.nodePositions).forEach((pos) => {
         expect(Math.abs(pos.x)).toBeLessThan(5000);
         expect(Math.abs(pos.y)).toBeLessThan(5000);
       });
@@ -176,19 +178,19 @@ describe("autoLayout", () => {
     it("should arrange nodes in layers based on connectivity", () => {
       const data: NodeEditorData = {
         nodes: {
-          "node1": {
+          node1: {
             id: "node1",
             type: "default",
             position: { x: 0, y: 0 },
             data: { title: "Node 1" },
           },
-          "node2": {
+          node2: {
             id: "node2",
             type: "default",
             position: { x: 0, y: 0 },
             data: { title: "Node 2" },
           },
-          "node3": {
+          node3: {
             id: "node3",
             type: "default",
             position: { x: 0, y: 0 },
@@ -196,14 +198,14 @@ describe("autoLayout", () => {
           },
         },
         connections: {
-          "conn1": {
+          conn1: {
             id: "conn1",
             fromNodeId: "node1",
             fromPortId: "out",
             toNodeId: "node2",
             toPortId: "in",
           },
-          "conn2": {
+          conn2: {
             id: "conn2",
             fromNodeId: "node2",
             fromPortId: "out",
@@ -229,13 +231,13 @@ describe("autoLayout", () => {
     it("should handle disconnected nodes", () => {
       const data: NodeEditorData = {
         nodes: {
-          "node1": {
+          node1: {
             id: "node1",
             type: "default",
             position: { x: 0, y: 0 },
             data: { title: "Node 1" },
           },
-          "node2": {
+          node2: {
             id: "node2",
             type: "default",
             position: { x: 0, y: 0 },
@@ -257,25 +259,25 @@ describe("autoLayout", () => {
     it("should arrange nodes in a centered grid", () => {
       const data: NodeEditorData = {
         nodes: {
-          "node1": {
+          node1: {
             id: "node1",
             type: "default",
             position: { x: 0, y: 0 },
             data: { title: "Node 1" },
           },
-          "node2": {
+          node2: {
             id: "node2",
             type: "default",
             position: { x: 0, y: 0 },
             data: { title: "Node 2" },
           },
-          "node3": {
+          node3: {
             id: "node3",
             type: "default",
             position: { x: 0, y: 0 },
             data: { title: "Node 3" },
           },
-          "node4": {
+          node4: {
             id: "node4",
             type: "default",
             position: { x: 0, y: 0 },
@@ -291,8 +293,8 @@ describe("autoLayout", () => {
       // With 4 nodes and 2 columns, we should have a 2x2 grid
       // Grid should be centered, so positions should be symmetric around origin
       const positions = Object.values(result.nodePositions);
-      const xPositions = positions.map(p => p.x);
-      const yPositions = positions.map(p => p.y);
+      const xPositions = positions.map((p) => p.x);
+      const yPositions = positions.map((p) => p.y);
 
       // X positions should include both negative and positive values (or zeros) if centered
       const sumX = xPositions.reduce((sum, x) => sum + x, 0);
@@ -306,7 +308,7 @@ describe("autoLayout", () => {
     it("should handle single node", () => {
       const data: NodeEditorData = {
         nodes: {
-          "node1": {
+          node1: {
             id: "node1",
             type: "default",
             position: { x: 0, y: 0 },

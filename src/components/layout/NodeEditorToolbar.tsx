@@ -6,7 +6,7 @@ import { useNodeEditor } from "../../contexts/node-editor";
 import { FloatingContainer } from "../shared/FloatingContainer";
 import { Button } from "../elements/Button";
 import styles from "./NodeEditorToolbar.module.css";
-import { countNodesByType, canAddNodeType } from "../../utils/nodeTypeLimits";
+import { countNodesByType, canAddNodeType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
 
 export type NodeEditorToolbarProps = {
   floating?: boolean;

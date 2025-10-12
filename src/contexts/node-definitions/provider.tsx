@@ -1,3 +1,7 @@
+/**
+ * @file Node Definition Provider
+ * Provides node definition registry and context to the application
+ */
 import * as React from "react";
 import {
   NodeDefinition,
@@ -51,5 +55,5 @@ export function NodeDefinitionProvider<
 
   const contextValue = { registry } as NodeDefinitionContextValue<TNodeDataTypeMap>;
 
-  return <NodeDefinitionContext.Provider value={contextValue as any}>{children}</NodeDefinitionContext.Provider>;
+  return <NodeDefinitionContext.Provider value={contextValue as NodeDefinitionContextValue<NodeDataTypeMap>}>{children}</NodeDefinitionContext.Provider>;
 }

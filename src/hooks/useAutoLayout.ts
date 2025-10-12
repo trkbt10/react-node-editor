@@ -2,7 +2,7 @@ import * as React from "react";
 import { useNodeEditor } from "../contexts/node-editor";
 import { useNodeCanvas } from "../contexts/NodeCanvasContext";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
-import { calculateAutoLayout, calculateHierarchicalLayout, calculateGridLayout, calculateNodesBoundingBox } from "../utils/autoLayout";
+import { calculateAutoLayout, calculateHierarchicalLayout, calculateGridLayout, calculateNodesBoundingBox } from "../contexts/node-editor/utils/autoLayout";
 
 /**
  * Hook that provides auto layout functionality
