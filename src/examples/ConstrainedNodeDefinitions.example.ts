@@ -1,5 +1,5 @@
 import type { NodeDefinition } from "../types/NodeDefinition";
-import { ConstraintFactory } from "../utils/constraintUtils";
+import { ConstraintFactory } from "./constraintFactory";
 
 /**
  * Input-only node that cannot have output connections

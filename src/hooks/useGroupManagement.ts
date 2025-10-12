@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useNodeEditor } from "../contexts/node-editor";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
-import { useNodeDefinitionList } from "../contexts/NodeDefinitionContext";
+import { useNodeDefinitionList } from "../contexts/node-definitions";
 import type { NodeId, Node } from "../types/core";
 import {
   updateGroupMembership,

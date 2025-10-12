@@ -3,7 +3,7 @@
  */
 
 export { NodeEditorProvider, useNodeEditor } from "./node-editor";
-export { NodeDefinitionProvider, useNodeDefinitions, useNodeDefinition, useNodeDefinitionList } from "./NodeDefinitionContext";
+export { NodeDefinitionProvider, useNodeDefinitions, useNodeDefinition, useNodeDefinitionList } from "./node-definitions";
 export { ExternalDataProvider, useExternalDataRef } from "./ExternalDataContext";
 export { InlineEditingProvider, useInlineEditing } from "./InlineEditingContext";
 export { EditorActionStateProvider, useEditorActionState } from "./EditorActionStateContext";

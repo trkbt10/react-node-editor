@@ -6,7 +6,7 @@ import { useHistoryIntegration } from "./useHistoryIntegration";
 import { useAutoLayout } from "./useAutoLayout";
 import { filterDuplicableNodeIds } from "../utils/nodeTypeLimits";
 import { copyNodesToClipboard, pasteNodesFromClipboard } from "../utils/nodeClipboardOperations";
-import { useNodeDefinitionList } from "../contexts/NodeDefinitionContext";
+import { useNodeDefinitionList } from "../contexts/node-definitions";
 
 /**
  * Hook that registers all standard node editor keyboard shortcuts

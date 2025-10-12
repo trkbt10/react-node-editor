@@ -9,7 +9,7 @@ export { useEditorActionState } from "../contexts/EditorActionStateContext";
 export { useInlineEditing } from "../contexts/InlineEditingContext";
 
 // Node definition hooks
-export { useNodeDefinitions, useNodeDefinition, useNodeDefinitionList } from "../contexts/NodeDefinitionContext";
+export { useNodeDefinitions, useNodeDefinition, useNodeDefinitionList } from "../contexts/node-definitions";
 
 // External data hooks
 export { useExternalDataRef } from "../contexts/ExternalDataContext";
