@@ -1,5 +1,5 @@
 /**
- * Color utility functions for parsing and manipulating colors
+ * @file Color utility functions for parsing and manipulating colors.
  */
 
 export type RGB = {

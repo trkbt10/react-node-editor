@@ -1,6 +1,6 @@
 /**
- * Core type definitions for the Node Editor
- * These types are shared across all components and contexts
+ * @file Core type definitions for the Node Editor.
+ * These types are shared across all components and contexts.
  */
 
 // ID types - using simple string types for compatibility

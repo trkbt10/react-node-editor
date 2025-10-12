@@ -62,6 +62,10 @@ function getThemeSetting(settingsManager: SettingsManager, key: string, defaultV
 
 export type { Settings };
 
+/**
+ * Provides memoized editor settings sourced from an optional SettingsManager with sensible defaults.
+ * @param settingsManager Optional manager instance to subscribe to for reactive updates.
+ */
 export function useSettings(settingsManager?: SettingsManager): Settings {
   const [settingsVersion, setSettingsVersion] = React.useState(0);
 

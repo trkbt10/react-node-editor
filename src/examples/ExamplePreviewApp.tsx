@@ -9,6 +9,7 @@ import { ConstrainedNodeExample } from "./demos/ConstrainedNodeExample";
 import { TypedNodesExample } from "./demos/TypedNodesExample";
 import { AdvancedNodeExample } from "./demos/AdvancedNodeExample";
 import { CustomPortRendererExample } from "./demos/CustomPortRendererExample";
+import { I18nPlaygroundExample } from "./demos/I18nPlaygroundExample";
 import {
   DefaultLayoutExample,
   CustomInspectorWidthExample,
@@ -35,6 +36,13 @@ const examples: ExampleEntry[] = [
     title: "Three.js Integration",
     description: "Drive a Three.js scene by connecting node outputs to a live preview.",
     component: ThreeJsExample,
+    category: "advanced",
+  },
+  {
+    id: "i18n-playground",
+    title: "Internationalization Playground",
+    description: "Configure locale, fallback, and message overrides to validate translations.",
+    component: I18nPlaygroundExample,
     category: "advanced",
   },
   {
