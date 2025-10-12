@@ -1,7 +1,7 @@
 import * as React from "react";
-import { NodeEditor } from "../NodeEditor";
-import { createNodeDefinition, toUntypedDefinition, type ConnectionRenderContext } from "../types/NodeDefinition";
-import type { NodeEditorData } from "../types/core";
+import { NodeEditor } from "../../NodeEditor";
+import { createNodeDefinition, toUntypedDefinition, type ConnectionRenderContext } from "../../types/NodeDefinition";
+import type { NodeEditorData } from "../../types/core";
 import classes from "./CustomPortRendererExample.module.css";
 
 /**

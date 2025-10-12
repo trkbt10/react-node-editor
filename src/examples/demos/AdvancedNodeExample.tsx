@@ -1,14 +1,15 @@
 import * as React from "react";
-import { NodeEditor } from "../NodeEditor";
+import { NodeEditor } from "../../NodeEditor";
 import type {
   NodeDefinition,
   NodeRenderProps,
   InspectorRenderProps,
   ExternalDataReference,
-} from "../types/NodeDefinition";
-import type { NodeEditorData } from "../types/core";
-import { Button, Textarea } from "../components/elements";
-import { ExampleLayout, ExampleHeader } from "./parts";
+} from "../../types/NodeDefinition";
+import type { NodeEditorData } from "../../types/core";
+import { Button, Textarea } from "../../components/elements";
+import { ExampleLayout } from "./parts/ExampleLayout";
+import { ExampleHeader } from "./parts/ExampleHeader";
 import classes from "./AdvancedNodeExample.module.css";
 
 // =============================================

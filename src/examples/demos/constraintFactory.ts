@@ -2,8 +2,8 @@ import type {
   NodeConstraint,
   ConstraintContext,
   ConstraintValidationResult,
-} from "../types/NodeDefinition";
-import type { Node } from "../types/core";
+} from "../../types/NodeDefinition";
+import type { Node } from "../../types/core";
 
 /**
  * Pre-built constraint factories for common node constraint patterns

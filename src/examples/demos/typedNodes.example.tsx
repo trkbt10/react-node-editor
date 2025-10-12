@@ -4,8 +4,8 @@
  */
 
 import React from "react";
-import type { NodeDataTypeMap, NodeRenderProps, InspectorRenderProps } from "../types/NodeDefinition";
-import { createNodeDefinition, createNodeDataUpdater } from "../types/NodeDefinition";
+import type { NodeDataTypeMap, NodeRenderProps, InspectorRenderProps } from "../../types/NodeDefinition";
+import { createNodeDefinition, createNodeDataUpdater } from "../../types/NodeDefinition";
 
 // Step 1: Extend the NodeDataTypeMap interface
 // NOTE: In a real application, you would declare this in a separate types file

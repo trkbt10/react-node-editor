@@ -6,7 +6,7 @@ import { createRoot } from "react-dom/client";
 
 import "../global.css";
 
-import { ExamplePreviewApp } from "./preview-app/ExamplePreviewApp";
+import { ExamplePreviewApp } from "./ExamplePreviewApp";
 
 const container = document.getElementById("root");
 

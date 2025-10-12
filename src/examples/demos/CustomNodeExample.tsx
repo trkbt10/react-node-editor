@@ -1,13 +1,12 @@
 import * as React from "react";
-import { NodeEditor } from "../NodeEditor";
+import { NodeEditor } from "../../NodeEditor";
 import type {
   NodeDefinition,
   NodeRenderProps,
   InspectorRenderProps,
   ExternalDataReference,
-} from "../types/NodeDefinition";
-import type { NodeEditorData } from "../types/core";
-import { ExampleLayout, ExampleHeader } from "./parts";
+} from "../../types/NodeDefinition";
+import type { NodeEditorData } from "../../types/core";
 import classes from "./CustomNodeExample.module.css";
 
 // Example external data type
@@ -297,35 +296,19 @@ const externalDataRefs: Record<string, ExternalDataReference> = {
  * Example of using custom node definitions with external data
  */
 export const CustomNodeExample: React.FC = () => {
-  const [savedData, setSavedData] = React.useState<NodeEditorData | null>(null);
-
   return (
-    <ExampleLayout
-      header={
-        <ExampleHeader
-          title="Custom Node Editor Example"
-          description="This example shows custom task nodes with external data loading and custom rendering."
-        />
-      }
-      footer={
-        savedData ? <div className={classes.footer}>Last saved: {new Date().toLocaleTimeString()}</div> : undefined
-      }
-    >
-      <NodeEditor
-        initialData={initialData}
-        nodeDefinitions={[TaskNodeDefinition]}
-        externalDataRefs={externalDataRefs}
-        onDataChange={(data) => {
-          console.log("Editor data changed:", data);
-        }}
-        autoSaveEnabled={false}
-        onSave={async (data) => {
-          console.log("Saving data:", data);
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-          setSavedData(data);
-        }}
-      />
-    </ExampleLayout>
+    <NodeEditor
+      initialData={initialData}
+      nodeDefinitions={[TaskNodeDefinition]}
+      externalDataRefs={externalDataRefs}
+      onDataChange={(data) => {
+        console.log("Editor data changed:", data);
+      }}
+      autoSaveEnabled={false}
+      onSave={async (data) => {
+        console.log("Saving data:", data);
+      }}
+    />
   );
 };
 

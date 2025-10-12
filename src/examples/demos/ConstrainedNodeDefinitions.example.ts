@@ -1,4 +1,4 @@
-import type { NodeDefinition } from "../types/NodeDefinition";
+import type { NodeDefinition } from "../../types/NodeDefinition";
 import { ConstraintFactory } from "./constraintFactory";
 
 /**

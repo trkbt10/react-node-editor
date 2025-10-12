@@ -3,9 +3,9 @@
  */
 import * as React from "react";
 
-import CustomNodeExample from "../CustomNodeExample";
-import { ConstrainedNodeExample } from "../ConstrainedNodeExample";
-import { TypedNodesExample } from "../TypedNodesExample";
+import CustomNodeExample from "./demos/CustomNodeExample";
+import { ConstrainedNodeExample } from "./demos/ConstrainedNodeExample";
+import { TypedNodesExample } from "./demos/TypedNodesExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
