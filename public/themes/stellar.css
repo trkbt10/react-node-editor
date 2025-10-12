@@ -126,9 +126,9 @@
 
   /* Input surfaces */
   --node-editor-input-background: #3a3a3a;
-  --node-editor-input-border: 1px solid rgba(255, 255, 255, 0.1);
-  --node-editor-input-border-hover: rgba(232, 148, 74, 0.5);
-  --node-editor-input-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+  --node-editor-input-border: 1px solid rgba(255, 255, 255, 0.15);
+  --node-editor-input-border-hover: #e8944a;
+  --node-editor-input-box-shadow: none;
   --node-editor-input-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
 
   /* Card & panel styling - dark flat cards */
