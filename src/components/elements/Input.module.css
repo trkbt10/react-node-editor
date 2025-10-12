@@ -1,4 +1,5 @@
-.input {
+.input,
+.inputWithLabel {
   width: 100%;
   font: var(--node-editor-input-font);
   color: var(--node-editor-text-color);
@@ -9,67 +10,127 @@
   box-sizing: border-box;
 }
 
-.input:focus {
+/* Input with label - container styles */
+.inputWithLabel {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--node-editor-inspector-space-xs);
+  padding: calc(var(--node-editor-inspector-space-xs) + 2px) var(--node-editor-inspector-space-sm);
+}
+
+.inputLabel {
+  color: var(--node-editor-secondary-label-color);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  line-height: var(--node-editor-inspector-line-height-meta);
+  font-weight: 500;
+}
+
+.inputElement {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font: var(--node-editor-input-font);
+  color: var(--node-editor-text-color);
+  text-align: right;
+  outline: none;
+  box-shadow: none;
+}
+
+.inputElement::-webkit-outer-spin-button,
+.inputElement::-webkit-inner-spin-button {
+  margin: 0;
+}
+
+.input:focus,
+.inputWithLabel:focus-within {
   border-color: var(--node-editor-accent-color);
   box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
 }
 
-.input:disabled {
+.input:disabled,
+.inputWithLabel:has(.inputElement:disabled) {
   background-color: var(--node-editor-card-disabled-background);
   color: var(--node-editor-disabled-control-text-color);
   cursor: not-allowed;
 }
 
 /* Variants */
-.input[data-variant="default"] {
+.input[data-variant="default"],
+.inputWithLabel[data-variant="default"] {
   padding: var(--node-editor-input-padding);
   border: var(--node-editor-input-border);
   box-shadow: var(--node-editor-input-box-shadow);
 }
 
-.input[data-variant="default"]:hover:not(:disabled) {
+.inputWithLabel[data-variant="default"] {
+  padding: calc(var(--node-editor-inspector-space-xs) + 2px) var(--node-editor-inspector-space-sm);
+}
+
+.input[data-variant="default"]:hover:not(:disabled),
+.inputWithLabel[data-variant="default"]:hover:not(:has(.inputElement:disabled)) {
   border-color: var(--node-editor-separator-color);
 }
 
-.input[data-variant="default"]:focus {
+.input[data-variant="default"]:focus,
+.inputWithLabel[data-variant="default"]:focus-within {
   border-color: var(--node-editor-accent-color);
 }
 
-.input[data-variant="outline"] {
+.input[data-variant="outline"],
+.inputWithLabel[data-variant="outline"] {
   padding: var(--node-editor-input-padding);
   border: var(--node-editor-card-border);
   background-color: transparent;
 }
 
-.input[data-variant="outline"]:hover:not(:disabled) {
+.inputWithLabel[data-variant="outline"] {
+  padding: calc(var(--node-editor-inspector-space-xs) + 2px) var(--node-editor-inspector-space-sm);
+}
+
+.input[data-variant="outline"]:hover:not(:disabled),
+.inputWithLabel[data-variant="outline"]:hover:not(:has(.inputElement:disabled)) {
   border-color: var(--node-editor-card-hover-border-color);
 }
 
-.input[data-variant="outline"]:focus {
+.input[data-variant="outline"]:focus,
+.inputWithLabel[data-variant="outline"]:focus-within {
   border-color: var(--node-editor-accent-color);
 }
 
-.input[data-variant="filled"] {
+.input[data-variant="filled"],
+.inputWithLabel[data-variant="filled"] {
   padding: var(--node-editor-input-padding);
   border: 1px solid transparent;
   background-color: var(--node-editor-card-filled-background);
 }
 
-.input[data-variant="filled"]:hover:not(:disabled) {
+.inputWithLabel[data-variant="filled"] {
+  padding: calc(var(--node-editor-inspector-space-xs) + 2px) var(--node-editor-inspector-space-sm);
+}
+
+.input[data-variant="filled"]:hover:not(:disabled),
+.inputWithLabel[data-variant="filled"]:hover:not(:has(.inputElement:disabled)) {
   background-color: var(--node-editor-card-filled-hover-background);
 }
 
-.input[data-variant="filled"]:focus {
+.input[data-variant="filled"]:focus,
+.inputWithLabel[data-variant="filled"]:focus-within {
   background-color: var(--node-editor-control-background);
   border-color: var(--node-editor-accent-color);
 }
 
 /* Error state */
-.input[data-error="true"] {
+.input[data-error="true"],
+.inputWithLabel[data-error="true"] {
   border-color: var(--node-editor-caution-color);
 }
 
-.input[data-error="true"]:focus {
+.input[data-error="true"]:focus,
+.inputWithLabel[data-error="true"]:focus-within {
   border-color: var(--node-editor-caution-color);
   box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
 }

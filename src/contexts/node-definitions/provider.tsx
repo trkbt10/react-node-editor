@@ -6,7 +6,6 @@ import * as React from "react";
 import {
   NodeDefinition,
   type NodeDataTypeMap,
-  toUntypedDefinition,
 } from "../../types/NodeDefinition";
 import { createNodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
 import { defaultNodeDefinitions } from "../../node-definitions";
@@ -36,24 +35,24 @@ export function NodeDefinitionProvider<
   },
 >({ children, nodeDefinitions = [], includeDefaults = true }: NodeDefinitionProviderProps<TNodeDataTypeMap>) {
   const registry = React.useMemo(() => {
-    const reg = createNodeDefinitionRegistry<NodeDataTypeMap>();
+    const reg = createNodeDefinitionRegistry<TNodeDataTypeMap>();
 
     // Register default definitions if requested
     if (includeDefaults) {
       defaultNodeDefinitions.forEach((def) => {
-        reg.register(toUntypedDefinition(def));
+        reg.register(def as NodeDefinition<string, TNodeDataTypeMap>);
       });
     }
 
     // Register custom definitions
     nodeDefinitions.forEach((def) => {
-      reg.register(toUntypedDefinition(def));
+      reg.register(def);
     });
 
     return reg;
   }, [nodeDefinitions, includeDefaults]);
 
-  const contextValue = { registry } as NodeDefinitionContextValue<TNodeDataTypeMap>;
+  const contextValue: NodeDefinitionContextValue<TNodeDataTypeMap> = { registry };
 
-  return <NodeDefinitionContext.Provider value={contextValue as NodeDefinitionContextValue<NodeDataTypeMap>}>{children}</NodeDefinitionContext.Provider>;
+  return <NodeDefinitionContext.Provider value={contextValue as unknown as NodeDefinitionContextValue<NodeDataTypeMap>}>{children}</NodeDefinitionContext.Provider>;
 }

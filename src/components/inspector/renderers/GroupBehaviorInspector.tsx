@@ -10,7 +10,7 @@ import styles from "./GroupBehaviorInspector.module.css";
  * Inspector for "group" behavior
  * Provides group-specific appearance editing
  */
-export function GroupBehaviorInspector({ node, onUpdateNode }: InspectorRenderProps<"group">): React.ReactElement {
+export function GroupBehaviorInspector({ node, onUpdateNode }: InspectorRenderProps): React.ReactElement {
   const { t } = useI18n();
   const groupBackground = typeof node.data.groupBackground === "string" ? node.data.groupBackground : "#000000";
   const groupOpacity =

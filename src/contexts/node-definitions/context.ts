@@ -32,11 +32,11 @@ export const NodeDefinitionContext = React.createContext<
 export function useNodeDefinitions<
   TNodeDataTypeMap extends {
     [key: string]: Record<string, unknown>;
-  },
+  } = NodeDataTypeMap,
 >(): NodeDefinitionContextValue<TNodeDataTypeMap> {
   const context = React.useContext(NodeDefinitionContext);
   if (!context) {
     throw new Error("useNodeDefinitions must be used within a NodeDefinitionProvider");
   }
-  return context as NodeDefinitionContextValue<TNodeDataTypeMap>;
+  return context as unknown as NodeDefinitionContextValue<TNodeDataTypeMap>;
 }

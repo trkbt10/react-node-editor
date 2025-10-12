@@ -134,7 +134,10 @@ export class LocalSettingsStorage implements SettingsStorage {
   }
 
   on(event: "change", handler: (key: string, value: SettingValue) => void): () => void {
-    return this.eventEmitter.on(event, (data) => handler(data.key, data.value));
+    return this.eventEmitter.on(event, (data) => {
+      const changeData = data as { key: string; value: SettingValue };
+      handler(changeData.key, changeData.value);
+    });
   }
 }
 
@@ -505,11 +508,8 @@ export class SettingsManager extends SettingsEventEmitter implements ISettingsMa
 
   // Utilities
   getSchema(): Record<string, unknown> {
-    const schema: Record<string, unknown> = {
-      type: "object",
-      properties: {},
-      required: [],
-    };
+    const properties: Record<string, Record<string, unknown>> = {};
+    const required: string[] = [];
 
     this.settings.forEach((setting, key) => {
       const propertySchema: Record<string, unknown> = {
@@ -572,14 +572,28 @@ export class SettingsManager extends SettingsEventEmitter implements ISettingsMa
           propertySchema.type = "string";
       }
 
-      schema.properties[key] = propertySchema;
+      properties[key] = propertySchema;
 
       if (setting.required) {
-        schema.required.push(key);
+        required.push(key);
       }
     });
 
-    return schema;
+    return {
+      type: "object",
+      properties,
+      required,
+    };
+  }
+
+  // Override the on method to match interface signature
+  on(
+    event: "change" | "validate" | "save" | "load",
+    handler: (data: SettingsChangeEvent | SettingsValidationResult | SettingsValues) => void
+  ): () => void {
+    return super.on(event, (data: unknown) => {
+      handler(data as SettingsChangeEvent | SettingsValidationResult | SettingsValues);
+    });
   }
 
   reset(): void {

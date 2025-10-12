@@ -19,7 +19,13 @@ import type { GridLayoutConfig, LayerDefinition } from "./types/panels";
 import { type PortPositionBehavior } from "./types/portPosition";
 import type { NodeEditorRendererOverrides } from "./types/renderers";
 
-export type NodeEditorProps<TNodeDataTypeMap = {}> = {
+export type NodeEditorProps<
+  TNodeDataTypeMap extends {
+    [key: string]: Record<string, unknown>;
+  } = {
+    [key: string]: Record<string, unknown>;
+  },
+> = {
   /** Initial data for uncontrolled mode (like defaultValue) */
   initialData?: Partial<NodeEditorData>;
   /** Data for controlled mode (like value) */
@@ -54,13 +60,19 @@ export type NodeEditorProps<TNodeDataTypeMap = {}> = {
   renderers?: NodeEditorRendererOverrides;
   /** Customizes how node ports are positioned and rendered */
   portPositionBehavior?: PortPositionBehavior;
-}
+};
 
 /**
  * NodeEditor - Main component that integrates all node editor functionality
  * Provides three separate contexts for managing different aspects of the editor
  */
-export function NodeEditor<TNodeDataTypeMap = {}>({
+export function NodeEditor<
+  TNodeDataTypeMap extends {
+    [key: string]: Record<string, unknown>;
+  } = {
+    [key: string]: Record<string, unknown>;
+  },
+>({
   initialData,
   data,
   onDataChange,
@@ -88,13 +100,16 @@ export function NodeEditor<TNodeDataTypeMap = {}>({
       port: renderers?.port ?? DefaultPortView,
       connection: renderers?.connection ?? DefaultConnectionView,
     }),
-    [renderers]
+    [renderers],
   );
 
   return (
     <I18nProvider initialLocale={locale} fallbackLocale={fallbackLocale} messagesOverride={messagesOverride}>
       <RendererProvider renderers={mergedRenderers}>
-        <NodeDefinitionProvider<TNodeDataTypeMap> nodeDefinitions={nodeDefinitions} includeDefaults={includeDefaultDefinitions}>
+        <NodeDefinitionProvider<TNodeDataTypeMap>
+          nodeDefinitions={nodeDefinitions}
+          includeDefaults={includeDefaultDefinitions}
+        >
           <ExternalDataProvider refs={externalDataRefs}>
             <NodeEditorProvider
               initialState={initialData}

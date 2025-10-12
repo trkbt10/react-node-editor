@@ -2,7 +2,7 @@ import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { NodeEditor } from "./NodeEditor";
 import type { NodeEditorData } from "./types/core";
-import { CustomNodeExample } from "./examples/CustomNodeExample";
+import { CustomNodeExample } from "./examples/demos/CustomNodeExample";
 
 const meta = {
   title: "Extended/NodeEditor",

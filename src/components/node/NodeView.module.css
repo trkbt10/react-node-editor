@@ -2,19 +2,19 @@
   position: absolute;
   background-color: var(--node-editor-control-background, #ffffff);
   border: var(--node-editor-input-border);
-  border-radius: .5em;
-  box-shadow: 0 2px .5em rgba(0, 0, 0, 0.1);
+  border-radius: var(--node-editor-radius-sm);
+  box-shadow: var(--node-editor-shadow-sm);
   min-width: 150px;
   min-height: 50px;
   cursor: move;
-  transition: box-shadow 0.2s;
+  transition: box-shadow var(--node-editor-transition-duration);
   display: flex;
   flex-direction: column;
   overflow: visible;
 }
 
 .nodeView:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--node-editor-shadow-md);
 }
 
 /* Locked nodes should not be visually highlighted beyond the icon */
@@ -22,13 +22,13 @@
 
 .nodeView[data-selected="true"] {
   border-color: var(--node-editor-accent-color, #0066cc);
-  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+  box-shadow: var(--node-editor-shadow-selection);
 }
 
 .nodeView[data-dragging="true"] {
-  opacity: 0.8;
+  opacity: var(--node-editor-opacity-dragging);
   cursor: grabbing;
-  z-index: 1000;
+  z-index: var(--node-editor-z-index-dragging);
 }
 
 .nodeView[data-is-group="true"] {
@@ -41,7 +41,7 @@
   border-width: 1px;
   border-color: var(--node-editor-group-node-border, var(--node-editor-divider-color, rgba(0, 0, 0, 0.12)));
   box-shadow: none;
-  z-index: 1;
+  z-index: var(--node-editor-z-index-group);
 }
 
 .nodeView[data-is-group="true"][data-has-children="true"] {
@@ -76,7 +76,7 @@
 }
 
 .nodeView[data-visual-state="disabled"] {
-  opacity: 0.5;
+  opacity: var(--node-editor-opacity-disabled);
   pointer-events: none;
 }
 

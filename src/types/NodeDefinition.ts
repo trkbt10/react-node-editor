@@ -371,12 +371,13 @@ export function asOriginalInspectorRender<TNodeType extends string>(
 
 /**
  * Create a widened, untyped node definition suitable for heterogeneous registries.
- * This function performs a type-safe conversion without runtime type checking.
+ * This function is now a simple identity function for backward compatibility.
+ * Type widening is handled automatically by the registry.
+ * @deprecated This function is no longer necessary and will be removed in a future version.
  */
 export function toUntypedDefinition<TNodeType extends string, TMap = NodeDataTypeMap>(
   def: NodeDefinition<TNodeType, TMap>,
 ): NodeDefinition<string, NodeDataTypeMap> {
-  // Simply cast the definition to the untyped version
-  // Runtime type checking is handled by the renderers themselves
+  // Type widening with unknown cast for compatibility
   return def as unknown as NodeDefinition<string, NodeDataTypeMap>;
 }

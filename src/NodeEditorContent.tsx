@@ -1,3 +1,6 @@
+/**
+ * @file Main node editor content component with port position management and grid layout
+ */
 import * as React from "react";
 import { classNames } from "./components/elements";
 import { GridLayout } from "./components/layout/GridLayout";
@@ -24,7 +27,11 @@ import {
 } from "./types/portPosition";
 import { computeAllPortPositions, computeNodePortPositions } from "./contexts/node-ports/utils/computePortPositions";
 import { canConnectPorts } from "./contexts/node-ports/utils/connectionValidation";
-import { canAddNodeType, countNodesByType, getDisabledNodeTypes } from "./contexts/node-definitions/utils/nodeTypeLimits";
+import {
+  canAddNodeType,
+  countNodesByType,
+  getDisabledNodeTypes,
+} from "./contexts/node-definitions/utils/nodeTypeLimits";
 
 export const NodeEditorContent: React.FC<{
   className?: string;
@@ -43,7 +50,7 @@ export const NodeEditorContent: React.FC<{
 
   const portPositionConfig = React.useMemo<PortPositionConfig>(
     () => ({ ...DEFAULT_PORT_POSITION_CONFIG, ...portPositionBehavior?.config }),
-    [portPositionBehavior?.config]
+    [portPositionBehavior?.config],
   );
 
   const computePositionsForNodes = React.useCallback(
@@ -81,7 +88,7 @@ export const NodeEditorContent: React.FC<{
 
       return defaultComputeAll(nodes, portPositionConfig);
     },
-    [portPositionBehavior, portPositionConfig]
+    [portPositionBehavior, portPositionConfig],
   );
 
   const nodeDefinitions = useNodeDefinitionList();
@@ -92,7 +99,7 @@ export const NodeEditorContent: React.FC<{
   // Determine which node types should be disabled in palette based on maxPerFlow
   const disabledNodeTypes = React.useMemo(
     () => getDisabledNodeTypes(nodeDefinitions, nodeTypeCounts),
-    [nodeDefinitions, nodeTypeCounts]
+    [nodeDefinitions, nodeTypeCounts],
   );
 
   // Compute port positions whenever nodes change
@@ -102,9 +109,12 @@ export const NodeEditorContent: React.FC<{
   const prevNodesRef = React.useRef<typeof editorState.nodes>(editorState.nodes);
   const prevBehaviorRef = React.useRef<PortPositionBehavior | undefined>(portPositionBehavior);
   const prevConfigRef = React.useRef<PortPositionConfig>(portPositionConfig);
+  const prevPortPositionsRef = React.useRef<EditorPortPositions>(portPositions);
 
   React.useEffect(() => {
-    if (!editorState.nodes) {return;}
+    if (!editorState.nodes) {
+      return;
+    }
 
     const prevNodes = prevNodesRef.current;
     let shouldRecompute = false;
@@ -143,8 +153,9 @@ export const NodeEditorContent: React.FC<{
         ports: getNodePorts(node.id),
       })) as PortPositionNode[];
 
-      const newPortPositions = computePositionsForNodes(nodes, portPositions);
+      const newPortPositions = computePositionsForNodes(nodes, prevPortPositionsRef.current);
       setPortPositions(newPortPositions);
+      prevPortPositionsRef.current = newPortPositions;
 
       prevNodesRef.current = editorState.nodes;
       prevBehaviorRef.current = portPositionBehavior;
@@ -153,7 +164,7 @@ export const NodeEditorContent: React.FC<{
       prevBehaviorRef.current = portPositionBehavior;
       prevConfigRef.current = portPositionConfig;
     }
-  }, [editorState.nodes, getNodePorts, portPositionBehavior, portPositionConfig, computePositionsForNodes, portPositions]);
+  }, [editorState.nodes, portPositionBehavior, portPositionConfig, getNodePorts, computePositionsForNodes]);
 
   // Use settings hook for clean state management
   const settings = useSettings(settingsManager);
@@ -166,8 +177,8 @@ export const NodeEditorContent: React.FC<{
         "--editor-grid-size": `${gridSize}px`,
         "--editor-grid-opacity": `${gridOpacity}`,
         "--editor-canvas-background": canvasBackground,
-      } as React.CSSProperties),
-    [fontSize, gridSize, gridOpacity, canvasBackground]
+      }) as React.CSSProperties,
+    [fontSize, gridSize, gridOpacity, canvasBackground],
   );
 
   // Node creation handler for context menu
@@ -201,7 +212,9 @@ export const NodeEditorContent: React.FC<{
       };
 
       // Enforce per-flow maximums if defined
-      if (!canAddNodeType(nodeType, nodeDefinitions, nodeTypeCounts)) {return;}
+      if (!canAddNodeType(nodeType, nodeDefinitions, nodeTypeCounts)) {
+        return;
+      }
 
       // Create new node with definition defaults
       const newNode = {
@@ -232,14 +245,16 @@ export const NodeEditorContent: React.FC<{
         const toDef = nodeDefinition;
         const toPorts = toDef.ports || [];
         const targetPortDef = toPorts.find((p) => {
-          if (p.type === fromPort.type) {return false;}
+          if (p.type === fromPort.type) {
+            return false;
+          }
           const tempPort: CorePort = { id: p.id, type: p.type, label: p.label, nodeId, position: p.position };
           return canConnectPorts(
             fromPort.type === "output" ? fromPort : tempPort,
             fromPort.type === "output" ? tempPort : fromPort,
             fromDef,
             toDef,
-            editorState.connections
+            editorState.connections,
           );
         });
         if (targetPortDef) {
@@ -272,9 +287,8 @@ export const NodeEditorContent: React.FC<{
       editorState.connections,
       editorState.nodes,
       utils,
-    ]
+    ],
   );
-
 
   // Track grid changes to force GridLayout re-render when needed
   const gridLayoutVersionRef = React.useRef(0);
@@ -313,7 +327,11 @@ export const NodeEditorContent: React.FC<{
 
   return (
     <NodeEditorBase
-      className={classNames(className, theme === "dark" && styles.darkTheme, smoothAnimations && styles.smoothAnimations)}
+      className={classNames(
+        className,
+        theme === "dark" && styles.darkTheme,
+        smoothAnimations && styles.smoothAnimations,
+      )}
       style={editorStyles}
       data-theme={theme}
     >
@@ -340,7 +358,9 @@ export const NodeEditorContent: React.FC<{
           nodeDefinitions={nodeDefinitions}
           disabledNodeTypes={(() => {
             const allowed = actionState.contextMenu.allowedNodeTypes;
-            if (!allowed) {return disabledNodeTypes;}
+            if (!allowed) {
+              return disabledNodeTypes;
+            }
             const allowedSet = new Set(allowed);
             const flowDisabled = new Set(disabledNodeTypes);
             const extraDisabled = nodeDefinitions.map((d) => d.type).filter((t) => !allowedSet.has(t));
@@ -359,8 +379,8 @@ export const NodeEditorContent: React.FC<{
             actionState.contextMenu.nodeId
               ? { type: "node", id: actionState.contextMenu.nodeId }
               : actionState.contextMenu.connectionId
-              ? { type: "connection", id: actionState.contextMenu.connectionId }
-              : { type: "canvas" }
+                ? { type: "connection", id: actionState.contextMenu.connectionId }
+                : { type: "canvas" }
           }
           visible={true}
           onClose={() => actionDispatch(actionActions.hideContextMenu())}

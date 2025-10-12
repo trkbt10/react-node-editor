@@ -152,10 +152,11 @@
   transition: background-color 0.1s ease;
   position: relative;
   box-sizing: border-box;
+  color: var(--node-editor-text-color);
 }
 
 .nodeItem:not(.selectedNode):hover {
-  background: color-mix(in srgb, var(--node-editor-selected-control-color) 80%, transparent);
+  background: var(--node-editor-control-hover-background);
 }
 
 .selectedNode {
@@ -166,6 +167,7 @@
 .selectedNode:hover {
   color: var(--node-editor-selected-control-text-color);
   background: var(--node-editor-selected-control-color);
+  filter: brightness(0.95);
 }
 
 

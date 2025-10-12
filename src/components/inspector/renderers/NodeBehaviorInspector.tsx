@@ -6,13 +6,12 @@ import { InspectorLabel } from "../parts/InspectorLabel";
 import { InspectorButton } from "../parts/InspectorButton";
 import { InspectorInput } from "../parts/InspectorInput";
 import { InspectorTextarea } from "../parts/InspectorTextarea";
-import { InspectorNumberInput } from "../parts/InspectorNumberInput";
 import { PositionInputsGrid } from "../parts/PositionInputsGrid";
 import { ReadOnlyField } from "../parts/ReadOnlyField";
 import { InspectorDefinitionList, InspectorDefinitionItem } from "../parts/InspectorDefinitionList";
 import { useI18n } from "../../../i18n";
 import { AlignmentControls, type AlignmentActionType } from "../../controls/alignments";
-import { SwitchInput } from "../../elements";
+import { SwitchInput, Input } from "../../elements";
 
 // Extended props for supporting multiple selection alignment
 type ExtendedInspectorRenderProps = {
@@ -138,34 +137,38 @@ export function NodeBehaviorInspector({
           {t("inspectorPosition")} & {t("inspectorSize")}
         </InspectorLabel>
         <PositionInputsGrid>
-          <InspectorNumberInput
+          <Input
+            type="number"
             label="X"
             value={node.position.x}
-            onChange={handlePositionXChange}
+            onChange={(e) => handlePositionXChange(Number(e.target.value))}
             id={`node-${node.id}-pos-x`}
             name="nodePosX"
             aria-label="X position"
           />
-          <InspectorNumberInput
+          <Input
+            type="number"
             label="Y"
             value={node.position.y}
-            onChange={handlePositionYChange}
+            onChange={(e) => handlePositionYChange(Number(e.target.value))}
             id={`node-${node.id}-pos-y`}
             name="nodePosY"
             aria-label="Y position"
           />
-          <InspectorNumberInput
+          <Input
+            type="number"
             label="W"
             value={node.size?.width || 100}
-            onChange={handleWidthChange}
+            onChange={(e) => handleWidthChange(Number(e.target.value))}
             id={`node-${node.id}-width`}
             name="nodeWidth"
             aria-label="Width"
           />
-          <InspectorNumberInput
+          <Input
+            type="number"
             label="H"
             value={node.size?.height || 100}
-            onChange={handleHeightChange}
+            onChange={(e) => handleHeightChange(Number(e.target.value))}
             id={`node-${node.id}-height`}
             name="nodeHeight"
             aria-label="Height"

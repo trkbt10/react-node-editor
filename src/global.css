@@ -207,10 +207,23 @@
   /* Shadows */
   --node-editor-scrolled-app-main-toolbar-box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
   --node-editor-shadow-lg: 0 24px 48px rgba(15, 23, 42, 0.2);
+  --node-editor-shadow-sm: 0 2px 0.5em rgba(0, 0, 0, 0.1);
+  --node-editor-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --node-editor-shadow-selection: 0 0 0 2px rgba(0, 102, 204, 0.2);
 
   /* Drag & Drop */
   --node-editor-dragging-opacity: 0.5;
   --node-editor-drop-indicator-height: 2px;
+
+  /* Z-index levels */
+  --node-editor-z-index-base: 1;
+  --node-editor-z-index-group: 1;
+  --node-editor-z-index-node: 10;
+  --node-editor-z-index-dragging: 1000;
+
+  /* Opacity levels */
+  --node-editor-opacity-disabled: 0.5;
+  --node-editor-opacity-dragging: 0.8;
 
   /* Animations & Transitions */
   --node-editor-transition-duration: 0.15s;
@@ -296,6 +309,11 @@
     --node-editor-table-header-background-color-active: #0f172a;
 
     --node-editor-dialog-background: #1f2937;
+
+    /* Dark mode shadows */
+    --node-editor-shadow-sm: 0 2px 0.5em rgba(0, 0, 0, 0.5);
+    --node-editor-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+    --node-editor-shadow-selection: 0 0 0 2px rgba(96, 165, 250, 0.4);
   }
 }
 

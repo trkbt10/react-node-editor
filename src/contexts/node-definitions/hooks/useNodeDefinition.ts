@@ -8,10 +8,10 @@ import { useNodeDefinitions } from "../context";
 export const useNodeDefinition = <
   TNodeDataTypeMap extends {
     [key: string]: Record<string, unknown>;
-  },
+  } = NodeDataTypeMap,
 >(
   type: string,
-): NodeDefinition<string, NodeDataTypeMap> | undefined => {
+): NodeDefinition<string, TNodeDataTypeMap> | undefined => {
   const { registry } = useNodeDefinitions<TNodeDataTypeMap>();
   return registry.get(type);
 };
