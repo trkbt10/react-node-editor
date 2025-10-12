@@ -7,11 +7,13 @@
   "types": "dist/index.d.ts",
   "packageManager": "bun@1.3.0",
   "sideEffects": [
-    "dist/style.css"
+    "dist/style.css",
+    "public/themes/*.css"
   ],
   "license": "UNLICENSED",
   "files": [
-    "dist"
+    "dist",
+    "public/themes"
   ],
   "exports": {
     ".": {
@@ -19,7 +21,12 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./style.css": "./dist/style.css"
+    "./style.css": "./dist/style.css",
+    "./themes/*": {
+      "import": "./public/themes/*.css",
+      "require": "./public/themes/*.css",
+      "default": "./public/themes/*.css"
+    }
   },
   "scripts": {
     "dev": "vite dev",
