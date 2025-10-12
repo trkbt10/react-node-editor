@@ -1,0 +1,228 @@
+:root {
+  /* Core spacing scale */
+  --node-editor-space-xs: 4px;
+  --node-editor-space-sm: 8px;
+  --node-editor-space-md: 12px;
+  --node-editor-space-lg: 16px;
+  --node-editor-space-xl: 24px;
+  --node-editor-space-xxl: 32px;
+
+  /* Layout spacing */
+  --node-editor-control-padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+
+  /* Inspector spacing system */
+  --node-editor-inspector-space-xs: var(--node-editor-space-xs);
+  --node-editor-inspector-space-sm: var(--node-editor-space-sm);
+  --node-editor-inspector-space-md: var(--node-editor-space-md);
+  --node-editor-inspector-space-lg: var(--node-editor-space-lg);
+  --node-editor-inspector-space-xl: var(--node-editor-space-xl);
+  --node-editor-inspector-space-xxl: var(--node-editor-space-xxl);
+  --node-editor-inspector-content-padding: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-xs);
+  --node-editor-inspector-header-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-section-gap: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-field-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
+  --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+  --node-editor-inspector-input-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+
+  /* Inspector typography */
+  --node-editor-inspector-font-size-title: 0.75rem;
+  --node-editor-inspector-line-height-title: 1.4;
+  --node-editor-inspector-font-size-body: 0.875rem;
+  --node-editor-inspector-line-height-body: 1.5;
+  --node-editor-inspector-font-size-meta: 0.75rem;
+  --node-editor-inspector-line-height-meta: 1.35;
+  --node-editor-inspector-font-weight-medium: 500;
+  --node-editor-inspector-font-size-heading: 0.9375rem;
+  --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
+  --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+  /* Font families & typography */
+  --node-editor-theme-default-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', 'Helvetica', 'Arial', sans-serif;
+  --node-editor-theme-control-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', 'Helvetica', 'Arial', sans-serif;
+  --node-editor-theme-label-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', 'Helvetica', 'Arial', sans-serif;
+  --node-editor-system-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', sans-serif;
+  --node-editor-font-mono: ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --node-editor-title-font: 600 0.875rem/1.5 var(--node-editor-theme-label-font-family);
+  --node-editor-subtitle-font: 500 0.875rem/1.5 var(--node-editor-theme-label-font-family);
+  --node-editor-caption-font: 400 0.75rem/1.4 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 500 var(--node-editor-inspector-font-size-body)/1.5 var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body)/1.5 var(--node-editor-theme-default-font-family);
+  --node-editor-font-size-lg: 1rem;
+  --node-editor-font-size-sm: 0.875rem;
+  --node-editor-font-size-xs: 0.75rem;
+
+  /* Canvas grid */
+  --node-editor-grid-color: rgba(209, 213, 219, 0.5);
+  --node-editor-grid-opacity: 0.15;
+
+  /* Inspector shadows */
+  --node-editor-inspector-shadow: 0 8px 24px rgba(140, 149, 159, 0.2), 0 0 0 1px rgba(208, 215, 222, 0.48);
+  --node-editor-inspector-header-shadow: 0 1px 0 rgba(208, 215, 222, 0.48);
+
+  /* Tree & List Components */
+  --node-editor-tree-item-height: 28px;
+  --node-editor-tree-indent: 16px;
+
+  /* Control Buttons */
+  --node-editor-control-button-size-sm: 18px;
+  --node-editor-control-button-size: 22px;
+
+  /* Icons */
+  --node-editor-icon-size-sm: 14px;
+  --node-editor-icon-selected-brightness: 1.2;
+
+  /* Text colors - GitHub Light */
+  --node-editor-text-color: #1f2328;
+  --node-editor-text-secondary: #59636e;
+  --node-editor-header-text-color: #1f2328;
+  --node-editor-label-color: var(--node-editor-text-color);
+  --node-editor-secondary-label-color: #59636e;
+  --node-editor-tertiary-label-color: #8c959f;
+  --node-editor-quaternary-label-color: #d0d7de;
+  --node-editor-control-text-color: #1f2328;
+  --node-editor-control-text-color-primary: #ffffff;
+  --node-editor-control-text-color-secondary: rgba(31, 35, 40, 0.85);
+  --node-editor-control-hover-text-color-primary: #ffffff;
+  --node-editor-input-text-color: #1f2328;
+  --node-editor-selected-control-text-color: #0969da;
+  --node-editor-selected-menu-item-text-color: #ffffff;
+
+  /* Status & accent colors - GitHub Light blue */
+  --node-editor-accent-color: #0969da;
+  --node-editor-accent-color-hover: #0550ae;
+  --node-editor-color-primary: #0969da;
+  --node-editor-keyboard-focus-indicator-color: rgba(9, 105, 218, 0.3);
+  --node-editor-success-color: #1a7f37;
+  --node-editor-warning-color: #9a6700;
+  --node-editor-caution-color: #d1242f;
+  --node-editor-caution-hover-background: rgba(209, 36, 47, 0.15);
+  --node-editor-system-orange-color: #bc4c00;
+  --node-editor-system-red-color: #d1242f;
+  --node-editor-connection-color: #0969da;
+
+  /* Surface colors - GitHub Light */
+  --node-editor-surface-primary: #ffffff;
+  --node-editor-surface-secondary: #f6f8fa;
+  --node-editor-surface-tertiary: #eaeef2;
+  --node-editor-selected-content-background-color: rgba(9, 105, 218, 0.12);
+  --node-editor-selected-control-color: rgba(84, 174, 255, 0.4);
+  --node-editor-under-page-background-color: #f6f8fa;
+  --node-editor-window-background-color: #ffffff;
+
+  /* Control surfaces */
+  --node-editor-control-background: rgba(255, 255, 255, 0.9);
+  --node-editor-control-background-primary: #0969da;
+  --node-editor-control-background-secondary: rgba(175, 184, 193, 0.2);
+  --node-editor-control-hover-background: rgba(208, 215, 222, 0.4);
+  --node-editor-control-hover-background-primary: #0550ae;
+  --node-editor-hover-background: rgba(208, 215, 222, 0.32);
+  --node-editor-control-box-shadow-primary: 0 8px 24px rgba(84, 174, 255, 0.4);
+  --node-editor-control-box-shadow-secondary: inset 0 0 0 1px rgba(208, 215, 222, 0.48);
+  --node-editor-disabled-control-text-color: rgba(31, 35, 40, 0.35);
+
+  /* Input surfaces */
+  --node-editor-input-background: #f6f8fa;
+  --node-editor-input-border: 1px solid #d0d7de;
+  --node-editor-input-border-hover: rgba(9, 105, 218, 0.5);
+  --node-editor-input-box-shadow: inset 0 0 0 1px rgba(208, 215, 222, 0.2), 0 1px 2px rgba(31, 35, 40, 0.075);
+  --node-editor-input-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  /* Card & panel styling */
+  --node-editor-card-border-color: rgba(208, 215, 222, 0.48);
+  --node-editor-card-border: 1px solid var(--node-editor-card-border-color);
+  --node-editor-card-border-radius: var(--node-editor-radius-md);
+  --node-editor-card-box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+  --node-editor-card-hover-box-shadow: 0 12px 32px rgba(84, 174, 255, 0.25);
+  --node-editor-card-elevated-box-shadow: 0 16px 48px rgba(84, 174, 255, 0.3);
+  --node-editor-card-focus-box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
+  --node-editor-card-disabled-background: rgba(175, 184, 193, 0.55);
+  --node-editor-card-filled-background: rgba(84, 174, 255, 0.15);
+  --node-editor-card-filled-hover-background: rgba(84, 174, 255, 0.25);
+  --node-editor-card-hover-border-color: rgba(84, 174, 255, 0.6);
+
+  /* Dialogs & overlays */
+  --node-editor-dialog-background: rgba(255, 255, 255, 0.95);
+  --node-editor-dialog-box-shadow: 0 24px 64px rgba(140, 149, 159, 0.4);
+  --node-editor-dialog-level-elevation: 1000;
+
+  /* Scrollbars */
+  --node-editor-scroll-bar-thumb-color: rgba(175, 184, 193, 0.4);
+  --node-editor-active-scroll-bar-thumb-color: rgba(84, 174, 255, 0.6);
+
+  /* Selected State Colors */
+  --node-editor-selected-secondary-color: rgba(255, 255, 255, 0.95);
+  --node-editor-selected-hover-background: rgba(84, 174, 255, 0.3);
+
+  /* Tables & list accents */
+  --node-editor-table-header-background-color: #f6f8fa;
+  --node-editor-table-header-background-color-hover: #eaeef2;
+  --node-editor-table-header-background-color-active: rgba(84, 174, 255, 0.2);
+
+  /* Node-specific colors */
+  --node-editor-group-node-background: rgba(84, 174, 255, 0.1);
+  --node-editor-group-node-border: rgba(84, 174, 255, 0.5);
+  --node-editor-group-node-active-background: rgba(84, 174, 255, 0.2);
+  --node-editor-group-node-active-color: rgba(9, 105, 218, 0.85);
+  --node-editor-node-port-input-color: #1a7f37;
+  --node-editor-node-port-output-color: #0969da;
+
+  /* System fills */
+  --node-editor-tertiary-system-background: rgba(175, 184, 193, 0.2);
+  --node-editor-tertiary-system-fill-color: rgba(234, 238, 242, 0.5);
+  --node-editor-quaternary-system-fill-color: rgba(234, 238, 242, 0.7);
+
+  /* Border Radii */
+  --node-editor-border-radius-xxs: 3px;
+  --node-editor-border-radius-xs: 6px;
+  --node-editor-radius-xs: 6px;
+  --node-editor-radius-sm: 6px;
+  --node-editor-radius-md: 6px;
+  --node-editor-control-border-radius: var(--node-editor-radius-sm);
+  --node-editor-segment-control-border-radius: var(--node-editor-radius-md);
+
+  /* Borders */
+  --node-editor-border-width: 1px;
+  --node-editor-border-color: #d0d7de;
+  --node-editor-divider-color: #d8dee4;
+  --node-editor-separator-color: #eaeef2;
+
+  /* Segment controls */
+  --node-editor-segment-backdrop-filter: none;
+  --node-editor-segment-control-background: transparent;
+  --node-editor-segment-control-background-color: transparent;
+  --node-editor-segment-control-text-color: #59636e;
+  --node-editor-segment-control-active-background-color: #eaeef2;
+  --node-editor-segment-control-active-text-color: #1f2328;
+  --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+
+  /* Connection styling - GitHub Light theme */
+  --node-editor-connection-base-stroke-width: 2;
+  --node-editor-connection-active-stroke-width: 3;
+  --node-editor-connection-flow-stripe-stroke-width: 1.5;
+  --node-editor-connection-flow-stripe-active-stroke-width: 2.5;
+  --node-editor-connection-direction-stroke-width: 2;
+  --node-editor-connection-hover-shadow: drop-shadow(0 2px 8px rgba(84, 174, 255, 0.35));
+  --node-editor-connection-selected-shadow: drop-shadow(0 4px 12px rgba(84, 174, 255, 0.5));
+  --node-editor-connection-hover-opacity: 0.85;
+  --node-editor-connection-dragging-opacity: 0.55;
+  --node-editor-connection-stripe-dash-array: 10 14;
+  --node-editor-connection-stripe-dash-offset-bg: -12;
+  --node-editor-connection-stripe-opacity-accent: 0.95;
+  --node-editor-connection-stripe-opacity-background: 0.65;
+  --node-editor-connection-flow-animation-duration: 1.2s;
+  --node-editor-connection-flow-animation-distance: -24;
+  --node-editor-connection-base-transition: stroke 0.2s ease-out, stroke-width 0.2s ease-out;
+  --node-editor-connection-arrow-transition: fill 0.2s ease-out;
+
+  /* Connection drag styling - GitHub Light theme */
+  --node-editor-connection-drag-stroke-width-connecting: 2;
+  --node-editor-connection-drag-stroke-width-disconnecting: 3;
+  --node-editor-connection-drag-dash-array-connecting: 5 5;
+  --node-editor-connection-drag-dash-array-disconnecting: 8 4;
+  --node-editor-connection-drag-animation-duration: 0.5s;
+  --node-editor-connection-drag-animation-distance: -10;
+}

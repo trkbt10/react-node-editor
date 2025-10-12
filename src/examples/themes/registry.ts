@@ -9,6 +9,8 @@ export type NodeEditorThemeId =
   | "apple"
   | "xcorp"
   | "github"
+  | "github-light"
+  | "vscode"
   | "windowsxp"
   | "windows11"
   | "minecraft"
@@ -58,9 +60,21 @@ const AVAILABLE_THEMES: NodeEditorTheme[] = [
   },
   {
     id: "github",
-    label: "GitHub",
+    label: "GitHub Dark",
     description: "Dark dimmed look with desaturated neutrals and punchy blue call-to-action.",
     cssPath: "/themes/github.css",
+  },
+  {
+    id: "github-light",
+    label: "GitHub Light",
+    description: "Clean light theme with GitHub's signature blue and subtle shadows.",
+    cssPath: "/themes/github-light.css",
+  },
+  {
+    id: "vscode",
+    label: "VS Code",
+    description: "Dark code editor theme with precise geometry and VS Code's signature blue.",
+    cssPath: "/themes/vscode.css",
   },
   {
     id: "windowsxp",
