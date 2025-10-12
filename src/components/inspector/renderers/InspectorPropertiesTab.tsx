@@ -3,7 +3,9 @@ import { useEditorActionState } from "../../../contexts/EditorActionStateContext
 import { useNodeEditor } from "../../../contexts/node-editor";
 import { NodeInspector } from "./NodeInspector";
 import { H4 } from "../../elements";
-import { InspectorField, InspectorSection, InspectorSectionTitle } from "../parts";
+import { InspectorField } from "../parts/InspectorField";
+import { InspectorSection } from "../parts/InspectorSection";
+import { InspectorSectionTitle } from "../parts/InspectorSectionTitle";
 import styles from "../InspectorPanel.module.css";
 import { useI18n } from "../../../i18n";
 

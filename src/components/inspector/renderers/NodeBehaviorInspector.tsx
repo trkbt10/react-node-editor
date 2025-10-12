@@ -1,18 +1,15 @@
 import * as React from "react";
 import type { InspectorRenderProps } from "../../../types/NodeDefinition";
 import type { Node } from "../../../types/core";
-import {
-  PropertySection,
-  InspectorLabel,
-  InspectorButton,
-  InspectorInput,
-  InspectorTextarea,
-  InspectorNumberInput,
-  PositionInputsGrid,
-  ReadOnlyField,
-  InspectorDefinitionList,
-  InspectorDefinitionItem,
-} from "../parts";
+import { PropertySection } from "../parts/PropertySection";
+import { InspectorLabel } from "../parts/InspectorLabel";
+import { InspectorButton } from "../parts/InspectorButton";
+import { InspectorInput } from "../parts/InspectorInput";
+import { InspectorTextarea } from "../parts/InspectorTextarea";
+import { InspectorNumberInput } from "../parts/InspectorNumberInput";
+import { PositionInputsGrid } from "../parts/PositionInputsGrid";
+import { ReadOnlyField } from "../parts/ReadOnlyField";
+import { InspectorDefinitionList, InspectorDefinitionItem } from "../parts/InspectorDefinitionList";
 import { useI18n } from "../../../i18n";
 import { AlignmentControls, type AlignmentActionType } from "../../controls/alignments";
 import { SwitchInput } from "../../elements";

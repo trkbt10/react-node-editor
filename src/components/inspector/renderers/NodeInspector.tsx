@@ -5,7 +5,9 @@ import { useEditorActionState } from "../../../contexts/EditorActionStateContext
 import { useNodeDefinition } from "../../../contexts/NodeDefinitionContext";
 import { useExternalDataRef } from "../../../contexts/ExternalDataContext";
 import { useExternalData } from "../../../hooks/useExternalData";
-import { NodeBehaviorInspector, NodeActionsBehaviorInspector, GroupBehaviorInspector } from "./";
+import { NodeBehaviorInspector } from "./NodeBehaviorInspector";
+import { NodeActionsBehaviorInspector } from "./NodeActionsBehaviorInspector";
+import { GroupBehaviorInspector } from "./GroupBehaviorInspector";
 import styles from "./NodeInspector.module.css";
 import { calculateAlignmentPositions, type AlignmentActionType } from "../../controls/alignments";
 import { getBehaviors, behaviorArrayIncludes } from "../../../types/behaviors";

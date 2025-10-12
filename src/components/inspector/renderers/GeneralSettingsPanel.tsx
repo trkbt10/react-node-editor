@@ -1,8 +1,9 @@
 import * as React from "react";
-import { useNodeEditor } from "../contexts/node-editor";
-import { Label, SwitchInput } from "../components/elements";
-import { useI18n } from "../i18n";
-import { SettingsField, SettingsInput } from "./components";
+import { useNodeEditor } from "../../../contexts/node-editor";
+import { SwitchInput } from "../../elements";
+import { useI18n } from "../../../i18n";
+import { InspectorField } from "../parts/InspectorField";
+import { InspectorInput } from "../parts/InspectorInput";
 
 /**
  * General editor settings component
@@ -42,7 +43,7 @@ export const GeneralSettingsPanel: React.FC = () => {
 
   return (
     <>
-      <SettingsField>
+      <InspectorField>
         <SwitchInput
           id="auto-save"
           checked={settings.autoSave}
@@ -51,25 +52,22 @@ export const GeneralSettingsPanel: React.FC = () => {
           size="medium"
           disabled={!settingsWritable}
         />
-      </SettingsField>
-      <SettingsField>
-        <Label htmlFor="auto-save-interval">
-          {t("inspectorAutoSaveInterval")}
-          <SettingsInput
-            id="auto-save-interval"
-            name="autoSaveInterval"
-            type="number"
-            value={autoSaveIntervalInput}
-            min={5}
-            max={3600}
-            step={5}
-            onChange={(e) => handleAutoSaveIntervalChange(e.target.value)}
-            onBlur={handleAutoSaveIntervalBlur}
-            disabled={!settingsWritable}
-            aria-label="Auto-save interval in seconds"
-          />
-        </Label>
-      </SettingsField>
+      </InspectorField>
+      <InspectorField label={t("inspectorAutoSaveInterval")}>
+        <InspectorInput
+          id="auto-save-interval"
+          name="autoSaveInterval"
+          type="number"
+          value={autoSaveIntervalInput}
+          min={5}
+          max={3600}
+          step={5}
+          onChange={(e) => handleAutoSaveIntervalChange(e.target.value)}
+          onBlur={handleAutoSaveIntervalBlur}
+          disabled={!settingsWritable}
+          aria-label="Auto-save interval in seconds"
+        />
+      </InspectorField>
     </>
   );
 };

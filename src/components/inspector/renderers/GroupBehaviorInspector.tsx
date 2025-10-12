@@ -1,7 +1,8 @@
 import * as React from "react";
 import type { InspectorRenderProps } from "../../../types/NodeDefinition";
 import { Input } from "../../../components/elements";
-import { InspectorLabel, InspectorButton } from "../parts";
+import { InspectorLabel } from "../parts/InspectorLabel";
+import { InspectorButton } from "../parts/InspectorButton";
 import { useI18n } from "../../../i18n";
 import styles from "./GroupBehaviorInspector.module.css";
 

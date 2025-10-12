@@ -1,9 +1,14 @@
 import * as React from "react";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { NodeTreeListPanel, HistoryPanel, FeatureFlagsPanel, AutoLayoutPanel, InspectorPropertiesTab } from "./renderers";
+import { NodeTreeListPanel } from "./renderers/NodeTreeListPanel";
+import { HistoryPanel } from "./renderers/HistoryPanel";
+import { FeatureFlagsPanel } from "./renderers/FeatureFlagsPanel";
+import { AutoLayoutPanel } from "./renderers/AutoLayoutPanel";
+import { InspectorPropertiesTab } from "./renderers/InspectorPropertiesTab";
 import { TabNav } from "../layout/TabNav";
 import { classNames } from "../elements";
-import { InspectorSection, PropertySection } from "./parts";
+import { InspectorSection } from "./parts/InspectorSection";
+import { PropertySection } from "./parts/PropertySection";
 import styles from "./InspectorPanel.module.css";
 import { useI18n } from "../../i18n";
 

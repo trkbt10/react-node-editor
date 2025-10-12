@@ -1,6 +1,7 @@
 import * as React from "react";
 import type { InspectorRenderProps } from "../../../types/NodeDefinition";
-import { InspectorLabel, InspectorButton } from "../parts";
+import { InspectorLabel } from "../parts/InspectorLabel";
+import { InspectorButton } from "../parts/InspectorButton";
 import styles from "./NodeActionsBehaviorInspector.module.css";
 import { useI18n } from "../../../i18n";
 import { useNodeEditorActions } from "../../../hooks/useNodeEditorActions";

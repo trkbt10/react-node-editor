@@ -3,7 +3,7 @@ import { useHistory } from "../../../contexts/HistoryContext";
 import { Button } from "../../elements";
 import { useI18n } from "../../../i18n";
 import styles from "./HistoryPanel.module.css";
-import { PropertySection } from "../parts";
+import { PropertySection } from "../parts/PropertySection";
 
 export const HistoryPanel: React.FC = () => {
   const { state, canUndo, canRedo, undo, redo } = useHistory();
