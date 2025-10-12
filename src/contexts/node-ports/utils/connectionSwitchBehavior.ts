@@ -1,6 +1,6 @@
-import type { Connection, Node, NodeId, Port } from "../types/core";
-import type { NodeDefinition, PortDefinition } from "../types/NodeDefinition";
-import { createValidatedConnection } from "./nodeLayerHelpers";
+import type { Connection, Node, NodeId, Port } from "../../../types/core";
+import type { NodeDefinition, PortDefinition } from "../../../types/NodeDefinition";
+import { createValidatedConnection } from "../../../utils/nodeLayerHelpers";
 import { getPortDefinition } from "./connectionValidation";
 
 const DEFAULT_MAX_CONNECTIONS = 1;

@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Port } from "../../types/core";
-import type { ConnectablePortsResult } from "../../utils/connectablePortPlanner";
+import type { ConnectablePortsResult } from "../../contexts/node-ports";
 import { isPortConnectable } from "../../utils/nodeLayerHelpers";
 import { PortView } from "../connection/ports/PortView";
 import { useOptionalRenderers } from "../../contexts/RendererContext";

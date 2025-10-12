@@ -2,7 +2,6 @@ import * as React from "react";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { classNames } from "../elements";
 import styles from "./DebugOverlay.module.css";
 
 export type DebugOverlayProps = {
@@ -54,10 +53,7 @@ export const DebugOverlay: React.FC<DebugOverlayProps> = ({
 
   return (
     <div
-      className={classNames(
-        styles.debugOverlay,
-        isCollapsed && styles.collapsed
-      )}
+      className={`${styles.debugOverlay} ${isCollapsed ? styles.collapsed : ""}`}
     >
       <div className={styles.debugHeader}>
         <span className={styles.debugTitle}>Debug Info</span>

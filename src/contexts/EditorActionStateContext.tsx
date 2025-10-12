@@ -13,8 +13,8 @@ import {
   ConnectionDisconnectState,
   ContextMenuState,
 } from "../types/core";
-import type { ConnectablePortsResult } from "../utils/connectablePortPlanner";
-import { emptyConnectablePorts } from "../utils/connectablePortPlanner";
+import type { ConnectablePortsResult } from "./node-ports";
+import { emptyConnectablePorts } from "./node-ports";
 
 // Selection box specific to action state
 export type SelectionBox = {

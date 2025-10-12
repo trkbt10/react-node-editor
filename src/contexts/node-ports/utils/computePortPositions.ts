@@ -1,7 +1,7 @@
-import type { Node, Port, Position, Size } from "../types/core";
-import type { PortPosition, NodePortPositions, EditorPortPositions, PortPositionConfig } from "../types/portPosition";
-import { DEFAULT_PORT_POSITION_CONFIG } from "../types/portPosition";
-import { getNodeSize, getNodeBoundingBox } from "./boundingBoxUtils";
+import type { Node, Port, Position, Size } from "../../../types/core";
+import type { PortPosition, NodePortPositions, EditorPortPositions, PortPositionConfig } from "../../../types/portPosition";
+import { DEFAULT_PORT_POSITION_CONFIG } from "../../../types/portPosition";
+import { getNodeSize, getNodeBoundingBox } from "../../../utils/boundingBoxUtils";
 
 /**
  * Group ports by their position (left, right, top, bottom)

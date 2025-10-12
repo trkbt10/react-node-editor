@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { PortPosition } from "../types/portPosition";
 import { useNodeEditor } from "../contexts/node-editor";
-import { usePortPositions } from "../contexts/PortPositionContext";
+import { usePortPositions } from "../contexts/node-ports";
 
 /**
  * Hook to get dynamic port position that updates with node position

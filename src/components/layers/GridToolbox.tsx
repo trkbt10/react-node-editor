@@ -4,6 +4,7 @@ import { useNodeEditor } from "../../contexts/node-editor";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import styles from "./GridToolbox.module.css";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type GridToolboxProps = {
   // No props needed - layout is handled by GridLayout
 }

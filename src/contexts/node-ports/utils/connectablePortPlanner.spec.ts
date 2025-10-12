@@ -1,5 +1,5 @@
-import type { Connection, ConnectionDisconnectState, ConnectionDragState, Node, Port } from "../types/core";
-import type { NodeDefinition } from "../types/NodeDefinition";
+import type { Connection, ConnectionDisconnectState, ConnectionDragState, Node, Port } from "../../../types/core";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
 import {
   computeConnectablePortIds,
   resolveConnectableSourcePort,

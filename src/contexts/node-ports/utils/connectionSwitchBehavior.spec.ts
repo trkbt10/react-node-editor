@@ -1,5 +1,5 @@
-import type { Connection, Node, Port } from "../types/core";
-import type { NodeDefinition } from "../types/NodeDefinition";
+import type { Connection, Node, Port } from "../../../types/core";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { planConnectionChange, ConnectionSwitchBehavior } from "./connectionSwitchBehavior";
 
 const makeNode = (id: string, type: string): Node => ({

@@ -255,11 +255,6 @@ const initialData: NodeEditorData = {
       position: { x: 100, y: 100 },
       size: { width: 220, height: 120 },
       data: { title: "Task 1" },
-      _ports:
-        TaskNodeDefinition.ports?.map((portDef) => ({
-          ...portDef,
-          nodeId: "node-1",
-        })) || [],
     },
     "node-2": {
       id: "node-2",
@@ -267,11 +262,6 @@ const initialData: NodeEditorData = {
       position: { x: 400, y: 100 },
       size: { width: 220, height: 120 },
       data: { title: "Task 2" },
-      _ports:
-        TaskNodeDefinition.ports?.map((portDef) => ({
-          ...portDef,
-          nodeId: "node-2",
-        })) || [],
     },
     "node-3": {
       id: "node-3",

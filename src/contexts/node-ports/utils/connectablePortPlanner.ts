@@ -7,9 +7,9 @@ import type {
   Port,
   PortId,
   PortType,
-} from "../types/core";
-import type { NodeDefinition } from "../types/NodeDefinition";
-import { getConnectablePortIds } from "./nodeLayerHelpers";
+} from "../../../types/core";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
+import { getConnectablePortIds } from "../../../utils/nodeLayerHelpers";
 import {
   ConnectionSwitchBehavior,
   getConnectionSwitchContext,

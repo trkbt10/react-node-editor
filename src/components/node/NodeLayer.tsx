@@ -15,7 +15,7 @@ import type { Port } from "../../types/core";
 import { snapMultipleToGrid } from "../../utils/gridSnap";
 import { useRenderers } from "../../contexts/RendererContext";
 import { hasGroupBehavior } from "../../types/behaviors";
-import { usePortPositions } from "../../contexts/PortPositionContext";
+import { usePortPositions } from "../../contexts/node-ports";
 import {
   getPortConnections,
   getNodesToDrag,
@@ -27,10 +27,8 @@ import {
   getOtherPortInfo,
   createValidatedConnection,
 } from "../../utils/nodeLayerHelpers";
-import { canConnectPorts } from "../../utils/connectionValidation";
 import type { Port as CorePort } from "../../types/core";
-import { planConnectionChange, ConnectionSwitchBehavior } from "../../utils/connectionSwitchBehavior";
-import { computeConnectablePortIds, emptyConnectablePorts } from "../../utils/connectablePortPlanner";
+import { canConnectPorts, planConnectionChange, ConnectionSwitchBehavior, computeConnectablePortIds, emptyConnectablePorts } from "../../contexts/node-ports";
 
 export type NodeLayerProps = {
   className?: string;

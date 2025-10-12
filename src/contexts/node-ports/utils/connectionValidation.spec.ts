@@ -1,7 +1,7 @@
 import { canConnectPorts } from "./connectionValidation";
-import type { Node, Connection, Port } from "../types/core";
-import type { NodeDefinition, NodeDefinitionRegistry } from "../types/NodeDefinition";
-import { createNodeDefinitionRegistry } from "../types/NodeDefinition";
+import type { Node, Connection, Port } from "../../../types/core";
+import type { NodeDefinition, NodeDefinitionRegistry } from "../../../types/NodeDefinition";
+import { createNodeDefinitionRegistry } from "../../../types/NodeDefinition";
 
 const makeNode = (id: string, type: string): Node => ({ id, type, position: { x: 0, y: 0 }, data: {} });
 

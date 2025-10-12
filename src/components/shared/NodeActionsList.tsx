@@ -7,7 +7,7 @@ import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useNodeDefinitionList } from "../../contexts/NodeDefinitionContext";
 import { canAddNodeType, countNodesByType } from "../../utils/nodeTypeLimits";
-import { getClipboard, setClipboard } from "../../utils/clipboard";
+import { copyNodesToClipboard, pasteNodesFromClipboard } from "../../utils/nodeClipboardOperations";
 
 export type NodeActionsListProps = {
   targetNodeId: string;
@@ -48,63 +48,41 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
     const selected = actionState.selectedNodeIds.length > 0 && actionState.selectedNodeIds.includes(targetNodeId)
       ? actionState.selectedNodeIds
       : [targetNodeId];
-    const nodes = selected
-      .map((id) => editorState.nodes[id])
-      .filter(Boolean)
-      .map((n) => ({ id: n.id, type: n.type, position: n.position, size: n.size, data: n.data }));
-    const selSet = new Set(selected);
-    const connections = Object.values(editorState.connections)
-      .filter((c) => selSet.has(c.fromNodeId) && selSet.has(c.toNodeId))
-      .map((c) => ({ fromNodeId: c.fromNodeId, fromPortId: c.fromPortId, toNodeId: c.toNodeId, toPortId: c.toPortId }));
-    setClipboard({ nodes, connections });
+    copyNodesToClipboard(selected, editorState);
     onAction?.();
-  }, [actionState.selectedNodeIds, editorState.nodes, editorState.connections, targetNodeId, onAction]);
+  }, [actionState.selectedNodeIds, editorState, targetNodeId, onAction]);
 
   const handleCut = React.useCallback(() => {
     const selected = actionState.selectedNodeIds.length > 0 && actionState.selectedNodeIds.includes(targetNodeId)
       ? actionState.selectedNodeIds
       : [targetNodeId];
-    const nodes = selected
-      .map((id) => editorState.nodes[id])
-      .filter(Boolean)
-      .map((n) => ({ id: n.id, type: n.type, position: n.position, size: n.size, data: n.data }));
-    const selSet = new Set(selected);
-    const connections = Object.values(editorState.connections)
-      .filter((c) => selSet.has(c.fromNodeId) && selSet.has(c.toNodeId))
-      .map((c) => ({ fromNodeId: c.fromNodeId, fromPortId: c.fromPortId, toNodeId: c.toNodeId, toPortId: c.toPortId }));
-    setClipboard({ nodes, connections });
+    copyNodesToClipboard(selected, editorState);
     selected.forEach((nodeId) => editorActions.deleteNode(nodeId));
     actionDispatch(actionActions.clearSelection());
     onAction?.();
-  }, [actionState.selectedNodeIds, editorActions, editorState.nodes, editorState.connections, actionDispatch, actionActions, targetNodeId, onAction]);
+  }, [actionState.selectedNodeIds, editorActions, editorState, actionDispatch, actionActions, targetNodeId, onAction]);
 
   const handlePaste = React.useCallback(() => {
-    const clip = getClipboard();
-    if (!clip || clip.nodes.length === 0) {return;}
-    const idMap = new Map<string, string>();
-    clip.nodes.forEach((n) => {
-      const newId = Math.random().toString(36).slice(2, 10);
-      idMap.set(n.id, newId);
-      const newNode = {
-        id: newId,
-        type: n.type,
-        position: { x: n.position.x + 40, y: n.position.y + 40 },
-        size: n.size,
-        data: { ...(n.data || {}), title: typeof n.data?.title === 'string' ? `${n.data.title} Copy` : n.data?.title },
-      };
-      editorActions.addNodeWithId(newNode);
+    const result = pasteNodesFromClipboard();
+    if (!result) {
+      return;
+    }
+
+    // Add nodes
+    result.nodes.forEach((node) => {
+      editorActions.addNodeWithId(node);
     });
-    clip.connections.forEach((c) => {
-      const fromId = idMap.get(c.fromNodeId);
-      const toId = idMap.get(c.toNodeId);
-      if (fromId && toId) {
-        editorActions.addConnection({ fromNodeId: fromId, fromPortId: c.fromPortId, toNodeId: toId, toPortId: c.toPortId });
-      }
+
+    // Add connections
+    result.connections.forEach((conn) => {
+      editorActions.addConnection(conn);
     });
-    const newIds = Array.from(idMap.values());
+
+    // Select pasted nodes
+    const newIds = Array.from(result.idMap.values());
     actionDispatch(actionActions.selectAllNodes(newIds));
     onAction?.();
-  }, [editorActions, actionDispatch, actionActions]);
+  }, [editorActions, actionDispatch, actionActions, onAction]);
 
   const handleDelete = React.useCallback(() => {
     editorActions.deleteNode(targetNodeId);

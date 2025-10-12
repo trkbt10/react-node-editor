@@ -1,7 +1,7 @@
 import type { Port, Node, Connection, GridSettings } from "../types/core";
 import type { NodeDefinition } from "../types/NodeDefinition";
-import { canConnectPorts } from "./connectionValidation";
-import type { ConnectablePortsResult } from "./connectablePortPlanner";
+import { canConnectPorts } from "../contexts/node-ports";
+import type { ConnectablePortsResult } from "../contexts/node-ports";
 import { nodeHasGroupBehavior } from "../types/behaviors";
 
 /**

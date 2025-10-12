@@ -1,5 +1,5 @@
-import type { Node, Port, PortId, NodeId } from "../types/core";
-import type { NodeDefinition, PortDefinition } from "../types/NodeDefinition";
+import type { Node, Port, PortId, NodeId } from "../../../types/core";
+import type { NodeDefinition, PortDefinition } from "../../../types/NodeDefinition";
 
 /**
  * Port override configuration for node-specific customizations

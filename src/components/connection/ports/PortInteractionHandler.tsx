@@ -7,8 +7,7 @@ import { useNodeDefinitions } from "../../../contexts/NodeDefinitionContext";
 import { usePointerDrag } from "../../../hooks/usePointerDrag";
 // Use the unified connectable ports calculator based on resolved ports
 import { isPortConnectable } from "../../../utils/nodeLayerHelpers";
-import { planConnectionChange, ConnectionSwitchBehavior } from "../../../utils/connectionSwitchBehavior";
-import { computeConnectablePortIds, emptyConnectablePorts } from "../../../utils/connectablePortPlanner";
+import { planConnectionChange, ConnectionSwitchBehavior, computeConnectablePortIds, emptyConnectablePorts } from "../../../contexts/node-ports";
 // isPortConnectable imported above
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
 

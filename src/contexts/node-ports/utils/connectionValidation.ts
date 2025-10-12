@@ -1,5 +1,5 @@
-import type { Port, Connection } from "../types/core";
-import type { NodeDefinition } from "../types/NodeDefinition";
+import type { Port, Connection } from "../../../types/core";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
 
 /**
  * Check if two ports can be connected

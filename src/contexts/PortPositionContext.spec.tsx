@@ -1,6 +1,6 @@
 import { render } from "@testing-library/react";
 import { type FC } from "react";
-import { PortPositionProvider, usePortPositions } from "./PortPositionContext";
+import { PortPositionProvider, usePortPositions } from "./node-ports";
 import type { EditorPortPositions, PortPosition } from "../types/portPosition";
 
 const Harness: FC = () => {

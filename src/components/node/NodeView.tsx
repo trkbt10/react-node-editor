@@ -6,7 +6,7 @@ import { useNodeDefinition } from "../../contexts/NodeDefinitionContext";
 import { useExternalDataRef } from "../../contexts/ExternalDataContext";
 import { useExternalData } from "../../hooks/useExternalData";
 import styles from "./NodeView.module.css";
-import type { ConnectablePortsResult } from "../../utils/connectablePortPlanner";
+import type { ConnectablePortsResult } from "../../contexts/node-ports";
 import { ResizeHandle } from "./ResizeHandle";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeResize } from "../../hooks/useNodeResize";
@@ -224,9 +224,6 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
     [node.id, node.size, node.locked, nodeResize],
   );
 
-  // Check if we should use custom renderer
-  const useCustomRenderer = nodeDefinition?.renderNode && !isEditing(node.id, "title");
-
   // Custom renderer props
   const customRenderProps = React.useMemo(
     () => ({
@@ -328,7 +325,6 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
         node={node}
         isSelected={isSelected}
         nodeDefinition={nodeDefinition}
-        useCustomRenderer={useCustomRenderer}
         customRenderProps={customRenderProps}
         isEditing={isEditing(node.id, "title")}
         editingValue={editingState.currentValue}

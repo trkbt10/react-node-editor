@@ -1,4 +1,5 @@
 import type { NodeEditorData, NodeId, Position, Node, Connection } from "../types/core";
+import { getNodeSize } from "./boundingBoxUtils";
 
 export type LayoutOptions = {
   iterations?: number;
@@ -175,7 +176,7 @@ export function calculateAutoLayout(data: NodeEditorData, options: LayoutOptions
   // Normalize positions (center around origin and add padding)
   const nodeIds = Object.keys(positions);
   if (nodeIds.length > 0) {
-    // Find bounding box
+    // Find bounding box including node sizes
     let minX = Infinity,
       maxX = -Infinity;
     let minY = Infinity,
@@ -183,10 +184,15 @@ export function calculateAutoLayout(data: NodeEditorData, options: LayoutOptions
 
     nodeIds.forEach((nodeId) => {
       const pos = positions[nodeId];
+      const node = nodes.find(n => n.id === nodeId);
+      if (!node) {return;}
+
+      const size = getNodeSize(node);
+
       minX = Math.min(minX, pos.x);
-      maxX = Math.max(maxX, pos.x);
+      maxX = Math.max(maxX, pos.x + size.width);
       minY = Math.min(minY, pos.y);
-      maxY = Math.max(maxY, pos.y);
+      maxY = Math.max(maxY, pos.y + size.height);
     });
 
     // Center and add padding
@@ -352,5 +358,70 @@ export function calculateGridLayout(
   return {
     nodePositions: positions,
     iterations: 0,
+  };
+}
+
+/**
+ * Calculate the bounding box of all nodes including their sizes
+ * Useful for viewport adjustments after layout
+ */
+export function calculateNodesBoundingBox(
+  nodes: Node[],
+  positions: Record<NodeId, Position>
+): {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+  width: number;
+  height: number;
+  centerX: number;
+  centerY: number;
+} {
+  let minX = Infinity,
+    maxX = -Infinity;
+  let minY = Infinity,
+    maxY = -Infinity;
+
+  nodes.forEach((node) => {
+    const pos = positions[node.id];
+    if (!pos) {return;}
+
+    const size = getNodeSize(node);
+
+    minX = Math.min(minX, pos.x);
+    maxX = Math.max(maxX, pos.x + size.width);
+    minY = Math.min(minY, pos.y);
+    maxY = Math.max(maxY, pos.y + size.height);
+  });
+
+  // Handle empty case
+  if (!isFinite(minX)) {
+    return {
+      minX: 0,
+      minY: 0,
+      maxX: 0,
+      maxY: 0,
+      width: 0,
+      height: 0,
+      centerX: 0,
+      centerY: 0,
+    };
+  }
+
+  const width = maxX - minX;
+  const height = maxY - minY;
+  const centerX = (minX + maxX) / 2;
+  const centerY = (minY + maxY) / 2;
+
+  return {
+    minX,
+    minY,
+    maxX,
+    maxY,
+    width,
+    height,
+    centerX,
+    centerY,
   };
 }
