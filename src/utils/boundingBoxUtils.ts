@@ -7,7 +7,7 @@ export type BoundingBox = {
   bottom: number;
   width: number;
   height: number;
-}
+};
 
 /**
  * Default node dimensions
@@ -73,10 +73,7 @@ export function doRectanglesIntersect(rect1: BoundingBox, rect2: BoundingBox): b
  */
 export function isRectangleInsideAnother(inner: BoundingBox, outer: BoundingBox): boolean {
   return (
-    inner.left >= outer.left &&
-    inner.top >= outer.top &&
-    inner.right <= outer.right &&
-    inner.bottom <= outer.bottom
+    inner.left >= outer.left && inner.top >= outer.top && inner.right <= outer.right && inner.bottom <= outer.bottom
   );
 }
 
@@ -84,12 +81,7 @@ export function isRectangleInsideAnother(inner: BoundingBox, outer: BoundingBox)
  * Check if a point is inside a rectangle
  */
 export function isPointInRectangle(point: Position, rect: BoundingBox): boolean {
-  return (
-    point.x >= rect.left &&
-    point.x <= rect.right &&
-    point.y >= rect.top &&
-    point.y <= rect.bottom
-  );
+  return point.x >= rect.left && point.x <= rect.right && point.y >= rect.top && point.y <= rect.bottom;
 }
 
 /**

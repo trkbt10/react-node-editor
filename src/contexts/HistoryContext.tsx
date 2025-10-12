@@ -10,14 +10,14 @@ export type HistoryEntry = {
   timestamp: number;
   action: string;
   data: NodeEditorData;
-}
+};
 
 export type HistoryState = {
   entries: HistoryEntry[];
   currentIndex: number;
   maxEntries: number;
   isRecording: boolean;
-}
+};
 
 // History actions
 export type HistoryAction =
@@ -29,16 +29,15 @@ export type HistoryAction =
   | { type: "SET_MAX_ENTRIES"; payload: { maxEntries: number } };
 
 // History reducer
-export const historyReducer = (
-  state: HistoryState,
-  action: HistoryAction
-): HistoryState => {
+export const historyReducer = (state: HistoryState, action: HistoryAction): HistoryState => {
   switch (action.type) {
     case "PUSH_ENTRY": {
-      if (!state.isRecording) {return state;}
+      if (!state.isRecording) {
+        return state;
+      }
 
       const { action: actionName, data } = action.payload;
-      
+
       // Create new entry
       const newEntry: HistoryEntry = {
         id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -49,13 +48,13 @@ export const historyReducer = (
 
       // Remove any entries after current index (if we're not at the end)
       const truncatedEntries = state.entries.slice(0, state.currentIndex + 1);
-      
+
       // Add new entry
       const newEntries = [...truncatedEntries, newEntry];
-      
+
       // Limit to max entries (keep the most recent)
       const limitedEntries = newEntries.slice(-state.maxEntries);
-      
+
       return {
         ...state,
         entries: limitedEntries,
@@ -64,8 +63,10 @@ export const historyReducer = (
     }
 
     case "UNDO": {
-      if (state.currentIndex <= 0) {return state;}
-      
+      if (state.currentIndex <= 0) {
+        return state;
+      }
+
       return {
         ...state,
         currentIndex: state.currentIndex - 1,
@@ -73,8 +74,10 @@ export const historyReducer = (
     }
 
     case "REDO": {
-      if (state.currentIndex >= state.entries.length - 1) {return state;}
-      
+      if (state.currentIndex >= state.entries.length - 1) {
+        return state;
+      }
+
       return {
         ...state,
         currentIndex: state.currentIndex + 1,
@@ -99,7 +102,7 @@ export const historyReducer = (
     case "SET_MAX_ENTRIES": {
       const { maxEntries } = action.payload;
       const limitedEntries = state.entries.slice(-maxEntries);
-      
+
       return {
         ...state,
         maxEntries,
@@ -157,7 +160,7 @@ export type HistoryContextValue = {
   pushEntry: (action: string, data: NodeEditorData) => void;
   undo: () => HistoryEntry | null;
   redo: () => HistoryEntry | null;
-}
+};
 
 export const HistoryContext = React.createContext<HistoryContextValue | null>(null);
 
@@ -167,21 +170,14 @@ export type HistoryProviderProps = {
   initialState?: Partial<HistoryState>;
   /** Preferred: pass max entries as a stable prop; internally memo-updated */
   maxEntries?: number;
-}
+};
 
-export const HistoryProvider: React.FC<HistoryProviderProps> = ({
-  children,
-  initialState,
-  maxEntries,
-}) => {
-  const [state, dispatch] = React.useReducer(
-    historyReducer,
-    { ...defaultHistoryState, ...initialState }
-  );
+export const HistoryProvider: React.FC<HistoryProviderProps> = ({ children, initialState, maxEntries }) => {
+  const [state, dispatch] = React.useReducer(historyReducer, { ...defaultHistoryState, ...initialState });
 
   // Apply maxEntries changes via reducer to avoid re-initialization patterns
   React.useEffect(() => {
-    if (typeof maxEntries === 'number' && maxEntries > 0) {
+    if (typeof maxEntries === "number" && maxEntries > 0) {
       dispatch(historyActions.setMaxEntries(maxEntries));
     }
   }, [maxEntries]);
@@ -196,42 +192,45 @@ export const HistoryProvider: React.FC<HistoryProviderProps> = ({
     (action: string, data: NodeEditorData) => {
       dispatch(historyActions.pushEntry(action, data));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const undo = React.useCallback((): HistoryEntry | null => {
-    if (!canUndo) {return null;}
-    
+    if (!canUndo) {
+      return null;
+    }
+
     dispatch(historyActions.undo());
     const previousEntry = state.entries[state.currentIndex - 1];
     return previousEntry || null;
   }, [canUndo, state.entries, state.currentIndex, dispatch]);
 
   const redo = React.useCallback((): HistoryEntry | null => {
-    if (!canRedo) {return null;}
-    
+    if (!canRedo) {
+      return null;
+    }
+
     dispatch(historyActions.redo());
     const nextEntry = state.entries[state.currentIndex + 1];
     return nextEntry || null;
   }, [canRedo, state.entries, state.currentIndex, dispatch]);
 
-  const contextValue: HistoryContextValue = React.useMemo(() => ({
-    state,
-    dispatch,
-    actions: historyActions,
-    canUndo,
-    canRedo,
-    currentEntry,
-    pushEntry,
-    undo,
-    redo,
-  }), [state, dispatch, canUndo, canRedo, currentEntry, pushEntry, undo, redo]);
-
-  return (
-    <HistoryContext.Provider value={contextValue}>
-      {children}
-    </HistoryContext.Provider>
+  const contextValue: HistoryContextValue = React.useMemo(
+    () => ({
+      state,
+      dispatch,
+      actions: historyActions,
+      canUndo,
+      canRedo,
+      currentEntry,
+      pushEntry,
+      undo,
+      redo,
+    }),
+    [state, dispatch, canUndo, canRedo, currentEntry, pushEntry, undo, redo],
   );
+
+  return <HistoryContext.Provider value={contextValue}>{children}</HistoryContext.Provider>;
 };
 
 // Hook

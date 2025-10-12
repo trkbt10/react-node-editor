@@ -152,9 +152,7 @@ export function applyTheme(themeId: NodeEditorThemeId): NodeEditorTheme {
     throw new Error("Cannot apply node editor theme because document.head is not available.");
   }
 
-  const existingLinkElement = document.getElementById(
-    NODE_EDITOR_THEME_STYLE_ELEMENT_ID,
-  ) as HTMLLinkElement | null;
+  const existingLinkElement = document.getElementById(NODE_EDITOR_THEME_STYLE_ELEMENT_ID) as HTMLLinkElement | null;
 
   if (theme.cssPath === "") {
     // Default theme: remove any existing theme link element

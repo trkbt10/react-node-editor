@@ -25,13 +25,15 @@ function getNodeBounds(node: Node) {
  * Calculate the overall bounding box for multiple nodes
  */
 function getOverallBounds(nodes: Node[]) {
-  if (nodes.length === 0) {return null;}
+  if (nodes.length === 0) {
+    return null;
+  }
 
   const bounds = nodes.map(getNodeBounds);
-  const left = Math.min(...bounds.map(b => b.left));
-  const top = Math.min(...bounds.map(b => b.top));
-  const right = Math.max(...bounds.map(b => b.right));
-  const bottom = Math.max(...bounds.map(b => b.bottom));
+  const left = Math.min(...bounds.map((b) => b.left));
+  const top = Math.min(...bounds.map((b) => b.top));
+  const right = Math.max(...bounds.map((b) => b.right));
+  const bottom = Math.max(...bounds.map((b) => b.bottom));
 
   return {
     left,
@@ -48,21 +50,22 @@ function getOverallBounds(nodes: Node[]) {
 /**
  * Calculate new positions for alignment operations
  */
-export function calculateAlignmentPositions(
-  nodes: Node[],
-  alignmentType: string
-): Record<string, Position> {
-  if (nodes.length < 2) {return {};}
+export function calculateAlignmentPositions(nodes: Node[], alignmentType: string): Record<string, Position> {
+  if (nodes.length < 2) {
+    return {};
+  }
 
   const nodeUpdates: Record<string, Position> = {};
-  const bounds = nodes.map(node => ({ node, bounds: getNodeBounds(node) }));
+  const bounds = nodes.map((node) => ({ node, bounds: getNodeBounds(node) }));
   const overallBounds = getOverallBounds(nodes);
 
-  if (!overallBounds) {return {};}
+  if (!overallBounds) {
+    return {};
+  }
 
   switch (alignmentType) {
     case "align-left": {
-      const leftmostX = Math.min(...bounds.map(b => b.bounds.left));
+      const leftmostX = Math.min(...bounds.map((b) => b.bounds.left));
       bounds.forEach(({ node }) => {
         nodeUpdates[node.id] = { x: leftmostX, y: node.position.y };
       });
@@ -78,7 +81,7 @@ export function calculateAlignmentPositions(
     }
 
     case "align-right": {
-      const rightmostX = Math.max(...bounds.map(b => b.bounds.right));
+      const rightmostX = Math.max(...bounds.map((b) => b.bounds.right));
       bounds.forEach(({ node, bounds: nodeBounds }) => {
         const newX = rightmostX - nodeBounds.width;
         nodeUpdates[node.id] = { x: newX, y: node.position.y };
@@ -87,7 +90,7 @@ export function calculateAlignmentPositions(
     }
 
     case "align-top": {
-      const topmostY = Math.min(...bounds.map(b => b.bounds.top));
+      const topmostY = Math.min(...bounds.map((b) => b.bounds.top));
       bounds.forEach(({ node }) => {
         nodeUpdates[node.id] = { x: node.position.x, y: topmostY };
       });
@@ -103,7 +106,7 @@ export function calculateAlignmentPositions(
     }
 
     case "align-bottom": {
-      const bottommostY = Math.max(...bounds.map(b => b.bounds.bottom));
+      const bottommostY = Math.max(...bounds.map((b) => b.bounds.bottom));
       bounds.forEach(({ node, bounds: nodeBounds }) => {
         const newY = bottommostY - nodeBounds.height;
         nodeUpdates[node.id] = { x: node.position.x, y: newY };
@@ -112,7 +115,9 @@ export function calculateAlignmentPositions(
     }
 
     case "distribute-horizontal": {
-      if (nodes.length < 3) {break;}
+      if (nodes.length < 3) {
+        break;
+      }
 
       // Sort nodes by X position
       const sortedBounds = bounds.sort((a, b) => a.bounds.left - b.bounds.left);
@@ -137,7 +142,9 @@ export function calculateAlignmentPositions(
     }
 
     case "distribute-vertical": {
-      if (nodes.length < 3) {break;}
+      if (nodes.length < 3) {
+        break;
+      }
 
       // Sort nodes by Y position
       const sortedBounds = bounds.sort((a, b) => a.bounds.top - b.bounds.top);

@@ -48,7 +48,7 @@ export type PanelDefinition = {
   className?: string;
   /** Custom inline styles */
   style?: React.CSSProperties;
-}
+};
 
 /**
  * Configuration for editor panels - dictionary of labeled panels
@@ -86,7 +86,7 @@ export type GridTrack = {
   minSize?: number;
   /** Maximum size in pixels (only applies if resizable) */
   maxSize?: number;
-}
+};
 
 /**
  * Grid-based layout configuration for the editor
@@ -104,7 +104,7 @@ export type GridLayoutConfig = {
   className?: string;
   /** Custom inline styles */
   style?: React.CSSProperties;
-}
+};
 
 /**
  * Layer positioning mode
@@ -190,7 +190,7 @@ export type LayerDefinition = {
   className?: string;
   /** Custom inline styles */
   style?: React.CSSProperties;
-}
+};
 
 /**
  * Configuration for grid-based editor layout
@@ -238,4 +238,4 @@ export type EditorGridLayout = {
   config: GridLayoutConfig;
   /** Layers to render in the grid */
   layers: LayerDefinition[];
-}
+};

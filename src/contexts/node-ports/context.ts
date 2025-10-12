@@ -30,7 +30,7 @@ export type PortPositionContextValue = {
   computePortPosition: (node: PortPositionNode, port: Port) => PortPosition;
   /** Calculate port positions for a node on demand */
   calculateNodePortPositions: (node: PortPositionNode) => NodePortPositions;
-}
+};
 
 /**
  * Context for accessing pre-computed port positions
@@ -53,10 +53,7 @@ export function usePortPositions(): PortPositionContextValue {
  */
 export function usePortPosition(nodeId: string, portId: string): PortPosition | undefined {
   const { getPortPosition } = usePortPositions();
-  return React.useMemo(
-    () => getPortPosition(nodeId, portId),
-    [getPortPosition, nodeId, portId]
-  );
+  return React.useMemo(() => getPortPosition(nodeId, portId), [getPortPosition, nodeId, portId]);
 }
 
 /**
@@ -64,8 +61,5 @@ export function usePortPosition(nodeId: string, portId: string): PortPosition | 
  */
 export function useNodePortPositions(nodeId: string): NodePortPositions | undefined {
   const { getNodePortPositions } = usePortPositions();
-  return React.useMemo(
-    () => getNodePortPositions(nodeId),
-    [getNodePortPositions, nodeId]
-  );
+  return React.useMemo(() => getNodePortPositions(nodeId), [getNodePortPositions, nodeId]);
 }

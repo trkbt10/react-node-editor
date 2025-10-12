@@ -10,7 +10,7 @@ export type ConstraintViolationDisplayProps = {
   violations: ConstraintViolation[];
   onDismiss?: (violationId: string) => void;
   className?: string;
-}
+};
 
 /**
  * Component to display constraint violations
@@ -23,7 +23,6 @@ export const ConstraintViolationDisplay: React.FC<ConstraintViolationDisplayProp
   if (violations.length === 0) {
     return null;
   }
-
 
   const getSeverityIcon = (severity: ConstraintViolation["severity"]): string => {
     switch (severity) {
@@ -54,29 +53,21 @@ export const ConstraintViolationDisplay: React.FC<ConstraintViolationDisplayProp
   return (
     <div className={classNames(styles.constraintViolations, className)}>
       <div className={styles.violationContainer}>
-        <h4 className={styles.violationHeader}>
-          Constraint Violations ({violations.length})
-        </h4>
-        
+        <h4 className={styles.violationHeader}>Constraint Violations ({violations.length})</h4>
+
         <div className={styles.violationList}>
           {violations.map((violation, index) => (
             <div
               key={`${violation.type}-${index}`}
               className={classNames(styles.violationItem, getSeverityClassName(violation.severity))}
             >
-              <span className={styles.violationIcon}>
-                {getSeverityIcon(violation.severity)}
-              </span>
-              
+              <span className={styles.violationIcon}>{getSeverityIcon(violation.severity)}</span>
+
               <div className={styles.violationContent}>
-                <div className={styles.violationType}>
-                  {violation.type}
-                </div>
-                
-                <div className={styles.violationMessage}>
-                  {violation.message}
-                </div>
-                
+                <div className={styles.violationType}>{violation.type}</div>
+
+                <div className={styles.violationMessage}>{violation.message}</div>
+
                 {(violation.nodeIds || violation.portIds || violation.connectionIds) && (
                   <div className={styles.violationDetails}>
                     {violation.nodeIds && violation.nodeIds.length > 0 && (
@@ -91,7 +82,7 @@ export const ConstraintViolationDisplay: React.FC<ConstraintViolationDisplayProp
                   </div>
                 )}
               </div>
-              
+
               {onDismiss && (
                 <button
                   onClick={() => onDismiss(`${violation.type}-${index}`)}
@@ -117,13 +108,11 @@ export const useConstraintViolationManager = () => {
   const [dismissedViolations, setDismissedViolations] = React.useState<Set<string>>(new Set());
 
   const addViolations = React.useCallback((newViolations: ConstraintViolation[]) => {
-    setViolations(prev => {
+    setViolations((prev) => {
       const combined = [...prev];
-      newViolations.forEach(violation => {
+      newViolations.forEach((violation) => {
         // Avoid duplicates based on type and message
-        const exists = combined.some(v => 
-          v.type === violation.type && v.message === violation.message
-        );
+        const exists = combined.some((v) => v.type === violation.type && v.message === violation.message);
         if (!exists) {
           combined.push(violation);
         }
@@ -138,13 +127,11 @@ export const useConstraintViolationManager = () => {
   }, []);
 
   const dismissViolation = React.useCallback((violationId: string) => {
-    setDismissedViolations(prev => new Set([...prev, violationId]));
+    setDismissedViolations((prev) => new Set([...prev, violationId]));
   }, []);
 
   const visibleViolations = React.useMemo(() => {
-    return violations.filter((_, index) => 
-      !dismissedViolations.has(`${violations[index].type}-${index}`)
-    );
+    return violations.filter((_, index) => !dismissedViolations.has(`${violations[index].type}-${index}`));
   }, [violations, dismissedViolations]);
 
   return {

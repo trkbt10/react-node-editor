@@ -1,3 +1,6 @@
+/**
+ * @file Tests for NodeDefinitionProvider - validates node definition registry and lookup
+ */
 import { render, screen } from "@testing-library/react";
 import { type FC } from "react";
 import { NodeDefinitionProvider } from "./provider";
@@ -19,7 +22,7 @@ describe("NodeDefinitionContext", () => {
     render(
       <NodeDefinitionProvider includeDefaults>
         <Harness />
-      </NodeDefinitionProvider>
+      </NodeDefinitionProvider>,
     );
     expect(screen.getByTestId("has-standard").textContent).toBe("true");
     expect(screen.getByTestId("has-group").textContent).toBe("true");

@@ -28,9 +28,13 @@ export function NodeActionsBehaviorInspector({ node }: InspectorRenderProps): Re
 
   const handleDuplicate = React.useCallback(() => {
     const n = editorState.nodes[node.id];
-    if (!n) {return;}
+    if (!n) {
+      return;
+    }
     const counts = countNodesByType(editorState);
-    if (!canAddNodeType(n.type, nodeDefinitions, counts)) {return;}
+    if (!canAddNodeType(n.type, nodeDefinitions, counts)) {
+      return;
+    }
     editorActions.duplicateNodes([node.id]);
   }, [node.id, editorState, nodeDefinitions, editorActions]);
 

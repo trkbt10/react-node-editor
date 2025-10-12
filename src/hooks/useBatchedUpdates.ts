@@ -6,7 +6,7 @@ type BatchedUpdate<T> = T | UpdateFunction<T>;
 type BatchedUpdatesOptions = {
   delay?: number;
   maxBatchSize?: number;
-}
+};
 
 /**
  * Hook for batching multiple state updates to reduce re-renders
@@ -14,10 +14,10 @@ type BatchedUpdatesOptions = {
  */
 export const useBatchedUpdates = <T>(
   initialState: T,
-  options: BatchedUpdatesOptions = {}
+  options: BatchedUpdatesOptions = {},
 ): [T, (update: BatchedUpdate<T>) => void, () => void] => {
   const { delay = 0, maxBatchSize = 100 } = options;
-  
+
   const [state, setState] = React.useState<T>(initialState);
   const pendingUpdates = React.useRef<Array<UpdateFunction<T>>>([]);
   const frameRef = React.useRef<number | null>(null);
@@ -25,9 +25,11 @@ export const useBatchedUpdates = <T>(
 
   // Apply all pending updates
   const flushUpdates = React.useCallback(() => {
-    if (pendingUpdates.current.length === 0) {return;}
+    if (pendingUpdates.current.length === 0) {
+      return;
+    }
 
-    setState(prevState => {
+    setState((prevState) => {
       let newState = prevState;
       for (const update of pendingUpdates.current) {
         newState = update(newState);
@@ -37,7 +39,7 @@ export const useBatchedUpdates = <T>(
 
     pendingUpdates.current = [];
     frameRef.current = null;
-    
+
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
@@ -45,39 +47,40 @@ export const useBatchedUpdates = <T>(
   }, []);
 
   // Schedule update batch
-  const scheduleUpdate = React.useCallback((update: BatchedUpdate<T>) => {
-    const updateFn: UpdateFunction<T> = 
-      typeof update === 'function' 
-        ? update as UpdateFunction<T>
-        : (prevState: T) => update;
-    
-    pendingUpdates.current.push(updateFn);
+  const scheduleUpdate = React.useCallback(
+    (update: BatchedUpdate<T>) => {
+      const updateFn: UpdateFunction<T> =
+        typeof update === "function" ? (update as UpdateFunction<T>) : (_prevState: T) => update;
 
-    // If we've reached max batch size, flush immediately
-    if (pendingUpdates.current.length >= maxBatchSize) {
-      flushUpdates();
-      return;
-    }
+      pendingUpdates.current.push(updateFn);
 
-    // Cancel any existing scheduled flush
-    if (frameRef.current !== null) {
-      cancelAnimationFrame(frameRef.current);
-    }
-    if (timeoutRef.current !== null) {
-      clearTimeout(timeoutRef.current);
-    }
+      // If we've reached max batch size, flush immediately
+      if (pendingUpdates.current.length >= maxBatchSize) {
+        flushUpdates();
+        return;
+      }
 
-    // Schedule flush
-    if (delay > 0) {
-      // Use timeout for delayed batching
-      timeoutRef.current = setTimeout(() => {
+      // Cancel any existing scheduled flush
+      if (frameRef.current !== null) {
+        cancelAnimationFrame(frameRef.current);
+      }
+      if (timeoutRef.current !== null) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // Schedule flush
+      if (delay > 0) {
+        // Use timeout for delayed batching
+        timeoutRef.current = setTimeout(() => {
+          frameRef.current = requestAnimationFrame(flushUpdates);
+        }, delay);
+      } else {
+        // Use next animation frame for immediate batching
         frameRef.current = requestAnimationFrame(flushUpdates);
-      }, delay);
-    } else {
-      // Use next animation frame for immediate batching
-      frameRef.current = requestAnimationFrame(flushUpdates);
-    }
-  }, [flushUpdates, delay, maxBatchSize]);
+      }
+    },
+    [flushUpdates, delay, maxBatchSize],
+  );
 
   // Force flush all pending updates
   const forceFlush = React.useCallback(() => {

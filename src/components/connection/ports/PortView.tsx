@@ -20,7 +20,7 @@ export type PortViewProps = {
   isCandidate?: boolean;
   isHovered?: boolean;
   isConnected?: boolean;
-}
+};
 
 /**
  * PortView - Renders a connection port on a node
@@ -65,7 +65,7 @@ export const PortView: React.FC<PortViewProps> = ({
       e.stopPropagation();
       onPointerDown?.(e, port);
     },
-    [onPointerDown, port]
+    [onPointerDown, port],
   );
 
   const handlePointerUp = React.useCallback(
@@ -73,21 +73,21 @@ export const PortView: React.FC<PortViewProps> = ({
       e.stopPropagation();
       onPointerUp?.(e, port);
     },
-    [onPointerUp, port]
+    [onPointerUp, port],
   );
 
   const handlePointerEnter = React.useCallback(
     (e: React.PointerEvent) => {
       onPointerEnter?.(e, port);
     },
-    [onPointerEnter, port]
+    [onPointerEnter, port],
   );
 
   const handlePointerLeave = React.useCallback(
     (e: React.PointerEvent) => {
       onPointerLeave?.(e, port);
     },
-    [onPointerLeave, port]
+    [onPointerLeave, port],
   );
 
   // Get node editor state for custom renderer context
@@ -121,10 +121,7 @@ export const PortView: React.FC<PortViewProps> = ({
       >
         <div className={styles.portInner} />
         {port.label && (
-          <span
-            className={styles.portLabel}
-            data-port-label-position={port.position}
-          >
+          <span className={styles.portLabel} data-port-label-position={port.position}>
             {port.label}
           </span>
         )}
@@ -142,7 +139,7 @@ export const PortView: React.FC<PortViewProps> = ({
       handlePointerUp,
       handlePointerEnter,
       handlePointerLeave,
-    ]
+    ],
   );
 
   // Check if there's a custom renderer

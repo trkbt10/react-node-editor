@@ -16,7 +16,7 @@ export type DebugOverlayProps = {
     actions?: boolean;
     performance?: boolean;
   };
-}
+};
 
 /**
  * Debug overlay component that shows internal state information
@@ -43,7 +43,7 @@ export const DebugOverlay: React.FC<DebugOverlayProps> = ({
   // Track render performance only when performance section is enabled
   React.useEffect(() => {
     if (showSections.performance) {
-      setPerformanceStats(prev => ({
+      setPerformanceStats((prev) => ({
         renderCount: prev.renderCount + 1,
         lastRenderTime: Date.now() - (prev.lastRenderTime || Date.now()),
       }));
@@ -55,9 +55,7 @@ export const DebugOverlay: React.FC<DebugOverlayProps> = ({
   const selectedNodeCount = actionState.selectedNodeIds.length;
 
   return (
-    <div
-      className={`${styles.debugOverlay} ${isCollapsed ? styles.collapsed : ""}`}
-    >
+    <div className={`${styles.debugOverlay} ${isCollapsed ? styles.collapsed : ""}`}>
       <div className={styles.debugHeader}>
         <span className={styles.debugTitle}>Debug Info</span>
         <button
@@ -106,10 +104,13 @@ export const DebugOverlay: React.FC<DebugOverlayProps> = ({
                 <span className={styles.value}>{selectedNodeCount}</span>
               </div>
               {Object.entries(
-                Object.values(editorState.nodes).reduce((acc, node) => {
-                  acc[node.type] = (acc[node.type] || 0) + 1;
-                  return acc;
-                }, {} as Record<string, number>)
+                Object.values(editorState.nodes).reduce(
+                  (acc, node) => {
+                    acc[node.type] = (acc[node.type] || 0) + 1;
+                    return acc;
+                  },
+                  {} as Record<string, number>,
+                ),
               ).map(([type, count]) => (
                 <div key={type} className={styles.debugItem}>
                   <span className={styles.label}>{type}:</span>
@@ -146,15 +147,11 @@ export const DebugOverlay: React.FC<DebugOverlayProps> = ({
               </div>
               <div className={styles.debugItem}>
                 <span className={styles.label}>Connecting:</span>
-                <span className={styles.value}>
-                  {actionState.connectionDragState ? "Active" : "None"}
-                </span>
+                <span className={styles.value}>{actionState.connectionDragState ? "Active" : "None"}</span>
               </div>
               <div className={styles.debugItem}>
                 <span className={styles.label}>Panning:</span>
-                <span className={styles.value}>
-                  {canvasState.panState.isPanning ? "Active" : "None"}
-                </span>
+                <span className={styles.value}>{canvasState.panState.isPanning ? "Active" : "None"}</span>
               </div>
             </div>
           )}

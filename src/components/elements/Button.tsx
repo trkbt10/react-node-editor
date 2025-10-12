@@ -8,7 +8,7 @@ export type ButtonProps = {
   variant?: "primary" | "secondary" | "danger" | "ghost";
   size?: "small" | "medium" | "large";
   children: React.ReactNode;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>
+} & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export const Button: React.FC<ButtonProps> = ({
   variant = "primary",

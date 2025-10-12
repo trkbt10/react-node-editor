@@ -7,7 +7,7 @@ export type CanvasTransformOptions = {
   scaleStep?: number;
   enablePan?: boolean;
   enableZoom?: boolean;
-}
+};
 
 export type CanvasTransformResult = {
   viewport: Viewport;
@@ -19,7 +19,7 @@ export type CanvasTransformResult = {
   zoomOut: () => void;
   zoomToFit: (bounds: { width: number; height: number }) => void;
   panBy: (delta: Position) => void;
-}
+};
 
 /**
  * Hook for managing canvas viewport transformations
@@ -27,15 +27,9 @@ export type CanvasTransformResult = {
  */
 export function useCanvasTransform(
   containerRef: React.RefObject<HTMLElement>,
-  options: CanvasTransformOptions = {}
+  options: CanvasTransformOptions = {},
 ): CanvasTransformResult {
-  const {
-    minScale = 0.1,
-    maxScale = 4,
-    scaleStep = 0.1,
-    enablePan = true,
-    enableZoom = true,
-  } = options;
+  const { minScale = 0.1, maxScale = 4, scaleStep = 0.1, enablePan = true, enableZoom = true } = options;
 
   const [viewport, setViewport] = React.useState<Viewport>({
     offset: { x: 0, y: 0 },
@@ -45,7 +39,9 @@ export function useCanvasTransform(
   // Convert client coordinates to canvas coordinates
   const clientToCanvas = React.useCallback(
     (clientPos: Position): Position => {
-      if (!containerRef.current) {return clientPos;}
+      if (!containerRef.current) {
+        return clientPos;
+      }
 
       const rect = containerRef.current.getBoundingClientRect();
       return {
@@ -53,13 +49,15 @@ export function useCanvasTransform(
         y: (clientPos.y - rect.top) / viewport.scale - viewport.offset.y,
       };
     },
-    [viewport, containerRef]
+    [viewport, containerRef],
   );
 
   // Convert canvas coordinates to client coordinates
   const canvasToClient = React.useCallback(
     (canvasPos: Position): Position => {
-      if (!containerRef.current) {return canvasPos;}
+      if (!containerRef.current) {
+        return canvasPos;
+      }
 
       const rect = containerRef.current.getBoundingClientRect();
       return {
@@ -67,7 +65,7 @@ export function useCanvasTransform(
         y: (canvasPos.y + viewport.offset.y) * viewport.scale + rect.top,
       };
     },
-    [viewport, containerRef]
+    [viewport, containerRef],
   );
 
   // Reset viewport to default
@@ -80,9 +78,11 @@ export function useCanvasTransform(
 
   // Zoom in
   const zoomIn = React.useCallback(() => {
-    if (!enableZoom) {return;}
+    if (!enableZoom) {
+      return;
+    }
 
-    setViewport(prev => ({
+    setViewport((prev) => ({
       ...prev,
       scale: Math.min(prev.scale + scaleStep, maxScale),
     }));
@@ -90,9 +90,11 @@ export function useCanvasTransform(
 
   // Zoom out
   const zoomOut = React.useCallback(() => {
-    if (!enableZoom) {return;}
+    if (!enableZoom) {
+      return;
+    }
 
-    setViewport(prev => ({
+    setViewport((prev) => ({
       ...prev,
       scale: Math.max(prev.scale - scaleStep, minScale),
     }));
@@ -101,7 +103,9 @@ export function useCanvasTransform(
   // Zoom to fit content
   const zoomToFit = React.useCallback(
     (contentBounds: { width: number; height: number }) => {
-      if (!enableZoom || !containerRef.current) {return;}
+      if (!enableZoom || !containerRef.current) {
+        return;
+      }
 
       const container = containerRef.current;
       const containerWidth = container.clientWidth;
@@ -124,15 +128,17 @@ export function useCanvasTransform(
         scale: Math.max(minScale, newScale),
       });
     },
-    [enableZoom, containerRef, minScale, maxScale]
+    [enableZoom, containerRef, minScale, maxScale],
   );
 
   // Pan by delta
   const panBy = React.useCallback(
     (delta: Position) => {
-      if (!enablePan) {return;}
+      if (!enablePan) {
+        return;
+      }
 
-      setViewport(prev => ({
+      setViewport((prev) => ({
         ...prev,
         offset: {
           x: prev.offset.x + delta.x,
@@ -140,7 +146,7 @@ export function useCanvasTransform(
         },
       }));
     },
-    [enablePan]
+    [enablePan],
   );
 
   return {

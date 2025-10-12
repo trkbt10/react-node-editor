@@ -309,9 +309,7 @@ export function createNodeDefinition<TData extends Record<string, unknown> = Rec
  * @template TData - The node data type
  * @deprecated Use node.data directly with type assertion if needed
  */
-export function getTypedNodeData<TData extends Record<string, unknown> = Record<string, unknown>>(
-  node: Node,
-): TData {
+export function getTypedNodeData<TData extends Record<string, unknown> = Record<string, unknown>>(node: Node): TData {
   return node.data as TData;
 }
 

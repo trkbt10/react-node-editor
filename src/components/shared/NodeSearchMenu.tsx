@@ -16,12 +16,12 @@ export type NodeSearchMenuProps = {
   visible: boolean;
   /** Node types that should be shown disabled due to per-flow limits */
   disabledNodeTypes?: string[];
-}
+};
 
 type NodeCategory = {
   name: string;
   nodes: NodeDefinition[];
-}
+};
 
 /**
  * NodeSearchMenu - QuickLook-style searchable context menu for creating nodes
@@ -74,7 +74,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
           node.displayName.toLowerCase().includes(query) ||
           node.description?.toLowerCase().includes(query) ||
           node.type.toLowerCase().includes(query) ||
-          category.name.toLowerCase().includes(query)
+          category.name.toLowerCase().includes(query),
       );
 
       if (matchingNodes.length > 0) {
@@ -118,7 +118,13 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
         if (menuRef.current) {
           const rect = menuRef.current.getBoundingClientRect();
           const viewport = getViewportInfo();
-          const calculatedPosition = calculateContextMenuPosition(position.x, position.y, rect.width, rect.height, viewport);
+          const calculatedPosition = calculateContextMenuPosition(
+            position.x,
+            position.y,
+            rect.width,
+            rect.height,
+            viewport,
+          );
           setMenuPosition(calculatedPosition);
         }
       }, 0);
@@ -153,7 +159,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
           e.preventDefault();
           onClose();
           break;
-        case "Tab":
+        case "Tab": {
           e.preventDefault();
           // Cycle through categories
           const currentCategoryIndex = categories.findIndex((cat) => cat.name === selectedCategory);
@@ -161,19 +167,22 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
           setSelectedCategory(categories[nextIndex]?.name || null);
           setSelectedIndex(0);
           break;
+        }
       }
     },
-    [allNodes, selectedIndex, onCreateNode, position, onClose, categories, selectedCategory, disabledSet]
+    [allNodes, selectedIndex, onCreateNode, position, onClose, categories, selectedCategory, disabledSet],
   );
 
   // Handle node selection
   const handleNodeSelect = React.useCallback(
     (nodeType: string) => {
-      if (disabledSet.has(nodeType)) {return;} // Block selection when disabled
+      if (disabledSet.has(nodeType)) {
+        return;
+      } // Block selection when disabled
       onCreateNode(nodeType, position);
       onClose();
     },
-    [onCreateNode, position, onClose, disabledSet]
+    [onCreateNode, position, onClose, disabledSet],
   );
 
   // Handle click outside to close
@@ -191,7 +200,9 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [visible, onClose]);
 
-  if (!visible) {return null;}
+  if (!visible) {
+    return null;
+  }
 
   return (
     <div
@@ -233,7 +244,10 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
             {filteredResults.map((category) => (
               <div key={category.name} className={styles.categoryGroup}>
                 <div
-                  className={classNames(styles.categoryHeader, selectedCategory === category.name && styles.selectedCategory)}
+                  className={classNames(
+                    styles.categoryHeader,
+                    selectedCategory === category.name && styles.selectedCategory,
+                  )}
                   onClick={() => setSelectedCategory(selectedCategory === category.name ? null : category.name)}
                 >
                   <span className={styles.categoryName}>{category.name}</span>
@@ -252,7 +266,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
                         className={classNames(
                           styles.nodeItem,
                           isSelected && styles.selectedNode,
-                          isDisabled && styles.disabledNode
+                          isDisabled && styles.disabledNode,
                         )}
                         onClick={() => !isDisabled && handleNodeSelect(node.type)}
                         onMouseEnter={() => setSelectedIndex(globalIndex)}

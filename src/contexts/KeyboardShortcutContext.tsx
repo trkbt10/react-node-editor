@@ -22,7 +22,7 @@ export type ShortcutHandler = (e: KeyboardEvent) => void;
 export type KeyboardShortcutState = {
   shortcuts: Map<string, ShortcutHandler>;
   isEnabled: boolean;
-}
+};
 
 // Keyboard shortcut context actions
 export type KeyboardShortcutAction =
@@ -34,10 +34,18 @@ export type KeyboardShortcutAction =
 // Helper function to create shortcut key
 const createShortcutKey = (shortcut: KeyboardShortcut): string => {
   const parts = [];
-  if (shortcut.ctrl) {parts.push("ctrl");}
-  if (shortcut.shift) {parts.push("shift");}
-  if (shortcut.alt) {parts.push("alt");}
-  if (shortcut.meta) {parts.push("meta");}
+  if (shortcut.ctrl) {
+    parts.push("ctrl");
+  }
+  if (shortcut.shift) {
+    parts.push("shift");
+  }
+  if (shortcut.alt) {
+    parts.push("alt");
+  }
+  if (shortcut.meta) {
+    parts.push("meta");
+  }
   parts.push(shortcut.key.toLowerCase());
   return parts.join("+");
 };
@@ -56,7 +64,7 @@ const matchesShortcut = (event: KeyboardEvent, shortcut: KeyboardShortcut): bool
 // Keyboard shortcut reducer
 export const keyboardShortcutReducer = (
   state: KeyboardShortcutState,
-  action: KeyboardShortcutAction
+  action: KeyboardShortcutAction,
 ): KeyboardShortcutState => {
   switch (action.type) {
     case "REGISTER_SHORTCUT": {
@@ -127,7 +135,7 @@ export type KeyboardShortcutContextValue = {
   actions: typeof keyboardShortcutActions;
   registerShortcut: (shortcut: KeyboardShortcut, handler: ShortcutHandler) => void;
   unregisterShortcut: (shortcut: KeyboardShortcut) => void;
-}
+};
 
 export const KeyboardShortcutContext = React.createContext<KeyboardShortcutContextValue | null>(null);
 
@@ -135,21 +143,20 @@ export const KeyboardShortcutContext = React.createContext<KeyboardShortcutConte
 export type KeyboardShortcutProviderProps = {
   children: React.ReactNode;
   initialState?: Partial<KeyboardShortcutState>;
-}
+};
 
-export const KeyboardShortcutProvider: React.FC<KeyboardShortcutProviderProps> = ({
-  children,
-  initialState,
-}) => {
-  const [state, dispatch] = React.useReducer(
-    keyboardShortcutReducer,
-    { ...defaultKeyboardShortcutState, ...initialState }
-  );
+export const KeyboardShortcutProvider: React.FC<KeyboardShortcutProviderProps> = ({ children, initialState }) => {
+  const [state, dispatch] = React.useReducer(keyboardShortcutReducer, {
+    ...defaultKeyboardShortcutState,
+    ...initialState,
+  });
 
   // Global keyboard event handler
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (!state.isEnabled) {return;}
+      if (!state.isEnabled) {
+        return;
+      }
 
       // Don't handle shortcuts when focused on input elements
       const target = event.target as HTMLElement;
@@ -189,14 +196,14 @@ export const KeyboardShortcutProvider: React.FC<KeyboardShortcutProviderProps> =
     (shortcut: KeyboardShortcut, handler: ShortcutHandler) => {
       dispatch(keyboardShortcutActions.registerShortcut(shortcut, handler));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const unregisterShortcut = React.useCallback(
     (shortcut: KeyboardShortcut) => {
       dispatch(keyboardShortcutActions.unregisterShortcut(shortcut));
     },
-    [dispatch]
+    [dispatch],
   );
 
   const contextValue: KeyboardShortcutContextValue = {
@@ -207,11 +214,7 @@ export const KeyboardShortcutProvider: React.FC<KeyboardShortcutProviderProps> =
     unregisterShortcut,
   };
 
-  return (
-    <KeyboardShortcutContext.Provider value={contextValue}>
-      {children}
-    </KeyboardShortcutContext.Provider>
-  );
+  return <KeyboardShortcutContext.Provider value={contextValue}>{children}</KeyboardShortcutContext.Provider>;
 };
 
 // Hook
@@ -227,16 +230,14 @@ export const useKeyboardShortcut = (): KeyboardShortcutContextValue => {
 export const useRegisterShortcut = (
   shortcut: KeyboardShortcut,
   handler: ShortcutHandler,
-  deps: React.DependencyList = []
+  deps: React.DependencyList = [],
 ) => {
   const { registerShortcut, unregisterShortcut } = useKeyboardShortcut();
 
   React.useEffect(() => {
     // Validate that cmdOrCtrl is not used with ctrl or meta
     if (shortcut.cmdOrCtrl && (shortcut.ctrl || shortcut.meta)) {
-      console.warn(
-        "cmdOrCtrl cannot be used together with ctrl or meta. Using cmdOrCtrl only."
-      );
+      console.warn("cmdOrCtrl cannot be used together with ctrl or meta. Using cmdOrCtrl only.");
     }
 
     // If cmdOrCtrl is specified, register both Ctrl and Meta variants

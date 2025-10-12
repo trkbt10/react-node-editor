@@ -11,7 +11,9 @@
   line-height: var(--node-editor-inspector-line-height-body);
   width: 100%;
   box-sizing: border-box;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .container:focus-within {

@@ -50,7 +50,7 @@ export const GridSettingsPanel: React.FC = () => {
               canvasDispatch(
                 canvasActions.updateGridSettings({
                   size,
-                })
+                }),
               );
             }
           }}
@@ -72,7 +72,7 @@ export const GridSettingsPanel: React.FC = () => {
               canvasDispatch(
                 canvasActions.updateGridSettings({
                   snapThreshold,
-                })
+                }),
               );
             }
           }}

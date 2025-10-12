@@ -3,7 +3,12 @@
  */
 import * as React from "react";
 import type { Connection, Node, Port } from "../../types/core";
-import { calculateBezierPath, calculateBezierControlPoints, cubicBezierPoint, cubicBezierTangent } from "./utils/connectionUtils";
+import {
+  calculateBezierPath,
+  calculateBezierControlPoints,
+  cubicBezierPoint,
+  cubicBezierTangent,
+} from "./utils/connectionUtils";
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
 import { useNodeDefinition } from "../../contexts/node-definitions";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
@@ -30,7 +35,7 @@ export type ConnectionViewProps = {
   onPointerEnter?: (e: React.PointerEvent, connectionId: string) => void;
   onPointerLeave?: (e: React.PointerEvent, connectionId: string) => void;
   onContextMenu?: (e: React.MouseEvent, connectionId: string) => void;
-}
+};
 
 /**
  * ConnectionView - Renders a single connection between two ports
@@ -56,14 +61,14 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
   // Get dynamic port positions
   const baseFromPosition = useDynamicConnectionPoint(fromNode.id, fromPort.id);
   const baseToPosition = useDynamicConnectionPoint(toNode.id, toPort.id);
-  
+
   // Calculate port positions (use override positions for drag preview)
   const fromPosition = React.useMemo(() => {
     if (!baseFromPosition) {
       // Fallback if position not found
       return { x: fromNode.position.x, y: fromNode.position.y };
     }
-    
+
     // Apply drag offset if dragging
     if (fromNodePosition) {
       const deltaX = fromNodePosition.x - fromNode.position.x;
@@ -73,7 +78,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
         y: baseFromPosition.y + deltaY,
       };
     }
-    
+
     return baseFromPosition;
   }, [baseFromPosition, fromNode.position.x, fromNode.position.y, fromNodePosition?.x, fromNodePosition?.y]);
 
@@ -82,7 +87,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
       // Fallback if position not found
       return { x: toNode.position.x, y: toNode.position.y };
     }
-    
+
     // Apply drag offset if dragging
     if (toNodePosition) {
       const deltaX = toNodePosition.x - toNode.position.x;
@@ -92,23 +97,18 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
         y: baseToPosition.y + deltaY,
       };
     }
-    
+
     return baseToPosition;
   }, [baseToPosition, toNode.position.x, toNode.position.y, toNodePosition?.x, toNodePosition?.y]);
 
   // Calculate bezier path (recalculate when positions change)
   const pathData = React.useMemo(
     () => calculateBezierPath(fromPosition, toPosition, fromPort.position, toPort.position),
-    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPort.position, toPort.position]
+    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPort.position, toPort.position],
   );
   // Compute mid-point and angle along the bezier at t=0.5
   const midAndAngle = React.useMemo(() => {
-    const { cp1, cp2 } = calculateBezierControlPoints(
-      fromPosition,
-      toPosition,
-      fromPort.position,
-      toPort.position
-    );
+    const { cp1, cp2 } = calculateBezierControlPoints(fromPosition, toPosition, fromPort.position, toPort.position);
     const t = 0.5;
     const pt = cubicBezierPoint(fromPosition, cp1, cp2, toPosition, t);
     const tan = cubicBezierTangent(fromPosition, cp1, cp2, toPosition, t);
@@ -128,7 +128,9 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
       const warningColor = "var(--node-editor-caution-color, #ff3b30)";
       return dragProgress > 0.5 ? warningColor : normalColor;
     }
-    if (colorActive) {return "var(--node-editor-accent-color, #0066cc)";}
+    if (colorActive) {
+      return "var(--node-editor-accent-color, #0066cc)";
+    }
     return "var(--node-editor-connection-color, #999)";
   }, [isDragging, dragProgress, colorActive]);
 
@@ -210,11 +212,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
           transform={`translate(${midAndAngle.x}, ${midAndAngle.y}) rotate(${midAndAngle.angle})`}
           className={styles.connectionDirection}
         >
-          <path
-            d="M -6 -4 L 0 0 L -6 4"
-            stroke={strokeColor}
-            strokeWidth={2}
-          />
+          <path d="M -6 -4 L 0 0 L -6 4" stroke={strokeColor} strokeWidth={2} />
         </g>
 
         {/* Arrow marker at the end */}
@@ -222,27 +220,19 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
           <marker
             id={`arrow-${connection.id}`}
             viewBox="0 0 10 10"
-            refX="10"  
+            refX="10"
             refY="5"
             markerWidth="10"
             markerHeight="10"
             markerUnits="userSpaceOnUse"
             orient="auto"
           >
-            <path
-              d="M 0 0 L 10 5 L 0 10 z"
-              fill={strokeColor}
-              className={styles.connectionArrowHead}
-            />
+            <path d="M 0 0 L 10 5 L 0 10 z" fill={strokeColor} className={styles.connectionArrowHead} />
           </marker>
         </defs>
 
         {/* Apply arrow marker to the visible path */}
-        <path
-          d={pathData}
-          markerEnd={`url(#arrow-${connection.id})`}
-          className={styles.connectionArrowOverlay}
-        />
+        <path d={pathData} markerEnd={`url(#arrow-${connection.id})`} className={styles.connectionArrowOverlay} />
       </g>
     ),
     [
@@ -260,7 +250,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
       handlePointerEnter,
       handlePointerLeave,
       onContextMenu,
-    ]
+    ],
   );
 
   // Check if there's a custom renderer
@@ -331,7 +321,10 @@ const areEqual = (prevProps: ConnectionViewProps, nextProps: ConnectionViewProps
   }
 
   // Check port position changes
-  if (prevProps.fromPort.position !== nextProps.fromPort.position || prevProps.toPort.position !== nextProps.toPort.position) {
+  if (
+    prevProps.fromPort.position !== nextProps.fromPort.position ||
+    prevProps.toPort.position !== nextProps.toPort.position
+  ) {
     return false;
   }
 

@@ -57,18 +57,12 @@ export const ParticleSystemStoreProvider: React.FC<{
     }
   }, [initialValues]);
 
-  const getData = React.useCallback(
-    (id: string) => state[id],
-    [state],
-  );
+  const getData = React.useCallback((id: string) => state[id], [state]);
 
-  const setData = React.useCallback(
-    (id: string, data: ParticleData) => {
-      dispatch({ type: "set", id, data });
-      return data;
-    },
-    [],
-  );
+  const setData = React.useCallback((id: string, data: ParticleData) => {
+    dispatch({ type: "set", id, data });
+    return data;
+  }, []);
 
   const updateData = React.useCallback(
     (id: string, updater: (current: ParticleData | undefined) => ParticleData) => {

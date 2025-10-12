@@ -1,10 +1,18 @@
-import { describe, expect, it } from "vitest";
+/**
+ * @file Tests for connection candidate utilities
+ */
 import type { Node, Port, Position } from "../../../types/core";
 import { ConnectionSwitchBehavior } from "./connectionSwitchBehavior";
 import type { ConnectablePortsResult } from "./connectablePortPlanner";
 import { findNearestConnectablePort } from "./connectionCandidate";
 
-const createPort = (id: string, nodeId: string, type: Port["type"], label: string, position: Port["position"]): Port => ({
+const createPort = (
+  id: string,
+  nodeId: string,
+  type: Port["type"],
+  label: string,
+  position: Port["position"],
+): Port => ({
   id,
   nodeId,
   type,

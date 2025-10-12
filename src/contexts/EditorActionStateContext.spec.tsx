@@ -1,3 +1,6 @@
+/**
+ * @file Tests for EditorActionStateContext - validates action state management and dispatch
+ */
 import { render } from "@testing-library/react";
 import { useEffect, type FC } from "react";
 import { EditorActionStateProvider, useEditorActionState } from "./EditorActionStateContext";
@@ -17,7 +20,7 @@ describe("EditorActionStateContext", () => {
     const { getByTestId } = render(
       <EditorActionStateProvider>
         <Harness />
-      </EditorActionStateProvider>
+      </EditorActionStateProvider>,
     );
     // After clearSelection should be 0
     expect(getByTestId("selected-count").textContent).toBe("0");

@@ -12,10 +12,7 @@ import { setClipboard, getClipboard, type ClipboardData } from "../../../utils/c
  * @param editorData - Current editor data
  * @returns ClipboardData containing copied nodes and connections
  */
-export function copyNodesToClipboard(
-  selectedNodeIds: string[],
-  editorData: NodeEditorData
-): ClipboardData | null {
+export function copyNodesToClipboard(selectedNodeIds: string[], editorData: NodeEditorData): ClipboardData | null {
   if (selectedNodeIds.length === 0) {
     return null;
   }
@@ -54,7 +51,7 @@ export function copyNodesToClipboard(
  */
 export function pasteNodesFromClipboard(
   offsetX = 40,
-  offsetY = 40
+  offsetY = 40,
 ): {
   nodes: Array<{
     id: string;
@@ -90,10 +87,7 @@ export function pasteNodesFromClipboard(
       size: n.size,
       data: {
         ...baseData,
-        title:
-          typeof baseData.title === "string"
-            ? `${baseData.title} Copy`
-            : baseData.title,
+        title: typeof baseData.title === "string" ? `${baseData.title} Copy` : baseData.title,
       } as NodeData,
     };
   });

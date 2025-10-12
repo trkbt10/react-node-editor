@@ -11,16 +11,12 @@ export type ResizeHandleProps = {
   onResize?: (delta: number) => void;
   /** Additional className */
   className?: string;
-}
+};
 
 /**
  * ResizeHandle - Draggable handle for resizing grid areas
  */
-export const ResizeHandle: React.FC<ResizeHandleProps> = ({
-  direction,
-  onResize,
-  className,
-}) => {
+export const ResizeHandle: React.FC<ResizeHandleProps> = ({ direction, onResize, className }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const startPosRef = React.useRef<number>(0);
 
@@ -30,11 +26,13 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
       setIsDragging(true);
       startPosRef.current = direction === "horizontal" ? e.clientY : e.clientX;
     },
-    [direction]
+    [direction],
   );
 
   React.useEffect(() => {
-    if (!isDragging) {return;}
+    if (!isDragging) {
+      return;
+    }
 
     const handleMouseMove = (e: MouseEvent) => {
       const currentPos = direction === "horizontal" ? e.clientY : e.clientX;

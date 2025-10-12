@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Node } from "../types/core";
-import type { ExternalDataReference, NodeDefinition } from "../types/NodeDefinition";
+import type { ExternalDataReference } from "../types/NodeDefinition";
 import { useNodeDefinition } from "../contexts/node-definitions";
 
 /**
@@ -10,14 +10,14 @@ export type ExternalDataState = {
   data: unknown;
   isLoading: boolean;
   error: Error | null;
-}
+};
 
 /**
  * Hook for managing external data for a node
  */
 export function useExternalData(
   node: Node | null,
-  externalRef?: ExternalDataReference
+  externalRef?: ExternalDataReference,
 ): ExternalDataState & {
   refresh: () => void;
   update: (data: unknown) => Promise<void>;
@@ -38,9 +38,7 @@ export function useExternalData(
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const data = await Promise.resolve(
-        definition.loadExternalData(externalRef)
-      );
+      const data = await Promise.resolve(definition.loadExternalData(externalRef));
       setState({ data, isLoading: false, error: null });
     } catch (error) {
       setState({
@@ -66,9 +64,7 @@ export function useExternalData(
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
       try {
-        await Promise.resolve(
-          definition.updateExternalData(externalRef, data)
-        );
+        await Promise.resolve(definition.updateExternalData(externalRef, data));
         // Optimistically update local state
         setState({ data, isLoading: false, error: null });
       } catch (error) {
@@ -80,7 +76,7 @@ export function useExternalData(
         throw error;
       }
     },
-    [node, externalRef, definition]
+    [node, externalRef, definition],
   );
 
   return {
@@ -95,7 +91,7 @@ export function useExternalData(
  */
 export function useExternalDataMap(
   nodes: Record<string, Node>,
-  externalRefs: Record<string, ExternalDataReference>
+  externalRefs: Record<string, ExternalDataReference>,
 ): Record<string, ExternalDataState> {
   const [dataMap, setDataMap] = React.useState<Record<string, ExternalDataState>>({});
 
@@ -104,7 +100,7 @@ export function useExternalDataMap(
       const newDataMap: Record<string, ExternalDataState> = {};
 
       await Promise.all(
-        Object.entries(nodes).map(async ([nodeId, node]) => {
+        Object.entries(nodes).map(async ([nodeId, _node]) => {
           const externalRef = externalRefs[nodeId];
           if (!externalRef) {
             newDataMap[nodeId] = {
@@ -121,7 +117,7 @@ export function useExternalDataMap(
             isLoading: true,
             error: null,
           };
-        })
+        }),
       );
 
       setDataMap(newDataMap);

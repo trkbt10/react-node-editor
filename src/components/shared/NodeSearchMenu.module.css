@@ -52,7 +52,9 @@
   background: var(--node-editor-control-background);
   color: var(--node-editor-text-color);
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
   box-sizing: border-box;
 }
 
@@ -131,7 +133,6 @@
   border-bottom-color: var(--node-editor-accent-color);
 }
 
-
 .categoryName {
   flex: 1;
 }
@@ -169,7 +170,6 @@
   background: var(--node-editor-selected-control-color);
   filter: brightness(0.95);
 }
-
 
 .disabledNode {
   opacity: 0.5;

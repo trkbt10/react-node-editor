@@ -4,7 +4,10 @@
   color: var(--node-editor-text-color);
   background: var(--node-editor-control-background);
   border-radius: var(--node-editor-control-border-radius);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
   outline: none;
   min-height: 80px;
   box-sizing: border-box;

@@ -1,8 +1,8 @@
 /**
- * Minimal Storybook type declarations used solely for local type-checking.
+ * @file Minimal Storybook type declarations used solely for local type-checking.
  */
 declare module "@storybook/react" {
-  type StoryDecorator = (Story: any) => any;
+  type StoryDecorator = (Story: React.ComponentType) => React.ReactElement;
 
   export type Meta<TComponent> = {
     title: string;
@@ -11,7 +11,7 @@ declare module "@storybook/react" {
     decorators?: StoryDecorator[];
   };
 
-  export type StoryObj<TMeta> = {
+  export type StoryObj = {
     args?: Record<string, unknown>;
   } & Record<string, unknown>;
 }

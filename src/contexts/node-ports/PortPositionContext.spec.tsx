@@ -1,3 +1,6 @@
+/**
+ * @file Tests for PortPositionContext - validates port position calculations and lookups
+ */
 import { render } from "@testing-library/react";
 import { type FC } from "react";
 import { PortPositionProvider } from "./provider";
@@ -30,7 +33,7 @@ describe("PortPositionContext", () => {
     const { getByTestId } = render(
       <PortPositionProvider portPositions={positions}>
         <Harness />
-      </PortPositionProvider>
+      </PortPositionProvider>,
     );
     expect(getByTestId("pos").textContent).toBe("15,25");
   });

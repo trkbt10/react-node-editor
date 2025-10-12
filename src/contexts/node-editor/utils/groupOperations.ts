@@ -5,7 +5,12 @@
  */
 import type { Node, NodeId } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { getNodeBoundingBox, doRectanglesIntersect, isRectangleInsideAnother, type BoundingBox } from "../../../utils/boundingBoxUtils";
+import {
+  getNodeBoundingBox,
+  doRectanglesIntersect,
+  isRectangleInsideAnother,
+  type BoundingBox,
+} from "../../../utils/boundingBoxUtils";
 import { createParentToChildrenMap } from "./nodeLookupUtils";
 import { nodeHasGroupBehavior, getGroupBehaviorOptions } from "../../../types/behaviors";
 
@@ -15,7 +20,7 @@ export type GroupBounds = {
   y: number;
   width: number;
   height: number;
-}
+};
 
 /**
  * Convert BoundingBox to GroupBounds for backwards compatibility
@@ -47,8 +52,12 @@ export const getNodeBounds = (node: Node): GroupBounds => {
  * Check if a node is completely inside a group's bounds
  */
 export const isNodeInsideGroup = (node: Node, groupNode: Node, nodeDefinitions: NodeDefinition[]): boolean => {
-  if (node.id === groupNode.id) {return false;} // Node cannot be inside itself
-  if (nodeHasGroupBehavior(node, nodeDefinitions)) {return false;} // Groups cannot be inside other groups for now
+  if (node.id === groupNode.id) {
+    return false;
+  } // Node cannot be inside itself
+  if (nodeHasGroupBehavior(node, nodeDefinitions)) {
+    return false;
+  } // Groups cannot be inside other groups for now
 
   const nodeBounds = getNodeBoundingBox(node);
   const groupBounds = getNodeBoundingBox(groupNode);
@@ -60,8 +69,12 @@ export const isNodeInsideGroup = (node: Node, groupNode: Node, nodeDefinitions: 
  * Check if a node overlaps with a group's bounds (for visual feedback)
  */
 export const isNodeOverlappingGroup = (node: Node, groupNode: Node, nodeDefinitions: NodeDefinition[]): boolean => {
-  if (node.id === groupNode.id) {return false;}
-  if (nodeHasGroupBehavior(node, nodeDefinitions)) {return false;}
+  if (node.id === groupNode.id) {
+    return false;
+  }
+  if (nodeHasGroupBehavior(node, nodeDefinitions)) {
+    return false;
+  }
 
   const nodeBounds = getNodeBoundingBox(node);
   const groupBounds = getNodeBoundingBox(groupNode);
@@ -72,11 +85,8 @@ export const isNodeOverlappingGroup = (node: Node, groupNode: Node, nodeDefiniti
 /**
  * Check if autoGroup is enabled for a specific group node
  */
-export const isAutoGroupEnabled = (
-  groupNode: Node,
-  nodeDefinitions: NodeDefinition[]
-): boolean => {
-  const def = nodeDefinitions.find(d => d.type === groupNode.type);
+export const isAutoGroupEnabled = (groupNode: Node, nodeDefinitions: NodeDefinition[]): boolean => {
+  const def = nodeDefinitions.find((d) => d.type === groupNode.type);
   const options = getGroupBehaviorOptions(def);
   return options?.autoGroup ?? false;
 };
@@ -89,10 +99,12 @@ export const isAutoGroupEnabled = (
 export const findContainingGroup = (
   node: Node,
   allNodes: Record<NodeId, Node>,
-  nodeDefinitions: NodeDefinition[]
+  nodeDefinitions: NodeDefinition[],
 ): NodeId | null => {
   const groupNodes = Object.values(allNodes).filter((n) => {
-    if (!nodeHasGroupBehavior(n, nodeDefinitions)) {return false;}
+    if (!nodeHasGroupBehavior(n, nodeDefinitions)) {
+      return false;
+    }
     return isAutoGroupEnabled(n, nodeDefinitions);
   });
 
@@ -138,7 +150,7 @@ export const getGroupChildren = (groupId: NodeId, allNodes: Record<NodeId, Node>
 export const getGroupDescendants = (
   groupId: NodeId,
   allNodes: Record<NodeId, Node>,
-  nodeDefinitions: NodeDefinition[]
+  nodeDefinitions: NodeDefinition[],
 ): Node[] => {
   const descendants: Node[] = [];
   const toProcess = [groupId];
@@ -160,7 +172,7 @@ export const getGroupDescendants = (
 export const calculateChildOffset = (
   groupDelta: { x: number; y: number },
   _child: Node,
-  _group: Node
+  _group: Node,
 ): { x: number; y: number } => {
   // Children move exactly the same amount as their parent group
   return groupDelta;
@@ -171,7 +183,7 @@ export const calculateChildOffset = (
  */
 export const updateGroupMembership = (
   allNodes: Record<NodeId, Node>,
-  nodeDefinitions: NodeDefinition[]
+  nodeDefinitions: NodeDefinition[],
 ): Record<NodeId, Partial<Node>> => {
   const updates: Record<NodeId, Partial<Node>> = {};
 
@@ -201,7 +213,9 @@ export const getAbsolutePosition = (node: Node, allNodes: Record<NodeId, Node>):
   // Walk up the parent chain
   while (currentNode.parentId) {
     const parent = allNodes[currentNode.parentId];
-    if (!parent) {break;}
+    if (!parent) {
+      break;
+    }
 
     position.x += parent.position.x;
     position.y += parent.position.y;
@@ -214,7 +228,10 @@ export const getAbsolutePosition = (node: Node, allNodes: Record<NodeId, Node>):
 /**
  * Convert absolute position to relative position within a group
  */
-export const getRelativePosition = (absolutePosition: { x: number; y: number }, groupNode: Node): { x: number; y: number } => {
+export const getRelativePosition = (
+  absolutePosition: { x: number; y: number },
+  groupNode: Node,
+): { x: number; y: number } => {
   return {
     x: absolutePosition.x - groupNode.position.x,
     y: absolutePosition.y - groupNode.position.y,
@@ -228,12 +245,14 @@ export const isValidGroupMove = (
   groupId: NodeId,
   newPosition: { x: number; y: number },
   allNodes: Record<NodeId, Node>,
-  nodeDefinitions: NodeDefinition[]
+  nodeDefinitions: NodeDefinition[],
 ): boolean => {
   // For now, we don't allow groups to be nested inside other groups
   // This can be extended later if needed
   const groupNode = allNodes[groupId];
-  if (!groupNode || !nodeHasGroupBehavior(groupNode, nodeDefinitions)) {return true;}
+  if (!groupNode || !nodeHasGroupBehavior(groupNode, nodeDefinitions)) {
+    return true;
+  }
 
   const tempNode = { ...groupNode, position: newPosition };
   const containingGroup = findContainingGroup(tempNode, allNodes, nodeDefinitions);

@@ -1,31 +1,31 @@
 /**
  * @file Dialog component
  */
-import React, { useEffect, useRef } from 'react';
-import styles from './Dialog.module.css';
+import React, { useEffect, useRef } from "react";
+import styles from "./Dialog.module.css";
 
 export type DialogProps = {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
-  size?: 'small' | 'medium' | 'large' | 'fullscreen';
+  size?: "small" | "medium" | "large" | "fullscreen";
   showCloseButton?: boolean;
   closeOnOverlayClick?: boolean;
   closeOnEscape?: boolean;
   className?: string;
-}
+};
 
 export const Dialog: React.FC<DialogProps> = ({
   isOpen,
   onClose,
   title,
   children,
-  size = 'medium',
+  size = "medium",
   showCloseButton = true,
   closeOnOverlayClick = true,
   closeOnEscape = true,
-  className = '',
+  className = "",
 }) => {
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -41,19 +41,19 @@ export const Dialog: React.FC<DialogProps> = ({
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (closeOnEscape && event.key === 'Escape') {
+      if (closeOnEscape && event.key === "Escape") {
         onClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = '';
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "";
     };
   }, [isOpen, closeOnEscape, onClose]);
 
@@ -63,9 +63,11 @@ export const Dialog: React.FC<DialogProps> = ({
     }
   };
 
-  if (!isOpen) {return null;}
+  if (!isOpen) {
+    return null;
+  }
 
-  const dialogClasses = [styles.dialog, className].filter(Boolean).join(' ');
+  const dialogClasses = [styles.dialog, className].filter(Boolean).join(" ");
 
   return (
     <div className={styles.overlay} onClick={handleOverlayClick}>
@@ -75,7 +77,7 @@ export const Dialog: React.FC<DialogProps> = ({
         data-size={size}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={title ? 'dialog-title' : undefined}
+        aria-labelledby={title ? "dialog-title" : undefined}
         tabIndex={-1}
       >
         {(title || showCloseButton) && (
@@ -86,19 +88,13 @@ export const Dialog: React.FC<DialogProps> = ({
               </h2>
             )}
             {showCloseButton && (
-              <button
-                className={styles.close}
-                onClick={onClose}
-                aria-label="Close dialog"
-              >
+              <button className={styles.close} onClick={onClose} aria-label="Close dialog">
                 ×
               </button>
             )}
           </div>
         )}
-        <div className={styles.content}>
-          {children}
-        </div>
+        <div className={styles.content}>{children}</div>
       </div>
     </div>
   );

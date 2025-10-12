@@ -17,7 +17,7 @@ import { getBehaviors, behaviorArrayIncludes } from "../../../types/behaviors";
 
 export type NodeInspectorProps = {
   node: Node;
-}
+};
 
 export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
   ({ node }) => {
@@ -31,7 +31,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
       (updates: Partial<Node>) => {
         nodeEditorDispatch(nodeEditorActions.updateNode(node.id, updates));
       },
-      [node.id, nodeEditorDispatch, nodeEditorActions]
+      [node.id, nodeEditorDispatch, nodeEditorActions],
     );
 
     // Handle external data updates
@@ -41,7 +41,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
           await externalDataState.update(data);
         }
       },
-      [externalDataState.update]
+      [externalDataState.update],
     );
 
     // Handle node deletion
@@ -60,7 +60,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
           nodeEditorDispatch(nodeEditorActions.moveNodes(positionUpdates));
         }
       },
-      [nodeEditorDispatch, nodeEditorActions]
+      [nodeEditorDispatch, nodeEditorActions],
     );
 
     // Inspector render props - Only recreate when dependencies actually change
@@ -86,21 +86,23 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
         handleDeleteNode,
         selectedNodes,
         handleAlignNodes,
-      ]
+      ],
     );
     const behaviors = React.useMemo(() => {
       return getBehaviors(nodeDefinition);
     }, [nodeDefinition]);
 
     // Check if a function is likely a React component (by naming convention)
-    const isReactComponent = React.useCallback((fn: Function): boolean => {
+    const isReactComponent = React.useCallback((fn: (...args: unknown[]) => unknown): boolean => {
       // React components should start with an uppercase letter
-      return /^[A-Z]/.test(fn.name || '');
+      return /^[A-Z]/.test(fn.name || "");
     }, []);
 
     // Render custom inspector with proper component handling
     const customInspectorElement = React.useMemo(() => {
-      if (!nodeDefinition?.renderInspector) {return null;}
+      if (!nodeDefinition?.renderInspector) {
+        return null;
+      }
 
       const renderFn = nodeDefinition.renderInspector;
 
@@ -118,11 +120,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
     return (
       <>
         {/* Custom inspector (node-specific) */}
-        {customInspectorElement && (
-          <div className={styles.customInspectorBlock}>
-            {customInspectorElement}
-          </div>
-        )}
+        {customInspectorElement && <div className={styles.customInspectorBlock}>{customInspectorElement}</div>}
 
         {/* Behavior-based inspectors */}
         {behaviorArrayIncludes(behaviors, "node") && (
@@ -156,7 +154,7 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
       prevProps.node.locked === nextProps.node.locked &&
       prevProps.node.visible === nextProps.node.visible
     );
-  }
+  },
 );
 
 NodeInspector.displayName = "NodeInspector";

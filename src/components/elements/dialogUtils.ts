@@ -6,12 +6,12 @@ export type ViewportInfo = {
   height: number;
   scrollX: number;
   scrollY: number;
-}
+};
 
 export type Position = {
   x: number;
   y: number;
-}
+};
 
 /**
  * Get viewport information
@@ -33,7 +33,7 @@ export function calculateContextMenuPosition(
   y: number,
   menuWidth: number,
   menuHeight: number,
-  viewport: ViewportInfo
+  viewport: ViewportInfo,
 ): Position {
   let adjustedX = x;
   let adjustedY = y;

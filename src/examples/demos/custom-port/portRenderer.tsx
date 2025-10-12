@@ -60,47 +60,63 @@ export const customPortRenderer = (
     return defaultElement;
   }
 
-  const {
-    port,
-    handlers,
-    allConnections,
-    isHovered,
-    isConnected,
-    isCandidate,
-    isConnectable,
-    isConnecting,
-  } = context;
+  const { port, handlers, allConnections, isHovered, isConnected, isCandidate, isConnectable, isConnecting } = context;
 
   const dataStyle = getStyleForDataType(port.dataType);
   const connectionCount = React.useMemo(() => {
     return countConnectionsForPort(allConnections, port.id);
   }, [allConnections, port.id]);
 
-  const maxConnections = port.maxConnections === "unlimited" ? Math.max(connectionCount, 1) : port.maxConnections ?? 1;
+  const maxConnections =
+    port.maxConnections === "unlimited" ? Math.max(connectionCount, 1) : (port.maxConnections ?? 1);
   const utilization = connectionCount === 0 ? 0 : clamp(connectionCount / maxConnections);
 
   const interactiveState = React.useMemo(() => {
-    if (isCandidate) {return "candidate";}
-    if (isConnectable) {return "connectable";}
-    if (isHovered) {return "hovered";}
-    if (isConnected) {return "connected";}
+    if (isCandidate) {
+      return "candidate";
+    }
+    if (isConnectable) {
+      return "connectable";
+    }
+    if (isHovered) {
+      return "hovered";
+    }
+    if (isConnected) {
+      return "connected";
+    }
     return "idle";
   }, [isCandidate, isConnectable, isHovered, isConnected]);
 
   const portSize = React.useMemo(() => {
     const base = 28;
-    if (isCandidate) {return base + 6;}
-    if (isHovered) {return base + 4;}
-    if (isConnectable) {return base + 2;}
-    if (isConnected) {return base + 1;}
+    if (isCandidate) {
+      return base + 6;
+    }
+    if (isHovered) {
+      return base + 4;
+    }
+    if (isConnectable) {
+      return base + 2;
+    }
+    if (isConnected) {
+      return base + 1;
+    }
     return base;
   }, [isCandidate, isConnectable, isConnected, isHovered]);
 
   const badgeScale = React.useMemo(() => {
-    if (isCandidate) {return 1.12;}
-    if (isConnectable) {return 1.08;}
-    if (isHovered) {return 1.04;}
-    if (isConnected) {return 1.02;}
+    if (isCandidate) {
+      return 1.12;
+    }
+    if (isConnectable) {
+      return 1.08;
+    }
+    if (isHovered) {
+      return 1.04;
+    }
+    if (isConnected) {
+      return 1.02;
+    }
     return 1;
   }, [isCandidate, isConnectable, isConnected, isHovered]);
 
@@ -113,7 +129,9 @@ export const customPortRenderer = (
 
   React.useEffect(() => {
     const canvasElement = canvasRef.current;
-    if (!canvasElement) {return;}
+    if (!canvasElement) {
+      return;
+    }
     const pixelRatio = typeof window === "undefined" ? 1 : window.devicePixelRatio || 1;
     const renderSize = Math.max(1, Math.round(portSize * pixelRatio));
     if (canvasElement.width !== renderSize || canvasElement.height !== renderSize) {
@@ -124,7 +142,9 @@ export const customPortRenderer = (
     canvasElement.style.height = `${portSize}px`;
 
     const context2d = canvasElement.getContext("2d");
-    if (!context2d) {return;}
+    if (!context2d) {
+      return;
+    }
 
     context2d.setTransform(1, 0, 0, 1, 0, 0);
     context2d.clearRect(0, 0, renderSize, renderSize);
@@ -169,7 +189,16 @@ export const customPortRenderer = (
     context2d.fill();
 
     context2d.setTransform(1, 0, 0, 1, 0, 0);
-  }, [connectionCount, dataStyle.accent, dataStyle.primary, dataStyle.secondary, isCandidate, isHovered, portSize, utilization]);
+  }, [
+    connectionCount,
+    dataStyle.accent,
+    dataStyle.primary,
+    dataStyle.secondary,
+    isCandidate,
+    isHovered,
+    portSize,
+    utilization,
+  ]);
 
   const element = defaultElement as React.ReactElement<DefaultPortElementProps>;
   const defaultProps = element.props ?? {};
@@ -209,12 +238,7 @@ export const customPortRenderer = (
           transform: `${getBadgeOffsetTransform(port.position)} scale(${badgeScale})`,
         }}
       >
-        <svg
-          className={styles.portBadgeSvg}
-          viewBox="0 0 52 52"
-          role="presentation"
-          aria-hidden="true"
-        >
+        <svg className={styles.portBadgeSvg} viewBox="0 0 52 52" role="presentation" aria-hidden="true">
           <defs>
             <radialGradient id={haloGradientId} cx="50%" cy="50%" r="50%">
               <stop offset="0%" stopColor={dataStyle.accent} stopOpacity={0.78} />
@@ -225,30 +249,24 @@ export const customPortRenderer = (
               <stop offset="0%" stopColor={dataStyle.primary} stopOpacity={0.88} />
               <stop offset="100%" stopColor={dataStyle.accent} stopOpacity={0.97} />
             </linearGradient>
-            <linearGradient id={directionGradientId} x1={port.type === "input" ? "0%" : "100%"} y1="50%" x2={port.type === "input" ? "100%" : "0%"} y2="50%">
+            <linearGradient
+              id={directionGradientId}
+              x1={port.type === "input" ? "0%" : "100%"}
+              y1="50%"
+              x2={port.type === "input" ? "100%" : "0%"}
+              y2="50%"
+            >
               <stop offset="0%" stopColor={directionGradientStops.start} />
               <stop offset="100%" stopColor={directionGradientStops.end} />
             </linearGradient>
           </defs>
-          <circle
-            className={styles.portBadgeHalo}
-            cx="26"
-            cy="26"
-            r="24"
-            fill={`url(#${haloGradientId})`}
-          />
+          <circle className={styles.portBadgeHalo} cx="26" cy="26" r="24" fill={`url(#${haloGradientId})`} />
           <path
             className={styles.portDirectionPath}
             d={getDirectionPath(port.type)}
             fill={`url(#${directionGradientId})`}
           />
-          <circle
-            className={styles.portBadgeCore}
-            cx="26"
-            cy="26"
-            r="16"
-            fill={`url(#${glyphGradientId})`}
-          />
+          <circle className={styles.portBadgeCore} cx="26" cy="26" r="16" fill={`url(#${glyphGradientId})`} />
           <circle
             cx="26"
             cy="26"
@@ -282,11 +300,7 @@ export const customPortRenderer = (
         <canvas ref={canvasRef} className={styles.portBadgeCanvas} />
       </div>
       {port.label ? (
-        <span
-          className={styles.portLabel}
-          data-port-label-position={port.position}
-          data-port-type={port.type}
-        >
+        <span className={styles.portLabel} data-port-label-position={port.position} data-port-type={port.type}>
           {port.label}
         </span>
       ) : null}

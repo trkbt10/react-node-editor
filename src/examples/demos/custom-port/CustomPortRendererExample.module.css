@@ -36,7 +36,9 @@
   display: grid;
   place-items: center;
   pointer-events: none;
-  transition: transform 0.18s ease, filter 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    filter 0.18s ease;
   filter: drop-shadow(0 1px 3px rgba(15, 23, 42, 0.3));
 }
 
@@ -81,7 +83,13 @@
 }
 
 .portTypeGlyph {
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   text-transform: uppercase;
   fill: rgba(17, 24, 39, 0.9);
 }
@@ -196,7 +204,13 @@
 }
 
 .connectionBadge text {
-  font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
 @keyframes portHaloPulse {

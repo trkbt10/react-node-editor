@@ -13,7 +13,7 @@ export type PortPosition = {
   };
   /** Absolute position on canvas (for drawing connections) */
   connectionPoint: Position;
-}
+};
 
 /**
  * Map of port positions for a single node
@@ -43,7 +43,7 @@ export type PortPositionConfig = {
   edgePadding: number;
   /** Relative padding as fraction of total dimension (0-1) */
   relativePadding: number;
-}
+};
 
 /**
  * Default port position configuration
@@ -80,4 +80,4 @@ export type PortPositionBehavior = {
     config: PortPositionConfig;
     defaultCompute: (node: PortPositionNode, config: PortPositionConfig) => NodePortPositions;
   }) => NodePortPositions;
-}
+};

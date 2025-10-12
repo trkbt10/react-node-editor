@@ -17,9 +17,15 @@
 }
 
 /* Alignment helpers */
-.alignLeft { text-align: left; }
-.alignCenter { text-align: center; }
-.alignRight { text-align: right; }
+.alignLeft {
+  text-align: left;
+}
+.alignCenter {
+  text-align: center;
+}
+.alignRight {
+  text-align: right;
+}
 
 .labelGroup {
   margin: 0;
@@ -33,12 +39,20 @@
 }
 
 /* Wrapping and ellipsis utilities */
-.nowrap { white-space: nowrap; }
-.wrapBalance { text-wrap: balance; }
-.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nowrap {
+  white-space: nowrap;
+}
+.wrapBalance {
+  text-wrap: balance;
+}
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .labelSubtitle {
-  margin-left: .5em;
+  margin-left: 0.5em;
   font: var(--node-editor-subtitle-font, 500 12px var(--node-editor-theme-default-font-family));
   color: var(--node-editor-secondary-label-color, #666);
   font-size: 1.15em; /* slightly larger */

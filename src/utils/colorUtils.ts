@@ -6,7 +6,7 @@ export type RGB = {
   r: number;
   g: number;
   b: number;
-}
+};
 
 /**
  * Parse a color string (hex or rgb/rgba) into RGB components
@@ -18,7 +18,12 @@ export function parseColorToRGB(input: string): RGB | null {
   const hexMatch = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.exec(hex);
   if (hexMatch) {
     let v = hexMatch[1];
-    if (v.length === 3) {v = v.split("").map((c) => c + c).join("");}
+    if (v.length === 3) {
+      v = v
+        .split("")
+        .map((c) => c + c)
+        .join("");
+    }
     const num = parseInt(v, 16);
     return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
   }
@@ -28,7 +33,9 @@ export function parseColorToRGB(input: string): RGB | null {
     const r = Number(parts[0]);
     const g = Number(parts[1]);
     const b = Number(parts[2]);
-    if ([r, g, b].every((n) => Number.isFinite(n))) {return { r, g, b };}
+    if ([r, g, b].every((n) => Number.isFinite(n))) {
+      return { r, g, b };
+    }
   }
   return null;
 }
@@ -52,9 +59,13 @@ export function getRelativeLuminance(rgb: RGB): number {
  * @returns "#111111" for dark text or "#ffffff" for light text, or undefined if parsing fails
  */
 export function getReadableTextColor(bg: string | undefined): string | undefined {
-  if (!bg) {return undefined;}
+  if (!bg) {
+    return undefined;
+  }
   const rgb = parseColorToRGB(bg);
-  if (!rgb) {return undefined;}
+  if (!rgb) {
+    return undefined;
+  }
   const L = getRelativeLuminance(rgb);
   return L > 0.5 ? "#111111" : "#ffffff";
 }
@@ -78,6 +89,8 @@ export function rgbToRgba(rgb: RGB, alpha: number): string {
  */
 export function applyOpacity(color: string, opacity: number): string {
   const rgb = parseColorToRGB(color);
-  if (!rgb) {return color;}
+  if (!rgb) {
+    return color;
+  }
   return rgbToRgba(rgb, opacity);
 }

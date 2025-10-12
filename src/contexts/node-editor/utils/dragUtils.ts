@@ -9,28 +9,30 @@ export type DragState = {
   nodeIds: NodeId[];
   offset: Position;
   affectedChildNodes: Record<NodeId, NodeId[]>;
-}
+};
 
 /**
  * Calculate drag offsets for all affected nodes (directly dragged + children)
  */
 export function calculateNodeDragOffsets(dragState: DragState | null): Record<NodeId, Position> {
-  if (!dragState) {return {};}
-  
+  if (!dragState) {
+    return {};
+  }
+
   const offsets: Record<NodeId, Position> = {};
-  
+
   // Apply offset to directly dragged nodes
-  dragState.nodeIds.forEach(nodeId => {
+  dragState.nodeIds.forEach((nodeId) => {
     offsets[nodeId] = dragState.offset;
   });
-  
+
   // Apply offset to affected child nodes
   Object.entries(dragState.affectedChildNodes).forEach(([_, childIds]) => {
-    childIds.forEach(childId => {
+    childIds.forEach((childId) => {
       offsets[childId] = dragState.offset;
     });
   });
-  
+
   return offsets;
 }
 
@@ -40,18 +42,22 @@ export function calculateNodeDragOffsets(dragState: DragState | null): Record<No
 export function getDraggedNodesBounds(
   nodeIds: NodeId[],
   nodes: Record<NodeId, { position: Position; size?: { width: number; height: number } }>,
-  offset: Position = { x: 0, y: 0 }
+  offset: Position = { x: 0, y: 0 },
 ): { minX: number; minY: number; maxX: number; maxY: number } | null {
-  if (nodeIds.length === 0) {return null;}
+  if (nodeIds.length === 0) {
+    return null;
+  }
 
   let minX = Infinity;
   let minY = Infinity;
   let maxX = -Infinity;
   let maxY = -Infinity;
 
-  nodeIds.forEach(nodeId => {
+  nodeIds.forEach((nodeId) => {
     const node = nodes[nodeId];
-    if (!node) {return;}
+    if (!node) {
+      return;
+    }
 
     const nodeX = node.position.x + offset.x;
     const nodeY = node.position.y + offset.y;
@@ -74,13 +80,15 @@ export function isDragWithinBounds(
   nodeIds: NodeId[],
   nodes: Record<NodeId, { position: Position; size?: { width: number; height: number } }>,
   offset: Position,
-  canvasBounds: { width: number; height: number; margin?: number }
+  canvasBounds: { width: number; height: number; margin?: number },
 ): boolean {
   const bounds = getDraggedNodesBounds(nodeIds, nodes, offset);
-  if (!bounds) {return true;}
+  if (!bounds) {
+    return true;
+  }
 
   const margin = canvasBounds.margin || 0;
-  
+
   return (
     bounds.minX >= -margin &&
     bounds.minY >= -margin &&
@@ -96,22 +104,18 @@ export function clampDragToBounds(
   nodeIds: NodeId[],
   nodes: Record<NodeId, { position: Position; size?: { width: number; height: number } }>,
   requestedOffset: Position,
-  canvasBounds: { width: number; height: number; margin?: number }
+  canvasBounds: { width: number; height: number; margin?: number },
 ): Position {
   const bounds = getDraggedNodesBounds(nodeIds, nodes, { x: 0, y: 0 });
-  if (!bounds) {return requestedOffset;}
+  if (!bounds) {
+    return requestedOffset;
+  }
 
   const margin = canvasBounds.margin || 0;
-  
+
   const clampedOffset = {
-    x: Math.max(
-      -bounds.minX - margin,
-      Math.min(requestedOffset.x, canvasBounds.width - bounds.maxX + margin)
-    ),
-    y: Math.max(
-      -bounds.minY - margin,
-      Math.min(requestedOffset.y, canvasBounds.height - bounds.maxY + margin)
-    ),
+    x: Math.max(-bounds.minX - margin, Math.min(requestedOffset.x, canvasBounds.width - bounds.maxX + margin)),
+    y: Math.max(-bounds.minY - margin, Math.min(requestedOffset.y, canvasBounds.height - bounds.maxY + margin)),
   };
 
   return clampedOffset;

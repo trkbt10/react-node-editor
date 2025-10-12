@@ -10,7 +10,7 @@ export type TabNavProps = {
   activeTabIndex: number;
   onTabChange: (index: number) => void;
   className?: string;
-}
+};
 
 export const TabNav: React.FC<TabNavProps> = ({ tabs, activeTabIndex, onTabChange, className }) => {
   return (

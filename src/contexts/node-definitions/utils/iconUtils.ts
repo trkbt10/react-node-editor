@@ -8,16 +8,13 @@ import type { NodeDefinition } from "../../../types/NodeDefinition";
  * Get the icon for a node type from node definitions
  * Falls back to default icons if no custom icon is defined
  */
-export const getNodeIcon = (
-  nodeType: string,
-  nodeDefinitions: NodeDefinition[]
-): ReactNode => {
-  const definition = nodeDefinitions.find(def => def.type === nodeType);
-  
+export const getNodeIcon = (nodeType: string, nodeDefinitions: NodeDefinition[]): ReactNode => {
+  const definition = nodeDefinitions.find((def) => def.type === nodeType);
+
   if (definition?.icon) {
     return definition.icon;
   }
-  
+
   return getDefaultIcon(nodeType);
 };
 
@@ -49,5 +46,3 @@ const getDefaultIcon = (nodeType: string): string => {
       return "📦";
   }
 };
-
-

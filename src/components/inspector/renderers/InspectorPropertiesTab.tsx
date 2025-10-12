@@ -17,10 +17,13 @@ export const InspectorPropertiesTab: React.FC = () => {
   const { state: actionState } = useEditorActionState();
   const { t } = useI18n();
 
-  const selectedNode = actionState.selectedNodeIds.length > 0 ? nodeEditorState.nodes[actionState.selectedNodeIds[0]] : null;
+  const selectedNode =
+    actionState.selectedNodeIds.length > 0 ? nodeEditorState.nodes[actionState.selectedNodeIds[0]] : null;
 
   const selectedConnection =
-    actionState.selectedConnectionIds.length > 0 ? nodeEditorState.connections[actionState.selectedConnectionIds[0]] : null;
+    actionState.selectedConnectionIds.length > 0
+      ? nodeEditorState.connections[actionState.selectedConnectionIds[0]]
+      : null;
 
   return (
     <>

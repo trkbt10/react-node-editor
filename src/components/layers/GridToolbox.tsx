@@ -10,7 +10,7 @@ import styles from "./GridToolbox.module.css";
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type GridToolboxProps = {
   // No props needed - layout is handled by GridLayout
-}
+};
 
 const ZOOM_PRESETS = [5, 10, 25, 50, 100, 200, 400, 800] as const;
 
@@ -22,13 +22,7 @@ const ZoomButton = React.memo<{
   disabled?: boolean;
   children: React.ReactNode;
 }>(({ onClick, title, ariaLabel, disabled, children }) => (
-  <button
-    className={styles.toolButton}
-    onClick={onClick}
-    title={title}
-    aria-label={ariaLabel}
-    disabled={disabled}
-  >
+  <button className={styles.toolButton} onClick={onClick} title={title} aria-label={ariaLabel} disabled={disabled}>
     {children}
   </button>
 ));
@@ -72,23 +66,14 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
 
   const zoomPercentage = React.useMemo(
     () => Math.round(canvasState.viewport.scale * 100),
-    [canvasState.viewport.scale]
+    [canvasState.viewport.scale],
   );
 
-  const nodeCount = React.useMemo(
-    () => Object.keys(editorState.nodes).length,
-    [editorState.nodes]
-  );
+  const nodeCount = React.useMemo(() => Object.keys(editorState.nodes).length, [editorState.nodes]);
 
-  const connectionCount = React.useMemo(
-    () => Object.keys(editorState.connections).length,
-    [editorState.connections]
-  );
+  const connectionCount = React.useMemo(() => Object.keys(editorState.connections).length, [editorState.connections]);
 
-  const selectedNodeCount = React.useMemo(
-    () => actionState.selectedNodeIds.length,
-    [actionState.selectedNodeIds]
-  );
+  const selectedNodeCount = React.useMemo(() => actionState.selectedNodeIds.length, [actionState.selectedNodeIds]);
 
   const handleZoomIn = React.useCallback(() => {
     const newScale = Math.min(canvasState.viewport.scale * 1.25, 10);
@@ -96,7 +81,7 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
       canvasActions.setViewport({
         ...canvasState.viewport,
         scale: newScale,
-      })
+      }),
     );
   }, [canvasState.viewport, canvasDispatch, canvasActions]);
 
@@ -106,7 +91,7 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
       canvasActions.setViewport({
         ...canvasState.viewport,
         scale: newScale,
-      })
+      }),
     );
   }, [canvasState.viewport, canvasDispatch, canvasActions]);
 
@@ -115,13 +100,15 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
       canvasActions.setViewport({
         ...canvasState.viewport,
         scale: 1,
-      })
+      }),
     );
   }, [canvasState.viewport, canvasDispatch, canvasActions]);
 
   const handleZoomToFit = React.useCallback(() => {
     const nodes = Object.values(editorState.nodes);
-    if (nodes.length === 0) {return;}
+    if (nodes.length === 0) {
+      return;
+    }
 
     // Calculate bounding box of all nodes
     let minX = Infinity,
@@ -157,18 +144,22 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
           x: -(centerX * scale - viewportWidth / 2),
           y: -(centerY * scale - viewportHeight / 2),
         },
-      })
+      }),
     );
   }, [editorState.nodes, canvasDispatch, canvasActions]);
 
   const handleZoomToSelection = React.useCallback(() => {
-    if (selectedNodeCount === 0) {return;}
+    if (selectedNodeCount === 0) {
+      return;
+    }
 
     const selectedNodes = actionState.selectedNodeIds
       .map((id) => editorState.nodes[id])
       .filter((node): node is NonNullable<typeof node> => node != null);
-    
-    if (selectedNodes.length === 0) {return;}
+
+    if (selectedNodes.length === 0) {
+      return;
+    }
 
     // Calculate bounding box of selected nodes
     let minX = Infinity,
@@ -204,7 +195,7 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
           x: -(centerX * scale - viewportWidth / 2),
           y: -(centerY * scale - viewportHeight / 2),
         },
-      })
+      }),
     );
   }, [editorState.nodes, actionState.selectedNodeIds, selectedNodeCount, canvasDispatch, canvasActions]);
 
@@ -214,25 +205,25 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
         canvasActions.setViewport({
           ...canvasState.viewport,
           scale: preset / 100,
-        })
+        }),
       );
     },
-    [canvasState.viewport, canvasDispatch, canvasActions]
+    [canvasState.viewport, canvasDispatch, canvasActions],
   );
 
   const handleToggleGrid = React.useCallback(() => {
     canvasDispatch(
-      canvasActions.updateGridSettings({ 
-        showGrid: !canvasState.gridSettings.showGrid 
-      })
+      canvasActions.updateGridSettings({
+        showGrid: !canvasState.gridSettings.showGrid,
+      }),
     );
   }, [canvasState.gridSettings.showGrid, canvasDispatch, canvasActions]);
 
   const handleToggleSnapToGrid = React.useCallback(() => {
     canvasDispatch(
-      canvasActions.updateGridSettings({ 
-        snapToGrid: !canvasState.gridSettings.snapToGrid 
-      })
+      canvasActions.updateGridSettings({
+        snapToGrid: !canvasState.gridSettings.snapToGrid,
+      }),
     );
   }, [canvasState.gridSettings.snapToGrid, canvasDispatch, canvasActions]);
 
@@ -243,15 +234,15 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
         {preset}%
       </option>
     ));
-    
-    if (!ZOOM_PRESETS.includes(zoomPercentage as typeof ZOOM_PRESETS[number])) {
+
+    if (!ZOOM_PRESETS.includes(zoomPercentage as (typeof ZOOM_PRESETS)[number])) {
       options.push(
         <option key={zoomPercentage} value={zoomPercentage}>
           {zoomPercentage}%
-        </option>
+        </option>,
       );
     }
-    
+
     return options;
   }, [zoomPercentage]);
 
@@ -259,11 +250,7 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
     <div className={styles.toolbar}>
       <div className={styles.toolbarSection}>
         {/* Zoom controls */}
-        <ZoomButton
-          onClick={handleZoomOut}
-          title="Zoom Out (Cmd -)"
-          ariaLabel="Zoom Out"
-        >
+        <ZoomButton onClick={handleZoomOut} title="Zoom Out (Cmd -)" ariaLabel="Zoom Out">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z" />
           </svg>
@@ -279,11 +266,7 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
           </select>
         </div>
 
-        <ZoomButton
-          onClick={handleZoomIn}
-          title="Zoom In (Cmd +)"
-          ariaLabel="Zoom In"
-        >
+        <ZoomButton onClick={handleZoomIn} title="Zoom In (Cmd +)" ariaLabel="Zoom In">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M8 4a.5.5 0 0 1 .5.5V7.5H11.5a.5.5 0 0 1 0 1H8.5V11.5a.5.5 0 0 1-1 0V8.5H4.5a.5.5 0 0 1 0-1H7.5V4.5A.5.5 0 0 1 8 4z" />
           </svg>
@@ -294,11 +277,7 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
 
       <div className={styles.toolbarSection}>
         {/* Zoom presets */}
-        <ZoomButton
-          onClick={handleZoomToFit}
-          title="Zoom to Fit All (Shift 1)"
-          ariaLabel="Zoom to Fit All"
-        >
+        <ZoomButton onClick={handleZoomToFit} title="Zoom to Fit All (Shift 1)" ariaLabel="Zoom to Fit All">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <path d="M3.5 2.5a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-9zm0 1h9v9h-9v-9z" />
             <path d="M6 6h4v4H6V6z" opacity="0.5" />
@@ -320,11 +299,7 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
           </svg>
         </ZoomButton>
 
-        <ZoomButton
-          onClick={handleZoomReset}
-          title="Reset Zoom (Cmd 0)"
-          ariaLabel="Reset Zoom"
-        >
+        <ZoomButton onClick={handleZoomReset} title="Reset Zoom (Cmd 0)" ariaLabel="Reset Zoom">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
             <text x="8" y="12" textAnchor="middle" fontSize="10" fontWeight="600">
               1:1

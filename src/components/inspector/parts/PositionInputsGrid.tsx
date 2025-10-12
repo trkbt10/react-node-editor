@@ -6,7 +6,7 @@ import styles from "./PositionInputsGrid.module.css";
 
 export type PositionInputsGridProps = {
   children: React.ReactNode;
-}
+};
 
 /**
  * Grid container for position and size inputs

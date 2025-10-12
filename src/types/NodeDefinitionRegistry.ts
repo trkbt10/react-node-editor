@@ -7,7 +7,9 @@ export type NodeDefinitionRegistry = {
   /** Map of type to definition */
   definitions: Map<string, NodeDefinition>;
   /** Register a new node type */
-  register: <TData extends Record<string, unknown> = Record<string, unknown>>(definition: NodeDefinition<TData>) => void;
+  register: <TData extends Record<string, unknown> = Record<string, unknown>>(
+    definition: NodeDefinition<TData>,
+  ) => void;
   /** Unregister a node type */
   unregister: (type: string) => void;
   /** Get a node definition by type */

@@ -12,7 +12,7 @@ import { copyNodesToClipboard, pasteNodesFromClipboard } from "./utils/nodeClipb
 export const nodeEditorReducer = (
   state: NodeEditorData,
   action: NodeEditorAction,
-  nodeDefinitions: NodeDefinition[] = []
+  nodeDefinitions: NodeDefinition[] = [],
 ): NodeEditorData => {
   switch (action.type) {
     case "ADD_NODE": {
@@ -27,22 +27,30 @@ export const nodeEditorReducer = (
     case "UPDATE_NODE": {
       const { nodeId, updates } = action.payload;
       const node = state.nodes[nodeId];
-      if (!node) {return state;}
+      if (!node) {
+        return state;
+      }
       const nextNodes = { ...state.nodes, [nodeId]: { ...node, ...updates } as Node };
 
       // If a group node toggles visibility or lock, propagate to descendants
-      const propagateVisibility = Object.prototype.hasOwnProperty.call(updates, 'visible');
-      const propagateLock = Object.prototype.hasOwnProperty.call(updates, 'locked');
+      const propagateVisibility = Object.prototype.hasOwnProperty.call(updates, "visible");
+      const propagateLock = Object.prototype.hasOwnProperty.call(updates, "locked");
       if ((propagateVisibility || propagateLock) && nodeHasGroupBehavior(node, nodeDefinitions)) {
         const targetVisible = propagateVisibility ? updates.visible : undefined;
         const targetLocked = propagateLock ? updates.locked : undefined;
 
-        if (typeof targetVisible !== 'undefined' || typeof targetLocked !== 'undefined') {
+        if (typeof targetVisible !== "undefined" || typeof targetLocked !== "undefined") {
           const isDescendant = (childId: NodeId, ancestorId: NodeId): boolean => {
             const n = nextNodes[childId];
-            if (!n) {return false;}
-            if (n.parentId === ancestorId) {return true;}
-            if (n.parentId) {return isDescendant(n.parentId, ancestorId);}
+            if (!n) {
+              return false;
+            }
+            if (n.parentId === ancestorId) {
+              return true;
+            }
+            if (n.parentId) {
+              return isDescendant(n.parentId, ancestorId);
+            }
             return false;
           };
 
@@ -50,8 +58,8 @@ export const nodeEditorReducer = (
             if (n.id !== nodeId && isDescendant(n.id, nodeId)) {
               nextNodes[n.id] = {
                 ...n,
-                ...(typeof targetVisible !== 'undefined' ? { visible: targetVisible } : {}),
-                ...(typeof targetLocked !== 'undefined' ? { locked: targetLocked } : {}),
+                ...(typeof targetVisible !== "undefined" ? { visible: targetVisible } : {}),
+                ...(typeof targetLocked !== "undefined" ? { locked: targetLocked } : {}),
               };
             }
           });
@@ -63,16 +71,23 @@ export const nodeEditorReducer = (
     case "DELETE_NODE": {
       const { nodeId } = action.payload;
       const { [nodeId]: _deleted, ...remainingNodes } = state.nodes;
-      const remainingConnections = Object.entries(state.connections).reduce((acc, [connId, conn]) => {
-        if (conn.fromNodeId !== nodeId && conn.toNodeId !== nodeId) {acc[connId] = conn;}
-        return acc;
-      }, {} as typeof state.connections);
+      const remainingConnections = Object.entries(state.connections).reduce(
+        (acc, [connId, conn]) => {
+          if (conn.fromNodeId !== nodeId && conn.toNodeId !== nodeId) {
+            acc[connId] = conn;
+          }
+          return acc;
+        },
+        {} as typeof state.connections,
+      );
       return { ...state, nodes: remainingNodes, connections: remainingConnections };
     }
     case "MOVE_NODE": {
       const { nodeId, position } = action.payload;
       const node = state.nodes[nodeId];
-      if (!node) {return state;}
+      if (!node) {
+        return state;
+      }
       return { ...state, nodes: { ...state.nodes, [nodeId]: { ...node, position } } };
     }
     case "MOVE_NODES": {
@@ -80,7 +95,9 @@ export const nodeEditorReducer = (
       const updatedNodes = { ...state.nodes };
       Object.entries(updates).forEach(([nodeId, position]) => {
         const node = updatedNodes[nodeId];
-        if (node) {updatedNodes[nodeId] = { ...node, position };}
+        if (node) {
+          updatedNodes[nodeId] = { ...node, position };
+        }
       });
       return { ...state, nodes: updatedNodes };
     }
@@ -101,12 +118,16 @@ export const nodeEditorReducer = (
       return action.payload.data;
     case "DUPLICATE_NODES": {
       const { nodeIds } = action.payload;
-      if (nodeIds.length === 0) {return state;}
+      if (nodeIds.length === 0) {
+        return state;
+      }
       const newNodes: Record<NodeId, Node> = { ...state.nodes };
       const duplicatedNodeIds: NodeId[] = [];
       nodeIds.forEach((oldId) => {
         const originalNode = state.nodes[oldId];
-        if (!originalNode) {return;}
+        if (!originalNode) {
+          return;
+        }
         const newId = generateId();
         duplicatedNodeIds.push(newId);
         const duplicatedNode: Node = {
@@ -119,15 +140,22 @@ export const nodeEditorReducer = (
             createdAt: Date.now(),
           },
         };
-        if (nodeHasGroupBehavior(duplicatedNode, nodeDefinitions)) {duplicatedNode.children = [];}
+        if (nodeHasGroupBehavior(duplicatedNode, nodeDefinitions)) {
+          duplicatedNode.children = [];
+        }
         newNodes[newId] = duplicatedNode;
       });
       return { ...state, nodes: newNodes, lastDuplicatedNodeIds: duplicatedNodeIds };
     }
     case "GROUP_NODES": {
       const { nodeIds, groupId = generateId() } = action.payload;
-      if (nodeIds.length === 0) {return state;}
-      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      if (nodeIds.length === 0) {
+        return state;
+      }
+      let minX = Infinity,
+        minY = Infinity,
+        maxX = -Infinity,
+        maxY = -Infinity;
       nodeIds.forEach((id) => {
         const node = state.nodes[id];
         if (node) {
@@ -151,7 +179,9 @@ export const nodeEditorReducer = (
     case "UNGROUP_NODE": {
       const { groupId } = action.payload;
       const group = state.nodes[groupId];
-      if (!group || !nodeHasGroupBehavior(group, nodeDefinitions)) {return state;}
+      if (!group || !nodeHasGroupBehavior(group, nodeDefinitions)) {
+        return state;
+      }
       const { [groupId]: _deleted, ...remainingNodes } = state.nodes;
       return { ...state, nodes: remainingNodes };
     }
@@ -160,7 +190,9 @@ export const nodeEditorReducer = (
       const updatedNodes = { ...state.nodes };
       Object.entries(updates).forEach(([nodeId, update]) => {
         const node = updatedNodes[nodeId];
-        if (node) {updatedNodes[nodeId] = { ...node, ...update } as Node;}
+        if (node) {
+          updatedNodes[nodeId] = { ...node, ...update } as Node;
+        }
       });
       return { ...state, nodes: updatedNodes };
     }
@@ -225,36 +257,10 @@ export const nodeEditorReducer = (
 
 export const defaultNodeEditorData: NodeEditorData = { nodes: {}, connections: {} };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**
+ * Generates a unique random identifier string
+ * @returns A random 8-character alphanumeric string
+ */
 export function generateId(): string {
   return Math.random().toString(36).slice(2, 10);
 }

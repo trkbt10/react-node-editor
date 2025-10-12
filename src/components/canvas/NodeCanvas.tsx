@@ -10,7 +10,7 @@ import { useNodeEditor } from "../../contexts/node-editor";
 export type NodeCanvasProps = {
   showGrid?: boolean;
   doubleClickToEdit?: boolean;
-}
+};
 
 /**
  * NodeCanvas component that renders the canvas base, connection layer, and node layer.

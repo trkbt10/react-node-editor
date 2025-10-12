@@ -21,9 +21,9 @@ Extend the `NodeDataTypeMap` interface to register your node types:
 
 ```typescript
 // In your types file or at the top of your node definitions
-declare module '@tanuki-ui/node-editor' {
+declare module "@tanuki-ui/node-editor" {
   interface NodeDataTypeMap {
-    'my-custom-node': {
+    "my-custom-node": {
       title: string;
       value: number;
       enabled: boolean;
@@ -37,6 +37,7 @@ declare module '@tanuki-ui/node-editor' {
 Add the type parameter to your renderer components:
 
 **Before:**
+
 ```typescript
 const MyNodeRenderer: React.FC<NodeRenderProps> = ({ node, isSelected }) => {
   const title = node.data.title as string;
@@ -46,6 +47,7 @@ const MyNodeRenderer: React.FC<NodeRenderProps> = ({ node, isSelected }) => {
 ```
 
 **After:**
+
 ```typescript
 const MyNodeRenderer: React.FC<NodeRenderProps<"my-custom-node">> = ({ node, isSelected }) => {
   // node.data is now typed - no casting needed!
@@ -59,19 +61,16 @@ const MyNodeRenderer: React.FC<NodeRenderProps<"my-custom-node">> = ({ node, isS
 Use the provided helper functions for type-safe operations:
 
 ```typescript
-import { createNodeDefinition, createNodeDataUpdater } from '@tanuki-ui/node-editor';
+import { createNodeDefinition, createNodeDataUpdater } from "@tanuki-ui/node-editor";
 
-const MyNodeRenderer: React.FC<NodeRenderProps<"my-custom-node">> = ({ 
-  node, 
-  onUpdateNode 
-}) => {
+const MyNodeRenderer: React.FC<NodeRenderProps<"my-custom-node">> = ({ node, onUpdateNode }) => {
   const updateData = createNodeDataUpdater<"my-custom-node">(onUpdateNode);
-  
+
   const handleToggle = () => {
     // Type-safe update - only valid properties allowed
     updateData({ enabled: !node.data.enabled });
   };
-  
+
   // ...
 };
 ```
@@ -106,7 +105,7 @@ You don't need to migrate all nodes at once. Here's a recommended approach:
 If you need to use typed components with legacy APIs:
 
 ```typescript
-import { asOriginalNodeRender, asOriginalInspectorRender } from '@tanuki-ui/node-editor';
+import { asOriginalNodeRender, asOriginalInspectorRender } from "@tanuki-ui/node-editor";
 
 // Convert typed renderer to legacy interface
 const legacyRender = asOriginalNodeRender(MyTypedNodeRenderer);
@@ -131,11 +130,11 @@ interface NumericNodeData extends BaseNodeData {
 }
 
 // Register multiple nodes with shared types
-declare module '@tanuki-ui/node-editor' {
+declare module "@tanuki-ui/node-editor" {
   interface NodeDataTypeMap {
-    'slider-node': NumericNodeData;
-    'gauge-node': NumericNodeData;
-    'counter-node': NumericNodeData & { step: number };
+    "slider-node": NumericNodeData;
+    "gauge-node": NumericNodeData;
+    "counter-node": NumericNodeData & { step: number };
   }
 }
 ```
@@ -144,25 +143,23 @@ declare module '@tanuki-ui/node-editor' {
 
 ```typescript
 // Create a generic renderer for similar nodes
-function createNumericNodeRenderer<T extends keyof NodeDataTypeMap>(
-  nodeType: T
-): React.FC<NodeRenderProps<T>> {
+function createNumericNodeRenderer<T extends keyof NodeDataTypeMap>(nodeType: T): React.FC<NodeRenderProps<T>> {
   return ({ node, onUpdateNode }) => {
     // Implementation
   };
 }
 
 // Use for multiple node types
-const SliderRenderer = createNumericNodeRenderer('slider-node');
-const GaugeRenderer = createNumericNodeRenderer('gauge-node');
+const SliderRenderer = createNumericNodeRenderer("slider-node");
+const GaugeRenderer = createNumericNodeRenderer("gauge-node");
 ```
 
 ### Pattern 3: Type Guards
 
 ```typescript
 // Type guard for runtime checks
-function isMyCustomNode(node: Node): node is Node & { type: 'my-custom-node' } {
-  return node.type === 'my-custom-node';
+function isMyCustomNode(node: Node): node is Node & { type: "my-custom-node" } {
+  return node.type === "my-custom-node";
 }
 
 // Use in mixed contexts
@@ -179,9 +176,9 @@ if (isMyCustomNode(node)) {
 Make sure you've properly declared the type in `NodeDataTypeMap`:
 
 ```typescript
-declare module '@tanuki-ui/node-editor' {
+declare module "@tanuki-ui/node-editor" {
   interface NodeDataTypeMap {
-    'your-node-type': YourDataInterface;
+    "your-node-type": YourDataInterface;
   }
 }
 ```
@@ -191,7 +188,7 @@ declare module '@tanuki-ui/node-editor' {
 Ensure you're importing from the correct path:
 
 ```typescript
-import type { NodeDataTypeMap, NodeRenderProps } from '@tanuki-ui/node-editor';
+import type { NodeDataTypeMap, NodeRenderProps } from "@tanuki-ui/node-editor";
 ```
 
 ### Issue: Legacy nodes showing type errors
@@ -200,7 +197,7 @@ For nodes you haven't migrated yet, you can use type assertions:
 
 ```typescript
 const definition = createNodeDefinition({
-  type: 'legacy-node' as any,
+  type: "legacy-node" as any,
   // ... rest of definition
 });
 ```
@@ -216,7 +213,8 @@ const definition = createNodeDefinition({
 ## Examples
 
 See `/src/extended/node-editor/examples/typedNodes.example.tsx` for complete examples of:
+
 - Basic typed nodes
-- Inspector integration  
+- Inspector integration
 - Helper function usage
 - Legacy compatibility

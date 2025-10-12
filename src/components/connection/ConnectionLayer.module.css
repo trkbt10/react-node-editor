@@ -31,6 +31,10 @@
 }
 
 @keyframes dashAnimation {
-  from { stroke-dashoffset: 0; }
-  to { stroke-dashoffset: var(--node-editor-connection-drag-animation-distance); }
+  from {
+    stroke-dashoffset: 0;
+  }
+  to {
+    stroke-dashoffset: var(--node-editor-connection-drag-animation-distance);
+  }
 }

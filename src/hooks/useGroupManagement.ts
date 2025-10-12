@@ -8,7 +8,6 @@ import {
   getGroupChildren,
   getGroupDescendants,
   isValidGroupMove,
-  findContainingGroup,
 } from "../contexts/node-editor/utils/groupOperations";
 
 export type UseGroupManagementOptions = {
@@ -16,7 +15,7 @@ export type UseGroupManagementOptions = {
   autoUpdateMembership?: boolean;
   /** Debounce delay for membership updates (ms) */
   membershipUpdateDelay?: number;
-}
+};
 
 export type UseGroupManagementResult = {
   /** Update group membership for all nodes */
@@ -33,7 +32,7 @@ export type UseGroupManagementResult = {
   moveGroupWithChildren: (groupId: NodeId, delta: { x: number; y: number }) => void;
   /** Check if a group move would be valid */
   isValidGroupMove: (groupId: NodeId, newPosition: { x: number; y: number }) => boolean;
-}
+};
 
 /**
  * Hook for managing group relationships and operations
@@ -60,7 +59,9 @@ export const useGroupManagement = (options: UseGroupManagementOptions = {}): Use
 
   // Auto-update membership when nodes change position (but not during drag)
   React.useEffect(() => {
-    if (!autoUpdateMembership) {return;}
+    if (!autoUpdateMembership) {
+      return;
+    }
 
     // Clear existing timeout
     if (updateMembershipTimeoutRef.current) {
@@ -90,7 +91,7 @@ export const useGroupManagement = (options: UseGroupManagementOptions = {}): Use
       const node = nodesRef.current[nodeId];
       return !!(node && node.parentId);
     },
-    [nodesRef]
+    [nodesRef],
   );
 
   const getNodeParentGroup = React.useCallback((nodeId: NodeId): NodeId | null => {
@@ -110,7 +111,7 @@ export const useGroupManagement = (options: UseGroupManagementOptions = {}): Use
     (groupId: NodeId, delta: { x: number; y: number }) => {
       dispatch(actions.moveGroupWithChildren(groupId, delta));
     },
-    [dispatch, actions]
+    [dispatch, actions],
   );
 
   const isValidGroupMoveCheck = React.useCallback((groupId: NodeId, newPosition: { x: number; y: number }): boolean => {

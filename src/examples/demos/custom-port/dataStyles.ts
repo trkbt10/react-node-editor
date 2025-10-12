@@ -54,10 +54,7 @@ export const getStyleForDataType = (dataType?: Port["dataType"]): DataTypeStyle 
   return DATA_TYPE_STYLES[dataType ?? ""] ?? DEFAULT_DATA_STYLE;
 };
 
-export const countConnectionsForPort = (
-  allConnections: Record<string, Connection>,
-  portId: Port["id"],
-): number => {
+export const countConnectionsForPort = (allConnections: Record<string, Connection>, portId: Port["id"]): number => {
   return Object.values(allConnections).filter((connection) => {
     return connection.fromPortId === portId || connection.toPortId === portId;
   }).length;

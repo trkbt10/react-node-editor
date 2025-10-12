@@ -15,7 +15,7 @@ export const GeneralSettingsPanel: React.FC = () => {
   const { settings, settingsManager, updateSetting } = useNodeEditor();
   const { t } = useI18n();
   const [autoSaveIntervalInput, setAutoSaveIntervalInput] = React.useState<string>(() =>
-    String(settings.autoSaveInterval ?? 30)
+    String(settings.autoSaveInterval ?? 30),
   );
 
   React.useEffect(() => {
@@ -26,7 +26,7 @@ export const GeneralSettingsPanel: React.FC = () => {
     (enabled: boolean) => {
       updateSetting("general.autoSave", enabled);
     },
-    [updateSetting]
+    [updateSetting],
   );
 
   const handleAutoSaveIntervalChange = React.useCallback((value: string) => {

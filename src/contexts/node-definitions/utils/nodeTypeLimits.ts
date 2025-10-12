@@ -21,8 +21,12 @@ export function getDefinition(defs: NodeDefinition[], type: string): NodeDefinit
 /** Determine if a given type can be added respecting maxPerFlow constraint */
 export function canAddNodeType(type: string, defs: NodeDefinition[], counts: Map<string, number>): boolean {
   const def = getDefinition(defs, type);
-  if (!def) {return false;} // unknown type: disallow
-  if (typeof def.maxPerFlow !== "number") {return true;} // no limit
+  if (!def) {
+    return false;
+  } // unknown type: disallow
+  if (typeof def.maxPerFlow !== "number") {
+    return true;
+  } // no limit
   const current = counts.get(type) || 0;
   return current < def.maxPerFlow;
 }
@@ -38,11 +42,7 @@ export function getDisabledNodeTypes(defs: NodeDefinition[], counts: Map<string,
  * Filter a list of nodeIds to duplicate so that resulting duplicates do not exceed per-type limits.
  * Returns the subset of nodeIds that can be duplicated given current counts and definitions.
  */
-export function filterDuplicableNodeIds(
-  nodeIds: string[],
-  state: NodeEditorData,
-  defs: NodeDefinition[]
-): string[] {
+export function filterDuplicableNodeIds(nodeIds: string[], state: NodeEditorData, defs: NodeDefinition[]): string[] {
   const counts = countNodesByType(state);
   const remainingByType = new Map<string, number>();
 
@@ -57,9 +57,13 @@ export function filterDuplicableNodeIds(
   const result: string[] = [];
   for (const nodeId of nodeIds) {
     const node = state.nodes[nodeId];
-    if (!node) {continue;}
+    if (!node) {
+      continue;
+    }
     const def = getDefinition(defs, node.type);
-    if (!def) {continue;}
+    if (!def) {
+      continue;
+    }
     if (typeof def.maxPerFlow !== "number") {
       result.push(nodeId);
       continue;
@@ -72,4 +76,3 @@ export function filterDuplicableNodeIds(
   }
   return result;
 }
-

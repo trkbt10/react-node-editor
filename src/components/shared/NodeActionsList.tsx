@@ -10,7 +10,10 @@ import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useNodeDefinitionList } from "../../contexts/node-definitions";
 import { canAddNodeType, countNodesByType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
-import { copyNodesToClipboard, pasteNodesFromClipboard } from "../../contexts/node-editor/utils/nodeClipboardOperations";
+import {
+  copyNodesToClipboard,
+  pasteNodesFromClipboard,
+} from "../../contexts/node-editor/utils/nodeClipboardOperations";
 
 export type NodeActionsListProps = {
   targetNodeId: string;
@@ -21,7 +24,7 @@ export type NodeActionsListProps = {
   includeCut?: boolean;
   includePaste?: boolean;
   includeDelete?: boolean;
-}
+};
 
 export const NodeActionsList: React.FC<NodeActionsListProps> = ({
   targetNodeId,
@@ -40,25 +43,31 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
 
   const handleDuplicate = React.useCallback(() => {
     const node = editorState.nodes[targetNodeId];
-    if (!node) {return;}
+    if (!node) {
+      return;
+    }
     const counts = countNodesByType(editorState);
-    if (!canAddNodeType(node.type, nodeDefinitions, counts)) {return;}
+    if (!canAddNodeType(node.type, nodeDefinitions, counts)) {
+      return;
+    }
     editorActions.duplicateNodes([targetNodeId]);
     onAction?.();
   }, [editorActions, editorState, nodeDefinitions, targetNodeId, onAction]);
 
   const handleCopy = React.useCallback(() => {
-    const selected = actionState.selectedNodeIds.length > 0 && actionState.selectedNodeIds.includes(targetNodeId)
-      ? actionState.selectedNodeIds
-      : [targetNodeId];
+    const selected =
+      actionState.selectedNodeIds.length > 0 && actionState.selectedNodeIds.includes(targetNodeId)
+        ? actionState.selectedNodeIds
+        : [targetNodeId];
     copyNodesToClipboard(selected, editorState);
     onAction?.();
   }, [actionState.selectedNodeIds, editorState, targetNodeId, onAction]);
 
   const handleCut = React.useCallback(() => {
-    const selected = actionState.selectedNodeIds.length > 0 && actionState.selectedNodeIds.includes(targetNodeId)
-      ? actionState.selectedNodeIds
-      : [targetNodeId];
+    const selected =
+      actionState.selectedNodeIds.length > 0 && actionState.selectedNodeIds.includes(targetNodeId)
+        ? actionState.selectedNodeIds
+        : [targetNodeId];
     copyNodesToClipboard(selected, editorState);
     selected.forEach((nodeId) => editorActions.deleteNode(nodeId));
     actionDispatch(actionActions.clearSelection());

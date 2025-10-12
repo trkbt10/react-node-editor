@@ -7,14 +7,14 @@ import type { Position, Viewport, GridSettings } from "../types/core";
 export type PanState = {
   isPanning: boolean;
   startPosition: Position | null;
-}
+};
 
 export type NodeCanvasState = {
   viewport: Viewport;
   gridSettings: GridSettings;
   isSpacePanning: boolean;
   panState: PanState;
-}
+};
 
 // Canvas actions
 export type NodeCanvasAction =
@@ -116,7 +116,9 @@ export const nodeCanvasReducer = (state: NodeCanvasState, action: NodeCanvasActi
       };
 
     case "UPDATE_PAN": {
-      if (!state.panState.isPanning || !state.panState.startPosition) {return state;}
+      if (!state.panState.isPanning || !state.panState.startPosition) {
+        return state;
+      }
 
       const deltaX = action.payload.position.x - state.panState.startPosition.x;
       const deltaY = action.payload.position.y - state.panState.startPosition.y;
@@ -247,7 +249,7 @@ export type NodeCanvasContextValue = {
   actions: typeof nodeCanvasActions;
   canvasRef: React.RefObject<HTMLDivElement | null>;
   utils: ReturnType<typeof createCanvasUtils>;
-}
+};
 
 export const NodeCanvasContext = React.createContext<NodeCanvasContextValue | null>(null);
 
@@ -255,7 +257,7 @@ export const NodeCanvasContext = React.createContext<NodeCanvasContextValue | nu
 export type NodeCanvasProviderProps = {
   children: React.ReactNode;
   initialState?: Partial<NodeCanvasState>;
-}
+};
 
 export const NodeCanvasProvider: React.FC<NodeCanvasProviderProps> = ({ children, initialState }) => {
   const [state, dispatch] = React.useReducer(nodeCanvasReducer, { ...defaultNodeCanvasState, ...initialState });

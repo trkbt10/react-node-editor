@@ -100,8 +100,7 @@ export function ThemeShowcaseExample(): React.ReactElement {
               Active Accent Control
             </button>
             <span>
-              Focus ring:{' '}
-              <code>{tokenValues["--node-editor-keyboard-focus-indicator-color"] ?? "auto"}</code>
+              Focus ring: <code>{tokenValues["--node-editor-keyboard-focus-indicator-color"] ?? "auto"}</code>
             </span>
           </div>
         </div>

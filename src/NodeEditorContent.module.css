@@ -39,7 +39,8 @@
 }
 
 /* Locked nodes: no extra visual highlight beyond the icon */
-.node.locked {}
+.node.locked {
+}
 
 .node.selected {
   border-color: var(--node-editor-accent-color);
@@ -53,7 +54,7 @@
 
 .nodeHeader {
   position: relative;
-  padding: .5em var(--node-editor-space-md);
+  padding: 0.5em var(--node-editor-space-md);
   font-weight: var(--node-editor-inspector-font-weight-medium);
   border-bottom: var(--node-editor-input-border);
   background-color: var(--node-editor-table-header-background-color);
@@ -89,7 +90,7 @@
 
 .nodeHeaderInput {
   width: 100%;
-  padding: var(--node-editor-space-xs) .5em;
+  padding: var(--node-editor-space-xs) 0.5em;
   border: var(--node-editor-border-width) solid var(--node-editor-accent-color);
   border-radius: var(--node-editor-card-border-radius);
   background-color: var(--node-editor-window-background-color);
@@ -144,11 +145,11 @@
   top: var(--node-editor-space-lg);
   left: var(--node-editor-space-lg);
   display: flex;
-  gap: .5em;
+  gap: 0.5em;
   background-color: var(--node-editor-control-background);
   border: var(--node-editor-input-border);
   border-radius: var(--node-editor-control-border-radius);
-  padding: .5em;
+  padding: 0.5em;
   box-shadow: var(--node-editor-card-box-shadow);
   box-sizing: border-box;
 }
@@ -167,7 +168,7 @@
 }
 
 .contextMenuItem {
-  padding: .5em var(--node-editor-space-md);
+  padding: 0.5em var(--node-editor-space-md);
   cursor: pointer;
   border-radius: var(--node-editor-card-border-radius);
   transition: background-color var(--node-editor-transition-duration);
@@ -184,7 +185,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(var(--node-editor-grid-color) 1px, transparent 1px),
+  background-image:
+    linear-gradient(var(--node-editor-grid-color) 1px, transparent 1px),
     linear-gradient(90deg, var(--node-editor-grid-color) 1px, transparent 1px);
   background-size: 20px 20px;
   opacity: var(--node-editor-grid-opacity);
@@ -194,7 +196,7 @@
 
 .inspectorRow {
   display: flex;
-  gap: .5em;
+  gap: 0.5em;
 }
 
 .inspectorRow input {
@@ -213,15 +215,15 @@
 }
 
 .externalDataInfo {
-  padding: .5em;
+  padding: 0.5em;
   background-color: var(--node-editor-control-hover-background);
   border-radius: var(--node-editor-card-border-radius);
   font-size: var(--node-editor-inspector-font-size-body);
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
   box-sizing: border-box;
 }
 
-.externalDataInfo>div {
+.externalDataInfo > div {
   margin-bottom: var(--node-editor-space-xs);
 }
 
@@ -255,8 +257,8 @@
 
 .snapTarget {
   position: absolute;
-  width: .5em;
-  height: .5em;
+  width: 0.5em;
+  height: 0.5em;
   background-color: var(--node-editor-accent-color);
   border-radius: 50%;
   transform: translate(-4px, -4px);
@@ -297,7 +299,9 @@
   border: 3px solid red;
   /* Temporary: make ports visible */
   cursor: crosshair;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
   z-index: 100;
   /* Increased z-index */
   box-shadow: 0 0 var(--node-editor-space-xs) rgba(0, 0, 0, 0.5);
@@ -321,8 +325,8 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: .5em;
-  height: .5em;
+  width: 0.5em;
+  height: 0.5em;
   background-color: var(--node-editor-input-border);
   border-radius: 50%;
   transform: translate(-50%, -50%);
@@ -409,13 +413,13 @@
 
 .inspectorTabs {
   display: flex;
-  gap: .5em;
+  gap: 0.5em;
   padding: 0;
 }
 
 .inspectorTab {
   flex: 1;
-  padding: .5em 1em;
+  padding: 0.5em 1em;
   background: transparent;
   border: none;
   border-bottom: 2px solid transparent;
@@ -445,7 +449,6 @@
   padding: 0;
 }
 
-
 .inspectorSection h4 {
   margin: 0 0 var(--node-editor-space-md) 0;
   font-size: var(--node-editor-inspector-font-size-body);
@@ -470,7 +473,7 @@
 .inspectorInput,
 .inspectorTextarea {
   width: 100%;
-  padding: 3px .25em;
+  padding: 3px 0.25em;
   border: var(--node-editor-input-border);
   border-radius: var(--node-editor-card-border-radius);
   font-size: var(--node-editor-inspector-font-size-body);
@@ -501,7 +504,7 @@
 .inspectorNumberInput {
   flex: 1;
   /* Compact padding for small width usability */
-  padding: 3px .25em;
+  padding: 3px 0.25em;
   border: var(--node-editor-input-border);
   border-radius: var(--node-editor-card-border-radius);
   font-size: var(--node-editor-inspector-font-size-body);
@@ -535,7 +538,7 @@
 
 .inspectorReadOnlyField {
   display: block;
-  padding: 6px .5em;
+  padding: 6px 0.5em;
   font-size: var(--node-editor-inspector-font-size-body);
   color: var(--node-editor-secondary-label-color);
   background: var(--node-editor-tertiary-system-background);
@@ -567,7 +570,7 @@
   flex: 0 0 auto;
   background: var(--node-editor-control-background);
   border-bottom: var(--node-editor-input-border);
-  padding: .5em var(--node-editor-space-lg);
+  padding: 0.5em var(--node-editor-space-lg);
   display: flex;
   align-items: center;
   min-height: 4.5em;
@@ -604,7 +607,10 @@
   background-color: transparent;
   border: none;
   opacity: 0;
-  transition: opacity 0.1s ease, transform 0.1s ease, background-color 0.1s ease;
+  transition:
+    opacity 0.1s ease,
+    transform 0.1s ease,
+    background-color 0.1s ease;
   z-index: 15;
   pointer-events: all;
   /* Corner-specific border radius - only bottom-right is rounded */
@@ -631,7 +637,6 @@
   transform: scale(1.1);
 }
 
-
 /* Minimap Styles */
 .minimapContainer {
   position: absolute;
@@ -647,12 +652,12 @@
   border: var(--node-editor-input-border);
   border-radius: var(--node-editor-control-border-radius);
   box-shadow: var(--node-editor-card-hover-box-shadow);
-  backdrop-filter: blur(.5em);
+  backdrop-filter: blur(0.5em);
   overflow: hidden;
 }
 
 .minimapTitle {
-  padding: .5em var(--node-editor-space-md);
+  padding: 0.5em var(--node-editor-space-md);
   background: var(--node-editor-table-header-background-color);
   font-size: var(--node-editor-inspector-font-size-body);
   font-weight: 600;
@@ -737,7 +742,7 @@
 }
 
 /* Allow individual UI overlay elements to be interactive if needed */
-.uiOverlayContainer>* {
+.uiOverlayContainer > * {
   pointer-events: auto;
   /* Children can choose to be interactive */
 }

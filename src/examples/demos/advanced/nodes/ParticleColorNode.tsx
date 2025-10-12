@@ -17,9 +17,7 @@ export type ParticleColorData = {
 };
 
 const hexToRgb = (hex: string) => {
-  const normalized = hex.length === 4
-    ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}`
-    : hex;
+  const normalized = hex.length === 4 ? `#${hex[1]}${hex[1]}${hex[2]}${hex[2]}${hex[3]}${hex[3]}` : hex;
   const r = parseInt(normalized.slice(1, 3), 16);
   const g = parseInt(normalized.slice(3, 5), 16);
   const b = parseInt(normalized.slice(5, 7), 16);
@@ -48,7 +46,13 @@ const ensureRgb = (color: string) => {
 
 const defaultPalette = ["#f97316", "#ec4899", "#8b5cf6", "#6366f1", "#22c55e", "#14b8a6"];
 
-export const ParticleColorRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRenderProps) => {
+export const ParticleColorRenderer = ({
+  node,
+  isSelected,
+  isDragging,
+  externalData,
+  onUpdateNode,
+}: NodeRenderProps) => {
   const colorData = externalData as ParticleColorData | undefined;
   const rgbColor = ensureRgb(colorData?.color ?? "rgb(249, 115, 22)");
   const [hexColor, setHexColor] = React.useState(rgbToHex(rgbColor));

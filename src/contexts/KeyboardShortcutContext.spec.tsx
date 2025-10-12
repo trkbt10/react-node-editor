@@ -16,11 +16,7 @@ const Harness: FC = () => {
 
 const CmdOrCtrlHarness: FC = () => {
   const [hit, setHit] = useState(0);
-  useRegisterShortcut(
-    { key: "c", cmdOrCtrl: true },
-    () => setHit((v) => v + 1),
-    []
-  );
+  useRegisterShortcut({ key: "c", cmdOrCtrl: true }, () => setHit((v) => v + 1), []);
   return <div data-testid="hit">{String(hit)}</div>;
 };
 
@@ -29,7 +25,7 @@ describe("KeyboardShortcutContext", () => {
     const { getByTestId } = render(
       <KeyboardShortcutProvider>
         <Harness />
-      </KeyboardShortcutProvider>
+      </KeyboardShortcutProvider>,
     );
     act(() => {
       const evt = new KeyboardEvent("keydown", { key: "k", ctrlKey: true });
@@ -42,7 +38,7 @@ describe("KeyboardShortcutContext", () => {
     const { getByTestId } = render(
       <KeyboardShortcutProvider>
         <CmdOrCtrlHarness />
-      </KeyboardShortcutProvider>
+      </KeyboardShortcutProvider>,
     );
 
     // Test Ctrl variant
@@ -63,18 +59,14 @@ describe("KeyboardShortcutContext", () => {
   it("cmdOrCtrl works with shift modifier", () => {
     const ShiftHarness: FC = () => {
       const [hit, setHit] = useState(0);
-      useRegisterShortcut(
-        { key: "z", cmdOrCtrl: true, shift: true },
-        () => setHit((v) => v + 1),
-        []
-      );
+      useRegisterShortcut({ key: "z", cmdOrCtrl: true, shift: true }, () => setHit((v) => v + 1), []);
       return <div data-testid="hit">{String(hit)}</div>;
     };
 
     const { getByTestId } = render(
       <KeyboardShortcutProvider>
         <ShiftHarness />
-      </KeyboardShortcutProvider>
+      </KeyboardShortcutProvider>,
     );
 
     // Test Ctrl+Shift variant

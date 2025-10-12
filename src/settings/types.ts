@@ -73,7 +73,7 @@ export type SettingDefinition = {
 
   // Storage
   persistent?: boolean; // Should be saved to localStorage/storage
-}
+};
 
 /**
  * Setting input component props
@@ -84,7 +84,7 @@ export type SettingInputProps = {
   onChange: (value: SettingValue) => void;
   error?: string;
   disabled?: boolean;
-}
+};
 
 /**
  * Setting category definition
@@ -95,7 +95,7 @@ export type SettingCategory = {
   description?: string;
   icon?: React.ReactNode;
   order?: number;
-}
+};
 
 /**
  * Settings values object
@@ -110,7 +110,7 @@ export type SettingsChangeEvent = {
   value: SettingValue;
   previousValue: SettingValue;
   category: string;
-}
+};
 
 /**
  * Settings validation result
@@ -119,7 +119,7 @@ export type SettingsValidationResult = {
   isValid: boolean;
   errors: Record<string, string>;
   warnings: Record<string, string>;
-}
+};
 
 /**
  * Settings manager interface
@@ -156,13 +156,16 @@ export type SettingsManager = {
   import: (data: string) => void;
 
   // Events
-  on: (event: "change" | "validate" | "save" | "load", handler: (data: SettingsChangeEvent | SettingsValidationResult | SettingsValues) => void) => () => void;
+  on: (
+    event: "change" | "validate" | "save" | "load",
+    handler: (data: SettingsChangeEvent | SettingsValidationResult | SettingsValues) => void,
+  ) => () => void;
   emit: (event: string, data: unknown) => void;
 
   // Utilities
   getSchema: () => Record<string, unknown>; // JSON Schema for the settings
   reset: () => void;
-}
+};
 
 /**
  * Built-in setting categories
@@ -175,7 +178,7 @@ export type BuiltInCategories = {
   keyboard: SettingCategory;
   plugins: SettingCategory;
   advanced: SettingCategory;
-}
+};
 
 /**
  * Editor-specific settings
@@ -244,7 +247,7 @@ export type EditorSettings = {
   "advanced.logLevel": "debug" | "info" | "warn" | "error";
   "advanced.experimentalFeatures": boolean;
   "advanced.customCSS": string;
-}
+};
 
 /**
  * Settings preset
@@ -256,7 +259,7 @@ export type SettingsPreset = {
   version?: string;
   settings: Partial<SettingsValues>;
   categories?: string[]; // Which categories this preset affects
-}
+};
 
 /**
  * Settings import/export format
@@ -270,7 +273,7 @@ export type SettingsExport = {
     platform?: string;
     presets?: SettingsPreset[];
   };
-}
+};
 
 /**
  * Settings storage interface
@@ -288,7 +291,7 @@ export type SettingsStorage = {
 
   // Events
   on: (event: "change", handler: (key: string, value: SettingValue) => void) => () => void;
-}
+};
 
 /**
  * Settings UI configuration
@@ -303,7 +306,7 @@ export type SettingsUIConfig = {
   allowImportExport?: boolean;
   allowPresets?: boolean;
   allowReset?: boolean;
-}
+};
 
 /**
  * Settings panel component props
@@ -313,4 +316,4 @@ export type SettingsPanelProps = {
   config?: SettingsUIConfig;
   onClose?: () => void;
   onSettingChange?: (event: SettingsChangeEvent) => void;
-}
+};

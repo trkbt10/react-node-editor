@@ -1,2 +1,6 @@
-.nodeWrapper { position: absolute; }
-.nodeWrapper[data-dragging="true"] { cursor: grabbing; }
+.nodeWrapper {
+  position: absolute;
+}
+.nodeWrapper[data-dragging="true"] {
+  cursor: grabbing;
+}

@@ -4,11 +4,11 @@ export type LabelNodeData = {
   title?: string;
   subtitle?: string;
   caption?: string;
-  align?: 'left' | 'center' | 'right';
-  wrap?: 'normal' | 'nowrap' | 'balance';
+  align?: "left" | "center" | "right";
+  wrap?: "normal" | "nowrap" | "balance";
   ellipsis?: boolean;
   textColor?: string;
-} & NodeData
+} & NodeData;
 
 export type LabelNodeDataMap = {
   label: LabelNodeData;

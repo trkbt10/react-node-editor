@@ -14,12 +14,12 @@ export type LayoutOptions = {
   dampening?: number;
   maxForce?: number;
   padding?: number;
-}
+};
 
 export type LayoutResult = {
   nodePositions: Record<NodeId, Position>;
   iterations: number;
-}
+};
 
 const defaultOptions: Required<LayoutOptions> = {
   iterations: 100,
@@ -107,7 +107,9 @@ export function calculateAutoLayout(data: NodeEditorData, options: LayoutOptions
         const dy = posB.y - posA.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < 0.01) {continue;} // Avoid division by zero
+        if (distance < 0.01) {
+          continue;
+        } // Avoid division by zero
 
         const repulsionForce = opts.repulsionStrength / (distance * distance);
         const fx = (dx / distance) * repulsionForce;
@@ -125,13 +127,17 @@ export function calculateAutoLayout(data: NodeEditorData, options: LayoutOptions
       const posFrom = positions[conn.fromNodeId];
       const posTo = positions[conn.toNodeId];
 
-      if (!posFrom || !posTo) {return;}
+      if (!posFrom || !posTo) {
+        return;
+      }
 
       const dx = posTo.x - posFrom.x;
       const dy = posTo.y - posFrom.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance < 0.01) {return;}
+      if (distance < 0.01) {
+        return;
+      }
 
       const springForce = opts.springStrength * (distance - opts.springLength);
       const fx = (dx / distance) * springForce;
@@ -189,8 +195,10 @@ export function calculateAutoLayout(data: NodeEditorData, options: LayoutOptions
 
     nodeIds.forEach((nodeId) => {
       const pos = positions[nodeId];
-      const node = nodes.find(n => n.id === nodeId);
-      if (!node) {return;}
+      const node = nodes.find((n) => n.id === nodeId);
+      if (!node) {
+        return;
+      }
 
       const size = getNodeSize(node);
 
@@ -372,7 +380,7 @@ export function calculateGridLayout(
  */
 export function calculateNodesBoundingBox(
   nodes: Node[],
-  positions: Record<NodeId, Position>
+  positions: Record<NodeId, Position>,
 ): {
   minX: number;
   minY: number;
@@ -390,7 +398,9 @@ export function calculateNodesBoundingBox(
 
   nodes.forEach((node) => {
     const pos = positions[node.id];
-    if (!pos) {return;}
+    if (!pos) {
+      return;
+    }
 
     const size = getNodeSize(node);
 

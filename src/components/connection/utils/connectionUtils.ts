@@ -9,7 +9,7 @@ import { getDistance } from "../../../utils/vectorUtils";
  * Used when dragging to predict where the connection will end
  */
 export const getOppositePortPosition = (
-  portPosition: "left" | "right" | "top" | "bottom"
+  portPosition: "left" | "right" | "top" | "bottom",
 ): "left" | "right" | "top" | "bottom" => {
   const oppositeMap: Record<string, "left" | "right" | "top" | "bottom"> = {
     left: "right",
@@ -28,7 +28,7 @@ export const calculateBezierPath = (
   from: Position,
   to: Position,
   fromPortPosition?: "left" | "right" | "top" | "bottom",
-  toPortPosition?: "left" | "right" | "top" | "bottom"
+  toPortPosition?: "left" | "right" | "top" | "bottom",
 ): string => {
   // Calculate control point offset based on distance and port positions
   const distance = getDistance(from, to);
@@ -104,7 +104,7 @@ export const calculateBezierControlPoints = (
   from: Position,
   to: Position,
   fromPortPosition?: "left" | "right" | "top" | "bottom",
-  toPortPosition?: "left" | "right" | "top" | "bottom"
+  toPortPosition?: "left" | "right" | "top" | "bottom",
 ): { cp1: Position; cp2: Position } => {
   const distance = getDistance(from, to);
   const minOffset = 40;
@@ -166,13 +166,7 @@ export const calculateBezierControlPoints = (
 /**
  * Evaluate cubic bezier point at t
  */
-export const cubicBezierPoint = (
-  p0: Position,
-  p1: Position,
-  p2: Position,
-  p3: Position,
-  t: number
-): Position => {
+export const cubicBezierPoint = (p0: Position, p1: Position, p2: Position, p3: Position, t: number): Position => {
   const mt = 1 - t;
   const mt2 = mt * mt;
   const t2 = t * t;
@@ -189,17 +183,11 @@ export const cubicBezierPoint = (
 /**
  * Evaluate cubic bezier tangent (first derivative) at t
  */
-export const cubicBezierTangent = (
-  p0: Position,
-  p1: Position,
-  p2: Position,
-  p3: Position,
-  t: number
-): Position => {
+export const cubicBezierTangent = (p0: Position, p1: Position, p2: Position, p3: Position, t: number): Position => {
   const mt = 1 - t;
   const a = 3 * mt * mt; // 3(1-t)^2
-  const b = 6 * mt * t;  // 6(1-t)t
-  const c = 3 * t * t;   // 3t^2
+  const b = 6 * mt * t; // 6(1-t)t
+  const c = 3 * t * t; // 3t^2
   return {
     x: a * (p1.x - p0.x) + b * (p2.x - p1.x) + c * (p3.x - p2.x),
     y: a * (p1.y - p0.y) + b * (p2.y - p1.y) + c * (p3.y - p2.y),
@@ -220,7 +208,12 @@ export const getConnectionMidpoint = (from: Position, to: Position): Position =>
  * Check if a point is near a connection line
  * Used for connection selection and interaction
  */
-export const isPointNearConnection = (point: Position, from: Position, to: Position, threshold: number = 10): boolean => {
+export const isPointNearConnection = (
+  point: Position,
+  from: Position,
+  to: Position,
+  threshold: number = 10,
+): boolean => {
   // Simple distance from line segment calculation
   const A = point.x - from.x;
   const B = point.y - from.y;

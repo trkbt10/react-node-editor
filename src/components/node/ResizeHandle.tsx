@@ -7,14 +7,14 @@ import styles from "./ResizeHandle.module.css";
 
 export type ResizeHandleProps = {
   /** The resize handle position - now only 'se' (bottom-right) is supported */
-  position: 'se';
+  position: "se";
   /** Called when resize starts */
-  onResizeStart: (e: React.PointerEvent, handle: 'se') => void;
+  onResizeStart: (e: React.PointerEvent, handle: "se") => void;
   /** Whether this handle is currently being used for resizing */
   isResizing?: boolean;
   /** Whether the handle should be visible (when parent node is hovered or selected) */
   isVisible?: boolean;
-}
+};
 
 /**
  * ResizeHandle - Individual resize handle for nodes
@@ -25,21 +25,24 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
   isResizing = false,
   isVisible = false,
 }) => {
-  const handlePointerDown = React.useCallback((e: React.PointerEvent) => {
-    e.stopPropagation();
-    e.preventDefault();
-    onResizeStart(e, position);
-  }, [onResizeStart, position]);
+  const handlePointerDown = React.useCallback(
+    (e: React.PointerEvent) => {
+      e.stopPropagation();
+      e.preventDefault();
+      onResizeStart(e, position);
+    },
+    [onResizeStart, position],
+  );
 
   const getPositionStyles = (): React.CSSProperties => {
     const size = 10; // Slightly larger for better usability
     const offset = -2; // Closer to the node edge (was -size/2)
 
     // Only support bottom-right resize to avoid conflicts with ports
-    return { 
-      bottom: offset, 
-      right: offset, 
-      cursor: 'se-resize',
+    return {
+      bottom: offset,
+      right: offset,
+      cursor: "se-resize",
       width: size,
       height: size,
     };
@@ -50,10 +53,10 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
       className={classNames(
         styles.resizeHandle,
         isVisible && styles.resizeHandleVisible,
-        isResizing && styles.resizeHandleActive
+        isResizing && styles.resizeHandleActive,
       )}
       style={{
-        position: 'absolute',
+        position: "absolute",
         zIndex: 10,
         ...getPositionStyles(),
       }}

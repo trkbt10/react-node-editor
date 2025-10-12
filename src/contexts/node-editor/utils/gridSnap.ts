@@ -9,10 +9,7 @@ import type { GridSettings } from "../../../types/core";
 /**
  * Snap a position to the nearest grid point
  */
-export function snapToGrid(
-  position: Position,
-  gridSettings: GridSettings
-): Position {
+export function snapToGrid(position: Position, gridSettings: GridSettings): Position {
   if (!gridSettings.snapToGrid) {
     return position;
   }
@@ -40,7 +37,7 @@ export function snapToGrid(
 export function snapMultipleToGrid(
   positions: Record<string, Position>,
   gridSettings: GridSettings,
-  primaryNodeId: string
+  primaryNodeId: string,
 ): Record<string, Position> {
   if (!gridSettings.snapToGrid) {
     return positions;
@@ -78,7 +75,7 @@ export function snapMultipleToGrid(
  */
 export function getSnapGuides(
   position: Position,
-  gridSettings: GridSettings
+  gridSettings: GridSettings,
 ): { horizontal: number | null; vertical: number | null } {
   if (!gridSettings.snapToGrid || !gridSettings.showGrid) {
     return { horizontal: null, vertical: null };
@@ -105,7 +102,7 @@ export function getSnapGuides(
  */
 export function getGridAlignedBounds(
   bounds: { minX: number; minY: number; maxX: number; maxY: number },
-  gridSize: number
+  gridSize: number,
 ): { minX: number; minY: number; maxX: number; maxY: number } {
   return {
     minX: Math.floor(bounds.minX / gridSize) * gridSize,

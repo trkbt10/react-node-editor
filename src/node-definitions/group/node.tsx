@@ -5,7 +5,7 @@ import styles from "./group.module.css";
 export type GroupContentProps = {
   node: Node;
   childCount: number;
-}
+};
 
 export const GroupNodeRenderer: React.FC<GroupContentProps> = ({ node, childCount }) => {
   if (!node.expanded) {

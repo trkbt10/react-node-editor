@@ -63,7 +63,9 @@ export const sanitizeParticleData = (candidate: unknown, id: string, fallback?: 
   const particleSize = isFiniteNumber(data.particleSize) ? Math.max(1, data.particleSize) : baseline.particleSize;
   const gravity = isFiniteNumber(data.gravity) ? clamp(data.gravity, -10, 10) : baseline.gravity;
   const lifetime = isFiniteNumber(data.lifetime) ? Math.max(0.1, data.lifetime) : baseline.lifetime;
-  const lastEmitCount = isFiniteNumber(data.lastEmitCount) ? Math.max(0, Math.round(data.lastEmitCount)) : baseline.lastEmitCount;
+  const lastEmitCount = isFiniteNumber(data.lastEmitCount)
+    ? Math.max(0, Math.round(data.lastEmitCount))
+    : baseline.lastEmitCount;
 
   return {
     id,

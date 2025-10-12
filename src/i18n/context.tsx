@@ -13,16 +13,26 @@ type I18nProviderProps = {
    * Example: { ja: { addNode: "ノード追加(外部)" } }
    */
   messagesOverride?: Partial<Record<Locale, Partial<I18nMessages>>>;
-}
+};
 
-export const I18nProvider: React.FC<I18nProviderProps> = ({ children, initialLocale = "en", fallbackLocale = "en", messagesOverride }) => {
+export const I18nProvider: React.FC<I18nProviderProps> = ({
+  children,
+  initialLocale = "en",
+  fallbackLocale = "en",
+  messagesOverride,
+}) => {
   const [locale, setLocale] = React.useState<Locale>(initialLocale);
   const mergedMessages = React.useMemo(() => {
     // Merge base messages with overrides per locale
-    if (!messagesOverride) {return messages;}
+    if (!messagesOverride) {
+      return messages;
+    }
     const result: Record<Locale, I18nMessages> = { ...messages } as Record<Locale, I18nMessages>;
     (Object.keys(messagesOverride) as Locale[]).forEach((loc) => {
-      result[loc] = { ...(messages[loc] || messages[fallbackLocale]), ...(messagesOverride?.[loc] as Partial<I18nMessages>) } as I18nMessages;
+      result[loc] = {
+        ...(messages[loc] || messages[fallbackLocale]),
+        ...(messagesOverride?.[loc] as Partial<I18nMessages>),
+      } as I18nMessages;
     });
     return result;
   }, [messagesOverride, fallbackLocale]);

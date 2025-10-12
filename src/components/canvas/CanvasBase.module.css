@@ -8,12 +8,20 @@
   user-select: none;
 }
 
-.canvasContainer.panning { cursor: grabbing; }
-.canvasContainer.spacePanning { cursor: grab; }
-.canvasContainer.spacePanning.panning { cursor: grabbing; }
+.canvasContainer.panning {
+  cursor: grabbing;
+}
+.canvasContainer.spacePanning {
+  cursor: grab;
+}
+.canvasContainer.spacePanning.panning {
+  cursor: grabbing;
+}
 
 .canvasContainer.boxSelecting,
-.canvasContainer.boxSelecting .canvas { cursor: crosshair; }
+.canvasContainer.boxSelecting .canvas {
+  cursor: crosshair;
+}
 
 .gridSvg {
   position: absolute;
@@ -38,7 +46,12 @@
   cursor: inherit;
 }
 
-.canvas.panning { cursor: grabbing; }
-.canvas.spacePanning { cursor: grab; }
-.canvas.spacePanning.panning { cursor: grabbing; }
-
+.canvas.panning {
+  cursor: grabbing;
+}
+.canvas.spacePanning {
+  cursor: grab;
+}
+.canvas.spacePanning.panning {
+  cursor: grabbing;
+}

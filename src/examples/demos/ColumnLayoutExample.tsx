@@ -86,10 +86,7 @@ export const WithToolbarExample: React.FC = () => {
       ["canvas", "inspector"],
     ],
     rows: [{ size: "auto" }, { size: "1fr" }],
-    columns: [
-      { size: "1fr" },
-      { size: "300px", resizable: true, minSize: 200, maxSize: 500 },
-    ],
+    columns: [{ size: "1fr" }, { size: "300px", resizable: true, minSize: 200, maxSize: 500 }],
     gap: "0",
   };
 

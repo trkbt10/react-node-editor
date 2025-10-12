@@ -13,7 +13,7 @@ export type NodeEditorRenderers = {
   port: ComponentType<PortViewProps>;
   /** Component used to render connections between ports */
   connection: ComponentType<ConnectionViewProps>;
-}
+};
 
 /**
  * Partial override of renderer components passed via props.

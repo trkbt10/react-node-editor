@@ -54,12 +54,12 @@
 }
 
 .toolButton.active {
-  background: var(--node-editor-accent-color, #007AFF);
+  background: var(--node-editor-accent-color, #007aff);
   color: white;
 }
 
 .toolButton.active:hover {
-  background: var(--node-editor-accent-color-hover, #0051D5);
+  background: var(--node-editor-accent-color-hover, #0051d5);
 }
 
 .separator {
@@ -95,7 +95,7 @@
 
 .zoomSelect:focus {
   outline: none;
-  border-color: var(--node-editor-accent-color, #007AFF);
+  border-color: var(--node-editor-accent-color, #007aff);
 }
 
 .toolbarSpacer {

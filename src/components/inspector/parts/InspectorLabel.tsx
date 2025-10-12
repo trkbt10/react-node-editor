@@ -4,7 +4,7 @@
 import * as React from "react";
 import styles from "./InspectorLabel.module.css";
 
-export type InspectorLabelProps = {} & React.HTMLAttributes<HTMLDivElement>
+export type InspectorLabelProps = {} & React.HTMLAttributes<HTMLDivElement>;
 
 export const InspectorLabel: React.FC<InspectorLabelProps> = ({ children, className, ...rest }) => {
   return (

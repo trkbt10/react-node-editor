@@ -7,7 +7,7 @@ import styles from "./InspectorDefinitionList.module.css";
 export type InspectorDefinitionListProps = {
   className?: string;
   children: React.ReactNode;
-}
+};
 
 export const InspectorDefinitionList: React.FC<InspectorDefinitionListProps> = ({ className, children }) => {
   const listClassName = [styles.list, className].filter(Boolean).join(" ");
@@ -22,7 +22,7 @@ export type InspectorDefinitionItemProps = {
   className?: string;
   labelClassName?: string;
   children: React.ReactNode;
-}
+};
 
 export const InspectorDefinitionItem: React.FC<InspectorDefinitionItemProps> = ({
   label,

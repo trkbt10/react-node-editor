@@ -16,7 +16,13 @@ export type JavaScriptCodeData = {
   label: string;
 };
 
-export const JavaScriptCodeRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRenderProps) => {
+export const JavaScriptCodeRenderer = ({
+  node,
+  isSelected,
+  isDragging,
+  externalData,
+  onUpdateNode,
+}: NodeRenderProps) => {
   const codeData = externalData as JavaScriptCodeData | undefined;
   const [localCode, setLocalCode] = React.useState(codeData?.code || "");
 

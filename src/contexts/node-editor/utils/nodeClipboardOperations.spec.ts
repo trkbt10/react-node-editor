@@ -1,10 +1,7 @@
 /**
  * @file Unit tests for node clipboard operations
  */
-import {
-  copyNodesToClipboard,
-  pasteNodesFromClipboard,
-} from "./nodeClipboardOperations";
+import { copyNodesToClipboard, pasteNodesFromClipboard } from "./nodeClipboardOperations";
 import { clearClipboard, getClipboard, setClipboard } from "../../../utils/clipboard";
 import type { NodeEditorData } from "../../../types/core";
 

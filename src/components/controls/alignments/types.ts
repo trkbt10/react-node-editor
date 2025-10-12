@@ -29,4 +29,4 @@ export type AlignmentActionConfig = {
   icon: ComponentType<{ size?: number }>;
   title: string;
   group: AlignmentActionGroup;
-}
+};

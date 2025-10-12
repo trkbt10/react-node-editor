@@ -10,8 +10,14 @@ import { useNodeDefinitions } from "../../../contexts/node-definitions";
 import { usePointerDrag } from "../../../hooks/usePointerDrag";
 import { usePortPositions } from "../../../contexts/node-ports/context";
 import { isPortConnectable } from "../../../contexts/node-ports/utils/portConnectability";
-import { planConnectionChange, ConnectionSwitchBehavior } from "../../../contexts/node-ports/utils/connectionSwitchBehavior";
-import { computeConnectablePortIds, type ConnectablePortsResult } from "../../../contexts/node-ports/utils/connectablePortPlanner";
+import {
+  planConnectionChange,
+  ConnectionSwitchBehavior,
+} from "../../../contexts/node-ports/utils/connectionSwitchBehavior";
+import {
+  computeConnectablePortIds,
+  type ConnectablePortsResult,
+} from "../../../contexts/node-ports/utils/connectablePortPlanner";
 import { findNearestConnectablePort } from "../../../contexts/node-ports/utils/connectionCandidate";
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
 
@@ -107,9 +113,14 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
         },
       });
     },
-    [actionState.connectionDragState, actionState.connectablePorts, nodeEditorState.nodes, getNodePorts, resolveConnectionPoint],
+    [
+      actionState.connectionDragState,
+      actionState.connectablePorts,
+      nodeEditorState.nodes,
+      getNodePorts,
+      resolveConnectionPoint,
+    ],
   );
-
 
   // Handle connection drag
   const handleConnectionDragStart = React.useCallback(

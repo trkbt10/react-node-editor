@@ -6,7 +6,7 @@ import styles from "./ReadOnlyField.module.css";
 
 export type ReadOnlyFieldProps = {
   children: React.ReactNode;
-}
+};
 
 /**
  * Read-only field display component

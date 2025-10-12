@@ -9,7 +9,7 @@ export type InspectorFieldProps = {
   labelProps?: React.LabelHTMLAttributes<HTMLLabelElement>;
   className?: string;
   children: React.ReactNode;
-}
+};
 
 export const InspectorField: React.FC<InspectorFieldProps> = ({ label, labelProps, className, children }) => {
   const fieldClassName = [styles.field, className].filter(Boolean).join(" ");

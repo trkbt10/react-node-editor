@@ -15,7 +15,7 @@ export function getConnectablePortIds(
   nodes: Record<string, Node>,
   getNodePorts: (nodeId: string) => Port[],
   connections: Record<string, Connection>,
-  getNodeDefinition: (type: string) => NodeDefinition | undefined
+  getNodeDefinition: (type: string) => NodeDefinition | undefined,
 ): Set<string> {
   const result = new Set<string>();
   const fromNode = nodes[fromPort.nodeId];
@@ -26,8 +26,12 @@ export function getConnectablePortIds(
     const ports = getNodePorts(n.id) || [];
     ports.forEach((p) => {
       // Only opposite type and not same port
-      if (p.type === fromPort.type) {return;}
-      if (p.nodeId === fromPort.nodeId && p.id === fromPort.id) {return;}
+      if (p.type === fromPort.type) {
+        return;
+      }
+      if (p.nodeId === fromPort.nodeId && p.id === fromPort.id) {
+        return;
+      }
       if (canConnectPorts(fromPort, p, fromDef, toDef, connections)) {
         result.add(`${n.id}:${p.id}`);
       }
@@ -43,20 +47,26 @@ export function getConnectablePortIds(
  */
 export function isPortConnectable(
   port: Port,
-  connectablePorts?: ConnectablePortsResult | { ids: Set<string> }
+  connectablePorts?: ConnectablePortsResult | { ids: Set<string> },
 ): boolean {
-  if (!connectablePorts) {return false;}
+  if (!connectablePorts) {
+    return false;
+  }
 
   const compositeId = `${port.nodeId}:${port.id}`;
 
   if ("descriptors" in connectablePorts) {
     const descriptor = connectablePorts.descriptors.get(compositeId);
-    if (!descriptor) {return false;}
+    if (!descriptor) {
+      return false;
+    }
     // Only treat opposite IO as connectable safety net
     return descriptor.portType !== descriptor.source.portType;
   }
 
   const ids: Set<string> = "ids" in connectablePorts ? connectablePorts.ids : connectablePorts;
-  if (!ids || ids.size === 0) {return false;}
+  if (!ids || ids.size === 0) {
+    return false;
+  }
   return ids.has(compositeId);
 }

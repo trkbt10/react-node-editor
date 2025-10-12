@@ -48,7 +48,7 @@
 
 .jsonDisplay {
   margin: 0;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+  font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", "source-code-pro", monospace;
   font-size: 11px;
   line-height: 1.5;
   color: var(--node-editor-text-color, #000);

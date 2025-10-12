@@ -8,15 +8,21 @@ import { useNodeCanvas } from "../contexts/NodeCanvasContext";
 export function useCanvasActions() {
   const { dispatch, actions } = useNodeCanvas();
 
-  return React.useMemo(() => ({
-    setViewport: (viewport: Parameters<typeof actions.setViewport>[0]) => dispatch(actions.setViewport(viewport)),
-    panViewport: (delta: Parameters<typeof actions.panViewport>[0]) => dispatch(actions.panViewport(delta)),
-    zoomViewport: (scale: Parameters<typeof actions.zoomViewport>[0], center?: Parameters<typeof actions.zoomViewport>[1]) => dispatch(actions.zoomViewport(scale, center)),
-    resetViewport: () => dispatch(actions.resetViewport()),
-    startPan: (position: Parameters<typeof actions.startPan>[0]) => dispatch(actions.startPan(position)),
-    updatePan: (position: Parameters<typeof actions.updatePan>[0]) => dispatch(actions.updatePan(position)),
-    endPan: () => dispatch(actions.endPan()),
-  }), [dispatch, actions]);
+  return React.useMemo(
+    () => ({
+      setViewport: (viewport: Parameters<typeof actions.setViewport>[0]) => dispatch(actions.setViewport(viewport)),
+      panViewport: (delta: Parameters<typeof actions.panViewport>[0]) => dispatch(actions.panViewport(delta)),
+      zoomViewport: (
+        scale: Parameters<typeof actions.zoomViewport>[0],
+        center?: Parameters<typeof actions.zoomViewport>[1],
+      ) => dispatch(actions.zoomViewport(scale, center)),
+      resetViewport: () => dispatch(actions.resetViewport()),
+      startPan: (position: Parameters<typeof actions.startPan>[0]) => dispatch(actions.startPan(position)),
+      updatePan: (position: Parameters<typeof actions.updatePan>[0]) => dispatch(actions.updatePan(position)),
+      endPan: () => dispatch(actions.endPan()),
+    }),
+    [dispatch, actions],
+  );
 }
 
 /**

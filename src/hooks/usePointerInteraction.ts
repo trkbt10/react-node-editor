@@ -5,7 +5,7 @@ export type PointerInteractionConfig<T> = {
    * The state that triggers the interaction
    */
   interactionState: T | null | undefined;
-  
+
   /**
    * Canvas viewport configuration
    */
@@ -13,27 +13,27 @@ export type PointerInteractionConfig<T> = {
     offset: { x: number; y: number };
     scale: number;
   };
-  
+
   /**
    * Callback for pointer move events with canvas coordinates
    */
   onPointerMove: (canvasPosition: { x: number; y: number }, event: PointerEvent) => void;
-  
+
   /**
    * Callback for pointer up events
    */
   onPointerUp: (event: PointerEvent) => void;
-  
+
   /**
    * Optional selector for the canvas element (defaults to '[role="application"]')
    */
   canvasSelector?: string;
-  
+
   /**
    * Optional configuration for pointer move event listener
    */
   pointerMoveOptions?: AddEventListenerOptions;
-}
+};
 
 /**
  * Custom hook for handling pointer interactions on the canvas
@@ -48,10 +48,14 @@ export function usePointerInteraction<T>({
   pointerMoveOptions = { passive: true },
 }: PointerInteractionConfig<T>): void {
   React.useEffect(() => {
-    if (!interactionState) {return;}
+    if (!interactionState) {
+      return;
+    }
 
     const canvasElement = document.querySelector(canvasSelector);
-    if (!canvasElement) {return;}
+    if (!canvasElement) {
+      return;
+    }
 
     const handlePointerMove = (e: PointerEvent) => {
       const rect = canvasElement.getBoundingClientRect();

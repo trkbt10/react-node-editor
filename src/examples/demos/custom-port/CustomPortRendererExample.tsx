@@ -14,20 +14,18 @@ export const CustomPortRendererExample: React.FC = () => {
     <div className={styles.wrapper}>
       <h2 className={styles.title}>Custom Port Renderer Example</h2>
       <p className={styles.description}>
-        This example showcases the updated port layout pipeline, combining SVG layering and canvas-driven telemetry
-        to render ports and connections with richer visual context.
+        This example showcases the updated port layout pipeline, combining SVG layering and canvas-driven telemetry to
+        render ports and connections with richer visual context.
       </p>
       <ul className={styles.list}>
-        <li>Ports expose dynamic radial gauges that react to connection count, with clear IN / OUT orientation badges</li>
+        <li>
+          Ports expose dynamic radial gauges that react to connection count, with clear IN / OUT orientation badges
+        </li>
         <li>Canvas overlays draw live tick marks while SVG gradients highlight directional flow and data categories</li>
         <li>Connections render with multi-stop gradients, flowing energy bands, and data-specific overlays</li>
         <li>Custom renderers rely on provided layout context so visuals stay synchronized with live node movement</li>
       </ul>
-      <NodeEditor
-        data={data}
-        onDataChange={setData}
-        nodeDefinitions={getUntypedNodeDefinitions()}
-      />
+      <NodeEditor data={data} onDataChange={setData} nodeDefinitions={getUntypedNodeDefinitions()} />
     </div>
   );
 };

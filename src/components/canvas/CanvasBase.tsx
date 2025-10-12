@@ -13,7 +13,7 @@ export type CanvasBaseProps = {
   children: React.ReactNode;
   className?: string;
   showGrid?: boolean;
-}
+};
 
 /**
  * CanvasBase - The lowest layer component that handles pan, zoom, and drag operations
@@ -35,7 +35,9 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
 
   // Grid pattern with offset - optimized dependencies
   const gridPattern = React.useMemo(() => {
-    if (!canvasState.gridSettings.showGrid) {return null;}
+    if (!canvasState.gridSettings.showGrid) {
+      return null;
+    }
 
     const { size } = canvasState.gridSettings;
     const { scale, offset } = canvasState.viewport;
@@ -56,12 +58,14 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
   const handleWheel = React.useCallback(
     (e: WheelEvent) => {
       const rect = containerRef.current?.getBoundingClientRect();
-      if (!rect) {return;}
+      if (!rect) {
+        return;
+      }
 
       // Figma style: Ctrl/Cmd + wheel for zoom, otherwise pan
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
-        
+
         const center = {
           x: e.clientX - rect.left,
           y: e.clientY - rect.top,
@@ -75,11 +79,11 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       } else {
         // Normal scroll for panning
         e.preventDefault();
-        
+
         // Invert deltaX for horizontal scrolling (Figma behavior)
         const deltaX = -e.deltaX;
         const deltaY = -e.deltaY;
-        
+
         canvasDispatch(canvasActions.panViewport({ x: deltaX, y: deltaY }));
       }
     },
@@ -104,13 +108,16 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       // More permissive targeting - only exclude specific interactive elements
       const target = e.target as Element;
       // Use data- attributes (CSS Modules class names are hashed)
-      const isInteractiveElement = target?.closest?.('[data-node-id], [data-port-id], [data-connection-id], button, input, textarea, [role="button"]');
-      
-      
+      const isInteractiveElement = target?.closest?.(
+        '[data-node-id], [data-port-id], [data-connection-id], button, input, textarea, [role="button"]',
+      );
+
       // Allow box selection unless clicking on interactive elements
       if (e.button === 0 && !isInteractiveElement) {
         const rect = containerRef.current?.getBoundingClientRect();
-        if (!rect) {return;}
+        if (!rect) {
+          return;
+        }
 
         // Use screen coordinates for selection box display
         const screenX = e.clientX - rect.left;
@@ -118,10 +125,12 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
 
         // Start box selection
         setIsBoxSelecting(true);
-        actionDispatch(actionActions.setSelectionBox({
-          start: { x: screenX, y: screenY },
-          end: { x: screenX, y: screenY },
-        }));
+        actionDispatch(
+          actionActions.setSelectionBox({
+            start: { x: screenX, y: screenY },
+            end: { x: screenX, y: screenY },
+          }),
+        );
 
         // Clear current selection if not holding modifier keys
         if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
@@ -143,18 +152,31 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       } else if (isBoxSelecting && actionState.selectionBox) {
         // Update selection box in screen coordinates
         const rect = containerRef.current?.getBoundingClientRect();
-        if (!rect) {return;}
+        if (!rect) {
+          return;
+        }
 
         const screenX = e.clientX - rect.left;
         const screenY = e.clientY - rect.top;
 
-        actionDispatch(actionActions.setSelectionBox({
-          start: actionState.selectionBox.start,
-          end: { x: screenX, y: screenY },
-        }));
+        actionDispatch(
+          actionActions.setSelectionBox({
+            start: actionState.selectionBox.start,
+            end: { x: screenX, y: screenY },
+          }),
+        );
       }
     },
-    [canvasState.panState.isPanning, canvasState.viewport, isBoxSelecting, actionState.selectionBox, canvasDispatch, canvasActions, actionDispatch, actionActions],
+    [
+      canvasState.panState.isPanning,
+      canvasState.viewport,
+      isBoxSelecting,
+      actionState.selectionBox,
+      canvasDispatch,
+      canvasActions,
+      actionDispatch,
+      actionActions,
+    ],
   );
 
   const handlePointerUp = React.useCallback(
@@ -172,7 +194,9 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         // Convert screen coordinates back to canvas coordinates for node intersection check
         const { start, end } = actionState.selectionBox;
         const rect = containerRef.current?.getBoundingClientRect();
-        if (!rect) {return;}
+        if (!rect) {
+          return;
+        }
 
         // Convert selection box bounds to canvas coordinates
         const canvasStartX = (start.x - canvasState.viewport.offset.x) / canvasState.viewport.scale;
@@ -186,18 +210,17 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         const maxY = Math.max(canvasStartY, canvasEndY);
 
         const selectedNodeIds: string[] = [];
-        Object.values(nodeEditorState.nodes).forEach(node => {
+        Object.values(nodeEditorState.nodes).forEach((node) => {
           const nodeWidth = node.size?.width || 150;
           const nodeHeight = node.size?.height || 50;
-          
+
           // Check if node intersects with selection box in canvas coordinates
-          const intersects = (
+          const intersects =
             node.position.x < maxX &&
             node.position.x + nodeWidth > minX &&
             node.position.y < maxY &&
-            node.position.y + nodeHeight > minY
-          );
-          
+            node.position.y + nodeHeight > minY;
+
           if (intersects) {
             selectedNodeIds.push(node.id);
           }
@@ -223,41 +246,57 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         }
       }
     },
-    [canvasState.panState.isPanning, isBoxSelecting, actionState.selectionBox, actionState.selectedNodeIds, nodeEditorState.nodes, canvasDispatch, canvasActions, actionDispatch, actionActions],
+    [
+      canvasState.panState.isPanning,
+      isBoxSelecting,
+      actionState.selectionBox,
+      actionState.selectedNodeIds,
+      nodeEditorState.nodes,
+      canvasDispatch,
+      canvasActions,
+      actionDispatch,
+      actionActions,
+    ],
   );
 
   // Handle context menu
-  const handleContextMenu = React.useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    // Convert screen coordinates to canvas coordinates using utils
-    const canvasPosition = utils.screenToCanvas(e.clientX, e.clientY);
+  const handleContextMenu = React.useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-    const position = {
-      x: e.clientX, // Keep screen coordinates for menu positioning
-      y: e.clientY,
-    };
+      // Convert screen coordinates to canvas coordinates using utils
+      const canvasPosition = utils.screenToCanvas(e.clientX, e.clientY);
 
-    // Show context menu for canvas (no specific node)
-    actionDispatch(actionActions.showContextMenu(position, undefined, canvasPosition));
-  }, [actionDispatch, actionActions, utils]);
+      const position = {
+        x: e.clientX, // Keep screen coordinates for menu positioning
+        y: e.clientY,
+      };
+
+      // Show context menu for canvas (no specific node)
+      actionDispatch(actionActions.showContextMenu(position, undefined, canvasPosition));
+    },
+    [actionDispatch, actionActions, utils],
+  );
 
   // Handle double click to open Node Search
-  const handleDoubleClick = React.useCallback((e: React.MouseEvent) => {
-    // Exclude double clicks on nodes
-    const target = e.target as Element;
-    const isOnNode = target?.closest?.('[data-node-id]');
+  const handleDoubleClick = React.useCallback(
+    (e: React.MouseEvent) => {
+      // Exclude double clicks on nodes
+      const target = e.target as Element;
+      const isOnNode = target?.closest?.("[data-node-id]");
 
-    if (isOnNode) {
-      return;
-    }
+      if (isOnNode) {
+        return;
+      }
 
-    // Convert screen coordinates to canvas coordinates using utils
-    const canvasPosition = utils.screenToCanvas(e.clientX, e.clientY);
-    const position = { x: e.clientX, y: e.clientY };
-    actionDispatch(actionActions.showContextMenu(position, undefined, canvasPosition, undefined, 'search'));
-  }, [actionDispatch, actionActions, utils]);
+      // Convert screen coordinates to canvas coordinates using utils
+      const canvasPosition = utils.screenToCanvas(e.clientX, e.clientY);
+      const position = { x: e.clientX, y: e.clientY };
+      actionDispatch(actionActions.showContextMenu(position, undefined, canvasPosition, undefined, "search"));
+    },
+    [actionDispatch, actionActions, utils],
+  );
 
   // Handle keyboard shortcuts (Figma style)
   React.useEffect(() => {
@@ -267,24 +306,24 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         e.preventDefault();
         canvasDispatch(canvasActions.setSpacePanning(true));
       }
-      
+
       // Figma style zoom shortcuts
       if ((e.ctrlKey || e.metaKey) && !e.repeat) {
-        switch(e.key) {
-          case '0': // Reset zoom to 100%
+        switch (e.key) {
+          case "0": // Reset zoom to 100%
             e.preventDefault();
             canvasDispatch(canvasActions.resetViewport());
             break;
-          case '1': // Zoom to fit
+          case "1": // Zoom to fit
             e.preventDefault();
             // TODO: Implement zoom to fit
             break;
-          case '=':
-          case '+': // Zoom in
+          case "=":
+          case "+": // Zoom in
             e.preventDefault();
             canvasDispatch(canvasActions.zoomViewport(canvasState.viewport.scale * 1.2));
             break;
-          case '-': // Zoom out
+          case "-": // Zoom out
             e.preventDefault();
             canvasDispatch(canvasActions.zoomViewport(canvasState.viewport.scale * 0.8));
             break;
@@ -311,7 +350,9 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
   // Set up wheel event listener
   React.useEffect(() => {
     const container = containerRef.current;
-    if (!container) {return;}
+    if (!container) {
+      return;
+    }
 
     container.addEventListener("wheel", handleWheel, { passive: false });
     return () => container.removeEventListener("wheel", handleWheel);

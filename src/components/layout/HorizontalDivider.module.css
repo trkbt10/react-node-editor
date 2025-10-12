@@ -19,7 +19,7 @@
 
 /* Add a larger hit area */
 .horizontalDivider::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -4px;

@@ -9,7 +9,7 @@ const RendererContext = React.createContext<NodeEditorRenderers | null>(null);
 export type RendererProviderProps = {
   renderers: NodeEditorRenderers;
   children: React.ReactNode;
-}
+};
 
 export const RendererProvider: React.FC<RendererProviderProps> = ({ renderers, children }) => {
   return <RendererContext.Provider value={renderers}>{children}</RendererContext.Provider>;

@@ -38,7 +38,11 @@
   min-width: 24px;
   box-sizing: border-box;
   opacity: 0.75;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
   color: var(--node-editor-secondary-label-color, currentColor);
 }
 

@@ -6,9 +6,7 @@ import type { NodeRenderProps, InspectorRenderProps } from "./NodeDefinition";
  * @returns A type guard function for node render props
  */
 export function createTypeGuard<TData extends Record<string, unknown> = Record<string, unknown>>(type: string) {
-  return (
-    props: NodeRenderProps
-  ): props is NodeRenderProps<TData> => props.node.type === type;
+  return (props: NodeRenderProps): props is NodeRenderProps<TData> => props.node.type === type;
 }
 
 /**
@@ -16,8 +14,8 @@ export function createTypeGuard<TData extends Record<string, unknown> = Record<s
  * @param type - The node type to check for
  * @returns A type guard function for inspector render props
  */
-export function createInspectorTypeGuard<TData extends Record<string, unknown> = Record<string, unknown>>(type: string) {
-  return (
-    props: InspectorRenderProps
-  ): props is InspectorRenderProps<TData> => props.node.type === type;
+export function createInspectorTypeGuard<TData extends Record<string, unknown> = Record<string, unknown>>(
+  type: string,
+) {
+  return (props: InspectorRenderProps): props is InspectorRenderProps<TData> => props.node.type === type;
 }

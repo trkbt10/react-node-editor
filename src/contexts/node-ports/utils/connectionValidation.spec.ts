@@ -10,7 +10,7 @@ import { createNodeDefinitionRegistry } from "../../../types/NodeDefinitionRegis
 describe("canConnectPorts - maxConnections default/unlimited", () => {
   const mkRegistry = (defs: NodeDefinition[]): NodeDefinitionRegistry => {
     const reg = createNodeDefinitionRegistry();
-    defs.forEach(d => reg.register(d));
+    defs.forEach((d) => reg.register(d));
     return reg;
   };
 
@@ -21,12 +21,8 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
   });
 
   it("defaults to 1 for both sides when unspecified", () => {
-    const defA = baseNodeDef("A", [
-      { id: "out", type: "output", label: "out", position: "right" },
-    ]);
-    const defB = baseNodeDef("B", [
-      { id: "in", type: "input", label: "in", position: "left" },
-    ]);
+    const defA = baseNodeDef("A", [{ id: "out", type: "output", label: "out", position: "right" }]);
+    const defB = baseNodeDef("B", [{ id: "in", type: "input", label: "in", position: "left" }]);
     const reg = mkRegistry([defA, defB]);
 
     const aOut: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
@@ -46,9 +42,7 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
     const defA = baseNodeDef("A", [
       { id: "out", type: "output", label: "out", position: "right", maxConnections: "unlimited" },
     ]);
-    const defB = baseNodeDef("B", [
-      { id: "in", type: "input", label: "in", position: "left" },
-    ]);
+    const defB = baseNodeDef("B", [{ id: "in", type: "input", label: "in", position: "left" }]);
     const reg = mkRegistry([defA, defB]);
 
     const aOut: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
@@ -65,9 +59,7 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
   });
 
   it("respects 'unlimited' on input side", () => {
-    const defA = baseNodeDef("A", [
-      { id: "out", type: "output", label: "out", position: "right" },
-    ]);
+    const defA = baseNodeDef("A", [{ id: "out", type: "output", label: "out", position: "right" }]);
     const defB = baseNodeDef("B", [
       { id: "in", type: "input", label: "in", position: "left", maxConnections: "unlimited" },
     ]);

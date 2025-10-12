@@ -21,7 +21,7 @@ export type CustomNodeRendererProps = {
   externalDataError: Error | null;
   onStartEdit: () => void;
   onUpdateNode: (updates: Partial<Node>) => void;
-}
+};
 
 export type NodeRendererProps = {
   node: Node;
@@ -32,7 +32,7 @@ export type NodeRendererProps = {
   onUpdateNode?: (nodeId: NodeId, updates: Partial<Node>) => void;
   onNodeContextMenu?: (e: React.MouseEvent, nodeId: NodeId) => void;
   externalDataMap?: Map<NodeId, unknown>;
-}
+};
 
 /**
  * Renders an individual node with optimized re-rendering
@@ -51,25 +51,34 @@ const NodeRendererComponent: React.FC<NodeRendererProps> = ({
   const nodeDefinitions = useNodeDefinitionList();
 
   // Calculate actual position including drag offset
-  const actualPosition = React.useMemo(() => ({
-    x: node.position.x + dragOffset.x,
-    y: node.position.y + dragOffset.y,
-  }), [node.position, dragOffset]);
+  const actualPosition = React.useMemo(
+    () => ({
+      x: node.position.x + dragOffset.x,
+      y: node.position.y + dragOffset.y,
+    }),
+    [node.position, dragOffset],
+  );
 
   // Get external data for custom renderers
   const externalData = externalDataMap?.get(node.id);
 
   // Handle node updates
-  const handleUpdateNode = React.useCallback((updates: Partial<Node>) => {
-    onUpdateNode?.(node.id, updates);
-  }, [node.id, onUpdateNode]);
+  const handleUpdateNode = React.useCallback(
+    (updates: Partial<Node>) => {
+      onUpdateNode?.(node.id, updates);
+    },
+    [node.id, onUpdateNode],
+  );
 
   // Handle context menu
-  const handleContextMenu = React.useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onNodeContextMenu?.(e, node.id);
-  }, [node.id, onNodeContextMenu]);
+  const handleContextMenu = React.useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      onNodeContextMenu?.(e, node.id);
+    },
+    [node.id, onNodeContextMenu],
+  );
 
   const isGroup = nodeHasGroupBehavior(node, nodeDefinitions);
 
@@ -102,26 +111,19 @@ const NodeRendererComponent: React.FC<NodeRendererProps> = ({
 };
 
 // Create memoized version with custom comparison
-export const NodeRenderer = createMemoizedComponent(
-  NodeRendererComponent,
-  (prevProps, nextProps) => {
-    // Use custom equality check that ignores position during drag
-    const nodesEqual = areNodesEqual(
-      prevProps.node,
-      nextProps.node,
-      prevProps.isDragging || nextProps.isDragging
-    );
+export const NodeRenderer = createMemoizedComponent(NodeRendererComponent, (prevProps, nextProps) => {
+  // Use custom equality check that ignores position during drag
+  const nodesEqual = areNodesEqual(prevProps.node, nextProps.node, prevProps.isDragging || nextProps.isDragging);
 
-    return (
-      nodesEqual &&
-      prevProps.isSelected === nextProps.isSelected &&
-      prevProps.isDragging === nextProps.isDragging &&
-      prevProps.dragOffset?.x === nextProps.dragOffset?.x &&
-      prevProps.dragOffset?.y === nextProps.dragOffset?.y &&
-      prevProps.nodeRenderer === nextProps.nodeRenderer &&
-      prevProps.onUpdateNode === nextProps.onUpdateNode &&
-      prevProps.onNodeContextMenu === nextProps.onNodeContextMenu &&
-      prevProps.externalDataMap === nextProps.externalDataMap
-    );
-  }
-);
+  return (
+    nodesEqual &&
+    prevProps.isSelected === nextProps.isSelected &&
+    prevProps.isDragging === nextProps.isDragging &&
+    prevProps.dragOffset?.x === nextProps.dragOffset?.x &&
+    prevProps.dragOffset?.y === nextProps.dragOffset?.y &&
+    prevProps.nodeRenderer === nextProps.nodeRenderer &&
+    prevProps.onUpdateNode === nextProps.onUpdateNode &&
+    prevProps.onNodeContextMenu === nextProps.onNodeContextMenu &&
+    prevProps.externalDataMap === nextProps.externalDataMap
+  );
+});

@@ -15,7 +15,7 @@ export type StatusBarProps = {
   autoSave?: boolean;
   isSaving?: boolean;
   settingsManager?: _SettingsManager;
-}
+};
 
 /**
  * StatusBar - Displays current editor state information
@@ -25,7 +25,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   className,
   autoSave: autoSaveProp,
   isSaving: isSavingProp,
-  settingsManager: settingsManagerProp
+  settingsManager: settingsManagerProp,
 }) => {
   const { settings, isSaving: editorIsSaving, settingsManager: editorSettingsManager } = useNodeEditor();
 
@@ -45,10 +45,18 @@ export const StatusBar: React.FC<StatusBarProps> = ({
 
   // Determine operation mode
   const getOperationMode = (): string => {
-    if (actionState.dragState) {return "Moving";}
-    if (actionState.selectionBox) {return "Selecting";}
-    if (actionState.connectionDragState) {return "Connecting";}
-    if (canvasState.isSpacePanning || canvasState.panState.isPanning) {return "Panning";}
+    if (actionState.dragState) {
+      return "Moving";
+    }
+    if (actionState.selectionBox) {
+      return "Selecting";
+    }
+    if (actionState.connectionDragState) {
+      return "Connecting";
+    }
+    if (canvasState.isSpacePanning || canvasState.panState.isPanning) {
+      return "Panning";
+    }
     return "Ready";
   };
 
@@ -69,38 +77,26 @@ export const StatusBar: React.FC<StatusBarProps> = ({
         label="Selection"
         value={
           <>
-            {selectedNodeCount > 0 && `${selectedNodeCount} node${selectedNodeCount !== 1 ? 's' : ''}`}
-            {selectedNodeCount > 0 && selectedConnectionCount > 0 && ', '}
-            {selectedConnectionCount > 0 && `${selectedConnectionCount} connection${selectedConnectionCount !== 1 ? 's' : ''}`}
-            {selectedNodeCount === 0 && selectedConnectionCount === 0 && 'None'}
+            {selectedNodeCount > 0 && `${selectedNodeCount} node${selectedNodeCount !== 1 ? "s" : ""}`}
+            {selectedNodeCount > 0 && selectedConnectionCount > 0 && ", "}
+            {selectedConnectionCount > 0 &&
+              `${selectedConnectionCount} connection${selectedConnectionCount !== 1 ? "s" : ""}`}
+            {selectedNodeCount === 0 && selectedConnectionCount === 0 && "None"}
           </>
         }
       />
 
       {/* Total counts */}
-      <StatusSection
-        label="Total"
-        value={`${totalNodes} nodes, ${totalConnections} connections`}
-      />
+      <StatusSection label="Total" value={`${totalNodes} nodes, ${totalConnections} connections`} />
 
       {/* Operation mode */}
-      <StatusSection
-        label="Mode"
-        value={operationMode}
-        valueClassName={statusSectionStyles.statusMode}
-      />
+      <StatusSection label="Mode" value={operationMode} valueClassName={statusSectionStyles.statusMode} />
 
       {/* Zoom level */}
-      <StatusSection
-        label="Zoom"
-        value={`${zoomPercentage}%`}
-      />
+      <StatusSection label="Zoom" value={`${zoomPercentage}%`} />
 
       {/* Position */}
-      <StatusSection
-        label="Position"
-        value={getCursorPosition()}
-      />
+      <StatusSection label="Position" value={getCursorPosition()} />
 
       {/* Grid info */}
       {canvasState.gridSettings.showGrid && (
@@ -109,7 +105,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
           value={
             <>
               {canvasState.gridSettings.size}px
-              {canvasState.gridSettings.snapToGrid && ' (Snap ON)'}
+              {canvasState.gridSettings.snapToGrid && " (Snap ON)"}
             </>
           }
         />
@@ -119,17 +115,14 @@ export const StatusBar: React.FC<StatusBarProps> = ({
       {autoSave && (
         <StatusSection
           label="Auto-save"
-          value={isSaving ? 'Saving...' : 'ON'}
+          value={isSaving ? "Saving..." : "ON"}
           valueClassName={isSaving ? statusSectionStyles.statusSaving : undefined}
         />
       )}
 
       {/* Theme info */}
       {settingsManager && (
-        <StatusSection
-          label="Theme"
-          value={settingsManager.getValue("appearance.theme") || "light"}
-        />
+        <StatusSection label="Theme" value={settingsManager.getValue("appearance.theme") || "light"} />
       )}
     </div>
   );

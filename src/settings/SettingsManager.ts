@@ -586,7 +586,7 @@ export class SettingsManager extends SettingsEventEmitter implements ISettingsMa
   // Override the on method to match interface signature
   on(
     event: "change" | "validate" | "save" | "load",
-    handler: (data: SettingsChangeEvent | SettingsValidationResult | SettingsValues) => void
+    handler: (data: SettingsChangeEvent | SettingsValidationResult | SettingsValues) => void,
   ): () => void {
     return super.on(event, (data: unknown) => {
       handler(data as SettingsChangeEvent | SettingsValidationResult | SettingsValues);

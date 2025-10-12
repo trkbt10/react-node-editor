@@ -11,14 +11,20 @@ export type PropertySectionProps = {
   bodyClassName?: string;
   headerRight?: React.ReactNode;
   children: React.ReactNode;
-}
+};
 
 /**
  * PropertySection
  * - Reusable sidebar section with a small, uppercase title
  * - Applies consistent vertical spacing (Figma-like)
  */
-export const PropertySection: React.FC<PropertySectionProps> = ({ title, className, bodyClassName, headerRight, children }) => {
+export const PropertySection: React.FC<PropertySectionProps> = ({
+  title,
+  className,
+  bodyClassName,
+  headerRight,
+  children,
+}) => {
   return (
     <section className={[styles.section, className].filter(Boolean).join(" ")}>
       <div className={styles.sectionHeader}>

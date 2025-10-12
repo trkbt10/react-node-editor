@@ -18,14 +18,17 @@
 }
 
 /* Locked nodes should not be visually highlighted beyond the icon */
-.nodeView[data-locked="true"] {}
+.nodeView[data-locked="true"] {
+}
 
 .nodeView[data-selected="true"] {
   border-color: var(--node-editor-accent-color, #0066cc);
   box-shadow: var(--node-editor-shadow-selection);
 }
 
-.nodeView[data-dragging="true"] { cursor: grabbing; }
+.nodeView[data-dragging="true"] {
+  cursor: grabbing;
+}
 
 .nodeView[data-is-group="true"] {
   /* Subdued, token-driven appearance */
@@ -43,7 +46,11 @@
 .nodeView[data-is-group="true"][data-has-children="true"] {
   border-color: var(
     --node-editor-group-node-active-color,
-    color-mix(in srgb, var(--node-editor-accent-color, #0066cc) 45%, var(--node-editor-divider-color, rgba(0, 0, 0, 0.12)))
+    color-mix(
+      in srgb,
+      var(--node-editor-accent-color, #0066cc) 45%,
+      var(--node-editor-divider-color, rgba(0, 0, 0, 0.12))
+    )
   );
   background-color: var(
     --node-editor-group-node-active-background,
@@ -77,7 +84,8 @@
 }
 
 /* Placeholder for resizing state */
-.nodeView[data-resizing="true"] {}
+.nodeView[data-resizing="true"] {
+}
 
 /* Decoration-less node appearance for label-like nodes */
 .nodeView[data-plain-node="true"] {

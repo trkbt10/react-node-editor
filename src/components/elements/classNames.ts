@@ -25,18 +25,20 @@ export function classNames(...inputs: ClassNameInput[]): string {
   const classes: string[] = [];
 
   for (const input of inputs) {
-    if (!input) {continue;}
+    if (!input) {
+      continue;
+    }
 
     const inputType = typeof input;
 
-    if (inputType === 'string' || inputType === 'number') {
+    if (inputType === "string" || inputType === "number") {
       classes.push(String(input));
     } else if (Array.isArray(input)) {
       const arrayResult = classNames(...input);
       if (arrayResult) {
         classes.push(arrayResult);
       }
-    } else if (inputType === 'object') {
+    } else if (inputType === "object") {
       const obj = input as ClassDictionary;
       for (const key in obj) {
         if (obj[key]) {
@@ -46,7 +48,7 @@ export function classNames(...inputs: ClassNameInput[]): string {
     }
   }
 
-  return classes.join(' ');
+  return classes.join(" ");
 }
 
 // Default export for compatibility

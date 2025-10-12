@@ -7,12 +7,9 @@ import styles from "./HorizontalDivider.module.css";
 export type HorizontalDividerProps = {
   onResize: (deltaX: number) => void;
   className?: string;
-}
+};
 
-export const HorizontalDivider: React.FC<HorizontalDividerProps> = ({
-  onResize,
-  className
-}) => {
+export const HorizontalDivider: React.FC<HorizontalDividerProps> = ({ onResize, className }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const lastXRef = React.useRef<number>(0);
 
@@ -23,13 +20,18 @@ export const HorizontalDivider: React.FC<HorizontalDividerProps> = ({
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   }, []);
 
-  const handlePointerMove = React.useCallback((e: React.PointerEvent) => {
-    if (!isDragging) {return;}
-    
-    const deltaX = e.clientX - lastXRef.current;
-    lastXRef.current = e.clientX;
-    onResize(deltaX);
-  }, [isDragging, onResize]);
+  const handlePointerMove = React.useCallback(
+    (e: React.PointerEvent) => {
+      if (!isDragging) {
+        return;
+      }
+
+      const deltaX = e.clientX - lastXRef.current;
+      lastXRef.current = e.clientX;
+      onResize(deltaX);
+    },
+    [isDragging, onResize],
+  );
 
   const handlePointerUp = React.useCallback((e: React.PointerEvent) => {
     setIsDragging(false);

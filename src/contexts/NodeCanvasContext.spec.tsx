@@ -1,3 +1,6 @@
+/**
+ * @file Tests for NodeCanvasContext - validates canvas viewport and transformation utilities
+ */
 import { render } from "@testing-library/react";
 import { useEffect, type FC } from "react";
 import { NodeCanvasProvider, useNodeCanvas } from "./NodeCanvasContext";

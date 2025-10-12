@@ -1,12 +1,9 @@
+/**
+ * @file Tests for NodeEditor context - validates node and connection CRUD operations
+ */
 import { render, screen, act } from "@testing-library/react";
 import { useEffect, useRef, useState, type FC } from "react";
-import {
-  NodeEditorProvider,
-  useNodeEditor,
-  nodeEditorActions,
-  nodeEditorReducer,
-  type NodeEditorData,
-} from ".";
+import { NodeEditorProvider, useNodeEditor, nodeEditorActions, nodeEditorReducer, type NodeEditorData } from ".";
 
 const makeBasicData = (): NodeEditorData => ({
   nodes: {
@@ -66,7 +63,10 @@ describe("NodeEditorContext reducer - updates", () => {
       },
       connections: {},
     };
-    const updated = nodeEditorReducer(initial, nodeEditorActions.moveNodes({ a: { x: 10, y: 11 }, b: { x: 20, y: 21 } }));
+    const updated = nodeEditorReducer(
+      initial,
+      nodeEditorActions.moveNodes({ a: { x: 10, y: 11 }, b: { x: 20, y: 21 } }),
+    );
     expect(updated.nodes.a.position).toEqual({ x: 10, y: 11 });
     expect(updated.nodes.b.position).toEqual({ x: 20, y: 21 });
   });
@@ -97,8 +97,14 @@ describe("NodeEditorContext reducer - updates", () => {
       },
       connections: {},
     };
-    const s1 = nodeEditorReducer(initial, nodeEditorActions.addConnection({ fromNodeId: "a", fromPortId: "out", toNodeId: "c", toPortId: "in" }));
-    const s2 = nodeEditorReducer(s1, nodeEditorActions.addConnection({ fromNodeId: "b", fromPortId: "out", toNodeId: "c", toPortId: "in" }));
+    const s1 = nodeEditorReducer(
+      initial,
+      nodeEditorActions.addConnection({ fromNodeId: "a", fromPortId: "out", toNodeId: "c", toPortId: "in" }),
+    );
+    const s2 = nodeEditorReducer(
+      s1,
+      nodeEditorActions.addConnection({ fromNodeId: "b", fromPortId: "out", toNodeId: "c", toPortId: "in" }),
+    );
     const conns = Object.values(s2.connections);
     expect(conns.length).toBe(2);
   });
@@ -141,7 +147,7 @@ describe("NodeEditorProvider - uncontrolled vs controlled updates", () => {
       render(
         <NodeEditorProvider initialState={makeBasicData()}>
           <UncontrolledHarness />
-        </NodeEditorProvider>
+        </NodeEditorProvider>,
       );
     });
     expect(screen.getByTestId("pos-x").textContent).toBe("10");
@@ -158,7 +164,7 @@ describe("NodeEditorProvider - uncontrolled vs controlled updates", () => {
       render(
         <NodeEditorProvider controlledData={data} onDataChange={onChange}>
           <ControlledHarness />
-        </NodeEditorProvider>
+        </NodeEditorProvider>,
       );
     });
     expect(screen.getByTestId("pos-x").textContent).toBe("0");
@@ -179,14 +185,22 @@ describe("onDataChange loop prevention", () => {
       const [mirror, setMirror] = useState<NodeEditorData | null>(null);
       const callsRef = useRef(0);
       return (
-        <NodeEditorProvider initialState={initial} onDataChange={(d) => { callsRef.current += 1; setMirror(d); }}>
+        <NodeEditorProvider
+          initialState={initial}
+          onDataChange={(d) => {
+            callsRef.current += 1;
+            setMirror(d);
+          }}
+        >
           <UncontrolledHarness />
           <div data-testid="calls">{String(callsRef.current)}</div>
           <div data-testid="mirror-null">{String(mirror === null)}</div>
         </NodeEditorProvider>
       );
     };
-    await act(async () => { render(<Parent />); });
+    await act(async () => {
+      render(<Parent />);
+    });
     const calls = Number(screen.getByTestId("calls").textContent);
     expect(calls).toBeGreaterThanOrEqual(1);
     expect(calls).toBeLessThan(5);
@@ -199,13 +213,21 @@ describe("onDataChange loop prevention", () => {
       const [data, setData] = useState<NodeEditorData>(initial);
       const callsRef = useRef(0);
       return (
-        <NodeEditorProvider controlledData={data} onDataChange={(d) => { callsRef.current += 1; setData(d); }}>
+        <NodeEditorProvider
+          controlledData={data}
+          onDataChange={(d) => {
+            callsRef.current += 1;
+            setData(d);
+          }}
+        >
           <ControlledHarness />
           <div data-testid="calls">{String(callsRef.current)}</div>
         </NodeEditorProvider>
       );
     };
-    await act(async () => { render(<Parent />); });
+    await act(async () => {
+      render(<Parent />);
+    });
     const calls = Number(screen.getByTestId("calls").textContent);
     expect(calls).toBe(1);
   });

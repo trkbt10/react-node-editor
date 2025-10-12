@@ -19,7 +19,7 @@ import { SwitchInput, Input } from "../../elements";
 type ExtendedInspectorRenderProps = {
   selectedNodes?: Node[];
   onAlignNodes?: (alignmentType: AlignmentActionType, nodes: Node[]) => void;
-} & InspectorRenderProps
+} & InspectorRenderProps;
 
 /**
  * Inspector for "node" behavior
@@ -39,7 +39,7 @@ export function NodeBehaviorInspector({
         data: { ...node.data, title },
       });
     },
-    [node.data, onUpdateNode]
+    [node.data, onUpdateNode],
   );
 
   const handleContentChange = React.useCallback(
@@ -48,7 +48,7 @@ export function NodeBehaviorInspector({
         data: { ...node.data, content },
       });
     },
-    [node.data, onUpdateNode]
+    [node.data, onUpdateNode],
   );
 
   const handlePositionXChange = React.useCallback(
@@ -57,7 +57,7 @@ export function NodeBehaviorInspector({
         position: { ...node.position, x },
       });
     },
-    [node.position, onUpdateNode]
+    [node.position, onUpdateNode],
   );
 
   const handlePositionYChange = React.useCallback(
@@ -66,7 +66,7 @@ export function NodeBehaviorInspector({
         position: { ...node.position, y },
       });
     },
-    [node.position, onUpdateNode]
+    [node.position, onUpdateNode],
   );
 
   const handleWidthChange = React.useCallback(
@@ -75,7 +75,7 @@ export function NodeBehaviorInspector({
         size: { ...node.size, width, height: node.size?.height ?? 0 },
       });
     },
-    [node.size, onUpdateNode]
+    [node.size, onUpdateNode],
   );
 
   const handleHeightChange = React.useCallback(
@@ -84,27 +84,29 @@ export function NodeBehaviorInspector({
         size: { ...node.size, height, width: node.size?.width ?? 0 },
       });
     },
-    [node.size, onUpdateNode]
+    [node.size, onUpdateNode],
   );
   const handleLockedChange = React.useCallback(
     (locked: boolean) => {
       onUpdateNode({ locked });
     },
-    [onUpdateNode]
+    [onUpdateNode],
   );
   const handleVisibleChange = React.useCallback(
     (visible: boolean) => {
       onUpdateNode({ visible });
     },
-    [onUpdateNode]
+    [onUpdateNode],
   );
 
   const handleAlignment = React.useCallback(
     (alignmentType: AlignmentActionType) => {
-      if (!onAlignNodes || selectedNodes.length < 2) {return;}
+      if (!onAlignNodes || selectedNodes.length < 2) {
+        return;
+      }
       onAlignNodes(alignmentType, selectedNodes);
     },
-    [onAlignNodes, selectedNodes]
+    [onAlignNodes, selectedNodes],
   );
 
   return (

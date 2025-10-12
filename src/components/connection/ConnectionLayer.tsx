@@ -13,7 +13,7 @@ import styles from "./ConnectionLayer.module.css";
 
 export type ConnectionLayerProps = {
   className?: string;
-}
+};
 
 /**
  * ConnectionLayer - Renders all connections and handles connection interactions
@@ -22,10 +22,7 @@ export const ConnectionLayer: React.FC<ConnectionLayerProps> = ({ className }) =
   const { state: nodeEditorState } = useNodeEditor();
 
   return (
-    <svg
-      className={className ? `${styles.root} ${className}` : styles.root}
-      data-connection-layer="root"
-    >
+    <svg className={className ? `${styles.root} ${className}` : styles.root} data-connection-layer="root">
       {/* Render all connections */}
       {Object.values(nodeEditorState.connections).map((connection) => {
         return <ConnectionRenderer key={connection.id} connection={connection} />;
@@ -41,43 +38,40 @@ ConnectionLayer.displayName = "ConnectionLayer";
 const DragConnection = React.memo(() => {
   const { state: actionState } = useEditorActionState();
   const { state: nodeEditorState, portLookupMap } = useNodeEditor();
-  
+
   // Get port IDs for hooks (always call hooks, even if not used)
   const dragFromPortId = actionState.connectionDragState?.fromPort.id;
   const dragFromNodeId = actionState.connectionDragState?.fromPort.nodeId;
   const disconnectPortId = actionState.connectionDisconnectState?.fixedPort.id;
   const disconnectNodeId = actionState.connectionDisconnectState?.fixedPort.nodeId;
-  
+
   // Always call hooks (React rules)
-  const dragFromPos = useDynamicConnectionPoint(dragFromNodeId || '', dragFromPortId || '');
-  const disconnectPos = useDynamicConnectionPoint(disconnectNodeId || '', disconnectPortId || '');
-  
+  const dragFromPos = useDynamicConnectionPoint(dragFromNodeId || "", dragFromPortId || "");
+  const disconnectPos = useDynamicConnectionPoint(disconnectNodeId || "", disconnectPortId || "");
+
   if (actionState.connectionDragState) {
     const fromPort = actionState.connectionDragState.fromPort;
     const fromNode = nodeEditorState.nodes[fromPort.nodeId];
-    if (!fromNode) {return null;}
+    if (!fromNode) {
+      return null;
+    }
 
     // Find the actual port data using context method
     const port = portLookupMap.get(`${fromPort.nodeId}:${fromPort.id}`)?.port;
-    if (!port) {return null;}
+    if (!port) {
+      return null;
+    }
 
-    if (!dragFromPos) {return null;}
+    if (!dragFromPos) {
+      return null;
+    }
     const toPos = actionState.connectionDragState.toPosition;
 
-    const pathData = calculateBezierPath(
-      dragFromPos, 
-      toPos, 
-      port.position, 
-      getOppositePortPosition(port.position)
-    );
+    const pathData = calculateBezierPath(dragFromPos, toPos, port.position, getOppositePortPosition(port.position));
 
     return (
       <g className={styles.dragGroup} data-drag-state="connecting" shapeRendering="geometricPrecision">
-        <path
-          d={pathData}
-          className={styles.dragPath}
-          data-drag-variant="connecting"
-        />
+        <path d={pathData} className={styles.dragPath} data-drag-variant="connecting" />
       </g>
     );
   }
@@ -86,28 +80,30 @@ const DragConnection = React.memo(() => {
   if (actionState.connectionDisconnectState) {
     const disconnectState = actionState.connectionDisconnectState;
     const fixedNode = nodeEditorState.nodes[disconnectState.fixedPort.nodeId];
-    if (!fixedNode) {return null;}
+    if (!fixedNode) {
+      return null;
+    }
 
     const fixedPort = portLookupMap.get(`${disconnectState.fixedPort.nodeId}:${disconnectState.fixedPort.id}`)?.port;
-    if (!fixedPort) {return null;}
+    if (!fixedPort) {
+      return null;
+    }
 
-    if (!disconnectPos) {return null;}
+    if (!disconnectPos) {
+      return null;
+    }
     const draggingPos = disconnectState.draggingPosition;
 
     const pathData = calculateBezierPath(
-      disconnectPos, 
-      draggingPos, 
-      fixedPort.position, 
-      getOppositePortPosition(fixedPort.position)
+      disconnectPos,
+      draggingPos,
+      fixedPort.position,
+      getOppositePortPosition(fixedPort.position),
     );
 
     return (
       <g className={styles.dragGroup} data-drag-state="disconnecting" shapeRendering="geometricPrecision">
-        <path
-          d={pathData}
-          className={styles.dragPath}
-          data-drag-variant="disconnecting"
-        />
+        <path d={pathData} className={styles.dragPath} data-drag-variant="disconnecting" />
       </g>
     );
   }
@@ -119,22 +115,18 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
   const { connection: ConnectionComponent } = useRenderers();
-  
+
   // Runtime type guard for CorePort
   const isCorePort = (p: unknown): p is CorePort => {
-    if (!p || typeof p !== 'object') {return false;}
+    if (!p || typeof p !== "object") {
+      return false;
+    }
     const o = p as Record<string, unknown>;
-    const typeOk = o.type === 'input' || o.type === 'output';
-    const posOk = o.position === 'left' || o.position === 'right' || o.position === 'top' || o.position === 'bottom';
-    return (
-      typeof o.id === 'string' &&
-      typeof o.nodeId === 'string' &&
-      typeof o.label === 'string' &&
-      typeOk &&
-      posOk
-    );
+    const typeOk = o.type === "input" || o.type === "output";
+    const posOk = o.position === "left" || o.position === "right" || o.position === "top" || o.position === "bottom";
+    return typeof o.id === "string" && typeof o.nodeId === "string" && typeof o.label === "string" && typeOk && posOk;
   };
-  
+
   // Get dynamic port positions
   const fromPortPos = useDynamicConnectionPoint(connection.fromNodeId, connection.fromPortId);
   const toPortPos = useDynamicConnectionPoint(connection.toNodeId, connection.toPortId);
@@ -147,30 +139,34 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
       const fromPort = portLookupMap.get(`${connection.fromNodeId}:${connection.fromPortId}`)?.port;
       const toPort = portLookupMap.get(`${connection.toNodeId}:${connection.toPortId}`)?.port;
 
-      if (!fromNode || !toNode || !fromPort || !toPort) {return;}
+      if (!fromNode || !toNode || !fromPort || !toPort) {
+        return;
+      }
 
       // Use pre-calculated positions
-      if (!fromPortPos || !toPortPos) {return;}
+      if (!fromPortPos || !toPortPos) {
+        return;
+      }
 
       // Select the connection
       const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey;
       actionDispatch(actionActions.selectConnection(connectionId, isMultiSelect));
     },
-    [connection, nodeEditorState, portLookupMap, actionDispatch, actionActions, fromPortPos, toPortPos]
+    [connection, nodeEditorState, portLookupMap, actionDispatch, actionActions, fromPortPos, toPortPos],
   );
 
   const handleConnectionPointerEnter = React.useCallback(
     (_e: React.PointerEvent, connectionId: string) => {
       actionDispatch(actionActions.setHoveredConnection(connectionId));
     },
-    [actionDispatch, actionActions]
+    [actionDispatch, actionActions],
   );
 
   const handleConnectionPointerLeave = React.useCallback(
     (_e: React.PointerEvent, _connectionId: string) => {
       actionDispatch(actionActions.setHoveredConnection(null));
     },
-    [actionDispatch, actionActions]
+    [actionDispatch, actionActions],
   );
 
   const handleConnectionContextMenu = React.useCallback(
@@ -182,7 +178,7 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
       const canvasPos = utils.screenToCanvas(e.clientX, e.clientY);
       actionDispatch(actionActions.showContextMenu(position, undefined, canvasPos, connectionId));
     },
-    [actionDispatch, actionActions, utils]
+    [actionDispatch, actionActions, utils],
   );
   const fromNode = nodeEditorState.nodes[connection.fromNodeId];
   const toNode = nodeEditorState.nodes[connection.toNodeId];
@@ -190,33 +186,31 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
   const fromRaw = portLookupMap.get(`${connection.fromNodeId}:${connection.fromPortId}`)?.port as unknown;
   const toRaw = portLookupMap.get(`${connection.toNodeId}:${connection.toPortId}`)?.port as unknown;
   // Require nodes; if ports are missing (e.g., tests without full port resolution), synthesize minimal ports
-  if (!fromNode || !toNode) {return null;}
+  if (!fromNode || !toNode) {
+    return null;
+  }
 
   const ensurePort = (raw: unknown, fallback: CorePort): CorePort => (isCorePort(raw) ? raw : fallback);
 
-  const fromPort: CorePort = ensurePort(
-    fromRaw,
-    {
-      id: connection.fromPortId,
-      nodeId: connection.fromNodeId,
-      type: 'output',
-      label: connection.fromPortId,
-      position: 'right',
-    }
-  );
-  const toPort: CorePort = ensurePort(
-    toRaw,
-    {
-      id: connection.toPortId,
-      nodeId: connection.toNodeId,
-      type: 'input',
-      label: connection.toPortId,
-      position: 'left',
-    }
-  );
+  const fromPort: CorePort = ensurePort(fromRaw, {
+    id: connection.fromPortId,
+    nodeId: connection.fromNodeId,
+    type: "output",
+    label: connection.fromPortId,
+    position: "right",
+  });
+  const toPort: CorePort = ensurePort(toRaw, {
+    id: connection.toPortId,
+    nodeId: connection.toNodeId,
+    type: "input",
+    label: connection.toPortId,
+    position: "left",
+  });
 
   // Skip if nodes are not visible
-  if (fromNode.visible === false || toNode.visible === false) {return null;}
+  if (fromNode.visible === false || toNode.visible === false) {
+    return null;
+  }
 
   // Get preview position and size for nodes during drag or resize
   const getNodePreviewData = (node: EditorNode, nodeId: string) => {
@@ -236,7 +230,7 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
       } else {
         // Check if this node is a child of a dragging group
         const isChildOfDraggingGroup = Object.entries(affectedChildNodes).some(([_groupId, childIds]) =>
-          childIds.includes(nodeId)
+          childIds.includes(nodeId),
         );
 
         if (isChildOfDraggingGroup) {

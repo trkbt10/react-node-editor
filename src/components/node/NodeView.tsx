@@ -257,7 +257,7 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
       const target = e.target as HTMLElement;
 
       // Prevent dragging when clicking on input elements
-      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
         return;
       }
 

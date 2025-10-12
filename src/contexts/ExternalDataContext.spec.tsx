@@ -19,7 +19,7 @@ describe("ExternalDataContext", () => {
     const { getByTestId } = render(
       <ExternalDataProvider refs={refs}>
         <Harness />
-      </ExternalDataProvider>
+      </ExternalDataProvider>,
     );
     expect(getByTestId("has-ref").textContent).toBe("true");
   });

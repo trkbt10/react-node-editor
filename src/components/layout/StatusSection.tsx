@@ -11,7 +11,7 @@ export type StatusSectionProps = {
   className?: string;
   labelClassName?: string;
   valueClassName?: string;
-}
+};
 
 export const StatusSection: React.FC<StatusSectionProps> = ({
   label,

@@ -17,24 +17,24 @@ export const HistoryPanel: React.FC = () => {
   const headerActions = (
     <div className={styles.historyHeaderActions}>
       <Button size="small" variant="secondary" onClick={() => undo()} disabled={!canUndo}>
-        {t('historyUndo') || 'Undo'}
+        {t("historyUndo") || "Undo"}
       </Button>
       <Button size="small" variant="secondary" onClick={() => redo()} disabled={!canRedo}>
-        {t('historyRedo') || 'Redo'}
+        {t("historyRedo") || "Redo"}
       </Button>
     </div>
   );
 
   return (
     <PropertySection
-      title={t('historyTitle') || 'History'}
+      title={t("historyTitle") || "History"}
       headerRight={headerActions}
       className={styles.historyPanel}
       bodyClassName={styles.historyBody}
     >
       {state.entries.length === 0 ? (
         <div className={styles.historyEmpty}>
-          <span className={styles.historyAction}>{t('historyEmpty') || 'No history yet'}</span>
+          <span className={styles.historyAction}>{t("historyEmpty") || "No history yet"}</span>
         </div>
       ) : (
         <ul className={styles.historyList}>

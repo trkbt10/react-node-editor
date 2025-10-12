@@ -7,14 +7,16 @@
   background-color: var(--node-editor-control-background, #ffffff);
   border: 2px solid var(--node-editor-input-border, #e0e0e0);
   cursor: crosshair;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
   z-index: 10;
   pointer-events: all;
 }
 
 .port:hover {
   transform: scale(1.3);
-  box-shadow: 0 0 .5em rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.3);
 }
 
 .port[data-port-type="input"] {
@@ -71,7 +73,7 @@
 
 .port[data-port-candidate="true"] {
   border-color: var(--node-editor-accent-color, #0066cc);
-  box-shadow: 0 0 .5em rgba(0, 102, 204, 0.5);
+  box-shadow: 0 0 0.5em rgba(0, 102, 204, 0.5);
   transform: scale(1.3);
 }
 

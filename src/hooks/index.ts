@@ -21,7 +21,12 @@ export { usePointerDrag } from "./usePointerDrag";
 export { usePointerInteraction } from "./usePointerInteraction";
 
 // Utility hooks
-export { useDocumentPointerEvents, usePointerCapture, usePreventPointerDefaults, useDragPointerEvents } from "./useDocumentPointerEvents";
+export {
+  useDocumentPointerEvents,
+  usePointerCapture,
+  usePreventPointerDefaults,
+  useDragPointerEvents,
+} from "./useDocumentPointerEvents";
 
 // Pre-bound action hooks (no need to call dispatch)
 export { useNodeEditorActions, useNodeEditorState } from "./useNodeEditorActions";

@@ -6,11 +6,7 @@ import * as React from "react";
 import { NodeEditor } from "../../NodeEditor";
 import type { NodeEditorData } from "../../types/core";
 
-import {
-  CounterNodeDefinition,
-  LegacyNodeDefinition,
-  TextDisplayDefinition,
-} from "./typedNodes.example";
+import { CounterNodeDefinition, LegacyNodeDefinition, TextDisplayDefinition } from "./typedNodes.example";
 import { toUntypedDefinition } from "../../types/NodeDefinition";
 import classes from "./TypedNodesExample.module.css";
 

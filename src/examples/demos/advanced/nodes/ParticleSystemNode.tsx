@@ -4,7 +4,12 @@
 import * as React from "react";
 import type { NodeDefinition, NodeRenderProps, InspectorRenderProps } from "../../../../types/NodeDefinition";
 import classes from "./ParticleSystemNode.module.css";
-import { createDefaultParticleData, defaultPhysics, sanitizeParticleData, type ParticleData } from "./ParticleSystemDataStore";
+import {
+  createDefaultParticleData,
+  defaultPhysics,
+  sanitizeParticleData,
+  type ParticleData,
+} from "./ParticleSystemDataStore";
 export type { ParticleData } from "./ParticleSystemDataStore";
 import { useParticleSystemStore } from "../contexts/ParticleSystemStoreContext";
 
@@ -342,7 +347,9 @@ export const ParticleSystemInspectorRenderer = ({ node }: InspectorRenderProps) 
   const externalRefId = (node.data["externalRefId"] as string | undefined) ?? node.id;
   const storeConfig = store.getData(externalRefId);
   const [editedData, setEditedData] = React.useState<ParticleData>(
-    storeConfig ? sanitizeParticleData(storeConfig, externalRefId, storeConfig) : createDefaultParticleData(externalRefId),
+    storeConfig
+      ? sanitizeParticleData(storeConfig, externalRefId, storeConfig)
+      : createDefaultParticleData(externalRefId),
   );
 
   React.useEffect(() => {

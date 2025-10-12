@@ -5,14 +5,11 @@ import { canConnectPorts } from "./connectionValidation";
 /**
  * Check if a port has any connections
  */
-export function getPortConnections(
-  port: Port,
-  connections: Record<string, Connection>
-): Connection[] {
+export function getPortConnections(port: Port, connections: Record<string, Connection>): Connection[] {
   return Object.values(connections).filter(
     (conn) =>
       (conn.fromPortId === port.id && conn.fromNodeId === port.nodeId) ||
-      (conn.toPortId === port.id && conn.toNodeId === port.nodeId)
+      (conn.toPortId === port.id && conn.toNodeId === port.nodeId),
   );
 }
 
@@ -23,19 +20,23 @@ export function getOtherPortInfo(
   connection: Connection,
   port: Port,
   nodes: Record<string, Node>,
-  getNodePorts: (nodeId: string) => Port[]
+  getNodePorts: (nodeId: string) => Port[],
 ): { otherNode: Node; otherPort: Port; isFromPort: boolean } | null {
   const isFromPort = connection.fromPortId === port.id && connection.fromNodeId === port.nodeId;
   const otherNodeId = isFromPort ? connection.toNodeId : connection.fromNodeId;
   const otherPortId = isFromPort ? connection.toPortId : connection.fromPortId;
   const otherNode = nodes[otherNodeId];
 
-  if (!otherNode) {return null;}
+  if (!otherNode) {
+    return null;
+  }
 
   const otherNodePorts = getNodePorts(otherNodeId);
   const otherPort = otherNodePorts.find((p) => p.id === otherPortId);
 
-  if (!otherPort) {return null;}
+  if (!otherPort) {
+    return null;
+  }
 
   return { otherNode, otherPort, isFromPort };
 }
@@ -48,10 +49,14 @@ export function isValidReconnection(
   targetPort: Port,
   nodes: Record<string, Node>,
   connections: Record<string, Connection>,
-  getNodeDefinition: (type: string) => NodeDefinition | undefined
+  getNodeDefinition: (type: string) => NodeDefinition | undefined,
 ): boolean {
-  if (fixedPort.type === targetPort.type) {return false;}
-  if (fixedPort.nodeId === targetPort.nodeId) {return false;}
+  if (fixedPort.type === targetPort.type) {
+    return false;
+  }
+  if (fixedPort.nodeId === targetPort.nodeId) {
+    return false;
+  }
 
   const fromPort = fixedPort.type === "output" ? fixedPort : targetPort;
   const toPort = fixedPort.type === "output" ? targetPort : fixedPort;

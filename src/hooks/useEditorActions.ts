@@ -5,11 +5,11 @@ import { useActionStateActions } from "./useActionStateActions";
 /**
  * Hook that provides all pre-bound action creators in one convenient object
  * Combines actions from all editor contexts without needing to call dispatch
- * 
+ *
  * @example
  * ```tsx
  * const actions = useEditorActions();
- * 
+ *
  * // Direct action calls without dispatch
  * actions.editor.addNode(newNode);
  * actions.canvas.setViewport(newViewport);
@@ -44,23 +44,22 @@ export function useCommonActions() {
     removeNode: actions.editor.deleteNode,
     updateNode: actions.editor.updateNode,
     duplicateNodes: actions.editor.duplicateNodes,
-    
+
     // Connection operations
     addConnection: actions.editor.addConnection,
     removeConnection: actions.editor.deleteConnection,
-    
+
     // Selection operations
     selectNode: actions.interaction.selectNode,
     selectAllNodes: actions.interaction.selectAllNodes,
     clearSelection: actions.interaction.clearSelection,
-    
+
     // Viewport operations
     setViewport: actions.canvas.setViewport,
     panViewport: actions.canvas.panViewport,
     zoomViewport: actions.canvas.zoomViewport,
     resetViewport: actions.canvas.resetViewport,
-    
-    
+
     // Context menu
     showContextMenu: actions.interaction.showContextMenu,
     hideContextMenu: actions.interaction.hideContextMenu,

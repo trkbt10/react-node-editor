@@ -24,13 +24,12 @@ export const useHistoryIntegration = () => {
     const previousState = previousStateRef.current;
 
     // Skip if this is the initial state or if states are identical
-    if (previousState === currentState ||
-        JSON.stringify(previousState) === JSON.stringify(currentState)) {
+    if (previousState === currentState || JSON.stringify(previousState) === JSON.stringify(currentState)) {
       return;
     }
 
     // Push the previous state to history (before the change)
-    const actionName = actionNameRef.current || 'Unknown Action';
+    const actionName = actionNameRef.current || "Unknown Action";
     pushEntry(actionName, previousState);
 
     // Update reference
@@ -39,25 +38,30 @@ export const useHistoryIntegration = () => {
   }, [nodeEditorState, pushEntry]);
 
   // Enhanced dispatch that records action names
-  const dispatchWithHistory = React.useCallback((action: NodeEditorAction) => {
-    // Extract action name for history
-    if (action && typeof action === 'object' && action.type) {
-      actionNameRef.current = action.type;
-    }
-    
-    nodeEditorDispatch(action);
-  }, [nodeEditorDispatch]);
+  const dispatchWithHistory = React.useCallback(
+    (action: NodeEditorAction) => {
+      // Extract action name for history
+      if (action && typeof action === "object" && action.type) {
+        actionNameRef.current = action.type;
+      }
+
+      nodeEditorDispatch(action);
+    },
+    [nodeEditorDispatch],
+  );
 
   // Undo function that restores previous state
   const performUndo = React.useCallback(() => {
-    if (!canUndo) {return false;}
-    
+    if (!canUndo) {
+      return false;
+    }
+
     const previousEntry = undo();
     if (previousEntry) {
       // Temporarily disable history recording to avoid infinite loop
       actionNameRef.current = null;
       previousStateRef.current = previousEntry.data;
-      
+
       // Restore the state
       nodeEditorDispatch(nodeEditorActions.restoreState(previousEntry.data));
       return true;
@@ -67,14 +71,16 @@ export const useHistoryIntegration = () => {
 
   // Redo function that restores next state
   const performRedo = React.useCallback(() => {
-    if (!canRedo) {return false;}
-    
+    if (!canRedo) {
+      return false;
+    }
+
     const nextEntry = redo();
     if (nextEntry) {
       // Temporarily disable history recording to avoid infinite loop
       actionNameRef.current = null;
       previousStateRef.current = nextEntry.data;
-      
+
       // Restore the state
       nodeEditorDispatch(nodeEditorActions.restoreState(nextEntry.data));
       return true;

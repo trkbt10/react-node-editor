@@ -190,7 +190,7 @@ export type I18nMessages = {
   fieldOpacity?: string;
   fieldTextColor?: string;
   inspectorGroupAppearanceTitle?: string;
-}
+};
 
 export type I18nKey = keyof I18nMessages;
 
@@ -198,11 +198,11 @@ export type I18nConfig = {
   locale: Locale;
   fallbackLocale: Locale;
   messages: Record<Locale, I18nMessages>;
-}
+};
 
 export type I18nContextValue = {
   locale: Locale;
   setLocale: (locale: Locale) => void;
   t: (key: I18nKey, params?: Record<string, string | number>) => string;
   availableLocales: Locale[];
-}
+};

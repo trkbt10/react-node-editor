@@ -25,9 +25,7 @@ export const InputOnlyNodeDefinition: NodeDefinition = {
       position: "right",
     },
   ],
-  constraints: [
-    ConstraintFactory.requiredDataFields(["value"]),
-  ],
+  constraints: [ConstraintFactory.requiredDataFields(["value"])],
 };
 
 /**
@@ -50,17 +48,14 @@ export const SinkNodeDefinition: NodeDefinition = {
       position: "left",
     },
   ],
-  constraints: [
-    ConstraintFactory.requiresInput(),
-    ConstraintFactory.maxInputConnections(1),
-  ],
+  constraints: [ConstraintFactory.requiresInput(), ConstraintFactory.maxInputConnections(1)],
 };
 
 /**
  * Processor node with limited inputs and placement constraints
  */
 export const ConstrainedProcessorDefinition: NodeDefinition = {
-  type: "constrained-processor", 
+  type: "constrained-processor",
   displayName: "Constrained Processor",
   description: "A processor with input limits and placement constraints",
   category: "Processing",
@@ -78,7 +73,7 @@ export const ConstrainedProcessorDefinition: NodeDefinition = {
     },
     {
       id: "input2",
-      type: "input", 
+      type: "input",
       label: "Secondary",
       position: "left",
     },
@@ -102,7 +97,7 @@ export const ConstrainedProcessorDefinition: NodeDefinition = {
  */
 export const CriticalNodeDefinition: NodeDefinition = {
   type: "critical",
-  displayName: "Critical Node", 
+  displayName: "Critical Node",
   description: "A critical system node with strict constraints",
   category: "System",
   defaultData: {
@@ -120,7 +115,7 @@ export const CriticalNodeDefinition: NodeDefinition = {
     {
       id: "output",
       type: "output",
-      label: "System Output", 
+      label: "System Output",
       position: "right",
     },
   ],
@@ -134,11 +129,13 @@ export const CriticalNodeDefinition: NodeDefinition = {
       appliesTo: ["delete"],
       validate: () => ({
         isValid: false,
-        violations: [{
-          type: "prevent-deletion",
-          message: "Critical nodes cannot be deleted for safety reasons",
-          severity: "error" as const,
-        }],
+        violations: [
+          {
+            type: "prevent-deletion",
+            message: "Critical nodes cannot be deleted for safety reasons",
+            severity: "error" as const,
+          },
+        ],
       }),
     },
     {
@@ -152,11 +149,13 @@ export const CriticalNodeDefinition: NodeDefinition = {
         if (!hasConfirmation) {
           return {
             isValid: false,
-            violations: [{
-              type: "require-confirmation",
-              message: "Changes to critical nodes require confirmation",
-              severity: "warning" as const,
-            }],
+            violations: [
+              {
+                type: "require-confirmation",
+                message: "Changes to critical nodes require confirmation",
+                severity: "warning" as const,
+              },
+            ],
           };
         }
         return { isValid: true, violations: [] };
@@ -214,18 +213,20 @@ export const AggregatorNodeDefinition: NodeDefinition = {
       appliesTo: ["connect", "disconnect"],
       validate: (context) => {
         const inputConnections = Object.values(context.allConnections).filter(
-          conn => conn.toNodeId === context.node.id
+          (conn) => conn.toNodeId === context.node.id,
         );
 
         if (inputConnections.length < 2) {
           return {
             isValid: false,
-            violations: [{
-              type: "minimum-inputs",
-              message: "Aggregator requires at least 2 input connections to function properly",
-              severity: "warning" as const,
-              nodeIds: [context.node.id],
-            }],
+            violations: [
+              {
+                type: "minimum-inputs",
+                message: "Aggregator requires at least 2 input connections to function properly",
+                severity: "warning" as const,
+                nodeIds: [context.node.id],
+              },
+            ],
           };
         }
 

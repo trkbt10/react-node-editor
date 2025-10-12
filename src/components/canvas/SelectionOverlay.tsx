@@ -8,7 +8,7 @@ import styles from "./SelectionOverlay.module.css";
 
 export type SelectionOverlayProps = {
   className?: string;
-}
+};
 
 /**
  * SelectionOverlay - Overlay layer for selection visual feedback
@@ -16,9 +16,7 @@ export type SelectionOverlayProps = {
  */
 export const SelectionOverlay: React.FC<SelectionOverlayProps> = ({ className }) => {
   return (
-    <div
-      className={classNames(styles.selectionOverlay, className)}
-    >
+    <div className={classNames(styles.selectionOverlay, className)}>
       <SelectionBox />
     </div>
   );

@@ -19,7 +19,7 @@ export type NodePortsRendererProps = {
   hoveredPort?: Port;
   connectedPorts?: Set<string>;
   connectablePorts?: ConnectablePortsResult;
-}
+};
 
 /**
  * Renders ports for a node
@@ -38,7 +38,9 @@ export const NodePortsRenderer: React.FC<NodePortsRendererProps> = ({
   const PortComponent = renderers?.port ?? PortView;
   const { state: actionState } = useEditorActionState();
 
-  if (!ports || ports.length === 0) {return null;}
+  if (!ports || ports.length === 0) {
+    return null;
+  }
 
   return (
     <div className={styles.nodePorts}>

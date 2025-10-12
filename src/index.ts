@@ -42,14 +42,7 @@ export type {
 } from "./types/behaviors";
 
 // Core graph types used by custom definitions
-export type {
-  Connection,
-  ConnectionId,
-  Node,
-  NodeId,
-  Port,
-  PortId,
-} from "./types/core";
+export type { Connection, ConnectionId, Node, NodeId, Port, PortId } from "./types/core";
 
 // Port positioning customization
 export type {

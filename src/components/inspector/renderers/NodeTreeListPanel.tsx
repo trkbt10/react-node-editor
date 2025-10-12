@@ -17,7 +17,7 @@ type DragState = {
   draggingNodeId: NodeId | null;
   dragOverNodeId: NodeId | null;
   dragOverPosition: "before" | "inside" | "after" | null;
-}
+};
 
 type NodeTreeItemProps = {
   node: Node;
@@ -32,7 +32,7 @@ type NodeTreeItemProps = {
   dragState: DragState;
   onNodeDrop: (draggedNodeId: NodeId, targetNodeId: NodeId, position: "before" | "inside" | "after") => void;
   onDragStateChange: (state: Partial<DragState>) => void;
-}
+};
 
 const NodeTreeItem: React.FC<NodeTreeItemProps> = ({
   node,
@@ -110,7 +110,9 @@ const NodeTreeItem: React.FC<NodeTreeItemProps> = ({
     e.preventDefault();
     e.stopPropagation();
 
-    if (dragState.draggingNodeId === node.id) {return;}
+    if (dragState.draggingNodeId === node.id) {
+      return;
+    }
 
     const rect = e.currentTarget.getBoundingClientRect();
     const y = e.clientY - rect.top;
@@ -179,7 +181,11 @@ const NodeTreeItem: React.FC<NodeTreeItemProps> = ({
         onDrop={handleDrop}
       >
         {hasChildren && (
-          <button className={styles.expandButton} onClick={handleToggleExpand} aria-label={isExpanded ? "Collapse" : "Expand"}>
+          <button
+            className={styles.expandButton}
+            onClick={handleToggleExpand}
+            aria-label={isExpanded ? "Collapse" : "Expand"}
+          >
             <svg
               width="8"
               height="8"
@@ -260,7 +266,7 @@ type ConnectedNodeTreeItemProps = {
   dragState: DragState;
   onNodeDrop: (draggedNodeId: NodeId, targetNodeId: NodeId, position: "before" | "inside" | "after") => void;
   onDragStateChange: (state: Partial<DragState>) => void;
-}
+};
 
 const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
   nodeId,
@@ -274,7 +280,9 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
   const nodeDefinitions = useNodeDefinitionList();
 
   const node = editorState.nodes[nodeId];
-  if (!node) {return null;}
+  if (!node) {
+    return null;
+  }
 
   const isSelected = actionState.selectedNodeIds.includes(nodeId);
   const childNodes = React.useMemo(() => {
@@ -282,7 +290,9 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
     return list.sort((a, b) => {
       const ao = typeof a.order === "number" ? a.order : Number.POSITIVE_INFINITY;
       const bo = typeof b.order === "number" ? b.order : Number.POSITIVE_INFINITY;
-      if (ao !== bo) {return ao - bo;}
+      if (ao !== bo) {
+        return ao - bo;
+      }
       // fallback: stable by title
       const ta = a.data?.title || "";
       const tb = b.data?.title || "";
@@ -294,7 +304,7 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
     (nodeId: NodeId, multiSelect: boolean) => {
       actionDispatch(actionActions.selectNode(nodeId, multiSelect));
     },
-    [actionDispatch, actionActions]
+    [actionDispatch, actionActions],
   );
 
   const handleToggleVisibility = React.useCallback(
@@ -304,7 +314,7 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
         dispatch(actions.updateNode(nodeId, { visible: node.visible === false }));
       }
     },
-    [editorState.nodes, dispatch, actions]
+    [editorState.nodes, dispatch, actions],
   );
 
   const handleToggleLock = React.useCallback(
@@ -314,26 +324,28 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
         dispatch(actions.updateNode(nodeId, { locked: !node.locked }));
       }
     },
-    [editorState.nodes, dispatch, actions]
+    [editorState.nodes, dispatch, actions],
   );
 
   const handleToggleExpand = React.useCallback(
     (nodeId: NodeId) => {
       const n = editorState.nodes[nodeId];
-      if (!n) {return;}
+      if (!n) {
+        return;
+      }
       const d = nodeDefinitions.find((defn) => defn.type === n.type);
       if (hasGroupBehavior(d)) {
         dispatch(actions.updateNode(nodeId, { expanded: !n.expanded }));
       }
     },
-    [editorState.nodes, dispatch, actions, nodeDefinitions]
+    [editorState.nodes, dispatch, actions, nodeDefinitions],
   );
 
   const handleDeleteNode = React.useCallback(
     (nodeId: NodeId) => {
       dispatch(actions.deleteNode(nodeId));
     },
-    [dispatch, actions]
+    [dispatch, actions],
   );
 
   return (
@@ -356,7 +368,7 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
 
 export type NodeTreeListPanelProps = {
   className?: string;
-}
+};
 
 export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = ({ className }) => {
   const { state: editorState, dispatch: editorDispatch, actions: editorActions } = useNodeEditor();
@@ -380,11 +392,17 @@ export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = ({ className 
     return [...rootNodes].sort((a, b) => {
       const aIsGroup = hasGroupBehavior(nodeDefinitions.find((d) => d.type === a.type));
       const bIsGroup = hasGroupBehavior(nodeDefinitions.find((d) => d.type === b.type));
-      if (aIsGroup && !bIsGroup) {return -1;}
-      if (!aIsGroup && bIsGroup) {return 1;}
+      if (aIsGroup && !bIsGroup) {
+        return -1;
+      }
+      if (!aIsGroup && bIsGroup) {
+        return 1;
+      }
       const ao = typeof a.order === "number" ? a.order : Number.POSITIVE_INFINITY;
       const bo = typeof b.order === "number" ? b.order : Number.POSITIVE_INFINITY;
-      if (ao !== bo) {return ao - bo;}
+      if (ao !== bo) {
+        return ao - bo;
+      }
       const titleA = a.data?.title && a.data.title.trim().length > 0 ? a.data.title : t("untitled");
       const titleB = b.data?.title && b.data.title.trim().length > 0 ? b.data.title : t("untitled");
       return titleA.localeCompare(titleB);
@@ -404,14 +422,22 @@ export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = ({ className 
       const draggedNode = editorState.nodes[draggedNodeId];
       const targetNode = editorState.nodes[targetNodeId];
 
-      if (!draggedNode || !targetNode) {return;}
+      if (!draggedNode || !targetNode) {
+        return;
+      }
 
       // Prevent dropping a node onto itself or its children
       const isDescendant = (nodeId: NodeId, ancestorId: NodeId): boolean => {
         const node = editorState.nodes[nodeId];
-        if (!node) {return false;}
-        if (node.parentId === ancestorId) {return true;}
-        if (node.parentId) {return isDescendant(node.parentId, ancestorId);}
+        if (!node) {
+          return false;
+        }
+        if (node.parentId === ancestorId) {
+          return true;
+        }
+        if (node.parentId) {
+          return isDescendant(node.parentId, ancestorId);
+        }
         return false;
       };
 
@@ -426,21 +452,30 @@ export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = ({ className 
           .sort((a, b) => {
             const ao = typeof a.order === "number" ? a.order : Number.POSITIVE_INFINITY;
             const bo = typeof b.order === "number" ? b.order : Number.POSITIVE_INFINITY;
-            if (ao !== bo) {return ao - bo;}
+            if (ao !== bo) {
+              return ao - bo;
+            }
             const ta = a.data?.title || "";
             const tb = b.data?.title || "";
             return ta.localeCompare(tb);
           });
         const list = [...siblings];
         const targetIndex = (() => {
-          if (position === "before") {return siblings.findIndex((n) => n.id === targetNodeId);}
-          if (position === "after") {return siblings.findIndex((n) => n.id === targetNodeId) + 1;}
+          if (position === "before") {
+            return siblings.findIndex((n) => n.id === targetNodeId);
+          }
+          if (position === "after") {
+            return siblings.findIndex((n) => n.id === targetNodeId) + 1;
+          }
           return typeof insertAtIndex === "number" ? insertAtIndex : siblings.length;
         })();
         list.splice(Math.max(0, targetIndex), 0, { ...draggedNode, parentId });
         list.forEach((n, idx) => {
           editorDispatch(
-            editorActions.updateNode(n.id, { order: idx * 10, parentId: n.id === draggedNodeId ? parentId : n.parentId })
+            editorActions.updateNode(n.id, {
+              order: idx * 10,
+              parentId: n.id === draggedNodeId ? parentId : n.parentId,
+            }),
           );
         });
       };
@@ -458,7 +493,7 @@ export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = ({ className 
         reorderSiblings(targetNode.parentId || undefined);
       }
     },
-    [editorState.nodes, editorDispatch, editorActions]
+    [editorState.nodes, editorDispatch, editorActions],
   );
 
   const totalNodes = Object.keys(editorState.nodes).length;

@@ -12,7 +12,7 @@ export type InspectorNumberInputProps = {
   id?: string;
   name?: string;
   "aria-label"?: string;
-}
+};
 
 export const InspectorNumberInput = React.memo<InspectorNumberInputProps>(
   ({ value, onChange, label, id, name, "aria-label": ariaLabel }) => {
@@ -30,7 +30,7 @@ export const InspectorNumberInput = React.memo<InspectorNumberInputProps>(
         />
       </div>
     );
-  }
+  },
 );
 
 InspectorNumberInput.displayName = "InspectorNumberInput";

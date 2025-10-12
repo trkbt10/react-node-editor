@@ -54,13 +54,15 @@ export type NodeEditorContextValue = {
    * These should be used instead of directly importing from utils
    */
   utils: NodeEditorUtils;
-}
+};
 
 export const NodeEditorContext = React.createContext<NodeEditorContextValue | null>(null);
 
 export const useNodeEditor = (): NodeEditorContextValue => {
   const context = React.useContext(NodeEditorContext);
-  if (!context) {throw new Error("useNodeEditor must be used within a NodeEditorProvider");}
+  if (!context) {
+    throw new Error("useNodeEditor must be used within a NodeEditorProvider");
+  }
   return context;
 };
 

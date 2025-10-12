@@ -16,7 +16,7 @@ type Settings = {
   gridSize: number;
   gridOpacity: number;
   canvasBackground: string;
-}
+};
 
 const defaultSettings: Settings = {
   showGrid: true,
@@ -59,45 +59,17 @@ function getThemeSetting(settingsManager: SettingsManager, key: string, defaultV
 
 export type { Settings };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 export function useSettings(settingsManager?: SettingsManager): Settings {
   const [settingsVersion, setSettingsVersion] = React.useState(0);
 
   // Listen for settings changes
   React.useEffect(() => {
-    if (!settingsManager) {return;}
+    if (!settingsManager) {
+      return;
+    }
 
     const unsubscribe = settingsManager.on("change", () => {
-      setSettingsVersion(prev => prev + 1);
+      setSettingsVersion((prev) => prev + 1);
     });
 
     return unsubscribe;
@@ -116,12 +88,24 @@ export function useSettings(settingsManager?: SettingsManager): Settings {
       theme: getThemeSetting(settingsManager, "appearance.theme", defaultSettings.theme),
       autoSave: getBooleanSetting(settingsManager, "general.autoSave", defaultSettings.autoSave),
       autoSaveInterval: getNumberSetting(settingsManager, "general.autoSaveInterval", defaultSettings.autoSaveInterval),
-      smoothAnimations: getBooleanSetting(settingsManager, "behavior.smoothAnimations", defaultSettings.smoothAnimations),
-      doubleClickToEdit: getBooleanSetting(settingsManager, "behavior.doubleClickToEdit", defaultSettings.doubleClickToEdit),
+      smoothAnimations: getBooleanSetting(
+        settingsManager,
+        "behavior.smoothAnimations",
+        defaultSettings.smoothAnimations,
+      ),
+      doubleClickToEdit: getBooleanSetting(
+        settingsManager,
+        "behavior.doubleClickToEdit",
+        defaultSettings.doubleClickToEdit,
+      ),
       fontSize: getNumberSetting(settingsManager, "appearance.fontSize", defaultSettings.fontSize),
       gridSize: getNumberSetting(settingsManager, "appearance.gridSize", defaultSettings.gridSize),
       gridOpacity: getNumberSetting(settingsManager, "appearance.gridOpacity", defaultSettings.gridOpacity),
-      canvasBackground: getStringSetting(settingsManager, "appearance.canvasBackground", defaultSettings.canvasBackground),
+      canvasBackground: getStringSetting(
+        settingsManager,
+        "appearance.canvasBackground",
+        defaultSettings.canvasBackground,
+      ),
     };
   }, [settingsManager, settingsVersion]);
 

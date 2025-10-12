@@ -11,11 +11,7 @@ import {
   cubicBezierTangent,
 } from "../../../components/connection/utils/connectionUtils";
 import { getStyleForDataType } from "./dataStyles";
-import {
-  CONNECTION_VARIANT_TOKENS,
-  type ConnectionVariant,
-  resolveConnectionVariant,
-} from "./connectionTokens";
+import { CONNECTION_VARIANT_TOKENS, type ConnectionVariant, resolveConnectionVariant } from "./connectionTokens";
 import styles from "./CustomPortRendererExample.module.css";
 
 type DefaultConnectionElementProps = {
@@ -44,14 +40,7 @@ const createSamplePoints = (
 };
 
 const buildDataOverlay = (pathData: string, stroke: string): React.ReactElement => {
-  return (
-    <path
-      key="data-overlay"
-      className={styles.connectionOverlayData}
-      d={pathData}
-      stroke={stroke}
-    />
-  );
+  return <path key="data-overlay" className={styles.connectionOverlayData} d={pathData} stroke={stroke} />;
 };
 
 const buildImageOverlay = (
@@ -161,10 +150,7 @@ const buildOverlayElements = (
 };
 
 export const createConnectionRenderer = (variant?: ConnectionVariant) => {
-  return (
-    context: ConnectionRenderContext,
-    defaultRender: () => React.ReactElement,
-  ): React.ReactElement => {
+  return (context: ConnectionRenderContext, defaultRender: () => React.ReactElement): React.ReactElement => {
     const defaultElement = defaultRender() as React.ReactElement<DefaultConnectionElementProps>;
     const fromStyle = getStyleForDataType(context.fromPort.dataType);
     const toStyle = getStyleForDataType(context.toPort.dataType);
@@ -237,17 +223,13 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
 
     const samplePoints = React.useMemo(() => createSamplePoints(context, cp1, cp2), [context, cp1, cp2]);
     const overlayElements = React.useMemo(
-      () =>
-        buildOverlayElements(resolvedVariant, pathData, samplePoints, mainStrokeWidth, fromStyle, toStyle),
+      () => buildOverlayElements(resolvedVariant, pathData, samplePoints, mainStrokeWidth, fromStyle, toStyle),
       [resolvedVariant, pathData, samplePoints, mainStrokeWidth, fromStyle, toStyle],
     );
 
-    const interactiveBase = React.cloneElement(
-      defaultElement,
-      {
-        className: [styles.connectionInteractiveBase, defaultElement.props?.className].filter(Boolean).join(" "),
-      },
-    );
+    const interactiveBase = React.cloneElement(defaultElement, {
+      className: [styles.connectionInteractiveBase, defaultElement.props?.className].filter(Boolean).join(" "),
+    });
 
     return (
       <>
@@ -278,11 +260,7 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
               markerUnits="strokeWidth"
               orient="auto"
             >
-              <path
-                d="M 0 0 L 6 3 L 0 6 Z"
-                fill={toStyle.primary}
-                fillOpacity={0.9}
-              />
+              <path d="M 0 0 L 6 3 L 0 6 Z" fill={toStyle.primary} fillOpacity={0.9} />
             </marker>
           </defs>
 
@@ -325,22 +303,8 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
             className={styles.connectionBadge}
             transform={`translate(${midpoint.x}, ${midpoint.y}) rotate(${midAngle})`}
           >
-            <rect
-              x={-36}
-              y={-12}
-              width={72}
-              height={24}
-              rx={12}
-              fill={tokens.badgeOuter}
-            />
-            <rect
-              x={-34}
-              y={-10}
-              width={68}
-              height={20}
-              rx={10}
-              fill={tokens.badgeInner}
-            />
+            <rect x={-36} y={-12} width={72} height={24} rx={12} fill={tokens.badgeOuter} />
+            <rect x={-34} y={-10} width={68} height={20} rx={10} fill={tokens.badgeInner} />
             <text
               x={0}
               y={4}

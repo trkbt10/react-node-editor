@@ -266,7 +266,9 @@ export const GameControllerInspectorRenderer = ({ externalData, onUpdateExternal
             <input
               type="checkbox"
               checked={editedData.buttons.a}
-              onChange={(e) => setEditedData({ ...editedData, buttons: { ...editedData.buttons, a: e.target.checked } })}
+              onChange={(e) =>
+                setEditedData({ ...editedData, buttons: { ...editedData.buttons, a: e.target.checked } })
+              }
             />
             A
           </label>
@@ -274,7 +276,9 @@ export const GameControllerInspectorRenderer = ({ externalData, onUpdateExternal
             <input
               type="checkbox"
               checked={editedData.buttons.b}
-              onChange={(e) => setEditedData({ ...editedData, buttons: { ...editedData.buttons, b: e.target.checked } })}
+              onChange={(e) =>
+                setEditedData({ ...editedData, buttons: { ...editedData.buttons, b: e.target.checked } })
+              }
             />
             B
           </label>
@@ -282,7 +286,9 @@ export const GameControllerInspectorRenderer = ({ externalData, onUpdateExternal
             <input
               type="checkbox"
               checked={editedData.buttons.x}
-              onChange={(e) => setEditedData({ ...editedData, buttons: { ...editedData.buttons, x: e.target.checked } })}
+              onChange={(e) =>
+                setEditedData({ ...editedData, buttons: { ...editedData.buttons, x: e.target.checked } })
+              }
             />
             X
           </label>
@@ -290,7 +296,9 @@ export const GameControllerInspectorRenderer = ({ externalData, onUpdateExternal
             <input
               type="checkbox"
               checked={editedData.buttons.y}
-              onChange={(e) => setEditedData({ ...editedData, buttons: { ...editedData.buttons, y: e.target.checked } })}
+              onChange={(e) =>
+                setEditedData({ ...editedData, buttons: { ...editedData.buttons, y: e.target.checked } })
+              }
             />
             Y
           </label>

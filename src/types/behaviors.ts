@@ -23,35 +23,11 @@ export type NodeBehavior = NodeBehaviorType | ObjectBehaviorOptions;
 
 // Helper to get the behavior type from a behavior entry
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/**
+ * Extracts the behavior type from a behavior entry
+ * @param behavior - Behavior entry (string or object)
+ * @returns The behavior type string
+ */
 export function getBehaviorType(behavior: NodeBehavior): NodeBehaviorType {
   return typeof behavior === "string" ? behavior : behavior.type;
 }
@@ -98,7 +74,7 @@ export function hasAppearanceBehavior(def?: NodeDefinition | null): boolean {
 
 function pickBehavior<T extends NodeBehaviorType>(
   behaviors: NodeBehavior[] | undefined,
-  type: T
+  type: T,
 ): Extract<NodeBehavior, { type: T }> | null {
   if (!behaviors) {
     return null;

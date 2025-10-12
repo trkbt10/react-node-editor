@@ -44,7 +44,7 @@ export const NodeEditorContent: React.FC<{
   /** Grid layer definitions */
   gridLayers?: LayerDefinition[];
 }> = ({ className, settingsManager, portPositionBehavior, gridConfig, gridLayers }) => {
-  const { state: editorState, dispatch, actions, isLoading, isSaving, getNodePorts } = useNodeEditor();
+  const { state: editorState, dispatch, actions, getNodePorts } = useNodeEditor();
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
 

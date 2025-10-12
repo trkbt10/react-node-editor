@@ -20,12 +20,20 @@
 }
 
 /* Alignment */
-.label[data-align="center"] { text-align: center; }
-.label[data-align="right"] { text-align: right; }
+.label[data-align="center"] {
+  text-align: center;
+}
+.label[data-align="right"] {
+  text-align: right;
+}
 
 /* Wrapping and ellipsis */
-.label[data-text-wrap="nowrap"] { white-space: nowrap; }
-.label[data-text-wrap="balance"] { text-wrap: balance; }
+.label[data-text-wrap="nowrap"] {
+  white-space: nowrap;
+}
+.label[data-text-wrap="balance"] {
+  text-wrap: balance;
+}
 
 .label[data-ellipsis="true"] {
   overflow: hidden;

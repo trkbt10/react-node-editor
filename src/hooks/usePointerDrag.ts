@@ -8,32 +8,25 @@ export type PointerDragOptions<T = unknown> = {
   scale?: number;
   threshold?: number;
   disabled?: boolean;
-}
+};
 
 export type PointerDragState = {
   isDragging: boolean;
   dragStarted: boolean;
   delta: Position;
-}
+};
 
 /**
  * Generic hook for handling pointer drag operations
  * Consolidates drag logic used across nodes, connections, and resize operations
  */
 export function usePointerDrag<T = unknown>(
-  options: PointerDragOptions<T>
+  options: PointerDragOptions<T>,
 ): {
   startDrag: (event: React.PointerEvent | PointerEvent, data: T) => void;
   dragState: PointerDragState;
 } {
-  const {
-    onStart,
-    onMove,
-    onEnd,
-    scale = 1,
-    threshold = 2,
-    disabled = false,
-  } = options;
+  const { onStart, onMove, onEnd, scale = 1, threshold = 2, disabled = false } = options;
 
   const [dragState, setDragState] = React.useState<PointerDragState>({
     isDragging: false,
@@ -47,7 +40,9 @@ export function usePointerDrag<T = unknown>(
 
   const handlePointerMove = React.useCallback(
     (event: PointerEvent) => {
-      if (!dragDataRef.current) {return;}
+      if (!dragDataRef.current) {
+        return;
+      }
 
       const delta = {
         x: (event.clientX - startPositionRef.current.x) / scale,
@@ -68,16 +63,18 @@ export function usePointerDrag<T = unknown>(
           onStart?.(event, dragDataRef.current);
         }
       } else {
-        setDragState(prev => ({ ...prev, delta }));
+        setDragState((prev) => ({ ...prev, delta }));
         onMove?.(event, delta, dragDataRef.current);
       }
     },
-    [scale, threshold, dragState.dragStarted, onStart, onMove]
+    [scale, threshold, dragState.dragStarted, onStart, onMove],
   );
 
   const handlePointerUp = React.useCallback(
     (event: PointerEvent) => {
-      if (!dragDataRef.current) {return;}
+      if (!dragDataRef.current) {
+        return;
+      }
 
       const wasDragging = dragState.dragStarted;
       const finalDelta = currentDeltaRef.current;
@@ -102,12 +99,14 @@ export function usePointerDrag<T = unknown>(
       dragDataRef.current = null;
       currentDeltaRef.current = { x: 0, y: 0 };
     },
-    [dragState.dragStarted, handlePointerMove, onEnd]
+    [dragState.dragStarted, handlePointerMove, onEnd],
   );
 
   const startDrag = React.useCallback(
     (event: React.PointerEvent | PointerEvent, data: T) => {
-      if (disabled) {return;}
+      if (disabled) {
+        return;
+      }
 
       // Convert React event to native event if needed
       const nativeEvent = "nativeEvent" in event ? event.nativeEvent : event;
@@ -135,7 +134,7 @@ export function usePointerDrag<T = unknown>(
         delta: { x: 0, y: 0 },
       });
     },
-    [disabled, handlePointerMove, handlePointerUp]
+    [disabled, handlePointerMove, handlePointerUp],
   );
 
   // Clean up on unmount

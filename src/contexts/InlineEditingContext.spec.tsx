@@ -1,3 +1,6 @@
+/**
+ * @file Tests for InlineEditingContext - validates inline editing state management
+ */
 import { render } from "@testing-library/react";
 import { useEffect, type FC } from "react";
 import { InlineEditingProvider, useInlineEditing } from "./InlineEditingContext";
@@ -26,7 +29,7 @@ describe("InlineEditingContext", () => {
     const { getByTestId } = render(
       <InlineEditingProvider>
         <Harness />
-      </InlineEditingProvider>
+      </InlineEditingProvider>,
     );
     expect(getByTestId("active").textContent).toBe("false");
     expect(getByTestId("isEditing").textContent).toBe("false");
