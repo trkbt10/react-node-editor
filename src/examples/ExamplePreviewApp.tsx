@@ -23,6 +23,7 @@ type ExampleEntry = {
   title: string;
   description: string;
   component: React.ComponentType;
+  category: "basic" | "advanced" | "layout";
 };
 
 const examples: ExampleEntry[] = [
@@ -31,66 +32,77 @@ const examples: ExampleEntry[] = [
     title: "Three.js Integration",
     description: "Drive a Three.js scene by connecting node outputs to a live preview.",
     component: ThreeJsExample,
+    category: "advanced",
   },
   {
     id: "custom-node",
     title: "Custom Nodes with External Data",
     description: "Shows how to connect custom renderers to external data sources.",
     component: CustomNodeExample,
+    category: "basic",
   },
   {
     id: "typed-nodes",
     title: "Typed Node Definitions",
     description: "Demonstrates strongly-typed node definitions with custom renderers.",
     component: TypedNodesExample,
+    category: "basic",
   },
   {
     id: "constrained-nodes",
     title: "Constrained Node Definitions",
     description: "Highlights constraint helpers for placement and connection rules.",
     component: ConstrainedNodeExample,
+    category: "basic",
   },
   {
     id: "advanced-node",
     title: "Advanced Node Examples",
     description: "Complex nodes with Code Editor, Chart Visualization, and Form Builder.",
     component: AdvancedNodeExample,
+    category: "advanced",
   },
   {
     id: "custom-port-renderer",
     title: "Custom Port Renderer",
     description: "Customize port and connection appearance with custom renderers.",
     component: CustomPortRendererExample,
+    category: "basic",
   },
   {
     id: "layout-default",
     title: "Layout: Default",
     description: "Default layout with canvas and inspector.",
     component: DefaultLayoutExample,
+    category: "layout",
   },
   {
     id: "layout-custom-inspector",
     title: "Layout: Custom Inspector Width",
     description: "Layout with wider, resizable inspector panel.",
     component: CustomInspectorWidthExample,
+    category: "layout",
   },
   {
     id: "layout-canvas-only",
     title: "Layout: Canvas Only",
     description: "Layout with canvas only (no inspector).",
     component: CanvasOnlyExample,
+    category: "layout",
   },
   {
     id: "layout-with-toolbar",
     title: "Layout: With Toolbar",
     description: "Layout with custom toolbar and inspector.",
     component: WithToolbarExample,
+    category: "layout",
   },
   {
     id: "layout-advanced",
     title: "Layout: Advanced (Kitchen Sink)",
     description: "Advanced layout with floating sidebar, minimap, grid toolbox, status bar, and more.",
     component: AdvancedLayoutExample,
+    category: "layout",
   },
 ];
 
@@ -158,11 +170,31 @@ export function ExamplePreviewApp(): React.ReactElement {
 
   const ExampleComponent = selectedExample.component;
 
+  const groupedExamples = React.useMemo(() => {
+    const groups: Record<string, ExampleEntry[]> = {
+      basic: [],
+      advanced: [],
+      layout: [],
+    };
+
+    for (const example of examples) {
+      groups[example.category].push(example);
+    }
+
+    return groups;
+  }, []);
+
+  const categoryLabels: Record<string, string> = {
+    basic: "Basic Examples",
+    advanced: "Advanced Examples",
+    layout: "Layout Examples",
+  };
+
   return (
     <div className={classes.container}>
       <header className={classes.header}>
         <div className={classes.headerContent}>
-          <h1 className={classes.title}>Node Editor Examples</h1>
+          <h1 className={classes.title}>Node Editor Examples - {selectedExample.title}</h1>
           <span className={classes.description}>{selectedExample.description}</span>
         </div>
         <select
@@ -171,14 +203,18 @@ export function ExamplePreviewApp(): React.ReactElement {
           onChange={(event) => handleExampleChange(event.target.value)}
           className={classes.select}
         >
-          {examples.map((example) => (
-            <option key={example.id} value={example.id}>
-              {example.title}
-            </option>
+          {Object.entries(groupedExamples).map(([category, categoryExamples]) => (
+            <optgroup key={category} label={categoryLabels[category]}>
+              {categoryExamples.map((example) => (
+                <option key={example.id} value={example.id}>
+                  {example.title}
+                </option>
+              ))}
+            </optgroup>
           ))}
         </select>
       </header>
-      <main className={classes.main}>
+      <main className={classes.main} key={selectedExample.id}>
         <ExampleComponent />
       </main>
     </div>
