@@ -1,15 +1,21 @@
-import type { Port, Node, Connection, GridSettings } from "../types/core";
+import type { Node } from "../types/core";
 import type { NodeDefinition } from "../types/NodeDefinition";
-import type { ConnectablePortsResult } from "../contexts/node-ports";
+import type { ConnectablePortsResult } from "../contexts/node-ports/utils/connectablePortPlanner";
 import {
   getPortConnections as getPortConnectionsFromPorts,
-  createConnection as createConnectionFromPorts,
   isValidReconnection as isValidReconnectionFromPorts,
-  getConnectablePortIds as getConnectablePortIdsFromPorts,
-  createValidatedConnection as createValidatedConnectionFromPorts,
-  isPortConnectable as isPortConnectableFromPorts,
   getOtherPortInfo as getOtherPortInfoFromPorts,
-} from "../contexts/node-ports";
+} from "../contexts/node-ports/utils/portConnectionQueries";
+import {
+  createConnection as createConnectionFromPorts,
+  createValidatedConnection as createValidatedConnectionFromPorts,
+} from "../contexts/node-ports/utils/connectionOperations";
+import {
+  getConnectablePortIds as getConnectablePortIdsFromPorts,
+} from "../contexts/node-ports/utils/portConnectability";
+import {
+  isPortConnectable as isPortConnectableFromPorts,
+} from "../contexts/node-ports/utils/portConnectability";
 import { nodeHasGroupBehavior } from "../types/behaviors";
 
 // Re-export port-related functions from node-ports context

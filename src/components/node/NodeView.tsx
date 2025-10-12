@@ -6,7 +6,7 @@ import { useNodeDefinition } from "../../contexts/NodeDefinitionContext";
 import { useExternalDataRef } from "../../contexts/ExternalDataContext";
 import { useExternalData } from "../../hooks/useExternalData";
 import styles from "./NodeView.module.css";
-import type { ConnectablePortsResult } from "../../contexts/node-ports";
+import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
 import { ResizeHandle } from "./ResizeHandle";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeResize } from "../../hooks/useNodeResize";

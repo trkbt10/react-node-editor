@@ -10,7 +10,7 @@ import { useNodeEditor } from "./contexts/node-editor";
 import { useNodeCanvas } from "./contexts/NodeCanvasContext";
 import { useNodeDefinitionList } from "./contexts/NodeDefinitionContext";
 import { NodeEditorSettingsProvider } from "./contexts/NodeEditorSettingsContext";
-import { PortPositionProvider } from "./contexts/node-ports";
+import { PortPositionProvider } from "./contexts/node-ports/provider";
 import { useSettings } from "./hooks/useSettings";
 import styles from "./NodeEditorContent.module.css";
 import type { SettingsManager } from "./settings/SettingsManager";
@@ -23,8 +23,8 @@ import {
   type PortPositionConfig,
   type PortPositionNode,
 } from "./types/portPosition";
-import { computeAllPortPositions, computeNodePortPositions } from "./contexts/node-ports";
-import { canConnectPorts } from "./contexts/node-ports";
+import { computeAllPortPositions, computeNodePortPositions } from "./contexts/node-ports/utils/computePortPositions";
+import { canConnectPorts } from "./contexts/node-ports/utils/connectionValidation";
 import { canAddNodeType, countNodesByType, getDisabledNodeTypes } from "./utils/nodeTypeLimits";
 
 export const NodeEditorContent: React.FC<{

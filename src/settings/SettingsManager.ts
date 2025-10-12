@@ -423,7 +423,7 @@ export class SettingsManager extends SettingsEventEmitter implements ISettingsMa
     const errors: Record<string, string> = {};
     const warnings: Record<string, string> = {};
 
-    this.settings.forEach((setting, key) => {
+    this.settings.forEach((_setting, key) => {
       const value = this.values.get(key);
       const error = this.validateSetting(key, value!);
 
@@ -520,16 +520,26 @@ export class SettingsManager extends SettingsEventEmitter implements ISettingsMa
         case "url":
         case "password":
           propertySchema.type = "string";
-          if (setting.minLength) {propertySchema.minLength = setting.minLength;}
-          if (setting.maxLength) {propertySchema.maxLength = setting.maxLength;}
-          if (setting.pattern) {propertySchema.pattern = setting.pattern;}
+          if (setting.minLength) {
+            propertySchema.minLength = setting.minLength;
+          }
+          if (setting.maxLength) {
+            propertySchema.maxLength = setting.maxLength;
+          }
+          if (setting.pattern) {
+            propertySchema.pattern = setting.pattern;
+          }
           break;
 
         case "number":
         case "range":
           propertySchema.type = "number";
-          if (setting.min !== undefined) {propertySchema.minimum = setting.min;}
-          if (setting.max !== undefined) {propertySchema.maximum = setting.max;}
+          if (setting.min !== undefined) {
+            propertySchema.minimum = setting.min;
+          }
+          if (setting.max !== undefined) {
+            propertySchema.maximum = setting.max;
+          }
           break;
 
         case "boolean":
