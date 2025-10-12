@@ -1,3 +1,6 @@
+/**
+ * @file Loading indicator overlay layer for displaying loading and saving states
+ */
 import * as React from "react";
 import { useNodeEditor } from "../../contexts/node-editor";
 import styles from "./LoadingIndicatorLayer.module.css";
