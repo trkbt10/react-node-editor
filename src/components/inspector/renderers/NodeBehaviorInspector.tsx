@@ -3,7 +3,6 @@ import type { InspectorRenderProps } from "../../../types/NodeDefinition";
 import type { Node } from "../../../types/core";
 import { PropertySection } from "../parts/PropertySection";
 import { InspectorLabel } from "../parts/InspectorLabel";
-import { InspectorButton } from "../parts/InspectorButton";
 import { InspectorInput } from "../parts/InspectorInput";
 import { InspectorTextarea } from "../parts/InspectorTextarea";
 import { PositionInputsGrid } from "../parts/PositionInputsGrid";
@@ -26,7 +25,7 @@ type ExtendedInspectorRenderProps = {
 export function NodeBehaviorInspector({
   node,
   onUpdateNode,
-  onDeleteNode,
+  _onDeleteNode,
   selectedNodes = [],
   onAlignNodes,
 }: ExtendedInspectorRenderProps): React.ReactElement {

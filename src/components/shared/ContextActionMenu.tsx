@@ -109,12 +109,6 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
     [editorActions, onClose, selectedNodes, showAlignmentControls]
   );
 
-  const handleDeleteNode = () => {
-    if (target.type !== "node") {return;}
-    editorActions.deleteNode(target.id);
-    onClose();
-  };
-
   const handleDuplicateNode = () => {
     if (target.type !== "node") {return;}
     const node = editorState.nodes[target.id];
@@ -125,24 +119,6 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
       return;
     }
     editorActions.duplicateNodes([target.id]);
-    onClose();
-  };
-
-  const handleCopySelected = () => {
-    let selected = actionState.selectedNodeIds;
-    if (target.type === 'node' && !selected.includes(target.id)) {
-      selected = [target.id];
-    }
-    if (selected.length === 0) {return;}
-    const nodes = selected
-      .map((id) => editorState.nodes[id])
-      .filter(Boolean)
-      .map((n) => ({ id: n.id, type: n.type, position: n.position, size: n.size, data: n.data }));
-    const selSet = new Set(selected);
-    const connections = Object.values(editorState.connections).filter(
-      (c) => selSet.has(c.fromNodeId) && selSet.has(c.toNodeId)
-    ).map((c) => ({ fromNodeId: c.fromNodeId, fromPortId: c.fromPortId, toNodeId: c.toNodeId, toPortId: c.toPortId }));
-    setClipboard({ nodes, connections });
     onClose();
   };
 
@@ -206,7 +182,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
   };
 
   // Optional: Start a disconnect drag from context menu
-  const handleDisconnectFrom = (end: "from" | "to") => {
+  const _handleDisconnectFrom = (_end: "from" | "to") => {
     if (target.type !== "connection") {return;}
     // We only implement Delete here to keep logic simple and safe.
     // Future: implement startConnectionDisconnect with fixedPort using portLookupMap.

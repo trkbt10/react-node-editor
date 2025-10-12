@@ -124,7 +124,7 @@ const DragConnection = React.memo(() => {
 const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
   const { state: nodeEditorState, portLookupMap } = useNodeEditor();
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
-  const { state: canvasState, utils } = useNodeCanvas();
+  const { utils } = useNodeCanvas();
   const { connection: ConnectionComponent } = useRenderers();
   
   // Runtime type guard for CorePort

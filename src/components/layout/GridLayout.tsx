@@ -300,10 +300,6 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
     [config.rows, config.columns, trackSizes],
   );
 
-  // Build layer style (memoized by layer reference)
-  const buildLayerStyle = React.useCallback((layer: LayerDefinition): React.CSSProperties => {
-    return buildLayerStyleObject(layer);
-  }, []);
 
   // Find resizable tracks and their positions
   const resizableColumns = React.useMemo(() => {

@@ -37,7 +37,7 @@ export type NodeRendererProps = {
 const NodeRendererComponent: React.FC<NodeRendererProps> = ({
   node,
   isSelected,
-  isDragging,
+  _isDragging,
   dragOffset = { x: 0, y: 0 },
   nodeRenderer,
   onUpdateNode,

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { NodeId, Position, DragState } from "../../types/core";
+import { NodeId, Position } from "../../types/core";
 import { usePointerDrag } from "../../hooks/usePointerDrag";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
@@ -83,14 +83,14 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({
     ));
   }, [nodeId, actionState.selectedNodeIds, actionDispatch, actionActions]);
 
-  const handleDragMove = React.useCallback((event: PointerEvent, delta: Position) => {
+  const handleDragMove = React.useCallback((_event: PointerEvent, delta: Position) => {
     actionDispatch(actionActions.updateNodeDrag({
       x: delta.x / canvasState.viewport.scale,
       y: delta.y / canvasState.viewport.scale,
     }));
   }, [actionDispatch, actionActions, canvasState.viewport.scale]);
 
-  const handleDragEnd = React.useCallback((event: PointerEvent, delta: Position) => {
+  const handleDragEnd = React.useCallback((_event: PointerEvent, delta: Position) => {
     if (!actionState.dragState) {return;}
 
     const scaledDelta = {
@@ -100,7 +100,7 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({
 
     // Apply final positions
     const updates: Record<NodeId, Position> = {};
-    
+
     // Update dragged nodes
     actionState.dragState.nodeIds.forEach(id => {
       const initialPos = actionState.dragState!.initialPositions[id];
@@ -113,7 +113,7 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({
     });
 
     // Update child nodes of dragged groups
-    Object.entries(actionState.dragState.affectedChildNodes).forEach(([groupId, childIds]) => {
+    Object.entries(actionState.dragState.affectedChildNodes).forEach(([_groupId, childIds]) => {
       childIds.forEach(childId => {
         const initialPos = actionState.dragState!.initialPositions[childId];
         if (initialPos) {

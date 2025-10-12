@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
-import { Label, SwitchInput } from "../../elements";
+import { SwitchInput } from "../../elements";
 import { useI18n } from "../../../i18n";
 import { InspectorField } from "../parts/InspectorField";
 import { InspectorInput } from "../parts/InspectorInput";

@@ -8,7 +8,6 @@ import { useGroupManagement } from "../../hooks/useGroupManagement";
 import { useNodeResize } from "../../hooks/useNodeResize";
 import { useVisibleNodes } from "../../hooks/useVisibleNodes";
 import { usePointerInteraction } from "../../hooks/usePointerInteraction";
-import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
 import { PORT_INTERACTION_THRESHOLD } from "../../constants/interaction";
 import styles from "./NodeLayer.module.css";
 import type { Port } from "../../types/core";
@@ -38,7 +37,7 @@ export type NodeLayerProps = {
 /**
  * NodeLayer - Renders all nodes with optimized performance
  */
-export const NodeLayer: React.FC<NodeLayerProps> = ({ className, doubleClickToEdit = true }) => {
+export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
   const { state: nodeEditorState, dispatch: nodeEditorDispatch, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
   const { state: canvasState, utils } = useNodeCanvas();
@@ -50,7 +49,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className, doubleClickToEd
   const nodeDefinitions = useNodeDefinitionList();
 
   // Initialize hooks
-  const nodeResize = useNodeResize({
+  useNodeResize({
     minWidth: 100,
     minHeight: 40,
     snapToGrid: canvasState.gridSettings.snapToGrid,
@@ -384,7 +383,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className, doubleClickToEd
   );
 
   const handlePortPointerEnter = React.useCallback(
-    (e: React.PointerEvent, port: Port) => {
+    (_e: React.PointerEvent, port: Port) => {
       const actionPort: Port = {
         id: port.id,
         nodeId: port.nodeId,

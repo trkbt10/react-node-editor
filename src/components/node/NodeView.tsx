@@ -61,13 +61,13 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   onPortPointerUp,
   onPortPointerEnter,
   onPortPointerLeave,
-  connectingPort,
+  _connectingPort,
   hoveredPort,
   connectedPorts,
   connectablePorts,
-  nodeRenderer,
-  externalData,
-  onUpdateNode,
+  _nodeRenderer,
+  _externalData,
+  _onUpdateNode,
 }) => {
   const { dispatch: nodeEditorDispatch, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
@@ -116,7 +116,7 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
     } else if (actionState.dragState) {
       // Check if this is a child being dragged
       const { affectedChildNodes, offset } = actionState.dragState;
-      const isChildOfDraggingGroup = Object.entries(affectedChildNodes).some(([groupId, childIds]) =>
+      const isChildOfDraggingGroup = Object.entries(affectedChildNodes).some(([_groupId, childIds]) =>
         childIds.includes(node.id),
       );
 
@@ -246,7 +246,7 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
       return false;
     }
     const { affectedChildNodes } = actionState.dragState;
-    return Object.entries(affectedChildNodes).some(([groupId, childIds]) => childIds.includes(node.id));
+    return Object.entries(affectedChildNodes).some(([_groupId, childIds]) => childIds.includes(node.id));
   }, [actionState.dragState, node.id]);
 
   // Get ports for this node
