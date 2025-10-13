@@ -19,49 +19,8 @@
   opacity: var(--node-editor-connection-dragging-opacity);
 }
 
-.connectionFlowStripe {
-  animation: connectionFlow var(--node-editor-connection-flow-animation-duration) linear infinite;
-  pointer-events: none;
-  stroke-dasharray: var(--node-editor-connection-stripe-dash-array);
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.connectionFlowStripe[data-stripe-variant="accent"] {
-  stroke: var(--node-editor-accent-color, #0066cc);
-  stroke-opacity: var(--node-editor-connection-stripe-opacity-accent);
-}
-
-.connectionFlowStripe[data-stripe-variant="background"] {
-  stroke: var(--node-editor-control-background, #ffffff);
-  stroke-dashoffset: var(--node-editor-connection-stripe-dash-offset-bg);
-  stroke-opacity: var(--node-editor-connection-stripe-opacity-background);
-}
-
 .connectionBase {
   transition: var(--node-editor-connection-base-transition);
-  pointer-events: stroke;
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-
-.connectionArrowHead {
-  transition: var(--node-editor-connection-arrow-transition);
-}
-
-.connectionDirection {
-  pointer-events: none;
-}
-
-.connectionDirection path {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
 }
 
 .connectionArrowOverlay {
@@ -69,16 +28,6 @@
   fill: none;
   stroke: transparent;
   vector-effect: non-scaling-stroke;
-}
-
-@keyframes connectionFlow {
-  from {
-    stroke-dashoffset: 0;
-  }
-
-  to {
-    stroke-dashoffset: var(--node-editor-connection-flow-animation-distance);
-  }
 }
 
 /* Specific path classes */

@@ -12,7 +12,37 @@ import {
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
 import { useNodeDefinition } from "../../contexts/node-definitions";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
+import {
+  CONNECTION_APPEARANCES,
+  determineConnectionInteractionPhase,
+  type ConnectionAdjacency,
+  type ConnectionInteractionPhase,
+  type ConnectionVisualAppearance,
+} from "./connectionAppearance";
+import { createMarkerGeometry, placeMarkerGeometry } from "./markerShapes";
 import styles from "./ConnectionView.module.css";
+
+type XYPosition = { x: number; y: number };
+const DIRECTION_MARKER_RADIUS = 2;
+
+const computeConnectionPoint = (
+  basePosition: XYPosition | undefined,
+  nodePosition: XYPosition,
+  overridePosition?: XYPosition,
+): XYPosition => {
+  if (!basePosition) {
+    return { x: nodePosition.x, y: nodePosition.y };
+  }
+
+  if (!overridePosition) {
+    return basePosition;
+  }
+
+  return {
+    x: basePosition.x + (overridePosition.x - nodePosition.x),
+    y: basePosition.y + (overridePosition.y - nodePosition.y),
+  };
+};
 
 export type ConnectionViewProps = {
   connection: Connection;
@@ -63,43 +93,32 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
   const baseToPosition = useDynamicConnectionPoint(toNode.id, toPort.id);
 
   // Calculate port positions (use override positions for drag preview)
-  const fromPosition = React.useMemo(() => {
-    if (!baseFromPosition) {
-      // Fallback if position not found
-      return { x: fromNode.position.x, y: fromNode.position.y };
-    }
+  const fromPosition = React.useMemo(
+    () => computeConnectionPoint(baseFromPosition, fromNode.position, fromNodePosition),
+    [baseFromPosition, fromNode.position.x, fromNode.position.y, fromNodePosition?.x, fromNodePosition?.y],
+  );
 
-    // Apply drag offset if dragging
-    if (fromNodePosition) {
-      const deltaX = fromNodePosition.x - fromNode.position.x;
-      const deltaY = fromNodePosition.y - fromNode.position.y;
-      return {
-        x: baseFromPosition.x + deltaX,
-        y: baseFromPosition.y + deltaY,
-      };
-    }
+  const toPosition = React.useMemo(
+    () => computeConnectionPoint(baseToPosition, toNode.position, toNodePosition),
+    [baseToPosition, toNode.position.x, toNode.position.y, toNodePosition?.x, toNodePosition?.y],
+  );
 
-    return baseFromPosition;
-  }, [baseFromPosition, fromNode.position.x, fromNode.position.y, fromNodePosition?.x, fromNodePosition?.y]);
+  const adjacency: ConnectionAdjacency = isAdjacentToSelectedNode ? "adjacent" : "self";
+  const interactionPhase = React.useMemo<ConnectionInteractionPhase>(
+    () =>
+      determineConnectionInteractionPhase({
+        isDragging,
+        dragProgress,
+        isSelected,
+        isHovered,
+      }),
+    [isDragging, dragProgress, isSelected, isHovered],
+  );
 
-  const toPosition = React.useMemo(() => {
-    if (!baseToPosition) {
-      // Fallback if position not found
-      return { x: toNode.position.x, y: toNode.position.y };
-    }
-
-    // Apply drag offset if dragging
-    if (toNodePosition) {
-      const deltaX = toNodePosition.x - toNode.position.x;
-      const deltaY = toNodePosition.y - toNode.position.y;
-      return {
-        x: baseToPosition.x + deltaX,
-        y: baseToPosition.y + deltaY,
-      };
-    }
-
-    return baseToPosition;
-  }, [baseToPosition, toNode.position.x, toNode.position.y, toNodePosition?.x, toNodePosition?.y]);
+  const visualAppearance = React.useMemo<ConnectionVisualAppearance>(
+    () => CONNECTION_APPEARANCES[interactionPhase][adjacency],
+    [interactionPhase, adjacency],
+  );
 
   // Calculate bezier path (recalculate when positions change)
   const pathData = React.useMemo(
@@ -115,37 +134,45 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
     const angle = (Math.atan2(tan.y, tan.x) * 180) / Math.PI;
     return { x: pt.x, y: pt.y, angle };
   }, [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPort.position, toPort.position]);
-  // Visual state control
-  // - Stripes appear when the connection itself is selected OR it is adjacent to a selected node.
-  // - Color highlight responds to direct selection or hover of the connection itself.
-  const stripesActive = isSelected || isAdjacentToSelectedNode;
-  const colorActive = isSelected || isHovered;
+  const arrowGeometry = React.useMemo(
+    () =>
+      createMarkerGeometry(visualAppearance.arrowHead.shape, {
+        depth: visualAppearance.arrowHead.dimensions.depth,
+        halfBase: visualAppearance.arrowHead.dimensions.halfBase,
+      }),
+    [
+      visualAppearance.arrowHead.shape,
+      visualAppearance.arrowHead.dimensions.depth,
+      visualAppearance.arrowHead.dimensions.halfBase,
+    ],
+  );
 
-  const strokeColor = React.useMemo(() => {
-    if (isDragging && dragProgress > 0) {
-      // Interpolate to warning color during drag
-      const normalColor = "var(--node-editor-connection-color, #999)";
-      const warningColor = "var(--node-editor-caution-color, #ff3b30)";
-      return dragProgress > 0.5 ? warningColor : normalColor;
-    }
-    if (colorActive) {
-      return "var(--node-editor-accent-color, #0066cc)";
-    }
-    return "var(--node-editor-connection-color, #999)";
-  }, [isDragging, dragProgress, colorActive]);
+  const arrowMarker = React.useMemo(
+    () => placeMarkerGeometry(arrowGeometry, { offset: visualAppearance.arrowHead.offset }),
+    [arrowGeometry, visualAppearance.arrowHead.offset],
+  );
 
-  const handlePointerDown = (e: React.PointerEvent) => {
-    e.stopPropagation();
-    onPointerDown?.(e, connection.id);
-  };
+  const handlePointerDown = React.useCallback(
+    (e: React.PointerEvent) => {
+      e.stopPropagation();
+      onPointerDown?.(e, connection.id);
+    },
+    [connection.id, onPointerDown],
+  );
 
-  const handlePointerEnter = (e: React.PointerEvent) => {
-    onPointerEnter?.(e, connection.id);
-  };
+  const handlePointerEnter = React.useCallback(
+    (e: React.PointerEvent) => {
+      onPointerEnter?.(e, connection.id);
+    },
+    [connection.id, onPointerEnter],
+  );
 
-  const handlePointerLeave = (e: React.PointerEvent) => {
-    onPointerLeave?.(e, connection.id);
-  };
+  const handlePointerLeave = React.useCallback(
+    (e: React.PointerEvent) => {
+      onPointerLeave?.(e, connection.id);
+    },
+    [connection.id, onPointerLeave],
+  );
 
   // Get node definitions to check for custom connection renderer
   const fromNodeDefinition = useNodeDefinition(fromNode.type);
@@ -173,8 +200,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
         {/* Base connection line (hit test only on stroke). Draw first, stripes overlay. */}
         <path
           d={pathData}
-          stroke={strokeColor}
-          strokeWidth={isSelected || isHovered ? 3 : 2}
+          style={visualAppearance.path.style}
           className={styles.connectionBase}
           onPointerDown={handlePointerDown}
           onPointerEnter={handlePointerEnter}
@@ -186,48 +212,36 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
         />
 
         {/* Flow stripes when hovered or selected (render after base so they appear on top) */}
-        {stripesActive && (
-          <>
-            {/* Accent stripes */}
-            <path
-              d={pathData}
-              strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
-              className={styles.connectionFlowStripe}
-              data-stripe-variant="accent"
-              data-testid="connection-flow-stripe"
-            />
-            {/* Background stripes, phase-shifted */}
-            <path
-              d={pathData}
-              strokeWidth={isSelected || isHovered ? 2.5 : 1.5}
-              className={styles.connectionFlowStripe}
-              data-stripe-variant="background"
-              data-testid="connection-flow-stripe"
-            />
-          </>
-        )}
+        {visualAppearance.stripes.map((stripe) => (
+          <path
+            key={stripe.id}
+            d={pathData}
+            style={stripe.style}
+            data-testid="connection-flow-stripe"
+          />
+        ))}
 
-        {/* Direction chevron at mid-point, pointing to 'to' */}
-        <g
-          transform={`translate(${midAndAngle.x}, ${midAndAngle.y}) rotate(${midAndAngle.angle})`}
-          className={styles.connectionDirection}
-        >
-          <path d="M -6 -4 L 0 0 L -6 4" stroke={strokeColor} strokeWidth={2} />
+        {/* Direction marker at mid-point */}
+        <g transform={`translate(${midAndAngle.x}, ${midAndAngle.y})`}>
+          <circle r={DIRECTION_MARKER_RADIUS} style={visualAppearance.direction.style} />
         </g>
 
         {/* Arrow marker at the end */}
         <defs>
           <marker
             id={`arrow-${connection.id}`}
-            viewBox="0 0 10 10"
-            refX="10"
-            refY="5"
-            markerWidth="10"
-            markerHeight="10"
-            markerUnits="userSpaceOnUse"
-            orient="auto"
+            viewBox={arrowMarker.viewBox}
+            refX={arrowMarker.refX}
+            refY={arrowMarker.refY}
+            markerWidth={arrowMarker.markerWidth}
+            markerHeight={arrowMarker.markerHeight}
+            markerUnits={arrowMarker.markerUnits}
+            orient={arrowMarker.orient}
           >
-            <path d="M 0 0 L 10 5 L 0 10 z" fill={strokeColor} className={styles.connectionArrowHead} />
+            <path
+              d={arrowMarker.path}
+              style={visualAppearance.arrowHead.style}
+            />
           </marker>
         </defs>
 
@@ -239,9 +253,8 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
       connection.id,
       pathData,
       midAndAngle,
-      stripesActive,
-      colorActive,
-      strokeColor,
+      arrowMarker,
+      visualAppearance,
       isSelected,
       isHovered,
       isDragging,
@@ -342,4 +355,8 @@ export const ConnectionView = React.memo(ConnectionViewComponent, areEqual);
 
 ConnectionView.displayName = "ConnectionView";
 
-// Debug note: Verified ConnectionRenderContext shape in src/types/NodeDefinition.ts while updating data-attribute driven connection styling.
+/*
+debug-notes:
+- Reviewed src/components/connection/connectionAppearance.ts to align arrow head size fields (depth/halfBase).
+- Reviewed src/types/NodeDefinition.ts for ConnectionRenderContext details.
+*/
