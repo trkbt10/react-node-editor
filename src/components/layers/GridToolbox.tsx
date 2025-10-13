@@ -5,6 +5,7 @@ import * as React from "react";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeEditor } from "../../contexts/node-editor";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
+import { applyZoomDelta, clampZoomScale } from "../../utils/zoomUtils";
 import styles from "./GridToolbox.module.css";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -12,7 +13,7 @@ export type GridToolboxProps = {
   // No props needed - layout is handled by GridLayout
 };
 
-const ZOOM_PRESETS = [5, 10, 25, 50, 100, 200, 400, 800] as const;
+const ZOOM_PRESETS = [5, 10, 25, 50, 100, 200, 400, 800, 1000] as const;
 
 // Memoized zoom button component
 const ZoomButton = React.memo<{
@@ -76,24 +77,14 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
   const selectedNodeCount = React.useMemo(() => actionState.selectedNodeIds.length, [actionState.selectedNodeIds]);
 
   const handleZoomIn = React.useCallback(() => {
-    const newScale = Math.min(canvasState.viewport.scale * 1.25, 10);
-    canvasDispatch(
-      canvasActions.setViewport({
-        ...canvasState.viewport,
-        scale: newScale,
-      }),
-    );
-  }, [canvasState.viewport, canvasDispatch, canvasActions]);
+    const newScale = applyZoomDelta(canvasState.viewport.scale, 1);
+    canvasDispatch(canvasActions.zoomViewport(newScale));
+  }, [canvasState.viewport.scale, canvasDispatch, canvasActions]);
 
   const handleZoomOut = React.useCallback(() => {
-    const newScale = Math.max(canvasState.viewport.scale * 0.8, 0.1);
-    canvasDispatch(
-      canvasActions.setViewport({
-        ...canvasState.viewport,
-        scale: newScale,
-      }),
-    );
-  }, [canvasState.viewport, canvasDispatch, canvasActions]);
+    const newScale = applyZoomDelta(canvasState.viewport.scale, -1);
+    canvasDispatch(canvasActions.zoomViewport(newScale));
+  }, [canvasState.viewport.scale, canvasDispatch, canvasActions]);
 
   const handleZoomReset = React.useCallback(() => {
     canvasDispatch(
@@ -132,7 +123,7 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
 
     const scaleX = viewportWidth / contentWidth;
     const scaleY = viewportHeight / contentHeight;
-    const scale = Math.min(scaleX, scaleY, 1);
+    const scale = clampZoomScale(Math.min(scaleX, scaleY, 1));
 
     const centerX = (minX + maxX) / 2;
     const centerY = (minY + maxY) / 2;
@@ -183,7 +174,7 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
 
     const scaleX = viewportWidth / contentWidth;
     const scaleY = viewportHeight / contentHeight;
-    const scale = Math.min(scaleX, scaleY, 2);
+    const scale = clampZoomScale(Math.min(scaleX, scaleY, 2));
 
     const centerX = (minX + maxX) / 2;
     const centerY = (minY + maxY) / 2;
@@ -354,3 +345,9 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
 });
 
 GridToolbox.displayName = "GridToolbox";
+
+/**
+ * Debug notes:
+ * - Reviewed src/components/canvas/CanvasBase.tsx to mirror toolbar zoom controls with canvas handlers.
+ * - Reviewed src/contexts/NodeCanvasContext.tsx to confirm shared clamping semantics for toolbar adjustments.
+ */
