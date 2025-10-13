@@ -75,15 +75,15 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
   }, [visible, position.x, position.y]);
 
   React.useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: PointerEvent) => {
       if (visible && e.target instanceof Element) {
         if (menuRef.current && !menuRef.current.contains(e.target)) {
           onClose();
         }
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("pointerdown", handleClickOutside);
+    return () => document.removeEventListener("pointerdown", handleClickOutside);
   }, [visible, onClose]);
 
   if (!visible) {

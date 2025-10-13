@@ -134,10 +134,6 @@ export const SubEditorWindow: React.FC<SubEditorWindowProps> = ({ nodeId, title,
         </div>
         <div
           className={styles.editorShell}
-          onMouseDown={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-          }}
           onPointerDown={(e) => {
             e.stopPropagation();
             e.preventDefault();

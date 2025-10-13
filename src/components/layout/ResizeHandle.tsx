@@ -20,8 +20,8 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({ direction, onResize,
   const [isDragging, setIsDragging] = React.useState(false);
   const startPosRef = React.useRef<number>(0);
 
-  const handleMouseDown = React.useCallback(
-    (e: React.MouseEvent) => {
+  const handlePointerDown = React.useCallback(
+    (e: React.PointerEvent) => {
       e.preventDefault();
       setIsDragging(true);
       startPosRef.current = direction === "horizontal" ? e.clientY : e.clientX;
@@ -34,7 +34,7 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({ direction, onResize,
       return;
     }
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handlePointerMove = (e: PointerEvent) => {
       const currentPos = direction === "horizontal" ? e.clientY : e.clientX;
       const delta = currentPos - startPosRef.current;
 
@@ -44,16 +44,16 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({ direction, onResize,
       }
     };
 
-    const handleMouseUp = () => {
+    const handlePointerUp = () => {
       setIsDragging(false);
     };
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerup", handlePointerUp);
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerup", handlePointerUp);
     };
   }, [isDragging, direction, onResize]);
 
@@ -62,7 +62,7 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({ direction, onResize,
       className={`${styles.resizeHandle} ${
         direction === "horizontal" ? styles.horizontal : styles.vertical
       } ${isDragging ? styles.dragging : ""} ${className || ""}`}
-      onMouseDown={handleMouseDown}
+      onPointerDown={handlePointerDown}
     />
   );
 };

@@ -187,7 +187,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
 
   // Handle click outside to close
   React.useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    const handleClickOutside = (e: PointerEvent) => {
       if (visible && e.target instanceof Element) {
         const menuElement = document.querySelector("[data-node-search-menu]");
         if (menuElement && !menuElement.contains(e.target)) {
@@ -196,8 +196,8 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("pointerdown", handleClickOutside);
+    return () => document.removeEventListener("pointerdown", handleClickOutside);
   }, [visible, onClose]);
 
   if (!visible) {
@@ -269,7 +269,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
                           isDisabled && styles.disabledNode,
                         )}
                         onClick={() => !isDisabled && handleNodeSelect(node.type)}
-                        onMouseEnter={() => setSelectedIndex(globalIndex)}
+                        onPointerEnter={() => setSelectedIndex(globalIndex)}
                         aria-disabled={isDisabled}
                       >
                         <div className={styles.nodeIcon}>{getNodeIcon(node.type, nodeDefinitions)}</div>

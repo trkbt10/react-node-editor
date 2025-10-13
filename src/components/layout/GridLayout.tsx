@@ -328,7 +328,7 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
 
   // Handle layer drag start
   const handleLayerDragStart = React.useCallback(
-    (layerId: string, e: React.MouseEvent) => {
+    (layerId: string, e: React.PointerEvent) => {
       const isInputElement =
         e.target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(e.target.tagName);
       if (isInputElement) {
@@ -355,13 +355,13 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
     [layers, layerPositions],
   );
 
-  // Handle mouse move and mouse up during drag
+  // Handle pointer move and pointer up during drag
   React.useEffect(() => {
     if (!draggingLayerId || !dragStartRef.current) {
       return;
     }
 
-    const handleMouseMove = (e: MouseEvent) => {
+    const handlePointerMove = (e: PointerEvent) => {
       const dragStart = dragStartRef.current;
       if (!dragStart) {
         return;
@@ -379,17 +379,17 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
       layer?.onPositionChange?.(newPos);
     };
 
-    const handleMouseUp = () => {
+    const handlePointerUp = () => {
       setDraggingLayerId(null);
       dragStartRef.current = null;
     };
 
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerup", handlePointerUp);
 
     return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerup", handlePointerUp);
     };
   }, [draggingLayerId, layers]);
 
@@ -423,7 +423,7 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
           data-draggable={layer.draggable || undefined}
           className={`${styles.gridLayer} ${layer.className || ""}`}
           style={buildDraggableLayerStyle(layer)}
-          onMouseDown={layer.draggable ? (e) => handleLayerDragStart(layer.id, e) : undefined}
+          onPointerDown={layer.draggable ? (e) => handleLayerDragStart(layer.id, e) : undefined}
         >
           {layer.component}
         </div>
