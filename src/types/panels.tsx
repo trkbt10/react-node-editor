@@ -119,6 +119,27 @@ export type GridLayoutConfig = {
 export type LayerPositionMode = "grid" | "absolute" | "relative" | "fixed";
 
 /**
+ * Drawer behavior configuration
+ * Controls how a layer behaves as a mobile-friendly drawer
+ */
+export type DrawerBehavior = {
+  /** Drawer placement direction */
+  placement: "top" | "right" | "bottom" | "left";
+  /** Initial state (open/closed) */
+  defaultOpen?: boolean;
+  /** Whether drawer can be dismissed by clicking outside */
+  dismissible?: boolean;
+  /** Whether to show a backdrop/overlay */
+  showBackdrop?: boolean;
+  /** Backdrop opacity (0-1) */
+  backdropOpacity?: number;
+  /** Size when open (pixels or percentage) */
+  size?: string | number;
+  /** Callback when drawer state changes */
+  onStateChange?: (open: boolean) => void;
+};
+
+/**
  * Layer definition for grid-based layout system
  * Combines background layers, overlay layers, UI layers, and main canvas into unified system
  */
@@ -187,6 +208,8 @@ export type LayerDefinition = {
   draggable?: boolean;
   /** Callback when layer position changes (for draggable layers) */
   onPositionChange?: (position: { x: number; y: number }) => void;
+  /** Drawer behavior for mobile-friendly slide-in panels */
+  drawer?: DrawerBehavior;
 
   // Styling
   /** Custom CSS class name */

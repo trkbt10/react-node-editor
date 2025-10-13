@@ -42,3 +42,95 @@
   width: 100%;
   pointer-events: auto;
 }
+
+/* ============================================
+   Drawer Styles
+   ============================================ */
+
+.drawer {
+  position: fixed;
+  background: var(--node-editor-bg);
+  box-shadow: var(--node-editor-shadow-lg);
+  z-index: 1000;
+  transition:
+    transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  /* Prevent scroll during drag */
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+
+.drawer[data-placement="top"] {
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(-100%);
+}
+
+.drawer[data-placement="right"] {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateX(100%);
+}
+
+.drawer[data-placement="bottom"] {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(100%);
+}
+
+.drawer[data-placement="left"] {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  transform: translateX(-100%);
+}
+
+.drawer[data-open="true"] {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+
+.drawer[data-open="false"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.drawerBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
+}
+
+.drawerBackdrop[data-open="true"] {
+  opacity: 1;
+}
+
+.drawerBackdrop[data-open="false"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Prevent body scroll when drawer is open on mobile */
+body:has(.drawer[data-open="true"]) {
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* Touch-action for drag prevention */
+.gridLayout[data-dragging="true"],
+.gridLayout[data-dragging="true"] * {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
