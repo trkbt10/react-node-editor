@@ -26,6 +26,41 @@
       "import": "./public/themes/*.css",
       "require": "./public/themes/*.css",
       "default": "./public/themes/*.css"
+    },
+    "./i18n/en": {
+      "types": "./dist/i18n/en.d.ts",
+      "import": "./dist/i18n/en.js",
+      "require": "./dist/i18n/en.cjs"
+    },
+    "./i18n/ja": {
+      "types": "./dist/i18n/ja.d.ts",
+      "import": "./dist/i18n/ja.js",
+      "require": "./dist/i18n/ja.cjs"
+    },
+    "./i18n/zh": {
+      "types": "./dist/i18n/zh.d.ts",
+      "import": "./dist/i18n/zh.js",
+      "require": "./dist/i18n/zh.cjs"
+    },
+    "./i18n/ko": {
+      "types": "./dist/i18n/ko.d.ts",
+      "import": "./dist/i18n/ko.js",
+      "require": "./dist/i18n/ko.cjs"
+    },
+    "./i18n/es": {
+      "types": "./dist/i18n/es.d.ts",
+      "import": "./dist/i18n/es.js",
+      "require": "./dist/i18n/es.cjs"
+    },
+    "./i18n/fr": {
+      "types": "./dist/i18n/fr.d.ts",
+      "import": "./dist/i18n/fr.js",
+      "require": "./dist/i18n/fr.cjs"
+    },
+    "./i18n/de": {
+      "types": "./dist/i18n/de.d.ts",
+      "import": "./dist/i18n/de.js",
+      "require": "./dist/i18n/de.cjs"
     }
   },
   "scripts": {

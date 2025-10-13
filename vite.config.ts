@@ -47,17 +47,27 @@ export default defineConfig({
   build: {
     cssCodeSplit: false,
     lib: {
-      entry: "src/index.ts",
+      entry: {
+        index: "src/index.ts",
+        "i18n/en": "src/i18n/dictionaries/en.ts",
+        "i18n/ja": "src/i18n/dictionaries/ja.ts",
+        "i18n/zh": "src/i18n/dictionaries/zh.ts",
+        "i18n/ko": "src/i18n/dictionaries/ko.ts",
+        "i18n/es": "src/i18n/dictionaries/es.ts",
+        "i18n/fr": "src/i18n/dictionaries/fr.ts",
+        "i18n/de": "src/i18n/dictionaries/de.ts",
+      },
       name: "NodeEditor",
       formats: ["es", "cjs"],
-      fileName: (format) => {
+      fileName: (format, entryName) => {
+        const normalizedEntryName = entryName ?? "index";
         if (format === "es") {
-          return "index.js";
+          return `${normalizedEntryName}.js`;
         }
         if (format === "cjs") {
-          return "index.cjs";
+          return `${normalizedEntryName}.cjs`;
         }
-        return `index.${format}.js`;
+        return `${normalizedEntryName}.${format}.js`;
       },
     },
     outDir: "dist",
