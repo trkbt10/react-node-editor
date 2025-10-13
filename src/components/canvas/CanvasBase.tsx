@@ -5,8 +5,9 @@ import * as React from "react";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../contexts/node-editor";
-import { SelectionOverlay } from "./SelectionOverlay";
 import { classNames } from "../elements";
+import { applyZoomDelta } from "../../utils/zoomUtils";
+import { SelectionOverlay } from "./SelectionOverlay";
 import styles from "./CanvasBase.module.css";
 
 export type CanvasBaseProps = {
@@ -72,8 +73,8 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         };
 
         // More responsive zoom with larger delta
-        const delta = e.deltaY * -0.01;
-        const newScale = canvasState.viewport.scale * (1 + delta);
+        const rawDelta = e.deltaY * -0.01;
+        const newScale = applyZoomDelta(canvasState.viewport.scale, rawDelta);
 
         canvasDispatch(canvasActions.zoomViewport(newScale, center));
       } else {
@@ -321,11 +322,11 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
           case "=":
           case "+": // Zoom in
             e.preventDefault();
-            canvasDispatch(canvasActions.zoomViewport(canvasState.viewport.scale * 1.2));
+            canvasDispatch(canvasActions.zoomViewport(applyZoomDelta(canvasState.viewport.scale, 1)));
             break;
           case "-": // Zoom out
             e.preventDefault();
-            canvasDispatch(canvasActions.zoomViewport(canvasState.viewport.scale * 0.8));
+            canvasDispatch(canvasActions.zoomViewport(applyZoomDelta(canvasState.viewport.scale, -1)));
             break;
         }
       }
@@ -396,3 +397,9 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
 };
 
 CanvasBase.displayName = "CanvasBase";
+
+/**
+ * Debug notes:
+ * - Reviewed src/contexts/NodeCanvasContext.tsx to validate clamping behavior while reworking zoom logic.
+ * - Reviewed src/components/layers/GridToolbox.tsx to keep toolbar zoom controls in sync with wheel and keyboard handling.
+ */

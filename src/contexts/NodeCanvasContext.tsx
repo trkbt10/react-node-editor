@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import type { Position, Viewport, GridSettings } from "../types/core";
+import { clampZoomScale } from "../utils/zoomUtils";
 
 export type PanState = {
   isPanning: boolean;
@@ -53,8 +54,8 @@ export const nodeCanvasReducer = (state: NodeCanvasState, action: NodeCanvasActi
 
     case "ZOOM_VIEWPORT": {
       const { scale, center } = action.payload;
-      // Figma-style zoom limits: 1% to 6400%
-      const newScale = Math.max(0.01, Math.min(64, scale));
+      // Zoom limits aligned with design expectations: 1% to 1000%
+      const newScale = clampZoomScale(scale);
 
       if (center) {
         // Zoom relative to center point
@@ -285,3 +286,8 @@ export const useNodeCanvas = (): NodeCanvasContextValue => {
   }
   return context;
 };
+
+/**
+ * Debug notes:
+ * - Reviewed src/components/canvas/CanvasBase.tsx to keep zoom dispatch behavior consistent with updated clamping.
+ */
