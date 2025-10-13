@@ -2,12 +2,10 @@
  * @file Context provider for coordinating nested sub-editor windows
  */
 import * as React from "react";
-import type { NodeEditorData } from "../../../../types/core";
-
 export type SubEditorOpenRequest = {
   nodeId: string;
   title: string;
-  data: NodeEditorData;
+  externalRefId: string;
 };
 
 export type SubEditorHostContextValue = {

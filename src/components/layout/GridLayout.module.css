@@ -6,6 +6,7 @@
 }
 
 .gridLayer {
+  display: grid;
   /* Base layer styles - minimal defaults */
   /* Specific styles applied dynamically in GridLayout.tsx based on positionMode */
 }

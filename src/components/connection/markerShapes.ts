@@ -1,3 +1,6 @@
+/**
+ * @file Shared SVG marker shape definitions for connection rendering.
+ */
 export type MarkerShapeId = "triangle";
 
 export type MarkerShapeDimensions = {

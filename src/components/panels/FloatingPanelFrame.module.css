@@ -5,6 +5,8 @@
 .subEditorContainer {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
+  justify-content: stretch;
   background: var(--node-editor-control-background, rgba(255, 255, 255, 0.9));
   border: var(--node-editor-input-border, 1px solid rgba(0, 0, 0, 0.1));
   border-radius: var(--node-editor-radius-sm);

@@ -1,12 +1,10 @@
 /**
  * @file Shared types for the advanced nested editor example
  */
-import type { NodeEditorData } from "../../../../types/core";
-
 export type SubEditorNodeData = {
   title: string;
   description?: string;
-  nestedEditorData: NodeEditorData;
+  nestedEditorRefId: string;
   lastUpdated?: string;
 };
 
@@ -22,7 +20,7 @@ export function isSubEditorNodeData(value: unknown): value is SubEditorNodeData 
   }
 
   const record = value as Record<string, unknown>;
-  return record.nestedEditorData !== undefined;
+  return typeof record.nestedEditorRefId === "string" && record.nestedEditorRefId.length > 0;
 }
 
 /*

@@ -14,22 +14,50 @@ import {
 } from "../../../../components/panels/FloatingPanelFrame";
 import { NodeEditor } from "../../../../index";
 import { StandardNodeDefinition } from "../../../../node-definitions/standard";
-import { toUntypedDefinition } from "../../../../types/NodeDefinition";
+import { toUntypedDefinition, type ExternalDataReference } from "../../../../types/NodeDefinition";
 import type { NodeEditorData } from "../../../../types/core";
 import type { GridLayoutConfig, LayerDefinition } from "../../../../types/panels";
+import { useNodeEditor } from "../../../../contexts/node-editor";
+import { createDefaultSubEditorData } from "./initialData";
+import { ensureSubEditorData, getSubEditorData, setSubEditorData } from "./subEditorDataStore";
+import { isSubEditorNodeData } from "./types";
 import styles from "./SubEditorWindow.module.css";
 
 export type SubEditorWindowProps = {
   nodeId: string;
   title: string;
-  data: NodeEditorData;
+  externalRef: ExternalDataReference;
   onClose: (nodeId: string) => void;
-  onDataChange: (nodeId: string, data: NodeEditorData) => void;
 };
 
-export const SubEditorWindow: React.FC<SubEditorWindowProps> = ({ nodeId, title, data, onClose, onDataChange }) => {
-  const nodeCount = React.useMemo(() => Object.keys(data.nodes).length, [data.nodes]);
-  const connectionCount = React.useMemo(() => Object.keys(data.connections).length, [data.connections]);
+export const SubEditorWindow: React.FC<SubEditorWindowProps> = ({ nodeId, title, externalRef, onClose }) => {
+  const { state, dispatch, actions } = useNodeEditor();
+  const [editorData, setEditorData] = React.useState<NodeEditorData>(() => {
+    const namespace =
+      typeof externalRef.metadata?.namespace === "string" && externalRef.metadata.namespace.length > 0
+        ? externalRef.metadata.namespace
+        : nodeId;
+    return ensureSubEditorData(externalRef.id, () => createDefaultSubEditorData(namespace));
+  });
+  const editorDataRef = React.useRef(editorData);
+  editorDataRef.current = editorData;
+
+  const metadataNamespace =
+    typeof externalRef.metadata?.namespace === "string" && externalRef.metadata.namespace.length > 0
+      ? externalRef.metadata.namespace
+      : undefined;
+
+  React.useEffect(() => {
+    const namespace = metadataNamespace ?? nodeId;
+    const synced =
+      getSubEditorData(externalRef.id) ??
+      ensureSubEditorData(externalRef.id, () => createDefaultSubEditorData(namespace));
+    setEditorData(synced);
+    editorDataRef.current = synced;
+  }, [externalRef.id, metadataNamespace, nodeId]);
+
+  const nodeCount = React.useMemo(() => Object.keys(editorData.nodes).length, [editorData.nodes]);
+  const connectionCount = React.useMemo(() => Object.keys(editorData.connections).length, [editorData.connections]);
 
   const gridConfig = React.useMemo<GridLayoutConfig>(
     () => ({
@@ -61,9 +89,27 @@ export const SubEditorWindow: React.FC<SubEditorWindowProps> = ({ nodeId, title,
 
   const handleDataChange = React.useCallback(
     (nextData: NodeEditorData) => {
-      onDataChange(nodeId, nextData);
+      if (editorDataRef.current === nextData) {
+        return;
+      }
+
+      setEditorData(nextData);
+      editorDataRef.current = nextData;
+      setSubEditorData(externalRef.id, nextData);
+
+      const node = state.nodes[nodeId];
+      if (node && isSubEditorNodeData(node.data)) {
+        dispatch(
+          actions.updateNode(nodeId, {
+            data: {
+              ...node.data,
+              lastUpdated: new Date().toISOString(),
+            },
+          }),
+        );
+      }
     },
-    [nodeId, onDataChange],
+    [actions, dispatch, externalRef.id, nodeId, state.nodes],
   );
 
   return (
@@ -86,15 +132,25 @@ export const SubEditorWindow: React.FC<SubEditorWindowProps> = ({ nodeId, title,
           </span>
           <span>Nested editor is fully interactive.</span>
         </div>
-        <div className={styles.editorShell}>
+        <div
+          className={styles.editorShell}
+          onMouseDown={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+          onPointerDown={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
+        >
           <NodeEditor
             className={styles.editorMain}
-            data={data}
-            onDataChange={handleDataChange}
+            initialData={editorData}
             nodeDefinitions={nestedDefinitions}
             includeDefaultDefinitions={false}
             gridConfig={gridConfig}
             gridLayers={gridLayers}
+            onDataChange={handleDataChange}
           />
         </div>
       </FloatingPanelContent>
@@ -105,5 +161,5 @@ export const SubEditorWindow: React.FC<SubEditorWindowProps> = ({ nodeId, title,
 /*
 debug-notes:
 - Embeds a secondary NodeEditor with its own GridLayout so nested flows remain isolated.
-- Close control updates parent state via onClose callback to remove layer entry.
+- Syncs nested edits back to main node via shared external data store and updateNode dispatch.
 */

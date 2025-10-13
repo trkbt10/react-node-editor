@@ -140,7 +140,6 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
     }
     onDataChangeRef.current?.(stateRef.current);
   }, []);
-
   // Stable save handler using refs to avoid re-creating on state changes
   const handleSave = React.useCallback(async () => {
     const save = onSaveRef.current;

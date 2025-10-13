@@ -3,6 +3,7 @@
  */
 import type { NodeEditorData } from "../../../../types/core";
 import type { SubEditorNodeData } from "./types";
+import { createSubEditorRefId, ensureSubEditorData, setSubEditorData } from "./subEditorDataStore";
 
 const defaultNodeSize = { width: 180, height: 120 };
 
@@ -99,11 +100,19 @@ export function createDefaultSubEditorData(namespace: string): NodeEditorData {
  * @param description - Text describing the node purpose.
  * @returns SubEditorNodeData containing metadata and nested editor data.
  */
-export function createSubEditorNodeData(title: string, namespace: string, description: string): SubEditorNodeData {
+export function createSubEditorNodeData(
+  nodeId: string,
+  title: string,
+  namespace: string,
+  description: string,
+): SubEditorNodeData {
+  const refId = createSubEditorRefId(nodeId);
+  const initialData = ensureSubEditorData(refId, () => createDefaultSubEditorData(namespace));
+  setSubEditorData(refId, initialData);
   return {
     title,
     description,
-    nestedEditorData: createDefaultSubEditorData(namespace),
+    nestedEditorRefId: refId,
     lastUpdated: new Date().toISOString(),
   };
 }
@@ -116,14 +125,24 @@ export const advancedNestedInitialData: NodeEditorData = {
       type: "sub-editor",
       position: { x: 320, y: 40 },
       size: { width: 320, height: 220 },
-      data: createSubEditorNodeData("Analytics Pipeline", "analytics", "Aggregate metrics before training."),
+      data: createSubEditorNodeData(
+        "sub-analytics",
+        "Analytics Pipeline",
+        "analytics",
+        "Aggregate metrics before training.",
+      ),
     },
     "sub-automation": {
       id: "sub-automation",
       type: "sub-editor",
       position: { x: 680, y: 240 },
       size: { width: 320, height: 220 },
-      data: createSubEditorNodeData("Automation Flow", "automation", "Drive alert automation for critical signals."),
+      data: createSubEditorNodeData(
+        "sub-automation",
+        "Automation Flow",
+        "automation",
+        "Drive alert automation for critical signals.",
+      ),
     },
     "model-training": createStandardNode(
       "model-training",
