@@ -2,13 +2,13 @@
  * @file Internationalization provider and hooks for the node editor
  */
 import * as React from "react";
-import type { Locale, I18nKey, I18nContextValue, I18nMessages } from "./types";
-import { messages } from "./messages";
+import type { Locale, I18nContextValue, I18nMessages, I18nKey, I18nDictionaries } from "./types";
 
 const I18nContext = React.createContext<I18nContextValue | null>(null);
 
 type I18nProviderProps = {
   children: React.ReactNode;
+  dictionaries: I18nDictionaries;
   initialLocale?: Locale;
   fallbackLocale?: Locale;
   /**
@@ -18,48 +18,107 @@ type I18nProviderProps = {
   messagesOverride?: Partial<Record<Locale, Partial<I18nMessages>>>;
 };
 
+const DEFAULT_FALLBACK_LOCALE: Locale = "en";
+
+const mergeDictionaries = (
+  dictionaries: I18nDictionaries,
+  fallbackLocale: Locale,
+  messagesOverride?: Partial<Record<Locale, Partial<I18nMessages>>>,
+): Record<Locale, I18nMessages> => {
+  const merged: Record<Locale, I18nMessages> = {} as Record<Locale, I18nMessages>;
+
+  (Object.entries(dictionaries) as Array<[Locale, I18nMessages]>).forEach(([locale, dictionary]) => {
+    if (!dictionary) {
+      return;
+    }
+    merged[locale] = { ...dictionary };
+  });
+
+  const fallbackDictionary =
+    merged[fallbackLocale] ?? merged[DEFAULT_FALLBACK_LOCALE] ?? Object.values(merged)[0] ?? undefined;
+
+  if (messagesOverride && fallbackDictionary) {
+    (Object.entries(messagesOverride) as Array<[Locale, Partial<I18nMessages>]>).forEach(
+      ([locale, overrideMessages]) => {
+        if (!overrideMessages) {
+          return;
+        }
+        const source = merged[locale] ?? fallbackDictionary;
+        merged[locale] = {
+          ...source,
+          ...overrideMessages,
+        } as I18nMessages;
+      },
+    );
+  }
+
+  return merged;
+};
+
 export const I18nProvider: React.FC<I18nProviderProps> = ({
   children,
-  initialLocale = "en",
-  fallbackLocale = "en",
+  dictionaries,
+  initialLocale,
+  fallbackLocale = DEFAULT_FALLBACK_LOCALE,
   messagesOverride,
 }) => {
-  const [locale, setLocale] = React.useState<Locale>(initialLocale);
-  const mergedMessages = React.useMemo(() => {
-    // Merge base messages with overrides per locale
-    if (!messagesOverride) {
-      return messages;
+  const mergedDictionaries = React.useMemo(
+    () => mergeDictionaries(dictionaries, fallbackLocale, messagesOverride),
+    [dictionaries, fallbackLocale, messagesOverride],
+  );
+
+  const availableLocales = React.useMemo(() => {
+    return Object.keys(mergedDictionaries) as Locale[];
+  }, [mergedDictionaries]);
+
+  const resolvedFallbackLocale: Locale | undefined = React.useMemo(() => {
+    if (mergedDictionaries[fallbackLocale]) {
+      return fallbackLocale;
     }
-    const result: Record<Locale, I18nMessages> = { ...messages } as Record<Locale, I18nMessages>;
-    (Object.keys(messagesOverride) as Locale[]).forEach((loc) => {
-      result[loc] = {
-        ...(messages[loc] || messages[fallbackLocale]),
-        ...(messagesOverride?.[loc] as Partial<I18nMessages>),
-      } as I18nMessages;
-    });
-    return result;
-  }, [messagesOverride, fallbackLocale]);
+    if (mergedDictionaries[DEFAULT_FALLBACK_LOCALE]) {
+      return DEFAULT_FALLBACK_LOCALE;
+    }
+    return availableLocales[0];
+  }, [availableLocales, fallbackLocale, mergedDictionaries]);
+
+  if (!resolvedFallbackLocale) {
+    throw new Error("I18nProvider requires at least one dictionary. Provide at least an English dictionary.");
+  }
+
+  const [locale, setLocaleState] = React.useState<Locale>(() => {
+    if (initialLocale && mergedDictionaries[initialLocale]) {
+      return initialLocale;
+    }
+    return resolvedFallbackLocale;
+  });
 
   React.useEffect(() => {
-    setLocale(initialLocale);
-  }, [initialLocale]);
+    if (initialLocale && mergedDictionaries[initialLocale]) {
+      setLocaleState(initialLocale);
+      return;
+    }
+    if (!mergedDictionaries[locale]) {
+      setLocaleState(resolvedFallbackLocale);
+    }
+  }, [initialLocale, locale, mergedDictionaries, resolvedFallbackLocale]);
 
-  // Detect browser locale on mount
-  React.useEffect(() => {
-    if (typeof window !== "undefined" && !initialLocale) {
-      const browserLocale = navigator.language.split("-")[0] as Locale;
-      if (Object.keys(messages).includes(browserLocale)) {
-        setLocale(browserLocale);
+  const setLocale = React.useCallback(
+    (nextLocale: Locale) => {
+      if (mergedDictionaries[nextLocale]) {
+        setLocaleState(nextLocale);
+        return;
       }
-    }
-  }, [initialLocale]);
+      setLocaleState(resolvedFallbackLocale);
+    },
+    [mergedDictionaries, resolvedFallbackLocale],
+  );
 
-  const t = React.useCallback(
+  const translate = React.useCallback(
     (key: I18nKey, params?: Record<string, string | number>): string => {
-      const currentMessages = mergedMessages[locale] || mergedMessages[fallbackLocale];
-      let message = currentMessages[key] || mergedMessages[fallbackLocale][key] || key;
+      const activeDictionary = mergedDictionaries[locale] ?? mergedDictionaries[resolvedFallbackLocale];
+      const fallbackDictionary = mergedDictionaries[resolvedFallbackLocale];
+      let message = activeDictionary?.[key] ?? fallbackDictionary?.[key] ?? key;
 
-      // Simple parameter interpolation
       if (params) {
         Object.entries(params).forEach(([paramKey, value]) => {
           message = message.replace(new RegExp(`{{${paramKey}}}`, "g"), String(value));
@@ -68,21 +127,17 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({
 
       return message;
     },
-    [locale, fallbackLocale, mergedMessages],
+    [locale, mergedDictionaries, resolvedFallbackLocale],
   );
-
-  const availableLocales = React.useMemo(() => {
-    return Object.keys(mergedMessages) as Locale[];
-  }, [mergedMessages]);
 
   const contextValue: I18nContextValue = React.useMemo(
     () => ({
       locale,
       setLocale,
-      t,
+      t: translate,
       availableLocales,
     }),
-    [locale, t, availableLocales],
+    [availableLocales, locale, setLocale, translate],
   );
 
   return <I18nContext.Provider value={contextValue}>{children}</I18nContext.Provider>;
@@ -100,25 +155,28 @@ export const useI18n = (): I18nContextValue => {
 export const useTranslation = () => {
   const { t, locale, setLocale } = useI18n();
 
-  return {
-    t,
-    locale,
-    setLocale,
-    // Additional helper functions
-    formatNumber: (num: number): string => {
-      return new Intl.NumberFormat(locale).format(num);
-    },
-    formatDate: (date: Date): string => {
-      return new Intl.DateTimeFormat(locale).format(date);
-    },
-    formatDateTime: (date: Date): string => {
-      return new Intl.DateTimeFormat(locale, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      }).format(date);
-    },
-  };
+  return React.useMemo(
+    () => ({
+      t,
+      locale,
+      setLocale,
+      // Additional helper functions
+      formatNumber: (num: number): string => {
+        return new Intl.NumberFormat(locale).format(num);
+      },
+      formatDate: (date: Date): string => {
+        return new Intl.DateTimeFormat(locale).format(date);
+      },
+      formatDateTime: (date: Date): string => {
+        return new Intl.DateTimeFormat(locale, {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }).format(date);
+      },
+    }),
+    [t, locale, setLocale],
+  );
 };

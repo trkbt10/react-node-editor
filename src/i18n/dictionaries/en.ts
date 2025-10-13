@@ -1,5 +1,5 @@
 /**
- * @file English translation messages for the node editor
+ * @file English translation dictionary for the node editor
  */
 import type { I18nMessages } from "../types";
 

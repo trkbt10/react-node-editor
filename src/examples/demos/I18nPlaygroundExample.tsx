@@ -4,7 +4,7 @@
 import * as React from "react";
 
 import { NodeEditor } from "../../NodeEditor";
-import { messages, type I18nMessages, type Locale } from "../../i18n";
+import { enMessages, type I18nDictionaries, type I18nMessages, type Locale } from "../../i18n";
 import type { NodeEditorData } from "../../types/core";
 import { StandardNodeDefinition } from "../../node-definitions/standard";
 import { toUntypedDefinition } from "../../types/NodeDefinition";
@@ -77,7 +77,15 @@ const overrideKeys: readonly I18nOverrideKey[] = [
  * Renders the internationalization playground example with runtime configuration controls.
  */
 export function I18nPlaygroundExample(): React.ReactElement {
-  const availableLocales = React.useMemo(() => Object.keys(messages) as Locale[], []);
+  const supportedLocaleOptions: Array<{ value: Locale; label: string }> = React.useMemo(
+    () => [
+      { value: "en", label: "English" },
+      { value: "ja", label: "日本語" },
+    ],
+    [],
+  );
+
+  const [dictionaries, setDictionaries] = React.useState<I18nDictionaries>({ en: enMessages });
   const [locale, setLocale] = React.useState<Locale>("en");
   const [fallbackLocale, setFallbackLocale] = React.useState<Locale>("en");
   const [overrideLocale, setOverrideLocale] = React.useState<Locale>("ja");
@@ -85,15 +93,77 @@ export function I18nPlaygroundExample(): React.ReactElement {
     Partial<Record<Locale, Partial<I18nMessages>>>
   >({});
 
-  const resolvedMessages = React.useMemo(() => {
-    const fallbackMessages = messages[fallbackLocale] ?? messages.en;
-    const localeMessages = messages[locale] ?? fallbackMessages;
-    return {
-      ...fallbackMessages,
-      ...localeMessages,
-      ...(messageOverrides[locale] ?? {}),
+  React.useEffect(() => {
+    const localesToEnsure = Array.from(
+      new Set([locale, fallbackLocale, overrideLocale].filter(Boolean) as Locale[]),
+    );
+    let cancelled = false;
+
+    const ensureLocaleDictionary = async (targetLocale: Locale) => {
+      if (targetLocale === "en") {
+        return;
+      }
+      if (dictionaries[targetLocale]) {
+        return;
+      }
+      if (targetLocale === "ja") {
+        const module = await import("../../i18n/dictionaries/ja");
+        if (cancelled) {
+          return;
+        }
+        setDictionaries((prev) => {
+          if (prev[targetLocale]) {
+            return prev;
+          }
+          return {
+            ...prev,
+            ja: module.jaMessages,
+          };
+        });
+      }
     };
-  }, [fallbackLocale, locale, messageOverrides]);
+
+    localesToEnsure.forEach((targetLocale) => {
+      void ensureLocaleDictionary(targetLocale);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dictionaries, fallbackLocale, locale, overrideLocale]);
+
+  const resolveDictionary = React.useCallback(
+    (targetLocale: Locale): I18nMessages => {
+      const fallbackMessages =
+        (dictionaries[fallbackLocale] ?? dictionaries.en ?? enMessages) as I18nMessages;
+      const baseMessages = (dictionaries[targetLocale] ?? fallbackMessages) as I18nMessages;
+      const overrides = messageOverrides[targetLocale];
+      if (!overrides) {
+        return baseMessages;
+      }
+      return {
+        ...baseMessages,
+        ...overrides,
+      } as I18nMessages;
+    },
+    [dictionaries, fallbackLocale, messageOverrides],
+  );
+
+  const overridePreviewMessages = React.useMemo(
+    () => resolveDictionary(overrideLocale),
+    [overrideLocale, resolveDictionary],
+  );
+
+  const editorDictionaries = React.useMemo<I18nDictionaries>(() => {
+    const result: I18nDictionaries = {};
+    (Object.entries(dictionaries) as Array<[Locale, I18nMessages]>).forEach(([key, value]) => {
+      if (key === "en") {
+        return;
+      }
+      result[key] = value;
+    });
+    return result;
+  }, [dictionaries]);
 
   const handleOverrideChange = React.useCallback(
     (key: I18nOverrideKey, value: string) => {
@@ -149,9 +219,9 @@ export function I18nPlaygroundExample(): React.ReactElement {
               value={locale}
               onChange={(event) => setLocale(event.target.value as Locale)}
             >
-              {availableLocales.map((localeOption) => (
-                <option key={localeOption} value={localeOption}>
-                  {localeOption.toUpperCase()}
+              {supportedLocaleOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
                 </option>
               ))}
             </select>
@@ -167,9 +237,9 @@ export function I18nPlaygroundExample(): React.ReactElement {
               value={fallbackLocale}
               onChange={(event) => setFallbackLocale(event.target.value as Locale)}
             >
-              {availableLocales.map((localeOption) => (
-                <option key={localeOption} value={localeOption}>
-                  {localeOption.toUpperCase()}
+              {supportedLocaleOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
                 </option>
               ))}
             </select>
@@ -193,9 +263,9 @@ export function I18nPlaygroundExample(): React.ReactElement {
               value={overrideLocale}
               onChange={(event) => setOverrideLocale(event.target.value as Locale)}
             >
-              {availableLocales.map((localeOption) => (
-                <option key={localeOption} value={localeOption}>
-                  {localeOption.toUpperCase()}
+              {supportedLocaleOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
                 </option>
               ))}
             </select>
@@ -204,8 +274,8 @@ export function I18nPlaygroundExample(): React.ReactElement {
           {overrideKeys.map((overrideKey) => {
             const previewValue =
               overrideKey === "alignmentCountLabel"
-                ? (resolvedMessages.alignmentCountLabel ?? "").replace(/{{count}}/g, "3")
-                : resolvedMessages[overrideKey] ?? "";
+                ? (overridePreviewMessages.alignmentCountLabel ?? "").replace(/{{count}}/g, "3")
+                : overridePreviewMessages[overrideKey] ?? "";
             return (
               <div className={classes.field} key={overrideKey}>
                 <div className={classes.labelRow}>
@@ -235,6 +305,7 @@ export function I18nPlaygroundExample(): React.ReactElement {
             locale={locale}
             fallbackLocale={fallbackLocale}
             messagesOverride={messageOverrides}
+            localeDictionaries={editorDictionaries}
             nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
           />
         </div>

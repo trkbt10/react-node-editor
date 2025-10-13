@@ -2,7 +2,7 @@
  * @file Type definitions for internationalization system
  */
 
-export type Locale = "en" | "ja" | "zh" | "ko" | "es" | "fr" | "de";
+export type Locale = "en" | "ja" | "zh" | "ko" | "es" | "fr" | "de" | (string & Record<never, never>);
 
 export type I18nMessages = {
   // General UI
@@ -202,7 +202,7 @@ export type I18nKey = keyof I18nMessages;
 export type I18nConfig = {
   locale: Locale;
   fallbackLocale: Locale;
-  messages: Record<Locale, I18nMessages>;
+  dictionaries: Partial<Record<Locale, I18nMessages>>;
 };
 
 export type I18nContextValue = {
@@ -211,3 +211,5 @@ export type I18nContextValue = {
   t: (key: I18nKey, params?: Record<string, string | number>) => string;
   availableLocales: Locale[];
 };
+
+export type I18nDictionaries = Partial<Record<Locale, I18nMessages>>;

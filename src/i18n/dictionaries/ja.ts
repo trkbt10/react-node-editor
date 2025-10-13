@@ -1,5 +1,5 @@
 /**
- * @file Japanese translation messages for the node editor
+ * @file Japanese translation dictionary for the node editor
  */
 import type { I18nMessages } from "../types";
 
@@ -17,40 +17,40 @@ export const jaMessages: I18nMessages = {
   copy: "コピー",
   cut: "切り取り",
   paste: "貼り付け",
-  addConnection: "接続の追加…",
-  untitled: "名称未設定",
+  addConnection: "接続を追加…",
+  untitled: "無題",
 
   // Node Editor UI
-  addNode: "ノード追加",
-  deleteNode: "ノード削除",
-  duplicateNode: "ノード複製",
-  groupNodes: "ノードグループ化",
-  ungroupNodes: "グループ解除",
+  addNode: "ノードを追加",
+  deleteNode: "ノードを削除",
+  duplicateNode: "ノードを複製",
+  groupNodes: "ノードをグループ化",
+  ungroupNodes: "グループを解除",
   selectAll: "すべて選択",
-  clearSelection: "選択解除",
+  clearSelection: "選択を解除",
 
   // Toolbar
-  resetView: "ビューリセット",
+  resetView: "表示をリセット",
   zoomIn: "ズームイン",
   zoomOut: "ズームアウト",
   autoLayout: "自動レイアウト",
   gridSnap: "グリッドスナップ",
-  gridSnapOn: "グリッドスナップ: オン",
-  gridSnapOff: "グリッドスナップ: オフ",
+  gridSnapOn: "グリッドスナップ: ON",
+  gridSnapOff: "グリッドスナップ: OFF",
 
   // Context Menu
-  contextMenuAddNode: "ノード追加",
-  contextMenuDeleteNode: "ノード削除",
-  contextMenuDuplicateNode: "ノード複製",
-  contextMenuEditNode: "ノード編集",
+  contextMenuAddNode: "ノードを追加",
+  contextMenuDeleteNode: "ノードを削除",
+  contextMenuDuplicateNode: "ノードを複製",
+  contextMenuEditNode: "ノードを編集",
   contextMenuGroupSelected: "選択項目をグループ化",
-  contextMenuDeleteConnection: "接続削除",
-  contextMenuStyleInfo: "スタイル設定: 情報",
-  contextMenuStyleSuccess: "スタイル設定: 成功",
-  contextMenuStyleWarning: "スタイル設定: 警告",
-  contextMenuStyleError: "スタイル設定: エラー",
-  contextMenuExpandGroup: "グループ展開",
-  contextMenuCollapseGroup: "グループ折りたたみ",
+  contextMenuDeleteConnection: "接続を削除",
+  contextMenuStyleInfo: "スタイル: 情報",
+  contextMenuStyleSuccess: "スタイル: 成功",
+  contextMenuStyleWarning: "スタイル: 警告",
+  contextMenuStyleError: "スタイル: エラー",
+  contextMenuExpandGroup: "グループを展開",
+  contextMenuCollapseGroup: "グループを折りたたむ",
 
   // Status Bar
   statusSelection: "選択:",
@@ -62,7 +62,7 @@ export const jaMessages: I18nMessages = {
   statusNone: "なし",
 
   // Operation Modes
-  modeReady: "待機中",
+  modeReady: "準備完了",
   modeMoving: "移動中",
   modeConnecting: "接続中",
   modeDisconnecting: "切断中",
@@ -77,8 +77,8 @@ export const jaMessages: I18nMessages = {
 
   // Inspector Panel
   inspectorTitle: "インスペクター",
-  inspectorNodeProperties: "ノードプロパティ",
-  inspectorConnectionProperties: "接続プロパティ",
+  inspectorNodeProperties: "ノードのプロパティ",
+  inspectorConnectionProperties: "接続のプロパティ",
   inspectorPosition: "位置",
   inspectorSize: "サイズ",
   inspectorData: "データ",
@@ -86,33 +86,33 @@ export const jaMessages: I18nMessages = {
   inspectorLocked: "ロック",
   inspectorExpanded: "展開",
   inspectorGridSettings: "グリッド設定",
-  inspectorShowGrid: "グリッド表示",
+  inspectorShowGrid: "グリッドを表示",
   inspectorSnapToGrid: "グリッドにスナップ",
   inspectorGridSize: "グリッドサイズ",
   inspectorSnapThreshold: "スナップ閾値",
-  inspectorGeneralSettings: "全般設定",
+  inspectorGeneralSettings: "一般設定",
   inspectorAutoSave: "自動保存を有効にする",
-  inspectorAutoSaveInterval: "自動保存間隔（秒）",
-  inspectorEmptyStatePrompt: "プロパティを表示するにはノードまたは接続を選択してください",
+  inspectorAutoSaveInterval: "自動保存間隔 (秒)",
+  inspectorEmptyStatePrompt: "ノードまたは接続を選択するとプロパティが表示されます",
   inspectorMultipleSelection: "複数選択",
   inspectorTabLayers: "レイヤー",
-  inspectorLayersNodeCount: "ノード数: {{count}}",
+  inspectorLayersNodeCount: "{{count}} ノード",
   inspectorTabProperties: "プロパティ",
   inspectorTabHistory: "履歴",
   inspectorTabSettings: "設定",
-  inspectorActions: "操作",
+  inspectorActions: "アクション",
 
   // Auto Layout Panel
-  autoLayoutPanelDescription: "プリセットの自動レイアウトを使ってノードを整列します。",
+  autoLayoutPanelDescription: "組み込みプリセットを利用して、自動的にノードを配置します。",
   autoLayoutPanelNodeCount: "{{count}} ノード",
-  autoLayoutPanelNoNodes: "ノードはありません",
-  autoLayoutPanelPrimaryAction: "オートレイアウトを実行",
-  autoLayoutPanelPrimaryHint: "オートレイアウトは既定で階層レイアウトを使用します。",
+  autoLayoutPanelNoNodes: "ノードがありません",
+  autoLayoutPanelPrimaryAction: "自動レイアウトを適用",
+  autoLayoutPanelPrimaryHint: "デフォルトでは階層型レイアウトを使用します。",
   autoLayoutPanelRun: "適用",
   autoLayoutPanelGridTitle: "グリッドレイアウト",
-  autoLayoutPanelGridDescription: "ノードを均等なグリッド状に配置し、間隔を揃えます。",
+  autoLayoutPanelGridDescription: "ノードを均等なグリッドに配置して間隔を揃えます。",
   autoLayoutPanelForceTitle: "力学レイアウト",
-  autoLayoutPanelForceDescription: "物理シミュレーションで接続されたノードをまとまりとして配置します。",
+  autoLayoutPanelForceDescription: "物理シミュレーションで接続されたノードをクラスタリングします。",
 
   // History Panel
   historyUndo: "元に戻す",

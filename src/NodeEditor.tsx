@@ -14,7 +14,7 @@ import { NodeEditorProvider, type NodeEditorData } from "./contexts/node-editor"
 import { NodeCanvasProvider } from "./contexts/NodeCanvasContext";
 import { NodeDefinitionProvider } from "./contexts/node-definitions";
 import { RendererProvider } from "./contexts/RendererContext";
-import { I18nProvider, type I18nMessages, type Locale } from "./i18n";
+import { I18nProvider, enMessages, type I18nMessages, type I18nDictionaries, type Locale } from "./i18n";
 import { NodeEditorContent } from "./NodeEditorContent";
 import type { SettingsManager } from "./settings/SettingsManager";
 import type { ExternalDataReference, NodeDefinition } from "./types/NodeDefinition";
@@ -47,6 +47,8 @@ export type NodeEditorProps = {
   locale?: Locale;
   fallbackLocale?: Locale;
   messagesOverride?: Partial<Record<Locale, Partial<I18nMessages>>>;
+  /** Additional locale dictionaries to make available beyond the default English bundle */
+  localeDictionaries?: I18nDictionaries;
   /** Override: enable/disable auto-save regardless of settings */
   autoSaveEnabled?: boolean;
   /** Override: auto-save interval in seconds */
@@ -79,6 +81,7 @@ export function NodeEditor({
   locale,
   fallbackLocale,
   messagesOverride,
+  localeDictionaries,
   autoSaveEnabled,
   autoSaveInterval,
   historyMaxEntries = 40,
@@ -94,8 +97,20 @@ export function NodeEditor({
     [renderers],
   );
 
+  const dictionaries = React.useMemo<I18nDictionaries>(() => {
+    return {
+      en: enMessages,
+      ...(localeDictionaries ?? {}),
+    };
+  }, [localeDictionaries]);
+
   return (
-    <I18nProvider initialLocale={locale} fallbackLocale={fallbackLocale} messagesOverride={messagesOverride}>
+    <I18nProvider
+      dictionaries={dictionaries}
+      initialLocale={locale}
+      fallbackLocale={fallbackLocale}
+      messagesOverride={messagesOverride}
+    >
       <RendererProvider renderers={mergedRenderers}>
         <NodeDefinitionProvider nodeDefinitions={nodeDefinitions} includeDefaults={includeDefaultDefinitions}>
           <ExternalDataProvider refs={externalDataRefs}>
