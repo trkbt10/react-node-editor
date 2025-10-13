@@ -3,9 +3,16 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: var(--node-editor-window-background-color, #f5f5f5);
+  background: var(
+    --node-editor-background-surface,
+    var(--node-editor-window-background-color, #f5f5f5)
+  );
   cursor: default;
   user-select: none;
+  /* Prevent default touch behaviors for better control */
+  touch-action: none;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .canvasContainer.panning {

@@ -17,7 +17,10 @@ body,
 body {
   margin: 0;
   font-family: var(--node-editor-theme-default-font-family, system-ui, sans-serif);
-  background-color: var(--node-editor-window-background-color, #ffffff);
+  background: var(
+    --node-editor-background-surface,
+    var(--node-editor-window-background-color, #ffffff)
+  );
   color: var(--node-editor-text-color, #0f172a);
 }
 
@@ -82,6 +85,9 @@ body {
 .main {
   flex: 1;
   overflow: hidden;
-  background-color: var(--node-editor-window-background-color, #0b1120);
+  background: var(
+    --node-editor-background-surface,
+    var(--node-editor-window-background-color, #0b1120)
+  );
   position: relative;
 }

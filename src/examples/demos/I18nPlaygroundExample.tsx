@@ -73,30 +73,48 @@ const overrideKeys: readonly I18nOverrideKey[] = [
   "alignmentCountLabel",
 ] as const;
 
+const SUPPORTED_LOCALE_OPTIONS = [
+  { value: "en", label: "English" },
+  { value: "ja", label: "日本語" },
+  { value: "zh", label: "中文 (简体)" },
+  { value: "ko", label: "한국어" },
+  { value: "es", label: "Español" },
+  { value: "fr", label: "Français" },
+  { value: "de", label: "Deutsch" },
+] as const satisfies ReadonlyArray<{ value: Locale; label: string }>;
+
+const LOCALE_DICTIONARY_CODES = ["ja", "zh", "ko", "es", "fr", "de"] as const;
+type LocaleWithDictionary = (typeof LOCALE_DICTIONARY_CODES)[number];
+
+type LocaleDictionaryLoader = () => Promise<I18nMessages>;
+
+const LOCALE_DICTIONARY_LOADERS: Record<LocaleWithDictionary, LocaleDictionaryLoader> = {
+  ja: async () => (await import("../../i18n/dictionaries/ja")).jaMessages,
+  zh: async () => (await import("../../i18n/dictionaries/zh")).zhMessages,
+  ko: async () => (await import("../../i18n/dictionaries/ko")).koMessages,
+  es: async () => (await import("../../i18n/dictionaries/es")).esMessages,
+  fr: async () => (await import("../../i18n/dictionaries/fr")).frMessages,
+  de: async () => (await import("../../i18n/dictionaries/de")).deMessages,
+} as const;
+
+const hasDictionaryLoader = (locale: Locale): locale is LocaleWithDictionary => {
+  return (LOCALE_DICTIONARY_CODES as readonly string[]).includes(locale as LocaleWithDictionary);
+};
+
 /**
  * Renders the internationalization playground example with runtime configuration controls.
  */
 export function I18nPlaygroundExample(): React.ReactElement {
-  const supportedLocaleOptions: Array<{ value: Locale; label: string }> = React.useMemo(
-    () => [
-      { value: "en", label: "English" },
-      { value: "ja", label: "日本語" },
-    ],
-    [],
-  );
+  const supportedLocaleOptions = React.useMemo(() => SUPPORTED_LOCALE_OPTIONS.slice(), []);
 
   const [dictionaries, setDictionaries] = React.useState<I18nDictionaries>({ en: enMessages });
   const [locale, setLocale] = React.useState<Locale>("en");
   const [fallbackLocale, setFallbackLocale] = React.useState<Locale>("en");
   const [overrideLocale, setOverrideLocale] = React.useState<Locale>("ja");
-  const [messageOverrides, setMessageOverrides] = React.useState<
-    Partial<Record<Locale, Partial<I18nMessages>>>
-  >({});
+  const [messageOverrides, setMessageOverrides] = React.useState<Partial<Record<Locale, Partial<I18nMessages>>>>({});
 
   React.useEffect(() => {
-    const localesToEnsure = Array.from(
-      new Set([locale, fallbackLocale, overrideLocale].filter(Boolean) as Locale[]),
-    );
+    const localesToEnsure = Array.from(new Set([locale, fallbackLocale, overrideLocale].filter(Boolean) as Locale[]));
     let cancelled = false;
 
     const ensureLocaleDictionary = async (targetLocale: Locale) => {
@@ -106,21 +124,23 @@ export function I18nPlaygroundExample(): React.ReactElement {
       if (dictionaries[targetLocale]) {
         return;
       }
-      if (targetLocale === "ja") {
-        const module = await import("../../i18n/dictionaries/ja");
-        if (cancelled) {
-          return;
-        }
-        setDictionaries((prev) => {
-          if (prev[targetLocale]) {
-            return prev;
-          }
-          return {
-            ...prev,
-            ja: module.jaMessages,
-          };
-        });
+      if (!hasDictionaryLoader(targetLocale)) {
+        return;
       }
+      const loadDictionary = LOCALE_DICTIONARY_LOADERS[targetLocale];
+      const messages = await loadDictionary();
+      if (cancelled) {
+        return;
+      }
+      setDictionaries((prev) => {
+        if (prev[targetLocale]) {
+          return prev;
+        }
+        return {
+          ...prev,
+          [targetLocale]: messages,
+        };
+      });
     };
 
     localesToEnsure.forEach((targetLocale) => {
@@ -134,8 +154,7 @@ export function I18nPlaygroundExample(): React.ReactElement {
 
   const resolveDictionary = React.useCallback(
     (targetLocale: Locale): I18nMessages => {
-      const fallbackMessages =
-        (dictionaries[fallbackLocale] ?? dictionaries.en ?? enMessages) as I18nMessages;
+      const fallbackMessages = (dictionaries[fallbackLocale] ?? dictionaries.en ?? enMessages) as I18nMessages;
       const baseMessages = (dictionaries[targetLocale] ?? fallbackMessages) as I18nMessages;
       const overrides = messageOverrides[targetLocale];
       if (!overrides) {
@@ -202,8 +221,8 @@ export function I18nPlaygroundExample(): React.ReactElement {
         <div className={classes.controlsHeader}>
           <h2 className={classes.controlsTitle}>Internationalization Playground</h2>
           <p className={classes.controlsDescription}>
-            Adjust locale, fallback, and specific message overrides to validate translation behavior inside
-            the editor UI.
+            Adjust locale, fallback, and specific message overrides to validate translation behavior inside the editor
+            UI.
           </p>
         </div>
 
@@ -249,8 +268,8 @@ export function I18nPlaygroundExample(): React.ReactElement {
         <section className={classes.controlGroup}>
           <h3 className={classes.controlGroupTitle}>Message Overrides</h3>
           <p className={classes.hint}>
-            Choose a locale to override and customise specific labels. Leave a field empty to revert to the
-            default translation.
+            Choose a locale to override and customise specific labels. Leave a field empty to revert to the default
+            translation.
           </p>
 
           <div className={classes.field}>
@@ -275,7 +294,7 @@ export function I18nPlaygroundExample(): React.ReactElement {
             const previewValue =
               overrideKey === "alignmentCountLabel"
                 ? (overridePreviewMessages.alignmentCountLabel ?? "").replace(/{{count}}/g, "3")
-                : overridePreviewMessages[overrideKey] ?? "";
+                : (overridePreviewMessages[overrideKey] ?? "");
             return (
               <div className={classes.field} key={overrideKey}>
                 <div className={classes.labelRow}>
@@ -299,16 +318,14 @@ export function I18nPlaygroundExample(): React.ReactElement {
       </aside>
 
       <div className={classes.editorSurface}>
-        <div className={classes.editorContent}>
-          <NodeEditor
-            initialData={playgroundInitialData}
-            locale={locale}
-            fallbackLocale={fallbackLocale}
-            messagesOverride={messageOverrides}
-            localeDictionaries={editorDictionaries}
-            nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
-          />
-        </div>
+        <NodeEditor
+          initialData={playgroundInitialData}
+          locale={locale}
+          fallbackLocale={fallbackLocale}
+          messagesOverride={messageOverrides}
+          localeDictionaries={editorDictionaries}
+          nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
+        />
       </div>
     </div>
   );

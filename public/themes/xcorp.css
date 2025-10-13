@@ -117,6 +117,13 @@
   --node-editor-selected-control-color: rgba(231, 233, 234, 0.1);
   --node-editor-under-page-background-color: #000000;
   --node-editor-window-background-color: #000000;
+  --node-editor-background-surface: linear-gradient(
+    135deg,
+    rgba(2, 6, 23, 0.9) 0%,
+    rgba(17, 24, 39, 0.94) 45%,
+    rgba(12, 74, 110, 0.88) 75%,
+    rgba(29, 155, 240, 0.38) 100%
+  );
 
   /* Control surfaces */
   --node-editor-control-background: rgba(255, 255, 255, 0.08);

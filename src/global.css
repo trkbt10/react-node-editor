@@ -115,6 +115,7 @@
   --node-editor-selected-control-color: rgba(0, 122, 255, 0.16);
   --node-editor-under-page-background-color: rgba(15, 23, 42, 0.4);
   --node-editor-window-background-color: #f5f5f5;
+  --node-editor-background-surface: var(--node-editor-window-background-color);
 
   /* Control surfaces */
   --node-editor-control-background: #ffffff;
