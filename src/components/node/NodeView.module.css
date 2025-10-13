@@ -11,6 +11,7 @@
   display: flex;
   flex-direction: column;
   overflow: visible;
+  box-sizing: border-box;
 }
 
 .nodeView:hover {
@@ -18,8 +19,7 @@
 }
 
 /* Locked nodes should not be visually highlighted beyond the icon */
-.nodeView[data-locked="true"] {
-}
+.nodeView[data-locked="true"] {}
 
 .nodeView[data-selected="true"] {
   border-color: var(--node-editor-accent-color, #0066cc);
@@ -32,10 +32,8 @@
 
 .nodeView[data-is-group="true"] {
   /* Subdued, token-driven appearance */
-  background-color: var(
-    --node-editor-group-node-background,
-    color-mix(in srgb, var(--node-editor-separator-color, rgba(0, 0, 0, 0.12)) 6%, transparent)
-  );
+  background-color: var(--node-editor-group-node-background,
+      color-mix(in srgb, var(--node-editor-separator-color, rgba(0, 0, 0, 0.12)) 6%, transparent));
   border-style: dashed;
   border-width: 1px;
   border-color: var(--node-editor-group-node-border, var(--node-editor-divider-color, rgba(0, 0, 0, 0.12)));
@@ -44,18 +42,12 @@
 }
 
 .nodeView[data-is-group="true"][data-has-children="true"] {
-  border-color: var(
-    --node-editor-group-node-active-color,
-    color-mix(
-      in srgb,
-      var(--node-editor-accent-color, #0066cc) 45%,
-      var(--node-editor-divider-color, rgba(0, 0, 0, 0.12))
-    )
-  );
-  background-color: var(
-    --node-editor-group-node-active-background,
-    color-mix(in srgb, var(--node-editor-accent-color, #0066cc) 8%, transparent)
-  );
+  border-color: var(--node-editor-group-node-active-color,
+      color-mix(in srgb,
+        var(--node-editor-accent-color, #0066cc) 45%,
+        var(--node-editor-divider-color, rgba(0, 0, 0, 0.12))));
+  background-color: var(--node-editor-group-node-active-background,
+      color-mix(in srgb, var(--node-editor-accent-color, #0066cc) 8%, transparent));
 }
 
 .nodeView[data-visual-state="info"] {
@@ -84,8 +76,7 @@
 }
 
 /* Placeholder for resizing state */
-.nodeView[data-resizing="true"] {
-}
+.nodeView[data-resizing="true"] {}
 
 /* Decoration-less node appearance for label-like nodes */
 .nodeView[data-plain-node="true"] {

@@ -229,3 +229,13 @@
   --node-editor-connection-drag-animation-duration: 0.5s;
   --node-editor-connection-drag-animation-distance: -10;
 }
+
+@keyframes node-editor__connection-flow {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: var(--node-editor-connection-flow-animation-distance);
+  }
+}

@@ -1,0 +1,47 @@
+/* Styles for floating sub-editor window */
+.windowContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.summary {
+  font-size: 0.75rem;
+  color: var(--node-editor-secondary-label-color, #64748b);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.summary strong {
+  color: var(--node-editor-text-color, #0f172a);
+}
+
+.editorShell {
+  flex: 1;
+  min-height: 0;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.02);
+  box-sizing: border-box;
+}
+
+.editorMain {
+  height: 100%;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+/*
+debug-notes:
+- Provides padding/gap for floating window content and styles NodeEditor container to feel embedded.
+*/

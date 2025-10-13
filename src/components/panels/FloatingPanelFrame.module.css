@@ -1,0 +1,65 @@
+/* Shared floating panel frame styles */
+.frame,
+.minimapContainer,
+.previewContainer,
+.subEditorContainer {
+  display: flex;
+  flex-direction: column;
+  background: var(--node-editor-control-background, rgba(255, 255, 255, 0.9));
+  border: var(--node-editor-input-border, 1px solid rgba(0, 0, 0, 0.1));
+  border-radius: var(--node-editor-radius-sm);
+  box-shadow: var(--node-editor-shadow-sm);
+  backdrop-filter: blur(8px);
+  pointer-events: all;
+  overflow: hidden;
+}
+
+.header,
+.minimapHeader,
+.previewHeader,
+.subEditorHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  box-sizing: border-box;
+  background: var(--node-editor-control-hover-background, rgba(0, 0, 0, 0.05));
+  border-bottom: 1px solid var(--node-editor-input-border, rgba(0, 0, 0, 0.1));
+  font-size: var(--node-editor-font-size-xs);
+  min-height: var(--node-editor-space-md);
+  flex-shrink: 0;
+}
+
+.title,
+.minimapTitle,
+.previewTitle,
+.subEditorTitle {
+  font-weight: 600;
+  color: var(--node-editor-text-color, #000);
+}
+
+.meta,
+.minimapStats,
+.previewStats,
+.subEditorMeta {
+  color: var(--node-editor-secondary-label-color, #666);
+  font-size: 10px;
+}
+
+.controls,
+.subEditorControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.content,
+.subEditorContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}

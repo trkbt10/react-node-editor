@@ -20,6 +20,7 @@ import { AdvancedLayoutExample } from "./demos/AdvancedLayoutExample";
 import { ThreeJsExample } from "./demos/threejs/ThreeJsExample";
 import CustomNodeExample from "./demos/CustomNodeExample";
 import { ThemeShowcaseExample } from "./demos/design/ThemeShowcaseExample";
+import { AdvancedNestedEditorExample } from "./demos/advanced/subeditor/AdvancedNestedEditorExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -71,6 +72,13 @@ const examples: ExampleEntry[] = [
     title: "Advanced Node Examples",
     description: "Complex nodes with Code Editor, Chart Visualization, and Form Builder.",
     component: AdvancedNodeExample,
+    category: "advanced",
+  },
+  {
+    id: "advanced-nested-editors",
+    title: "Advanced Nested Editors",
+    description: "Open floating sub-editors per node with live minimap previews.",
+    component: AdvancedNestedEditorExample,
     category: "advanced",
   },
   {

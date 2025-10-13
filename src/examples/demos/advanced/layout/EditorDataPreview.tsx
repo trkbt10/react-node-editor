@@ -4,6 +4,13 @@
 import * as React from "react";
 import { useNodeEditor } from "../../../../contexts/node-editor";
 import type { NodeEditorData } from "../../../../types/core";
+import {
+  FloatingPanelFrame,
+  FloatingPanelHeader,
+  FloatingPanelTitle,
+  FloatingPanelMeta,
+  FloatingPanelContent,
+} from "../../../../components/panels/FloatingPanelFrame";
 import styles from "./EditorDataPreview.module.css";
 
 export type EditorDataPreviewProps = {
@@ -13,7 +20,7 @@ export type EditorDataPreviewProps = {
   height?: number;
 };
 
-export const EditorDataPreview: React.FC<EditorDataPreviewProps> = ({ width = 300, height = 400 }) => {
+export const EditorDataPreview: React.FC<EditorDataPreviewProps> = ({ width: _width = 300, height: _height = 400 }) => {
   const { state } = useNodeEditor();
 
   const previewData: NodeEditorData = React.useMemo(
@@ -32,18 +39,25 @@ export const EditorDataPreview: React.FC<EditorDataPreviewProps> = ({ width = 30
   const connectionCount = Object.keys(state.connections).length;
 
   return (
-    <div className={styles.previewContainer} style={{ width, height }}>
-      <div className={styles.previewHeader}>
-        <span className={styles.previewTitle}>Editor State</span>
-        <span className={styles.previewStats}>
+    <FloatingPanelFrame>
+      <FloatingPanelHeader>
+        <FloatingPanelTitle>Editor State</FloatingPanelTitle>
+        <FloatingPanelMeta>
           {nodeCount} nodes · {connectionCount} connections
-        </span>
-      </div>
-      <div className={styles.previewContent}>
+        </FloatingPanelMeta>
+      </FloatingPanelHeader>
+      <FloatingPanelContent className={styles.previewContent}>
         <pre className={styles.jsonDisplay}>{jsonString}</pre>
-      </div>
-    </div>
+      </FloatingPanelContent>
+    </FloatingPanelFrame>
   );
 };
 
 EditorDataPreview.displayName = "EditorDataPreview";
+
+/*
+debug-notes:
+- Reviewed src/components/panels/FloatingPanelFrame.tsx to migrate container/header composition.
+- Reviewed src/examples/demos/AdvancedNodeExample.tsx to ensure grid layer sizing drives width/height.
+- Reviewed src/examples/demos/advanced/layout/EditorDataPreview.module.css to retain content padding and scrolling behaviour.
+*/
