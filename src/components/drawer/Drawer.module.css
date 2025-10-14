@@ -1,0 +1,143 @@
+/* ============================================
+   Drawer Styles
+   ============================================ */
+
+.drawer {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  background: var(--node-editor-bg);
+  box-shadow: var(--node-editor-shadow-lg);
+  z-index: 1000;
+  transition:
+    transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  /* Prevent scroll during drag */
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+
+.drawer[data-placement="top"] {
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(-100%);
+}
+
+.drawer[data-placement="right"] {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateX(100%);
+}
+
+.drawer[data-placement="bottom"] {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(100%);
+}
+
+.drawer[data-placement="left"] {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  transform: translateX(-100%);
+}
+
+.drawer[data-open="true"] {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+
+.drawer[data-open="false"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.drawerBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  transition: opacity 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
+}
+
+.drawerBackdrop[data-open="true"] {
+  opacity: 1;
+}
+
+.drawerBackdrop[data-open="false"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ============================================
+   Drawer Header Styles
+   ============================================ */
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: var(--node-editor-space-md) var(--node-editor-space-lg);
+  border-bottom: var(--node-editor-border-width) solid var(--node-editor-border-color);
+  background: var(--node-editor-surface-secondary);
+  gap: var(--node-editor-space-md);
+  flex-shrink: 0;
+}
+
+.drawerHeaderTitle {
+  font: var(--node-editor-title-font);
+  color: var(--node-editor-header-text-color);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drawerHeaderCloseButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--node-editor-control-button-size);
+  height: var(--node-editor-control-button-size);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  color: var(--node-editor-text-secondary);
+  font-size: var(--node-editor-font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease;
+  flex-shrink: 0;
+}
+
+.drawerHeaderCloseButton:hover {
+  background: var(--node-editor-hover-background);
+  color: var(--node-editor-text-color);
+}
+
+.drawerHeaderCloseButton:active {
+  background: var(--node-editor-control-background);
+}
+
+.drawerContent {
+  position: relative;
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+}
+
+/* Prevent body scroll when drawer is open on mobile */
+body:has(.drawer[data-open="true"]) {
+  overflow: hidden;
+  touch-action: none;
+}

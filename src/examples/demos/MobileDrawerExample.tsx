@@ -10,6 +10,7 @@ import { StandardNodeDefinition } from "../../node-definitions/standard";
 import { toUntypedDefinition } from "../../types/NodeDefinition";
 import type { NodeEditorData } from "../../types/core";
 import { isMobileDevice, isMobileViewport } from "../../utils/mobileDetection";
+import { useEditorActionState } from "../../hooks";
 
 const initialData: NodeEditorData = {
   nodes: {
@@ -53,6 +54,22 @@ const initialData: NodeEditorData = {
   },
 };
 
+/**
+ * Inspector wrapper that monitors node selection and triggers drawer open
+ */
+const InspectorWithDrawerControl: React.FC<{ onNodeSelect: (hasSelection: boolean) => void }> = ({ onNodeSelect }) => {
+  const { state: editorActionState } = useEditorActionState();
+
+  const hasSelectedNode = React.useMemo(() => {
+    return editorActionState.selectedNodeIds.length > 0;
+  }, [editorActionState.selectedNodeIds]);
+
+  React.useEffect(() => {
+    onNodeSelect(hasSelectedNode);
+  }, [hasSelectedNode, onNodeSelect]);
+
+  return <InspectorPanel />;
+};
 
 /**
  * Mobile drawer layout example
@@ -60,6 +77,7 @@ const initialData: NodeEditorData = {
  */
 export const MobileDrawerExample: React.FC = () => {
   const [isMobile, setIsMobile] = React.useState(false);
+  const [isInspectorOpen, setIsInspectorOpen] = React.useState(false);
 
   // Check if we're on mobile on mount and viewport changes
   React.useEffect(() => {
@@ -70,6 +88,19 @@ export const MobileDrawerExample: React.FC = () => {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const handleNodeSelect = React.useCallback(
+    (hasSelection: boolean) => {
+      if (isMobile && hasSelection) {
+        setIsInspectorOpen(true);
+      }
+    },
+    [isMobile],
+  );
+
+  const handleInspectorStateChange = React.useCallback((open: boolean) => {
+    setIsInspectorOpen(open);
   }, []);
 
   // Grid configuration - full screen canvas
@@ -94,17 +125,18 @@ export const MobileDrawerExample: React.FC = () => {
       },
       {
         id: "inspector",
-        component: <InspectorPanel />,
+        component: isMobile ? <InspectorWithDrawerControl onNodeSelect={handleNodeSelect} /> : <InspectorPanel />,
         // Use drawer on mobile, fixed position on desktop
         ...(isMobile
           ? {
               drawer: {
                 placement: "right",
-                defaultOpen: false,
+                open: isInspectorOpen,
                 dismissible: true,
                 showBackdrop: true,
                 backdropOpacity: 0.5,
                 size: "80%",
+                onStateChange: handleInspectorStateChange,
                 header: {
                   title: "Inspector",
                   showCloseButton: true,
@@ -124,7 +156,7 @@ export const MobileDrawerExample: React.FC = () => {
             }),
       },
     ],
-    [isMobile],
+    [isMobile, isInspectorOpen, handleInspectorStateChange, handleNodeSelect],
   );
 
   return (
@@ -152,6 +184,12 @@ export const MobileDrawerExample: React.FC = () => {
         }}
       >
         <strong>Mode:</strong> {isMobile ? "Mobile (Drawer)" : "Desktop (Fixed)"}
+        {isMobile && (
+          <>
+            <br />
+            <small>Tap a node to open inspector</small>
+          </>
+        )}
       </div>
     </div>
   );

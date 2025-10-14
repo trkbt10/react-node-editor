@@ -127,6 +127,8 @@ export type DrawerBehavior = {
   placement: "top" | "right" | "bottom" | "left";
   /** Initial state (open/closed) */
   defaultOpen?: boolean;
+  /** Controlled open state (when provided, drawer becomes controlled) */
+  open?: boolean;
   /** Whether drawer can be dismissed by clicking outside */
   dismissible?: boolean;
   /** Whether to show a backdrop/overlay */

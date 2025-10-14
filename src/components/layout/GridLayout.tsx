@@ -4,6 +4,7 @@
 import * as React from "react";
 import type { GridLayoutConfig, LayerDefinition, GridTrack } from "../../types/panels";
 import { ResizeHandle } from "./ResizeHandle";
+import { DrawerLayers } from "../drawer/DrawerLayers";
 import styles from "./GridLayout.module.css";
 
 export type GridLayoutProps = {
@@ -315,39 +316,6 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
   // Separate visible and invisible layers
   const visibleLayers = React.useMemo(() => layers.filter((layer) => layer.visible !== false), [layers]);
 
-  // Drawer state management
-  const [drawerStates, setDrawerStates] = React.useState<Record<string, boolean>>(() => {
-    const initial: Record<string, boolean> = {};
-    layers.forEach((layer) => {
-      if (layer.drawer) {
-        initial[layer.id] = layer.drawer.defaultOpen ?? false;
-      }
-    });
-    return initial;
-  });
-
-  // Toggle drawer open/close (exposed for future API)
-  const _toggleDrawer = React.useCallback((layerId: string) => {
-    setDrawerStates((prev) => {
-      const newState = !prev[layerId];
-      const layer = layers.find((l) => l.id === layerId);
-      layer?.drawer?.onStateChange?.(newState);
-      return { ...prev, [layerId]: newState };
-    });
-  }, [layers]);
-
-  // Close drawer (for backdrop clicks)
-  const closeDrawer = React.useCallback((layerId: string) => {
-    setDrawerStates((prev) => {
-      if (!prev[layerId]) {
-        return prev;
-      }
-      const layer = layers.find((l) => l.id === layerId);
-      layer?.drawer?.onStateChange?.(false);
-      return { ...prev, [layerId]: false };
-    });
-  }, [layers]);
-
   // Track draggable layer positions and drag state
   const [layerPositions, setLayerPositions] = React.useState<Record<string, { x: number; y: number }>>({});
   const [draggingLayerId, setDraggingLayerId] = React.useState<string | null>(null);
@@ -449,7 +417,6 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
 
   // Separate regular layers and drawer layers
   const regularLayers = React.useMemo(() => visibleLayers.filter((layer) => !layer.drawer), [visibleLayers]);
-  const drawerLayers = React.useMemo(() => visibleLayers.filter((layer) => layer.drawer), [visibleLayers]);
 
   return (
     <>
@@ -518,75 +485,8 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
       })}
     </div>
 
-      {/* Render drawer layers with backdrop */}
-      {drawerLayers.map((layer) => {
-        if (!layer.drawer) {
-          return null;
-        }
-
-        const isOpen = drawerStates[layer.id] ?? false;
-        const { placement, showBackdrop = true, backdropOpacity = 0.5, size, dismissible = true, header } = layer.drawer;
-
-        // Build drawer-specific styles (exclude position mode since drawers are always fixed)
-        const drawerStyle: React.CSSProperties = {
-          ...layer.style,
-          ...getZIndexStyle(layer.zIndex),
-          ...getDimensionsStyle(layer.width, layer.height),
-        };
-
-        // Apply size based on placement
-        if (size !== undefined) {
-          if (placement === "top" || placement === "bottom") {
-            drawerStyle.height = typeof size === "number" ? `${size}px` : size;
-          } else {
-            drawerStyle.width = typeof size === "number" ? `${size}px` : size;
-          }
-        }
-
-        const showCloseButton = header?.showCloseButton ?? (header !== undefined);
-
-        return (
-          <React.Fragment key={layer.id}>
-            {/* Backdrop */}
-            {showBackdrop && (
-              <div
-                className={styles.drawerBackdrop}
-                data-open={isOpen}
-                style={{ backgroundColor: `rgba(0, 0, 0, ${backdropOpacity})` }}
-                onClick={dismissible ? () => closeDrawer(layer.id) : undefined}
-              />
-            )}
-
-            {/* Drawer */}
-            <div
-              className={`${styles.drawer} ${layer.className || ""}`}
-              data-layer-id={layer.id}
-              data-placement={placement}
-              data-open={isOpen}
-              style={drawerStyle}
-            >
-              {header && (
-                <div className={styles.drawerHeader}>
-                  {header.title && <div className={styles.drawerHeaderTitle}>{header.title}</div>}
-                  {showCloseButton && dismissible && (
-                    <button
-                      className={styles.drawerHeaderCloseButton}
-                      onClick={() => closeDrawer(layer.id)}
-                      aria-label="Close drawer"
-                      type="button"
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-              )}
-              <div className={header ? styles.drawerContent : undefined}>
-                {layer.component}
-              </div>
-            </div>
-          </React.Fragment>
-        );
-      })}
+      {/* Render drawer layers */}
+      <DrawerLayers layers={visibleLayers} />
     </>
   );
 };
