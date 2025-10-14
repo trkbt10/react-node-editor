@@ -525,10 +525,13 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
         }
 
         const isOpen = drawerStates[layer.id] ?? false;
-        const { placement, showBackdrop = true, backdropOpacity = 0.5, size, dismissible = true } = layer.drawer;
+        const { placement, showBackdrop = true, backdropOpacity = 0.5, size, dismissible = true, header } = layer.drawer;
 
+        // Build drawer-specific styles (exclude position mode since drawers are always fixed)
         const drawerStyle: React.CSSProperties = {
-          ...buildLayerStyleObject(layer),
+          ...layer.style,
+          ...getZIndexStyle(layer.zIndex),
+          ...getDimensionsStyle(layer.width, layer.height),
         };
 
         // Apply size based on placement
@@ -539,6 +542,8 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
             drawerStyle.width = typeof size === "number" ? `${size}px` : size;
           }
         }
+
+        const showCloseButton = header?.showCloseButton ?? (header !== undefined);
 
         return (
           <React.Fragment key={layer.id}>
@@ -560,7 +565,24 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
               data-open={isOpen}
               style={drawerStyle}
             >
-              {layer.component}
+              {header && (
+                <div className={styles.drawerHeader}>
+                  {header.title && <div className={styles.drawerHeaderTitle}>{header.title}</div>}
+                  {showCloseButton && dismissible && (
+                    <button
+                      className={styles.drawerHeaderCloseButton}
+                      onClick={() => closeDrawer(layer.id)}
+                      aria-label="Close drawer"
+                      type="button"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              )}
+              <div className={header ? styles.drawerContent : undefined}>
+                {layer.component}
+              </div>
             </div>
           </React.Fragment>
         );

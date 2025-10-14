@@ -5,7 +5,7 @@
   padding: var(--node-editor-space-xl, 24px);
   height: 100%;
   box-sizing: border-box;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0));
+  background: var(--node-editor-window-background-color, #f8fafc);
 }
 
 .preview {
@@ -15,7 +15,7 @@
   border-radius: var(--node-editor-card-border-radius, 12px);
   border: var(--node-editor-card-border, 1px solid rgba(0, 0, 0, 0.1));
   background-color: var(--node-editor-surface-primary, #ffffff);
-  box-shadow: var(--node-editor-card-box-shadow, 0 12px 24px rgba(0, 0, 0, 0.12));
+  box-shadow: var(--node-editor-card-shadow, 0 1px 3px rgba(0, 0, 0, 0.1));
   padding: var(--node-editor-space-xl, 24px);
 }
 
@@ -25,12 +25,6 @@
   gap: var(--node-editor-space-sm, 8px);
 }
 
-.previewTitle {
-  margin: 0;
-  font: var(--node-editor-title-font, 600 16px/1.25 system-ui);
-  color: var(--node-editor-header-text-color, #0f172a);
-}
-
 .previewSubtitle {
   margin: 0;
   color: var(--node-editor-secondary-label-color, #475569);
@@ -38,31 +32,24 @@
 }
 
 .previewContent {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: var(--node-editor-space-lg, 16px);
 }
 
-.panel {
-  border-radius: var(--node-editor-radius-sm, 6px);
-  background: var(--node-editor-surface-secondary, #f8fafc);
-  padding: var(--node-editor-space-lg, 16px);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+.surfaceStack {
   display: flex;
   flex-direction: column;
   gap: var(--node-editor-space-sm, 8px);
 }
 
-.panelTitle {
-  margin: 0;
-  font: var(--node-editor-subtitle-font, 600 14px/1.3 system-ui);
-  color: var(--node-editor-text-secondary, #1f2937);
-}
-
 .swatch {
-  height: 48px;
+  height: 64px;
   border-radius: var(--node-editor-radius-sm, 6px);
   box-shadow: inset var(--node-editor-card-border, 0 0 0 1px rgba(0, 0, 0, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .surfacePrimary {
@@ -77,37 +64,16 @@
   background-color: var(--node-editor-surface-tertiary, #e2e8f0);
 }
 
-.accent {
-  appearance: none;
-  background: linear-gradient(
-    135deg,
-    var(--node-editor-accent-color, #2563eb),
-    var(--node-editor-accent-color-hover, #1d4ed8)
-  );
-  color: var(--node-editor-selected-secondary-color, #ffffff);
-  border: none;
-  border-radius: var(--node-editor-radius-sm, 6px);
-  padding: var(--node-editor-space-sm, 8px) var(--node-editor-space-lg, 16px);
-  font: var(--node-editor-control-text-font, 600 14px/1.4 system-ui);
-  text-align: center;
-  box-shadow: var(--node-editor-control-box-shadow-primary, 0 8px 16px rgba(37, 99, 235, 0.3));
-  cursor: pointer;
-  outline: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+.buttonGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--node-editor-space-sm, 8px);
 }
 
-.accent:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--node-editor-control-box-shadow-primary, 0 12px 24px rgba(37, 99, 235, 0.4));
-}
-
-.accent:active {
-  transform: translateY(0);
-}
-
-.accent:focus-visible {
-  outline: 2px solid var(--node-editor-keyboard-focus-indicator-color, rgba(37, 99, 235, 0.5));
-  outline-offset: 2px;
+.typographyStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-md, 12px);
 }
 
 .tokenGroups {
@@ -115,38 +81,14 @@
   flex-direction: column;
   gap: var(--node-editor-space-lg, 16px);
   border-radius: var(--node-editor-card-border-radius, 12px);
-  background: rgba(255, 255, 255, 0.65);
+  background: var(--node-editor-surface-secondary, #f8fafc);
   padding: var(--node-editor-space-lg, 16px);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: var(--node-editor-card-border, 1px solid rgba(0, 0, 0, 0.1));
   overflow: auto;
 }
 
-.tokenGroupTitle {
-  margin: 0;
-  font: var(--node-editor-subtitle-font, 600 14px/1.3 system-ui);
-  color: var(--node-editor-text-secondary, #0f172a);
-}
-
 .tokenList {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: var(--node-editor-space-sm, 8px);
-}
-
-.tokenItem {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: var(--node-editor-space-sm, 8px);
-  border-radius: var(--node-editor-radius-sm, 6px);
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  font-size: 12px;
-  color: var(--node-editor-text-secondary, #1f2937);
-}
-
-.tokenName {
-  font-weight: 600;
-  color: var(--node-editor-label-color, #0f172a);
+  gap: var(--node-editor-space-sm, 8px);
 }

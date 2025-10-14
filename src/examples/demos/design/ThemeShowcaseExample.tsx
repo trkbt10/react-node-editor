@@ -3,6 +3,12 @@
  */
 import * as React from "react";
 
+import { Button } from "../../../components/elements/Button";
+import { H2, H3, H4 } from "../../../components/elements/Heading";
+import { Label } from "../../../components/elements/Label";
+import { PropertySection } from "../../../components/inspector/parts/PropertySection";
+import { InspectorField } from "../../../components/inspector/parts/InspectorField";
+import { ReadOnlyField } from "../../../components/inspector/parts/ReadOnlyField";
 import classes from "./ThemeShowcaseExample.module.css";
 
 type TokenGroup = {
@@ -78,49 +84,80 @@ export function ThemeShowcaseExample(): React.ReactElement {
 
   return (
     <div className={classes.container}>
-      <section className={classes.preview}>
-        <header className={classes.previewHeader}>
-          <h2 className={classes.previewTitle}>Theme-driven Surface Preview</h2>
+      <div className={classes.preview}>
+        <div className={classes.previewHeader}>
+          <H2 size="lg" weight="semibold">
+            Theme-driven Component Showcase
+          </H2>
           <p className={classes.previewSubtitle}>
-            Switch themes to see how surfaces, accents, and typography respond instantly.
+            Switch themes to see how components, surfaces, and accents respond instantly.
           </p>
-        </header>
+        </div>
 
         <div className={classes.previewContent}>
-          <div className={classes.panel}>
-            <h3 className={classes.panelTitle}>Surface Stack</h3>
-            <div className={`${classes.swatch} ${classes.surfacePrimary}`} />
-            <div className={`${classes.swatch} ${classes.surfaceSecondary}`} />
-            <div className={`${classes.swatch} ${classes.surfaceTertiary}`} />
-          </div>
+          <PropertySection title="Surface Examples">
+            <div className={classes.surfaceStack}>
+              <div className={`${classes.swatch} ${classes.surfacePrimary}`}>
+                <Label>Primary Surface</Label>
+              </div>
+              <div className={`${classes.swatch} ${classes.surfaceSecondary}`}>
+                <Label>Secondary Surface</Label>
+              </div>
+              <div className={`${classes.swatch} ${classes.surfaceTertiary}`}>
+                <Label>Tertiary Surface</Label>
+              </div>
+            </div>
+          </PropertySection>
 
-          <div className={classes.panel}>
-            <h3 className={classes.panelTitle}>Accent Button</h3>
-            <button className={classes.accent} type="button">
-              Active Accent Control
-            </button>
-            <span>
-              Focus ring: <code>{tokenValues["--node-editor-keyboard-focus-indicator-color"] ?? "auto"}</code>
-            </span>
-          </div>
+          <PropertySection title="Button Variants">
+            <div className={classes.buttonGrid}>
+              <Button variant="primary" size="medium">
+                Primary
+              </Button>
+              <Button variant="secondary" size="medium">
+                Secondary
+              </Button>
+              <Button variant="danger" size="medium">
+                Danger
+              </Button>
+              <Button variant="ghost" size="medium">
+                Ghost
+              </Button>
+            </div>
+          </PropertySection>
+
+          <PropertySection title="Typography Examples">
+            <div className={classes.typographyStack}>
+              <H2 size="2xl" weight="bold">
+                Heading Level 2
+              </H2>
+              <H3 size="lg" weight="semibold">
+                Heading Level 3
+              </H3>
+              <H4 size="md" weight="medium">
+                Heading Level 4
+              </H4>
+              <Label>Label Component</Label>
+            </div>
+          </PropertySection>
         </div>
-      </section>
+      </div>
 
-      <aside className={classes.tokenGroups}>
+      <div className={classes.tokenGroups}>
         {TOKEN_GROUPS.map((group) => (
-          <div key={group.title}>
-            <h4 className={classes.tokenGroupTitle}>{group.title}</h4>
+          <PropertySection key={group.title} title={group.title}>
             <div className={classes.tokenList}>
               {group.tokens.map((token) => (
-                <div className={classes.tokenItem} key={token}>
-                  <span className={classes.tokenName}>{token}</span>
-                  <code>{tokenValues[token] ?? "—"}</code>
-                </div>
+                <InspectorField key={token} label={token}>
+                  <ReadOnlyField>
+                    <code>{tokenValues[token] ?? "—"}</code>
+                  </ReadOnlyField>
+                </InspectorField>
               ))}
             </div>
-          </div>
+          </PropertySection>
         ))}
-      </aside>
+      </div>
     </div>
   );
 }

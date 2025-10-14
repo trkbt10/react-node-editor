@@ -43,7 +43,13 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
   autoSaveInterval,
 }) => {
   const nodeDefinitionsContext = React.useContext(NodeDefinitionContext);
-  const registry = nodeDefinitionsContext?.registry;
+  const registry = React.useMemo(() => {
+    try {
+      return nodeDefinitionsContext.registry;
+    } catch {
+      return undefined;
+    }
+  }, [nodeDefinitionsContext]);
 
   const featureFlags = React.useMemo(() => getFeatureFlags(), []);
   // Keep latest feature flags in a ref for stable callbacks

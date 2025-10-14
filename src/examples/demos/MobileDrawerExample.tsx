@@ -53,40 +53,6 @@ const initialData: NodeEditorData = {
   },
 };
 
-/**
- * Drawer toggle button component
- */
-const DrawerToggleButton: React.FC<{
-  onClick: () => void;
-  label: string;
-  position: "top" | "right" | "bottom" | "left";
-}> = ({ onClick, label, position }) => {
-  const positionStyles: Record<string, React.CSSProperties> = {
-    top: { top: 10, left: "50%", transform: "translateX(-50%)" },
-    right: { top: "50%", right: 10, transform: "translateY(-50%)" },
-    bottom: { bottom: 10, left: "50%", transform: "translateX(-50%)" },
-    left: { top: "50%", left: 10, transform: "translateY(-50%)" },
-  };
-
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        position: "fixed",
-        zIndex: 1001,
-        padding: "8px 16px",
-        background: "var(--node-editor-bg, #fff)",
-        border: "1px solid var(--node-editor-border, #ccc)",
-        borderRadius: "var(--node-editor-radius-md, 4px)",
-        cursor: "pointer",
-        boxShadow: "var(--node-editor-shadow-md, 0 2px 4px rgba(0, 0, 0, 0.1))",
-        ...positionStyles[position],
-      }}
-    >
-      {label}
-    </button>
-  );
-};
 
 /**
  * Mobile drawer layout example
@@ -94,8 +60,6 @@ const DrawerToggleButton: React.FC<{
  */
 export const MobileDrawerExample: React.FC = () => {
   const [isMobile, setIsMobile] = React.useState(false);
-  const [isInspectorOpen, setIsInspectorOpen] = React.useState(false);
-  const [gridKey, setGridKey] = React.useState(0);
 
   // Check if we're on mobile on mount and viewport changes
   React.useEffect(() => {
@@ -106,16 +70,6 @@ export const MobileDrawerExample: React.FC = () => {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const handleInspectorToggle = React.useCallback(() => {
-    setIsInspectorOpen((prev) => !prev);
-    // Force re-render of GridLayout with new defaultOpen state
-    setGridKey((prev) => prev + 1);
-  }, []);
-
-  const handleInspectorStateChange = React.useCallback((open: boolean) => {
-    setIsInspectorOpen(open);
   }, []);
 
   // Grid configuration - full screen canvas
@@ -146,12 +100,11 @@ export const MobileDrawerExample: React.FC = () => {
           ? {
               drawer: {
                 placement: "right",
-                defaultOpen: isInspectorOpen,
+                defaultOpen: false,
                 dismissible: true,
                 showBackdrop: true,
                 backdropOpacity: 0.5,
                 size: "80%",
-                onStateChange: handleInspectorStateChange,
                 header: {
                   title: "Inspector",
                   showCloseButton: true,
@@ -171,27 +124,17 @@ export const MobileDrawerExample: React.FC = () => {
             }),
       },
     ],
-    [isMobile, isInspectorOpen, handleInspectorStateChange],
+    [isMobile],
   );
 
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
       <NodeEditor
-        key={gridKey}
         gridConfig={gridConfig}
         gridLayers={gridLayers}
         initialData={initialData}
         nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
       />
-
-      {/* Show toggle button only on mobile */}
-      {isMobile && (
-        <DrawerToggleButton
-          onClick={handleInspectorToggle}
-          label={isInspectorOpen ? "Close Inspector" : "Open Inspector"}
-          position="right"
-        />
-      )}
 
       {/* Info overlay */}
       <div

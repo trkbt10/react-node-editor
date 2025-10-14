@@ -49,6 +49,8 @@
 
 .drawer {
   position: fixed;
+  display: flex;
+  flex-direction: column;
   background: var(--node-editor-bg);
   box-shadow: var(--node-editor-shadow-lg);
   z-index: 1000;
@@ -118,6 +120,63 @@
 .drawerBackdrop[data-open="false"] {
   opacity: 0;
   pointer-events: none;
+}
+
+/* ============================================
+   Drawer Header Styles
+   ============================================ */
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--node-editor-space-md) var(--node-editor-space-lg);
+  border-bottom: var(--node-editor-border-width) solid var(--node-editor-border-color);
+  background: var(--node-editor-surface-secondary);
+  gap: var(--node-editor-space-md);
+  flex-shrink: 0;
+}
+
+.drawerHeaderTitle {
+  font: var(--node-editor-title-font);
+  color: var(--node-editor-header-text-color);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drawerHeaderCloseButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--node-editor-control-button-size);
+  height: var(--node-editor-control-button-size);
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--node-editor-radius-xs);
+  color: var(--node-editor-text-secondary);
+  font-size: var(--node-editor-font-size-lg);
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 200ms ease, color 200ms ease;
+  flex-shrink: 0;
+}
+
+.drawerHeaderCloseButton:hover {
+  background: var(--node-editor-hover-background);
+  color: var(--node-editor-text-color);
+}
+
+.drawerHeaderCloseButton:active {
+  background: var(--node-editor-control-background);
+}
+
+.drawerContent {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
 }
 
 /* Prevent body scroll when drawer is open on mobile */

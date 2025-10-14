@@ -137,6 +137,13 @@ export type DrawerBehavior = {
   size?: string | number;
   /** Callback when drawer state changes */
   onStateChange?: (open: boolean) => void;
+  /** Header configuration for drawer */
+  header?: {
+    /** Header title text */
+    title?: string;
+    /** Whether to show close button in header (default: true if header is provided) */
+    showCloseButton?: boolean;
+  };
 };
 
 /**

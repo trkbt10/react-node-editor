@@ -1,7 +1,8 @@
 .standardNodeRenderer {
   padding: var(--node-editor-inspector-space-md);
   border-radius: var(--node-editor-card-border-radius);
-  background-color: var(--node-editor-control-background);
+  background: transparent;
+  border: none;
   cursor: grab;
   overflow: hidden;
   box-sizing: border-box;
