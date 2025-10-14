@@ -2,7 +2,7 @@
  * @file Context for managing global keyboard shortcuts with registration and event handling
  */
 import * as React from "react";
-import { createAction, createActionHandlerMap, type ActionUnion } from "../utils/typedActions";
+import { bindActionCreators, createAction, createActionHandlerMap, type ActionUnion, type BoundActionCreators } from "../utils/typedActions";
 
 // Keyboard shortcut types
 export type KeyboardShortcut = {
@@ -121,7 +121,8 @@ export const defaultKeyboardShortcutState: KeyboardShortcutState = {
 export type KeyboardShortcutContextValue = {
   state: KeyboardShortcutState;
   dispatch: React.Dispatch<KeyboardShortcutAction>;
-  actions: typeof keyboardShortcutActions;
+  actions: BoundActionCreators<typeof keyboardShortcutActions>;
+  actionCreators: typeof keyboardShortcutActions;
   registerShortcut: (shortcut: KeyboardShortcut, handler: ShortcutHandler) => void;
   unregisterShortcut: (shortcut: KeyboardShortcut) => void;
 };
@@ -139,6 +140,7 @@ export const KeyboardShortcutProvider: React.FC<KeyboardShortcutProviderProps> =
     ...defaultKeyboardShortcutState,
     ...initialState,
   });
+  const boundActions = React.useMemo(() => bindActionCreators(keyboardShortcutActions, dispatch), [dispatch]);
 
   // Global keyboard event handler
   React.useEffect(() => {
@@ -183,22 +185,23 @@ export const KeyboardShortcutProvider: React.FC<KeyboardShortcutProviderProps> =
   // Convenience methods
   const registerShortcut = React.useCallback(
     (shortcut: KeyboardShortcut, handler: ShortcutHandler) => {
-      dispatch(keyboardShortcutActions.registerShortcut(shortcut, handler));
+      boundActions.registerShortcut(shortcut, handler);
     },
-    [dispatch],
+    [boundActions],
   );
 
   const unregisterShortcut = React.useCallback(
     (shortcut: KeyboardShortcut) => {
-      dispatch(keyboardShortcutActions.unregisterShortcut(shortcut));
+      boundActions.unregisterShortcut(shortcut);
     },
-    [dispatch],
+    [boundActions],
   );
 
   const contextValue: KeyboardShortcutContextValue = {
     state,
     dispatch,
-    actions: keyboardShortcutActions,
+    actions: boundActions,
+    actionCreators: keyboardShortcutActions,
     registerShortcut,
     unregisterShortcut,
   };

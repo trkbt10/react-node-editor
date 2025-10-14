@@ -11,6 +11,7 @@ import type { SettingValue } from "../../settings/types";
 import { createCachedPortResolver } from "../node-ports/utils/portLookup";
 import { NodeDefinitionContext } from "../node-definitions/context";
 import { getFeatureFlags } from "../../config/featureFlags";
+import { bindActionCreators } from "../../utils/typedActions";
 import { nodeEditorActions, type NodeEditorAction } from "./actions";
 import { nodeEditorReducer, defaultNodeEditorData } from "./reducer";
 import { NodeEditorContext } from "./context";
@@ -101,6 +102,8 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
     [controlledData],
   );
 
+  const boundActions = React.useMemo(() => bindActionCreators(nodeEditorActions, dispatch), [dispatch]);
+
   const [isLoading, setIsLoading] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const isSavingRef = React.useRef(false);
@@ -130,13 +133,13 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
     setIsLoading(true);
     Promise.resolve(onLoadRef.current())
       .then((data) => {
-        dispatch(nodeEditorActions.setNodeData(data));
+        boundActions.setNodeData(data);
       })
       .catch((error) => {
         console.error("Failed to load node editor data:", error);
       })
       .finally(() => setIsLoading(false));
-  }, [registry, dispatch]);
+  }, [registry, boundActions]);
 
   // Notification for onDataChange is handled inside dispatch (both modes)
   // Additionally, fire a single initial notification in uncontrolled mode
@@ -261,7 +264,8 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
     () => ({
       state,
       dispatch,
-      actions: nodeEditorActions,
+      actions: boundActions,
+      actionCreators: nodeEditorActions,
       isLoading,
       isSaving,
       handleSave,
@@ -275,6 +279,7 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
     [
       state,
       dispatch,
+      boundActions,
       isLoading,
       isSaving,
       handleSave,

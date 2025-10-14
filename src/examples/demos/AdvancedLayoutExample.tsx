@@ -77,27 +77,27 @@ const FloatingSidebar: React.FC<{ showMinimap: boolean; onToggleMinimap: () => v
   onToggleMinimap,
 }) => {
   const [isOpen, setIsOpen] = React.useState(true);
-  const { state, dispatch, actions } = useNodeCanvas();
+  const { state, actions } = useNodeCanvas();
 
   const handleGridToggle = React.useCallback(() => {
-    dispatch(actions.updateGridSettings({ showGrid: !state.gridSettings.showGrid }));
-  }, [state.gridSettings.showGrid, dispatch, actions]);
+    actions.updateGridSettings({ showGrid: !state.gridSettings.showGrid });
+  }, [state.gridSettings.showGrid, actions]);
 
   const handleSnapToggle = React.useCallback(() => {
-    dispatch(actions.updateGridSettings({ snapToGrid: !state.gridSettings.snapToGrid }));
-  }, [state.gridSettings.snapToGrid, dispatch, actions]);
+    actions.updateGridSettings({ snapToGrid: !state.gridSettings.snapToGrid });
+  }, [state.gridSettings.snapToGrid, actions]);
 
   const handleGridSizeChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const size = Number(e.target.value);
-      dispatch(actions.updateGridSettings({ size }));
+      actions.updateGridSettings({ size });
     },
-    [dispatch, actions],
+    [actions],
   );
 
   const handleZoomReset = React.useCallback(() => {
-    dispatch(actions.setViewport({ ...state.viewport, scale: 1 }));
-  }, [state.viewport, dispatch, actions]);
+    actions.setViewport({ ...state.viewport, scale: 1 });
+  }, [state.viewport, actions]);
 
   return (
     <div className={`${classes.floatingSidebar} ${isOpen ? classes.open : classes.closed}`}>

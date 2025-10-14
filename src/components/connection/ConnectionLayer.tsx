@@ -112,7 +112,7 @@ const DragConnection = React.memo(() => {
 });
 const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
   const { state: nodeEditorState, portLookupMap } = useNodeEditor();
-  const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
   const { connection: ConnectionComponent } = useRenderers();
 
@@ -150,23 +150,23 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
 
       // Select the connection
       const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey;
-      actionDispatch(actionActions.selectConnection(connectionId, isMultiSelect));
+      actionActions.selectConnection(connectionId, isMultiSelect);
     },
-    [connection, nodeEditorState, portLookupMap, actionDispatch, actionActions, fromPortPos, toPortPos],
+    [connection, nodeEditorState, portLookupMap, actionActions, fromPortPos, toPortPos],
   );
 
   const handleConnectionPointerEnter = React.useCallback(
     (_e: React.PointerEvent, connectionId: string) => {
-      actionDispatch(actionActions.setHoveredConnection(connectionId));
+      actionActions.setHoveredConnection(connectionId);
     },
-    [actionDispatch, actionActions],
+    [actionActions],
   );
 
   const handleConnectionPointerLeave = React.useCallback(
     (_e: React.PointerEvent, _connectionId: string) => {
-      actionDispatch(actionActions.setHoveredConnection(null));
+      actionActions.setHoveredConnection(null);
     },
-    [actionDispatch, actionActions],
+    [actionActions],
   );
 
   const handleConnectionContextMenu = React.useCallback(
@@ -176,9 +176,9 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
 
       const position = { x: e.clientX, y: e.clientY };
       const canvasPos = utils.screenToCanvas(e.clientX, e.clientY);
-      actionDispatch(actionActions.showContextMenu(position, undefined, canvasPos, connectionId));
+      actionActions.showContextMenu(position, undefined, canvasPos, connectionId);
     },
-    [actionDispatch, actionActions, utils],
+    [actionActions, utils],
   );
   const fromNode = nodeEditorState.nodes[connection.fromNodeId];
   const toNode = nodeEditorState.nodes[connection.toNodeId];

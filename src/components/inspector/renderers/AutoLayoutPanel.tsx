@@ -20,7 +20,7 @@ type LayoutAlgorithm = "hierarchical" | "grid" | "force";
  * Panel for auto-layout functionality
  */
 export const AutoLayoutPanel: React.FC = () => {
-  const { state, dispatch, actions } = useNodeEditor();
+  const { state, actions } = useNodeEditor();
   const { state: canvasState, actions: canvasActions } = useNodeCanvas();
   const { t } = useTranslation();
   const [isProcessing, setIsProcessing] = React.useState(false);
@@ -45,7 +45,7 @@ export const AutoLayoutPanel: React.FC = () => {
         }
 
         // Update all node positions using moveNodes for better performance
-        dispatch(actions.moveNodes(result.nodePositions));
+        actions.moveNodes(result.nodePositions);
 
         // Calculate bounding box of all nodes after layout
         const nodes = Object.values(state.nodes);
@@ -72,7 +72,7 @@ export const AutoLayoutPanel: React.FC = () => {
         setIsProcessing(false);
       }
     },
-    [state, dispatch, actions, canvasState.viewport.scale, canvasActions],
+    [state, actions, canvasState.viewport.scale, canvasActions],
   );
 
   const nodeCount = Object.keys(state.nodes).length;

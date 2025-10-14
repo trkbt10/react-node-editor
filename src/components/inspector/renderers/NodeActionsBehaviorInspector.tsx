@@ -22,7 +22,7 @@ import { DuplicateIcon, CopyIcon, CutIcon, DeleteIcon } from "../../elements/ico
 export function NodeActionsBehaviorInspector({ node }: InspectorRenderProps): React.ReactElement {
   const { t } = useI18n();
   const editorActions = useNodeEditorActions();
-  const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: editorState } = useNodeEditor();
   const nodeDefinitions = useNodeDefinitionList();
 
@@ -79,8 +79,8 @@ export function NodeActionsBehaviorInspector({ node }: InspectorRenderProps): Re
       }));
     setClipboard({ nodes, connections });
     selected.forEach((id) => editorActions.deleteNode(id));
-    actionDispatch(actionActions.clearSelection());
-  }, [node.id, actionState.selectedNodeIds, editorState, editorActions, actionDispatch, actionActions]);
+    actionActions.clearSelection();
+  }, [node.id, actionState.selectedNodeIds, editorState, editorActions, actionActions]);
 
   const handleDelete = React.useCallback(() => {
     editorActions.deleteNode(node.id);

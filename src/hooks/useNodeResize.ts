@@ -37,8 +37,8 @@ export type UseNodeResizeResult = {
  * Provides a clean interface for resize functionality
  */
 export const useNodeResize = (options: UseNodeResizeOptions = {}): UseNodeResizeResult => {
-  const { dispatch: nodeEditorDispatch, actions: nodeEditorActions } = useNodeEditor();
-  const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { actions: nodeEditorActions } = useNodeEditor();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
 
   const { minWidth = 100, minHeight = 40, snapToGrid = false, gridSize = 20 } = options;
 
@@ -81,27 +81,25 @@ export const useNodeResize = (options: UseNodeResizeOptions = {}): UseNodeResize
       const deltaY = e.clientY - startPosition.y;
 
       const newSize = calculateNewSize(handle, startSize, deltaX, deltaY);
-      actionDispatch(actionActions.updateNodeResize(newSize));
+      actionActions.updateNodeResize(newSize);
     };
 
     const handlePointerUp = (_e: PointerEvent) => {
       if (actionState.resizeState) {
         // Apply the final size to the node
         const { nodeId, currentSize } = actionState.resizeState;
-        nodeEditorDispatch(
-          nodeEditorActions.updateNode(nodeId, {
-            size: currentSize,
-          }),
-        );
+        nodeEditorActions.updateNode(nodeId, {
+          size: currentSize,
+        });
       }
 
-      actionDispatch(actionActions.endNodeResize());
+      actionActions.endNodeResize();
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         // Cancel resize operation
-        actionDispatch(actionActions.endNodeResize());
+        actionActions.endNodeResize();
       }
     };
 
@@ -114,7 +112,7 @@ export const useNodeResize = (options: UseNodeResizeOptions = {}): UseNodeResize
       window.removeEventListener("pointerup", handlePointerUp);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [actionState.resizeState, calculateNewSize, actionDispatch, actionActions, nodeEditorDispatch, nodeEditorActions]);
+  }, [actionState.resizeState, calculateNewSize, actionActions, nodeEditorActions]);
 
   const startResize = React.useCallback(
     (
@@ -123,9 +121,9 @@ export const useNodeResize = (options: UseNodeResizeOptions = {}): UseNodeResize
       startPosition: { x: number; y: number },
       startSize: { width: number; height: number },
     ) => {
-      actionDispatch(actionActions.startNodeResize(nodeId, startPosition, startSize, handle));
+      actionActions.startNodeResize(nodeId, startPosition, startSize, handle);
     },
-    [actionDispatch, actionActions],
+    [actionActions],
   );
 
   const isResizing = React.useCallback(

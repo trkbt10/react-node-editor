@@ -63,7 +63,7 @@ export const useHistoryIntegration = () => {
       previousStateRef.current = previousEntry.data;
 
       // Restore the state
-      nodeEditorDispatch(nodeEditorActions.restoreState(previousEntry.data));
+      nodeEditorActions.restoreState(previousEntry.data);
       return true;
     }
     return false;
@@ -82,7 +82,7 @@ export const useHistoryIntegration = () => {
       previousStateRef.current = nextEntry.data;
 
       // Restore the state
-      nodeEditorDispatch(nodeEditorActions.restoreState(nextEntry.data));
+      nodeEditorActions.restoreState(nextEntry.data);
       return true;
     }
     return false;

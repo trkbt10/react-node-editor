@@ -23,7 +23,7 @@ export type CanvasBaseProps = {
  */
 export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) => {
   const { state: canvasState, actions: canvasActions, canvasRef, utils } = useNodeCanvas();
-  const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: nodeEditorState } = useNodeEditor();
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [isBoxSelecting, setIsBoxSelecting] = React.useState(false);
@@ -126,16 +126,14 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
 
         // Start box selection
         setIsBoxSelecting(true);
-        actionDispatch(
-          actionActions.setSelectionBox({
-            start: { x: screenX, y: screenY },
-            end: { x: screenX, y: screenY },
-          }),
-        );
+        actionActions.setSelectionBox({
+          start: { x: screenX, y: screenY },
+          end: { x: screenX, y: screenY },
+        });
 
         // Clear current selection if not holding modifier keys
         if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
-          actionDispatch(actionActions.clearSelection());
+          actionActions.clearSelection();
         }
 
         if (containerRef.current) {
@@ -143,7 +141,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         }
       }
     },
-    [canvasState.isSpacePanning, canvasState.viewport, canvasActions, actionDispatch, actionActions],
+    [canvasState.isSpacePanning, canvasState.viewport, canvasActions, actionActions],
   );
 
   const handlePointerMove = React.useCallback(
@@ -160,12 +158,10 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         const screenX = e.clientX - rect.left;
         const screenY = e.clientY - rect.top;
 
-        actionDispatch(
-          actionActions.setSelectionBox({
-            start: actionState.selectionBox.start,
-            end: { x: screenX, y: screenY },
-          }),
-        );
+        actionActions.setSelectionBox({
+          start: actionState.selectionBox.start,
+          end: { x: screenX, y: screenY },
+        });
       }
     },
     [
@@ -174,7 +170,6 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       isBoxSelecting,
       actionState.selectionBox,
       canvasActions,
-      actionDispatch,
       actionActions,
     ],
   );
@@ -231,15 +226,15 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
           if (e.shiftKey || e.ctrlKey || e.metaKey) {
             // Add to existing selection
             const newSelection = [...new Set([...actionState.selectedNodeIds, ...selectedNodeIds])];
-            actionDispatch(actionActions.selectAllNodes(newSelection));
+            actionActions.selectAllNodes(newSelection);
           } else {
             // Replace selection
-            actionDispatch(actionActions.selectAllNodes(selectedNodeIds));
+            actionActions.selectAllNodes(selectedNodeIds);
           }
         }
 
         // Clear selection box
-        actionDispatch(actionActions.setSelectionBox(null));
+        actionActions.setSelectionBox(null);
 
         if (containerRef.current) {
           containerRef.current.releasePointerCapture(e.pointerId);
@@ -253,7 +248,6 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       actionState.selectedNodeIds,
       nodeEditorState.nodes,
       canvasActions,
-      actionDispatch,
       actionActions,
     ],
   );
@@ -273,9 +267,9 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       };
 
       // Show context menu for canvas (no specific node)
-      actionDispatch(actionActions.showContextMenu(position, undefined, canvasPosition));
+      actionActions.showContextMenu(position, undefined, canvasPosition);
     },
-    [actionDispatch, actionActions, utils],
+    [actionActions, utils],
   );
 
   // Handle double click to open Node Search
@@ -292,9 +286,9 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       // Convert screen coordinates to canvas coordinates using utils
       const canvasPosition = utils.screenToCanvas(e.clientX, e.clientY);
       const position = { x: e.clientX, y: e.clientY };
-      actionDispatch(actionActions.showContextMenu(position, undefined, canvasPosition, undefined, "search"));
+      actionActions.showContextMenu(position, undefined, canvasPosition, undefined, "search");
     },
-    [actionDispatch, actionActions, utils],
+    [actionActions, utils],
   );
 
   // Handle keyboard shortcuts (Figma style)

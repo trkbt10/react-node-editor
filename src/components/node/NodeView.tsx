@@ -68,7 +68,7 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   connectedPorts,
   connectablePorts,
 }) => {
-  const { dispatch: nodeEditorDispatch, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
+  const { actions: nodeEditorActions, getNodePorts } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
   const { isEditing, startEditing, updateValue, confirmEdit, cancelEdit, state: editingState } = useInlineEditing();
   const nodeResize = useNodeResize();
@@ -167,14 +167,12 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
       if (e.key === "Enter") {
         e.preventDefault();
         e.stopPropagation();
-        nodeEditorDispatch(
-          nodeEditorActions.updateNode(node.id, {
-            data: {
-              ...node.data,
-              title: editingState.currentValue,
-            },
-          }),
-        );
+        nodeEditorActions.updateNode(node.id, {
+          data: {
+            ...node.data,
+            title: editingState.currentValue,
+          },
+        });
         confirmEdit();
       } else if (e.key === "Escape") {
         e.preventDefault();
@@ -182,26 +180,24 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
         cancelEdit();
       }
     },
-    [editingState.currentValue, node.id, node.data, nodeEditorDispatch, nodeEditorActions, confirmEdit, cancelEdit],
+    [editingState.currentValue, node.id, node.data, nodeEditorActions, confirmEdit, cancelEdit],
   );
 
   const handleEditingBlur = React.useCallback(() => {
-    nodeEditorDispatch(
-      nodeEditorActions.updateNode(node.id, {
-        data: {
-          ...node.data,
-          title: editingState.currentValue,
-        },
-      }),
-    );
+    nodeEditorActions.updateNode(node.id, {
+      data: {
+        ...node.data,
+        title: editingState.currentValue,
+      },
+    });
     confirmEdit();
-  }, [editingState.currentValue, node.id, node.data, nodeEditorDispatch, nodeEditorActions, confirmEdit]);
+  }, [editingState.currentValue, node.id, node.data, nodeEditorActions, confirmEdit]);
 
   const handleUpdateNode = React.useCallback(
     (updates: Partial<Node>) => {
-      nodeEditorDispatch(nodeEditorActions.updateNode(node.id, updates));
+      nodeEditorActions.updateNode(node.id, updates);
     },
-    [node.id, nodeEditorDispatch, nodeEditorActions],
+    [node.id, nodeEditorActions],
   );
 
   const handleResizeStart = React.useCallback(

@@ -2,7 +2,7 @@
  * @file Context for managing undo/redo history with editor state snapshots
  */
 import * as React from "react";
-import { createAction, createActionHandlerMap, type ActionUnion } from "../utils/typedActions";
+import { bindActionCreators, createAction, createActionHandlerMap, type ActionUnion, type BoundActionCreators } from "../utils/typedActions";
 import type { NodeEditorData } from "../types/core";
 
 // History types
@@ -112,7 +112,8 @@ export const historyReducer = (state: HistoryState, action: HistoryAction): Hist
 export type HistoryContextValue = {
   state: HistoryState;
   dispatch: React.Dispatch<HistoryAction>;
-  actions: typeof historyActions;
+  actions: BoundActionCreators<typeof historyActions>;
+  actionCreators: typeof historyActions;
   canUndo: boolean;
   canRedo: boolean;
   currentEntry: HistoryEntry | null;
@@ -133,13 +134,14 @@ export type HistoryProviderProps = {
 
 export const HistoryProvider: React.FC<HistoryProviderProps> = ({ children, initialState, maxEntries }) => {
   const [state, dispatch] = React.useReducer(historyReducer, { ...defaultHistoryState, ...initialState });
+  const boundActions = React.useMemo(() => bindActionCreators(historyActions, dispatch), [dispatch]);
 
   // Apply maxEntries changes via reducer to avoid re-initialization patterns
   React.useEffect(() => {
     if (typeof maxEntries === "number" && maxEntries > 0) {
-      dispatch(historyActions.setMaxEntries(maxEntries));
+      boundActions.setMaxEntries(maxEntries);
     }
-  }, [maxEntries]);
+  }, [maxEntries, boundActions]);
 
   // Computed values
   const canUndo = state.currentIndex > 0;
@@ -149,9 +151,9 @@ export const HistoryProvider: React.FC<HistoryProviderProps> = ({ children, init
   // Convenience methods
   const pushEntry = React.useCallback(
     (action: string, data: NodeEditorData) => {
-      dispatch(historyActions.pushEntry(action, data));
+      boundActions.pushEntry(action, data);
     },
-    [dispatch],
+    [boundActions],
   );
 
   const undo = React.useCallback((): HistoryEntry | null => {
@@ -159,26 +161,27 @@ export const HistoryProvider: React.FC<HistoryProviderProps> = ({ children, init
       return null;
     }
 
-    dispatch(historyActions.undo());
     const previousEntry = state.entries[state.currentIndex - 1];
+    boundActions.undo();
     return previousEntry || null;
-  }, [canUndo, state.entries, state.currentIndex, dispatch]);
+  }, [canUndo, state.entries, state.currentIndex, boundActions]);
 
   const redo = React.useCallback((): HistoryEntry | null => {
     if (!canRedo) {
       return null;
     }
 
-    dispatch(historyActions.redo());
     const nextEntry = state.entries[state.currentIndex + 1];
+    boundActions.redo();
     return nextEntry || null;
-  }, [canRedo, state.entries, state.currentIndex, dispatch]);
+  }, [canRedo, state.entries, state.currentIndex, boundActions]);
 
   const contextValue: HistoryContextValue = React.useMemo(
     () => ({
       state,
       dispatch,
-      actions: historyActions,
+      actions: boundActions,
+      actionCreators: historyActions,
       canUndo,
       canRedo,
       currentEntry,
@@ -186,7 +189,7 @@ export const HistoryProvider: React.FC<HistoryProviderProps> = ({ children, init
       undo,
       redo,
     }),
-    [state, dispatch, canUndo, canRedo, currentEntry, pushEntry, undo, redo],
+    [state, dispatch, boundActions, canUndo, canRedo, currentEntry, pushEntry, undo, redo],
   );
 
   return <HistoryContext.Provider value={contextValue}>{children}</HistoryContext.Provider>;

@@ -2,7 +2,7 @@
  * @file Context for managing editor UI action states like selection, dragging, resizing, and context menus
  */
 import * as React from "react";
-import { createAction, createActionHandlerMap, type ActionUnion } from "../utils/typedActions";
+import { bindActionCreators, createAction, createActionHandlerMap, type ActionUnion, type BoundActionCreators } from "../utils/typedActions";
 import {
   NodeId,
   ConnectionId,
@@ -397,7 +397,8 @@ export const defaultEditorActionState: EditorActionState = {
 export type EditorActionStateContextValue = {
   state: EditorActionState;
   dispatch: React.Dispatch<EditorActionStateAction>;
-  actions: typeof editorActionStateActions;
+  actions: BoundActionCreators<typeof editorActionStateActions>;
+  actionCreators: typeof editorActionStateActions;
 };
 
 export const EditorActionStateContext = React.createContext<EditorActionStateContextValue | null>(null);
@@ -413,11 +414,13 @@ export const EditorActionStateProvider: React.FC<EditorActionStateProviderProps>
     ...defaultEditorActionState,
     ...initialState,
   });
+  const boundActions = React.useMemo(() => bindActionCreators(editorActionStateActions, dispatch), [dispatch]);
 
   const contextValue: EditorActionStateContextValue = {
     state,
     dispatch,
-    actions: editorActionStateActions,
+    actions: boundActions,
+    actionCreators: editorActionStateActions,
   };
 
   return <EditorActionStateContext.Provider value={contextValue}>{children}</EditorActionStateContext.Provider>;

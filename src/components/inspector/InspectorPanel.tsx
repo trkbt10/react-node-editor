@@ -34,7 +34,7 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({
   tabs: providedTabs,
   settingsPanels = [],
 }) => {
-  const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
   const { t } = useI18n();
 
   const defaultTabs = React.useMemo<InspectorPanelTabConfig[]>(
@@ -67,15 +67,15 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({
       return;
     }
     if (rawActiveTabIndex > tabs.length - 1) {
-      actionDispatch(actionActions.setInspectorActiveTab(Math.max(tabs.length - 1, 0)));
+      actionActions.setInspectorActiveTab(Math.max(tabs.length - 1, 0));
     }
-  }, [tabs.length, rawActiveTabIndex, actionDispatch, actionActions]);
+  }, [tabs.length, rawActiveTabIndex, actionActions]);
 
   const setActiveTabIndex = React.useCallback(
     (index: number) => {
-      actionDispatch(actionActions.setInspectorActiveTab(index));
+      actionActions.setInspectorActiveTab(index);
     },
-    [actionDispatch, actionActions],
+    [actionActions],
   );
 
   const activeTab = boundedActiveTabIndex >= 0 ? tabs[boundedActiveTabIndex] : undefined;

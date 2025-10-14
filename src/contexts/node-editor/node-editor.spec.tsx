@@ -22,11 +22,11 @@ const makeBasicData = (): NodeEditorData => ({
 });
 
 const UncontrolledHarness: FC = () => {
-  const { state, dispatch, actions } = useNodeEditor();
+  const { state, actions } = useNodeEditor();
 
   useEffect(() => {
-    dispatch(actions.updateNode("n1", { position: { x: 10, y: 20 } }));
-  }, [dispatch, actions]);
+    actions.updateNode("n1", { position: { x: 10, y: 20 } });
+  }, [actions]);
 
   return (
     <div>
@@ -37,10 +37,10 @@ const UncontrolledHarness: FC = () => {
 };
 
 const ControlledHarness: FC = () => {
-  const { dispatch, actions, state } = useNodeEditor();
+  const { actions, state } = useNodeEditor();
   useEffect(() => {
-    dispatch(actions.updateNode("n1", { position: { x: 99, y: 77 } }));
-  }, [dispatch, actions]);
+    actions.updateNode("n1", { position: { x: 99, y: 77 } });
+  }, [actions]);
   return (
     <div>
       <div data-testid="pos-x">{state.nodes.n1?.position.x}</div>

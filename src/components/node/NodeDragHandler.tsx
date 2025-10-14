@@ -20,8 +20,8 @@ export type NodeDragHandlerProps = {
  * Extracts drag logic from NodeLayer for better separation of concerns
  */
 export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, children }) => {
-  const { state: nodeEditorState, actions, dispatch } = useNodeEditor();
-  const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { state: nodeEditorState, actions } = useNodeEditor();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: canvasState } = useNodeCanvas();
   const nodeDefinitions = useNodeDefinitionList();
 
@@ -67,32 +67,28 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
     (event: PointerEvent, data: ReturnType<typeof createDragData>) => {
       // Select node if not already selected
       if (!actionState.selectedNodeIds.includes(nodeId)) {
-        actionDispatch(actionActions.selectNode(nodeId, event.shiftKey || event.metaKey || event.ctrlKey));
+        actionActions.selectNode(nodeId, event.shiftKey || event.metaKey || event.ctrlKey);
       }
 
       // Start drag state
-      actionDispatch(
-        actionActions.startNodeDrag(
-          data.nodeIds,
-          { x: event.clientX, y: event.clientY },
-          data.initialPositions,
-          data.affectedChildNodes,
-        ),
+      actionActions.startNodeDrag(
+        data.nodeIds,
+        { x: event.clientX, y: event.clientY },
+        data.initialPositions,
+        data.affectedChildNodes,
       );
     },
-    [nodeId, actionState.selectedNodeIds, actionDispatch, actionActions],
+    [nodeId, actionState.selectedNodeIds, actionActions],
   );
 
   const handleDragMove = React.useCallback(
     (_event: PointerEvent, delta: Position) => {
-      actionDispatch(
-        actionActions.updateNodeDrag({
-          x: delta.x / canvasState.viewport.scale,
-          y: delta.y / canvasState.viewport.scale,
-        }),
-      );
+      actionActions.updateNodeDrag({
+        x: delta.x / canvasState.viewport.scale,
+        y: delta.y / canvasState.viewport.scale,
+      });
     },
-    [actionDispatch, actionActions, canvasState.viewport.scale],
+    [actionActions, canvasState.viewport.scale],
   );
 
   const handleDragEnd = React.useCallback(
@@ -134,12 +130,12 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
       });
 
       // Apply all position updates
-      dispatch(actions.moveNodes(updates));
+      actions.moveNodes(updates);
 
       // End drag state
-      actionDispatch(actionActions.endNodeDrag());
+      actionActions.endNodeDrag();
     },
-    [actionState.dragState, canvasState.viewport.scale, dispatch, actions, actionDispatch, actionActions],
+    [actionState.dragState, canvasState.viewport.scale, actions, actionActions],
   );
 
   const { startDrag } = usePointerDrag({

@@ -36,7 +36,7 @@ export type ContextActionMenuProps = {
 export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, target, visible, onClose }) => {
   const { t } = useI18n();
   const editorActions = useNodeEditorActions();
-  const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: editorState } = useNodeEditor();
   const nodeDefinitions = useNodeDefinitionList();
   const [menuPosition, setMenuPosition] = React.useState({ x: position.x, y: position.y });
@@ -144,7 +144,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
       .map((c) => ({ fromNodeId: c.fromNodeId, fromPortId: c.fromPortId, toNodeId: c.toNodeId, toPortId: c.toPortId }));
     setClipboard({ nodes, connections });
     selected.forEach((nodeId) => editorActions.deleteNode(nodeId));
-    actionDispatch(actionActions.clearSelection());
+    actionActions.clearSelection();
     onClose();
   };
 
@@ -179,7 +179,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
       }
     });
     const newIds = Array.from(idMap.values());
-    actionDispatch(actionActions.selectAllNodes(newIds));
+    actionActions.selectAllNodes(newIds);
     onClose();
   };
 
@@ -245,8 +245,8 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
                   return;
                 }
                 // Ensure node is selected and switch inspector to Properties tab
-                actionDispatch(actionActions.selectNode(target.id, false));
-                actionDispatch(actionActions.setInspectorActiveTab(1));
+                actionActions.selectNode(target.id, false);
+                actionActions.setInspectorActiveTab(1);
                 onClose();
               }}
             >
@@ -270,7 +270,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
               onClick={() => {
                 // Close this menu then open NodeSearch at the same screen position
                 onClose();
-                actionDispatch(actionActions.showContextMenu(menuPosition, undefined, undefined, undefined, "search"));
+                actionActions.showContextMenu(menuPosition, undefined, undefined, undefined, "search");
               }}
             >
               <PlusIcon size={14} /> {t("addConnection") || "Add Connection…"}

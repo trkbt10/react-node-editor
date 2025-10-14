@@ -37,7 +37,7 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
 }) => {
   const { t } = useI18n();
   const editorActions = useNodeEditorActions();
-  const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: editorState } = useNodeEditor();
   const nodeDefinitions = useNodeDefinitionList();
 
@@ -70,9 +70,9 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
         : [targetNodeId];
     copyNodesToClipboard(selected, editorState);
     selected.forEach((nodeId) => editorActions.deleteNode(nodeId));
-    actionDispatch(actionActions.clearSelection());
+    actionActions.clearSelection();
     onAction?.();
-  }, [actionState.selectedNodeIds, editorActions, editorState, actionDispatch, actionActions, targetNodeId, onAction]);
+  }, [actionState.selectedNodeIds, editorActions, editorState, actionActions, targetNodeId, onAction]);
 
   const handlePaste = React.useCallback(() => {
     const result = pasteNodesFromClipboard();
@@ -92,9 +92,9 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
 
     // Select pasted nodes
     const newIds = Array.from(result.idMap.values());
-    actionDispatch(actionActions.selectAllNodes(newIds));
+    actionActions.selectAllNodes(newIds);
     onAction?.();
-  }, [editorActions, actionDispatch, actionActions, onAction]);
+  }, [editorActions, actionActions, onAction]);
 
   const handleDelete = React.useCallback(() => {
     editorActions.deleteNode(targetNodeId);

@@ -20,7 +20,7 @@ export type SelectionManagerProps = {
  */
 export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) => {
   const { state: nodeEditorState } = useNodeEditor();
-  const { dispatch: actionDispatch, actions } = useEditorActionState();
+  const { actions } = useEditorActionState();
   const { state: canvasState } = useNodeCanvas();
 
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -81,14 +81,14 @@ export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) 
       startPosRef.current = canvasPos;
       setIsSelecting(true);
 
-      actionDispatch(actions.setSelectionBox({ start: canvasPos, end: canvasPos }));
+      actions.setSelectionBox({ start: canvasPos, end: canvasPos });
 
       // Clear selection if not holding modifier
       if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
-        actionDispatch(actions.clearSelection());
+        actions.clearSelection();
       }
     },
-    [clientToCanvas, actionDispatch, actions],
+    [clientToCanvas, actions],
   );
 
   const handlePointerMove = React.useCallback(
@@ -98,7 +98,7 @@ export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) 
       }
 
       const canvasPos = clientToCanvas({ x: e.clientX, y: e.clientY });
-      actionDispatch(actions.setSelectionBox({ start: startPosRef.current, end: canvasPos }));
+      actions.setSelectionBox({ start: startPosRef.current, end: canvasPos });
 
       // Update selected nodes based on box (use spatial index for performance)
       const box = { start: startPosRef.current, end: canvasPos };
@@ -109,9 +109,9 @@ export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) 
 
       const nodesInBox = candidateNodes.filter((nodeId) => isNodeInSelectionBox(nodeId, box));
 
-      actionDispatch(actions.selectAllNodes(nodesInBox as NodeId[]));
+      actions.selectAllNodes(nodesInBox as NodeId[]);
     },
-    [isSelecting, clientToCanvas, nodeEditorState.nodes, isNodeInSelectionBox, actionDispatch, actions],
+    [isSelecting, clientToCanvas, nodeEditorState.nodes, isNodeInSelectionBox, actions],
   );
 
   const handlePointerUp = React.useCallback(() => {
@@ -121,8 +121,8 @@ export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) 
 
     setIsSelecting(false);
     startPosRef.current = null;
-    actionDispatch(actions.setSelectionBox(null));
-  }, [isSelecting, actionDispatch, actions]);
+    actions.setSelectionBox(null);
+  }, [isSelecting, actions]);
 
   // Add global event listeners when selecting
   React.useEffect(() => {

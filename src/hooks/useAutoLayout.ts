@@ -16,7 +16,7 @@ import {
  * Hook that provides auto layout functionality
  */
 export const useAutoLayout = () => {
-  const { state: nodeEditorState, dispatch: nodeEditorDispatch, actions: nodeEditorActions } = useNodeEditor();
+  const { state: nodeEditorState, actions: nodeEditorActions } = useNodeEditor();
   const { state: canvasState, actions: canvasActions } = useNodeCanvas();
   const { state: actionState } = useEditorActionState();
 
@@ -44,7 +44,7 @@ export const useAutoLayout = () => {
       });
 
       if (Object.keys(result.nodePositions).length > 0) {
-        nodeEditorDispatch(nodeEditorActions.moveNodes(result.nodePositions));
+        nodeEditorActions.moveNodes(result.nodePositions);
 
         // Adjust viewport to center the laid out nodes
         const nodes = Object.values(nodesToLayout);
@@ -63,14 +63,7 @@ export const useAutoLayout = () => {
         }
       }
     },
-    [
-      nodeEditorState,
-      actionState.selectedNodeIds,
-      nodeEditorDispatch,
-      nodeEditorActions,
-      canvasState.viewport.scale,
-      canvasActions,
-    ],
+    [nodeEditorState, actionState.selectedNodeIds, nodeEditorActions, canvasState.viewport.scale, canvasActions],
   );
 
   const applyHierarchicalLayout = React.useCallback(
@@ -94,7 +87,7 @@ export const useAutoLayout = () => {
       });
 
       if (Object.keys(result.nodePositions).length > 0) {
-        nodeEditorDispatch(nodeEditorActions.moveNodes(result.nodePositions));
+        nodeEditorActions.moveNodes(result.nodePositions);
 
         // Adjust viewport to center the laid out nodes
         const nodes = Object.values(nodesToLayout);
@@ -113,14 +106,7 @@ export const useAutoLayout = () => {
         }
       }
     },
-    [
-      nodeEditorState,
-      actionState.selectedNodeIds,
-      nodeEditorDispatch,
-      nodeEditorActions,
-      canvasState.viewport.scale,
-      canvasActions,
-    ],
+    [nodeEditorState, actionState.selectedNodeIds, nodeEditorActions, canvasState.viewport.scale, canvasActions],
   );
 
   const applyGridLayout = React.useCallback(
@@ -144,7 +130,7 @@ export const useAutoLayout = () => {
       });
 
       if (Object.keys(result.nodePositions).length > 0) {
-        nodeEditorDispatch(nodeEditorActions.moveNodes(result.nodePositions));
+        nodeEditorActions.moveNodes(result.nodePositions);
 
         // Adjust viewport to center the laid out nodes
         const nodes = Object.values(nodesToLayout);
@@ -163,14 +149,7 @@ export const useAutoLayout = () => {
         }
       }
     },
-    [
-      nodeEditorState,
-      actionState.selectedNodeIds,
-      nodeEditorDispatch,
-      nodeEditorActions,
-      canvasState.viewport.scale,
-      canvasActions,
-    ],
+    [nodeEditorState, actionState.selectedNodeIds, nodeEditorActions, canvasState.viewport.scale, canvasActions],
   );
 
   const applyLayout = React.useCallback(

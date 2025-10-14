@@ -17,11 +17,10 @@ import { useNodeDefinitionList } from "../contexts/node-definitions/hooks/useNod
 export const useNodeEditorShortcuts = () => {
   const {
     state: nodeEditorState,
-    dispatch: nodeEditorDispatch,
     actions: nodeEditorActions,
     handleSave,
   } = useNodeEditor();
-  const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
   const { performUndo, performRedo, canUndo, canRedo } = useHistoryIntegration();
   const { applyLayout } = useAutoLayout();
   const nodeDefinitions = useNodeDefinitionList();
@@ -47,23 +46,16 @@ export const useNodeEditorShortcuts = () => {
       console.log("Delete shortcut triggered");
       if (actionState.selectedNodeIds.length > 0) {
         actionState.selectedNodeIds.forEach((nodeId) => {
-          nodeEditorDispatch(nodeEditorActions.deleteNode(nodeId));
+          nodeEditorActions.deleteNode(nodeId);
         });
-        actionDispatch(actionActions.clearSelection());
+        actionActions.clearSelection();
       } else if (actionState.selectedConnectionIds.length > 0) {
         actionState.selectedConnectionIds.forEach((connectionId) => {
-          nodeEditorDispatch(nodeEditorActions.deleteConnection(connectionId));
+          nodeEditorActions.deleteConnection(connectionId);
         });
-        actionDispatch(actionActions.clearSelection());
+        actionActions.clearSelection();
       }
-    }, [
-      actionState.selectedNodeIds,
-      actionState.selectedConnectionIds,
-      nodeEditorDispatch,
-      nodeEditorActions,
-      actionDispatch,
-      actionActions,
-    ]),
+    }, [actionState.selectedNodeIds, actionState.selectedConnectionIds, nodeEditorActions, actionActions]),
   );
 
   // Backspace also deletes
@@ -73,23 +65,16 @@ export const useNodeEditorShortcuts = () => {
       console.log("Backspace shortcut triggered");
       if (actionState.selectedNodeIds.length > 0) {
         actionState.selectedNodeIds.forEach((nodeId) => {
-          nodeEditorDispatch(nodeEditorActions.deleteNode(nodeId));
+          nodeEditorActions.deleteNode(nodeId);
         });
-        actionDispatch(actionActions.clearSelection());
+        actionActions.clearSelection();
       } else if (actionState.selectedConnectionIds.length > 0) {
         actionState.selectedConnectionIds.forEach((connectionId) => {
-          nodeEditorDispatch(nodeEditorActions.deleteConnection(connectionId));
+          nodeEditorActions.deleteConnection(connectionId);
         });
-        actionDispatch(actionActions.clearSelection());
+        actionActions.clearSelection();
       }
-    }, [
-      actionState.selectedNodeIds,
-      actionState.selectedConnectionIds,
-      nodeEditorDispatch,
-      nodeEditorActions,
-      actionDispatch,
-      actionActions,
-    ]),
+    }, [actionState.selectedNodeIds, actionState.selectedConnectionIds, nodeEditorActions, actionActions]),
   );
 
   // Select all nodes (Ctrl/Cmd+A)
@@ -98,8 +83,8 @@ export const useNodeEditorShortcuts = () => {
     React.useCallback(() => {
       console.log("Select All shortcut triggered");
       const allNodeIds = Object.keys(nodeEditorState.nodes);
-      actionDispatch(actionActions.selectAllNodes(allNodeIds));
-    }, [nodeEditorState.nodes, actionDispatch, actionActions]),
+      actionActions.selectAllNodes(allNodeIds);
+    }, [nodeEditorState.nodes, actionActions]),
   );
 
   // Clear selection
@@ -107,8 +92,8 @@ export const useNodeEditorShortcuts = () => {
     { key: "Escape" },
     React.useCallback(() => {
       console.log("Escape shortcut triggered");
-      actionDispatch(actionActions.clearSelection());
-    }, [actionDispatch, actionActions]),
+      actionActions.clearSelection();
+    }, [actionActions]),
   );
 
   // Add new node
@@ -139,8 +124,8 @@ export const useNodeEditorShortcuts = () => {
           },
         ],
       };
-      nodeEditorDispatch(nodeEditorActions.addNode(newNode));
-    }, [nodeEditorDispatch, nodeEditorActions]),
+      nodeEditorActions.addNode(newNode);
+    }, [nodeEditorActions]),
   );
 
   // Duplicate selected nodes (Ctrl/Cmd+D)
@@ -155,10 +140,10 @@ export const useNodeEditorShortcuts = () => {
         // Respect per-type limits by filtering duplicable ids
         const allowed = filterDuplicableNodeIds(sel, ned, defs);
         if (allowed.length > 0) {
-          nodeEditorDispatch(nodeEditorActions.duplicateNodes(allowed));
+          nodeEditorActions.duplicateNodes(allowed);
         }
       }
-    }, [nodeEditorDispatch, nodeEditorActions]),
+    }, [nodeEditorActions]),
   );
 
   // Lock selected nodes (Cmd+2 / Ctrl+2)
@@ -169,8 +154,8 @@ export const useNodeEditorShortcuts = () => {
       if (selected.length === 0) {
         return;
       }
-      selected.forEach((nodeId) => nodeEditorDispatch(nodeEditorActions.updateNode(nodeId, { locked: true })));
-    }, [nodeEditorDispatch, nodeEditorActions]),
+      selected.forEach((nodeId) => nodeEditorActions.updateNode(nodeId, { locked: true }));
+    }, [nodeEditorActions]),
   );
 
   // Unlock all nodes (Cmd+Shift+2 / Ctrl+Shift+2)
@@ -178,28 +163,24 @@ export const useNodeEditorShortcuts = () => {
     { key: "2", cmdOrCtrl: true, shift: true },
     React.useCallback(() => {
       const allIds = Object.keys(nodeEditorStateRef.current.nodes);
-      allIds.forEach((nodeId) => nodeEditorDispatch(nodeEditorActions.updateNode(nodeId, { locked: false })));
-    }, [nodeEditorDispatch, nodeEditorActions]),
+      allIds.forEach((nodeId) => nodeEditorActions.updateNode(nodeId, { locked: false }));
+    }, [nodeEditorActions]),
   );
 
   // Auto-select duplicated nodes when they are created
   React.useEffect(() => {
     if (nodeEditorState.lastDuplicatedNodeIds && nodeEditorState.lastDuplicatedNodeIds.length > 0) {
-      actionDispatch(actionActions.selectAllNodes(nodeEditorState.lastDuplicatedNodeIds));
+      actionActions.selectAllNodes(nodeEditorState.lastDuplicatedNodeIds);
 
       // Clear the lastDuplicatedNodeIds to avoid re-selection
-      nodeEditorDispatch(
-        nodeEditorActions.setNodeData({
-          ...nodeEditorState,
-          lastDuplicatedNodeIds: undefined,
-        }),
-      );
+      nodeEditorActions.setNodeData({
+        ...nodeEditorState,
+        lastDuplicatedNodeIds: undefined,
+      });
     }
   }, [
     nodeEditorState.lastDuplicatedNodeIds,
-    actionDispatch,
     actionActions,
-    nodeEditorDispatch,
     nodeEditorActions,
     nodeEditorState,
   ]);
@@ -282,9 +263,9 @@ export const useNodeEditorShortcuts = () => {
       copyNodesToClipboard(selected, nodeEditorStateRef.current);
 
       // Delete nodes
-      selected.forEach((nodeId) => nodeEditorDispatch(nodeEditorActions.deleteNode(nodeId)));
-      actionDispatch(actionActions.clearSelection());
-    }, [nodeEditorDispatch, nodeEditorActions, actionDispatch, actionActions]),
+      selected.forEach((nodeId) => nodeEditorActions.deleteNode(nodeId));
+      actionActions.clearSelection();
+    }, [nodeEditorActions, actionActions]),
   );
 
   // Paste (Ctrl/Cmd+V)
@@ -298,17 +279,17 @@ export const useNodeEditorShortcuts = () => {
 
       // Add nodes
       result.nodes.forEach((node) => {
-        nodeEditorDispatch(nodeEditorActions.addNodeWithId(node));
+        nodeEditorActions.addNodeWithId(node);
       });
 
       // Add connections
       result.connections.forEach((conn) => {
-        nodeEditorDispatch(nodeEditorActions.addConnection(conn));
+        nodeEditorActions.addConnection(conn);
       });
 
       // Select pasted nodes
       const newIds = Array.from(result.idMap.values());
-      actionDispatch(actionActions.selectAllNodes(newIds));
-    }, [nodeEditorDispatch, nodeEditorActions, actionDispatch, actionActions]),
+      actionActions.selectAllNodes(newIds);
+    }, [nodeEditorActions, actionActions]),
   );
 };

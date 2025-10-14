@@ -2,7 +2,7 @@
  * @file Context for managing inline editing state of node titles and data
  */
 import * as React from "react";
-import { createAction, createActionHandlerMap, type ActionUnion } from "../utils/typedActions";
+import { bindActionCreators, createAction, createActionHandlerMap, type ActionUnion, type BoundActionCreators } from "../utils/typedActions";
 
 // Inline editing types
 export type NodeId = string;
@@ -79,7 +79,8 @@ export const inlineEditingReducer = (state: InlineEditingState, action: InlineEd
 export type InlineEditingContextValue = {
   state: InlineEditingState;
   dispatch: React.Dispatch<InlineEditingAction>;
-  actions: typeof inlineEditingActions;
+  actions: BoundActionCreators<typeof inlineEditingActions>;
+  actionCreators: typeof inlineEditingActions;
   isEditing: (nodeId: NodeId, field?: "title" | "data") => boolean;
   startEditing: (nodeId: NodeId, field: "title" | "data", value: string) => void;
   updateValue: (value: string) => void;
@@ -97,6 +98,7 @@ export type InlineEditingProviderProps = {
 
 export const InlineEditingProvider: React.FC<InlineEditingProviderProps> = ({ children, initialState }) => {
   const [state, dispatch] = React.useReducer(inlineEditingReducer, { ...defaultInlineEditingState, ...initialState });
+  const boundActions = React.useMemo(() => bindActionCreators(inlineEditingActions, dispatch), [dispatch]);
 
   // Convenience methods
   const isEditing = React.useCallback(
@@ -117,30 +119,31 @@ export const InlineEditingProvider: React.FC<InlineEditingProviderProps> = ({ ch
 
   const startEditing = React.useCallback(
     (nodeId: NodeId, field: "title" | "data", value: string) => {
-      dispatch(inlineEditingActions.startEditing(nodeId, field, value));
+      boundActions.startEditing(nodeId, field, value);
     },
-    [dispatch],
+    [boundActions],
   );
 
   const updateValue = React.useCallback(
     (value: string) => {
-      dispatch(inlineEditingActions.updateValue(value));
+      boundActions.updateValue(value);
     },
-    [dispatch],
+    [boundActions],
   );
 
   const confirmEdit = React.useCallback(() => {
-    dispatch(inlineEditingActions.confirmEdit());
-  }, [dispatch]);
+    boundActions.confirmEdit();
+  }, [boundActions]);
 
   const cancelEdit = React.useCallback(() => {
-    dispatch(inlineEditingActions.cancelEdit());
-  }, [dispatch]);
+    boundActions.cancelEdit();
+  }, [boundActions]);
 
   const contextValue: InlineEditingContextValue = {
     state,
     dispatch,
-    actions: inlineEditingActions,
+    actions: boundActions,
+    actionCreators: inlineEditingActions,
     isEditing,
     startEditing,
     updateValue,

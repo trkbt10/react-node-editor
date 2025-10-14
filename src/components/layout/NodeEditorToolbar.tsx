@@ -14,9 +14,9 @@ export type NodeEditorToolbarProps = {} & React.HTMLAttributes<HTMLDivElement>;
 
 export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({ className, children, ...rest }) => {
   const nodeDefinitions = useNodeDefinitionList();
-  const { actions: actionActions, dispatch: actionDispatch } = useEditorActionState();
+  const { actions: actionActions } = useEditorActionState();
   const { state: canvasState } = useNodeCanvas();
-  const { state: editorState, dispatch, actions } = useNodeEditor();
+  const { state: editorState, actions } = useNodeEditor();
 
   const commonNodeTypes = React.useMemo(() => {
     return nodeDefinitions
@@ -57,10 +57,10 @@ export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({ className,
         })(),
       };
 
-      dispatch(actions.addNode(newNode));
-      actionDispatch(actionActions.selectNode(nodeId, false));
+      actions.addNode(newNode);
+      actionActions.selectNode(nodeId, false);
     },
-    [nodeDefinitions, nodeTypeCounts, canvasState.viewport, dispatch, actions, actionDispatch, actionActions],
+    [nodeDefinitions, nodeTypeCounts, canvasState.viewport, actions, actionActions],
   );
 
   const showNodeSearchMenu = React.useCallback(() => {
@@ -70,10 +70,8 @@ export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({ className,
     const canvasX = (-viewport.offset.x + centerScreenX) / viewport.scale;
     const canvasY = (-viewport.offset.y + centerScreenY) / viewport.scale;
 
-    actionDispatch(
-      actionActions.showContextMenu({ x: centerScreenX, y: centerScreenY }, undefined, { x: canvasX, y: canvasY }),
-    );
-  }, [canvasState.viewport, actionDispatch, actionActions]);
+    actionActions.showContextMenu({ x: centerScreenX, y: centerScreenY }, undefined, { x: canvasX, y: canvasY });
+  }, [canvasState.viewport, actionActions]);
 
   const toolbarContent = (
     <>

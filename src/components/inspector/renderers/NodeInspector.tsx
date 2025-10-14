@@ -23,7 +23,7 @@ export type NodeInspectorProps = {
 
 export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
   ({ node }) => {
-    const { state: nodeEditorState, dispatch: nodeEditorDispatch, actions: nodeEditorActions } = useNodeEditor();
+    const { state: nodeEditorState, actions: nodeEditorActions } = useNodeEditor();
     const { state: actionState } = useEditorActionState();
     const nodeDefinition = useNodeDefinition(node.type);
     const externalDataRef = useExternalDataRef(node.id);
@@ -31,9 +31,9 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
     // Handle node updates - Memoized to prevent recreation on every render
     const handleUpdateNode = React.useCallback(
       (updates: Partial<Node>) => {
-        nodeEditorDispatch(nodeEditorActions.updateNode(node.id, updates));
+        nodeEditorActions.updateNode(node.id, updates);
       },
-      [node.id, nodeEditorDispatch, nodeEditorActions],
+      [node.id, nodeEditorActions],
     );
 
     // Handle external data updates
@@ -48,8 +48,8 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
 
     // Handle node deletion
     const handleDeleteNode = React.useCallback(() => {
-      nodeEditorDispatch(nodeEditorActions.deleteNode(node.id));
-    }, [node.id, nodeEditorDispatch, nodeEditorActions]);
+      nodeEditorActions.deleteNode(node.id);
+    }, [node.id, nodeEditorActions]);
 
     // Get all selected nodes for alignment
     const selectedNodes = actionState.selectedNodeIds.map((id) => nodeEditorState.nodes[id]).filter(Boolean);
@@ -59,10 +59,10 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
       (alignmentType: AlignmentActionType, nodes: Node[]) => {
         const positionUpdates = calculateAlignmentPositions(nodes, alignmentType);
         if (Object.keys(positionUpdates).length > 0) {
-          nodeEditorDispatch(nodeEditorActions.moveNodes(positionUpdates));
+          nodeEditorActions.moveNodes(positionUpdates);
         }
       },
-      [nodeEditorDispatch, nodeEditorActions],
+      [nodeEditorActions],
     );
 
     // Inspector render props - Only recreate when dependencies actually change

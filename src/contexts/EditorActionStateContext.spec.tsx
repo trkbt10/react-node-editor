@@ -6,12 +6,12 @@ import { useEffect, type FC } from "react";
 import { EditorActionStateProvider, useEditorActionState } from "./EditorActionStateContext";
 
 const Harness: FC = () => {
-  const { state, dispatch, actions } = useEditorActionState();
+  const { state, actions } = useEditorActionState();
   useEffect(() => {
-    dispatch(actions.selectNode("n1", false));
-    dispatch(actions.setSelectionBox({ start: { x: 0, y: 0 }, end: { x: 10, y: 10 } }));
-    dispatch(actions.clearSelection());
-  }, [dispatch, actions]);
+    actions.selectNode("n1", false);
+    actions.setSelectionBox({ start: { x: 0, y: 0 }, end: { x: 10, y: 10 } });
+    actions.clearSelection();
+  }, [actions]);
   return <div data-testid="selected-count">{String(state.selectedNodeIds.length)}</div>;
 };
 

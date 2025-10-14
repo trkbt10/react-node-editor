@@ -3,7 +3,9 @@
  */
 import * as React from "react";
 import type { Node, NodeEditorData, NodeId, Port, Position, GridSettings } from "../../types/core";
-import type { nodeEditorActions as actions, NodeEditorAction } from "./actions";
+import { nodeEditorActions } from "./actions";
+import type { NodeEditorAction } from "./actions";
+import type { BoundActionCreators } from "../../utils/typedActions";
 import type { Settings } from "../../hooks/useSettings";
 import type { SettingsManager } from "../../settings/SettingsManager";
 import type { NodeDefinition } from "../../types/NodeDefinition";
@@ -30,7 +32,8 @@ export type NodeEditorUtils = {
 export type NodeEditorContextValue = {
   state: NodeEditorData;
   dispatch: React.Dispatch<NodeEditorAction>;
-  actions: typeof actions;
+  actions: BoundActionCreators<typeof nodeEditorActions>;
+  actionCreators: typeof nodeEditorActions;
   isLoading: boolean;
   isSaving: boolean;
   handleSave: () => Promise<void>;

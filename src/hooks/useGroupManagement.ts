@@ -41,7 +41,7 @@ export type UseGroupManagementResult = {
  * Hook for managing group relationships and operations
  */
 export const useGroupManagement = (options: UseGroupManagementOptions = {}): UseGroupManagementResult => {
-  const { state, dispatch, actions } = useNodeEditor();
+  const { state, actions } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
   const nodeDefinitions = useNodeDefinitionList();
   const { autoUpdateMembership = true, membershipUpdateDelay = 100 } = options;
@@ -56,9 +56,9 @@ export const useGroupManagement = (options: UseGroupManagementOptions = {}): Use
   const updateAllGroupMembership = React.useCallback(() => {
     const updates = updateGroupMembership(nodesRef.current, nodeDefinitionsRef.current);
     if (Object.keys(updates).length > 0) {
-      dispatch(actions.updateGroupMembership(updates));
+      actions.updateGroupMembership(updates);
     }
-  }, [dispatch, actions]);
+  }, [actions]);
 
   // Auto-update membership when nodes change position (but not during drag)
   React.useEffect(() => {
@@ -112,9 +112,9 @@ export const useGroupManagement = (options: UseGroupManagementOptions = {}): Use
 
   const moveGroupWithChildren = React.useCallback(
     (groupId: NodeId, delta: { x: number; y: number }) => {
-      dispatch(actions.moveGroupWithChildren(groupId, delta));
+      actions.moveGroupWithChildren(groupId, delta);
     },
-    [dispatch, actions],
+    [actions],
   );
 
   const isValidGroupMoveCheck = React.useCallback((groupId: NodeId, newPosition: { x: number; y: number }): boolean => {

@@ -44,8 +44,8 @@ export const NodeEditorContent: React.FC<{
   /** Grid layer definitions */
   gridLayers?: LayerDefinition[];
 }> = ({ className, settingsManager, portPositionBehavior, gridConfig, gridLayers }) => {
-  const { state: editorState, dispatch, actions, getNodePorts } = useNodeEditor();
-  const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { state: editorState, actions, getNodePorts } = useNodeEditor();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
 
   const portPositionConfig = React.useMemo<PortPositionConfig>(
@@ -233,7 +233,7 @@ export const NodeEditorContent: React.FC<{
       };
 
       // Add node to editor with the predetermined id
-      dispatch(actions.addNodeWithId(newNode));
+      actions.addNodeWithId(newNode);
 
       // Do not auto-select the new node to avoid unintended adjacent highlighting
 
@@ -269,18 +269,16 @@ export const NodeEditorContent: React.FC<{
             fromPort.type === "output"
               ? { fromNodeId: fromPort.nodeId, fromPortId: fromPort.id, toNodeId: nodeId, toPortId: tempPort.id }
               : { fromNodeId: nodeId, fromPortId: tempPort.id, toNodeId: fromPort.nodeId, toPortId: fromPort.id };
-          dispatch(actions.addConnection(connection));
+          actions.addConnection(connection);
         }
       }
 
       // Hide context menu
-      actionDispatch(actionActions.hideContextMenu());
+      actionActions.hideContextMenu();
     },
     [
       nodeDefinitions,
-      dispatch,
       actions,
-      actionDispatch,
       actionActions,
       actionState.contextMenu.canvasPosition,
       actionState.contextMenu.fromPort,
@@ -360,7 +358,7 @@ export const NodeEditorContent: React.FC<{
             return Array.from(new Set([...Array.from(flowDisabled), ...extraDisabled]));
           })()}
           onCreateNode={handleCreateNode}
-          onClose={() => actionDispatch(actionActions.hideContextMenu())}
+          onClose={() => actionActions.hideContextMenu()}
           visible={true}
         />
       )}
@@ -376,7 +374,7 @@ export const NodeEditorContent: React.FC<{
                 : { type: "canvas" }
           }
           visible={true}
-          onClose={() => actionDispatch(actionActions.hideContextMenu())}
+          onClose={() => actionActions.hideContextMenu()}
         />
       )}
     </NodeEditorBase>

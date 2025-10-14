@@ -276,8 +276,8 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
   onNodeDrop,
   onDragStateChange,
 }) => {
-  const { state: editorState, dispatch, actions } = useNodeEditor();
-  const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { state: editorState, actions } = useNodeEditor();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
   const nodeDefinitions = useNodeDefinitionList();
 
   const node = editorState.nodes[nodeId];
@@ -303,29 +303,29 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
 
   const handleSelect = React.useCallback(
     (nodeId: NodeId, multiSelect: boolean) => {
-      actionDispatch(actionActions.selectNode(nodeId, multiSelect));
+      actionActions.selectNode(nodeId, multiSelect);
     },
-    [actionDispatch, actionActions],
+    [actionActions],
   );
 
   const handleToggleVisibility = React.useCallback(
     (nodeId: NodeId) => {
       const node = editorState.nodes[nodeId];
       if (node) {
-        dispatch(actions.updateNode(nodeId, { visible: node.visible === false }));
+        actions.updateNode(nodeId, { visible: node.visible === false });
       }
     },
-    [editorState.nodes, dispatch, actions],
+    [editorState.nodes, actions],
   );
 
   const handleToggleLock = React.useCallback(
     (nodeId: NodeId) => {
       const node = editorState.nodes[nodeId];
       if (node) {
-        dispatch(actions.updateNode(nodeId, { locked: !node.locked }));
+        actions.updateNode(nodeId, { locked: !node.locked });
       }
     },
-    [editorState.nodes, dispatch, actions],
+    [editorState.nodes, actions],
   );
 
   const handleToggleExpand = React.useCallback(
@@ -336,17 +336,17 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
       }
       const d = nodeDefinitions.find((defn) => defn.type === n.type);
       if (hasGroupBehavior(d)) {
-        dispatch(actions.updateNode(nodeId, { expanded: !n.expanded }));
+        actions.updateNode(nodeId, { expanded: !n.expanded });
       }
     },
-    [editorState.nodes, dispatch, actions, nodeDefinitions],
+    [editorState.nodes, actions, nodeDefinitions],
   );
 
   const handleDeleteNode = React.useCallback(
     (nodeId: NodeId) => {
-      dispatch(actions.deleteNode(nodeId));
+      actions.deleteNode(nodeId);
     },
-    [dispatch, actions],
+    [actions],
   );
 
   return (
@@ -372,8 +372,8 @@ export type NodeTreeListPanelProps = {
 };
 
 export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = ({ className }) => {
-  const { state: editorState, dispatch: editorDispatch, actions: editorActions } = useNodeEditor();
-  const { dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
+  const { state: editorState, actions: editorActions } = useNodeEditor();
+  const { actions: actionActions } = useEditorActionState();
   const nodeDefinitions = useNodeDefinitionList();
   const { t } = useI18n();
 
@@ -411,8 +411,8 @@ export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = ({ className 
   }, [rootNodes, t, nodeDefinitions]);
 
   const handleDeselectAll = React.useCallback(() => {
-    actionDispatch(actionActions.clearSelection());
-  }, [actionDispatch, actionActions]);
+    actionActions.clearSelection();
+  }, [actionActions]);
 
   const handleDragStateChange = React.useCallback((state: Partial<DragState>) => {
     setDragState((prev) => ({ ...prev, ...state }));
@@ -472,12 +472,10 @@ export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = ({ className 
         })();
         list.splice(Math.max(0, targetIndex), 0, { ...draggedNode, parentId });
         list.forEach((n, idx) => {
-          editorDispatch(
-            editorActions.updateNode(n.id, {
-              order: idx * 10,
-              parentId: n.id === draggedNodeId ? parentId : n.parentId,
-            }),
-          );
+          editorActions.updateNode(n.id, {
+            order: idx * 10,
+            parentId: n.id === draggedNodeId ? parentId : n.parentId,
+          });
         });
       };
 
@@ -487,14 +485,14 @@ export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = ({ className 
         // Drop inside a group, append at end and expand group
         reorderSiblings(targetNodeId);
         if (!targetNode.expanded) {
-          editorDispatch(editorActions.updateNode(targetNodeId, { expanded: true }));
+          editorActions.updateNode(targetNodeId, { expanded: true });
         }
       } else {
         // Drop before or after target among same parent
         reorderSiblings(targetNode.parentId || undefined);
       }
     },
-    [editorState.nodes, editorDispatch, editorActions],
+    [editorState.nodes, editorActions, nodeDefinitions],
   );
 
   const totalNodes = Object.keys(editorState.nodes).length;
