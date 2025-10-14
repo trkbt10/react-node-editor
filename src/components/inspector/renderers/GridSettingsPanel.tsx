@@ -12,7 +12,7 @@ import { InspectorInput } from "../parts/InspectorInput";
  * Grid settings component
  */
 export const GridSettingsPanel: React.FC = () => {
-  const { state: canvasState, dispatch: canvasDispatch, actions: canvasActions } = useNodeCanvas();
+  const { state: canvasState, actions: canvasActions } = useNodeCanvas();
   const { t } = useI18n();
 
   return (
@@ -21,7 +21,7 @@ export const GridSettingsPanel: React.FC = () => {
         <SwitchInput
           id="grid-show"
           checked={canvasState.gridSettings.showGrid}
-          onChange={(checked) => canvasDispatch(canvasActions.updateGridSettings({ showGrid: checked }))}
+          onChange={(checked) => canvasActions.updateGridSettings({ showGrid: checked })}
           label={t("inspectorShowGrid")}
           size="medium"
         />
@@ -30,7 +30,7 @@ export const GridSettingsPanel: React.FC = () => {
         <SwitchInput
           id="grid-snap"
           checked={canvasState.gridSettings.snapToGrid}
-          onChange={(checked) => canvasDispatch(canvasActions.updateGridSettings({ snapToGrid: checked }))}
+          onChange={(checked) => canvasActions.updateGridSettings({ snapToGrid: checked })}
           label={t("inspectorSnapToGrid")}
           size="medium"
         />
@@ -47,11 +47,9 @@ export const GridSettingsPanel: React.FC = () => {
           onChange={(e) => {
             const size = parseInt(e.target.value, 10);
             if (!isNaN(size) && size > 0) {
-              canvasDispatch(
-                canvasActions.updateGridSettings({
-                  size,
-                }),
-              );
+              canvasActions.updateGridSettings({
+                size,
+              });
             }
           }}
           aria-label="Grid size in pixels"
@@ -69,11 +67,9 @@ export const GridSettingsPanel: React.FC = () => {
           onChange={(e) => {
             const snapThreshold = parseInt(e.target.value, 10);
             if (!isNaN(snapThreshold) && snapThreshold > 0) {
-              canvasDispatch(
-                canvasActions.updateGridSettings({
-                  snapThreshold,
-                }),
-              );
+              canvasActions.updateGridSettings({
+                snapThreshold,
+              });
             }
           }}
           aria-label="Snap threshold in pixels"

@@ -5,6 +5,7 @@ import * as React from "react";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
+import { useCanvasActions } from "../../hooks/useCanvasActions";
 import { applyZoomDelta, clampZoomScale } from "../../utils/zoomUtils";
 import styles from "./GridToolbox.module.css";
 
@@ -61,7 +62,8 @@ const StatusIndicator = React.memo<{
 StatusIndicator.displayName = "StatusIndicator";
 
 export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
-  const { state: canvasState, actions: canvasActions, dispatch: canvasDispatch } = useNodeCanvas();
+  const { state: canvasState } = useNodeCanvas();
+  const canvasActions = useCanvasActions();
   const { state: editorState } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
 
@@ -78,22 +80,20 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
 
   const handleZoomIn = React.useCallback(() => {
     const newScale = applyZoomDelta(canvasState.viewport.scale, 1);
-    canvasDispatch(canvasActions.zoomViewport(newScale));
-  }, [canvasState.viewport.scale, canvasDispatch, canvasActions]);
+    canvasActions.zoomViewport(newScale);
+  }, [canvasState.viewport.scale, canvasActions]);
 
   const handleZoomOut = React.useCallback(() => {
     const newScale = applyZoomDelta(canvasState.viewport.scale, -1);
-    canvasDispatch(canvasActions.zoomViewport(newScale));
-  }, [canvasState.viewport.scale, canvasDispatch, canvasActions]);
+    canvasActions.zoomViewport(newScale);
+  }, [canvasState.viewport.scale, canvasActions]);
 
   const handleZoomReset = React.useCallback(() => {
-    canvasDispatch(
-      canvasActions.setViewport({
-        ...canvasState.viewport,
-        scale: 1,
-      }),
-    );
-  }, [canvasState.viewport, canvasDispatch, canvasActions]);
+    canvasActions.setViewport({
+      ...canvasState.viewport,
+      scale: 1,
+    });
+  }, [canvasState.viewport, canvasActions]);
 
   const handleZoomToFit = React.useCallback(() => {
     const nodes = Object.values(editorState.nodes);
@@ -128,16 +128,14 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
     const centerX = (minX + maxX) / 2;
     const centerY = (minY + maxY) / 2;
 
-    canvasDispatch(
-      canvasActions.setViewport({
-        scale,
-        offset: {
-          x: -(centerX * scale - viewportWidth / 2),
-          y: -(centerY * scale - viewportHeight / 2),
-        },
-      }),
-    );
-  }, [editorState.nodes, canvasDispatch, canvasActions]);
+    canvasActions.setViewport({
+      scale,
+      offset: {
+        x: -(centerX * scale - viewportWidth / 2),
+        y: -(centerY * scale - viewportHeight / 2),
+      },
+    });
+  }, [editorState.nodes, canvasActions]);
 
   const handleZoomToSelection = React.useCallback(() => {
     if (selectedNodeCount === 0) {
@@ -179,44 +177,36 @@ export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
     const centerX = (minX + maxX) / 2;
     const centerY = (minY + maxY) / 2;
 
-    canvasDispatch(
-      canvasActions.setViewport({
-        scale,
-        offset: {
-          x: -(centerX * scale - viewportWidth / 2),
-          y: -(centerY * scale - viewportHeight / 2),
-        },
-      }),
-    );
-  }, [editorState.nodes, actionState.selectedNodeIds, selectedNodeCount, canvasDispatch, canvasActions]);
+    canvasActions.setViewport({
+      scale,
+      offset: {
+        x: -(centerX * scale - viewportWidth / 2),
+        y: -(centerY * scale - viewportHeight / 2),
+      },
+    });
+  }, [editorState.nodes, actionState.selectedNodeIds, selectedNodeCount, canvasActions]);
 
   const handlePresetZoom = React.useCallback(
     (preset: number) => {
-      canvasDispatch(
-        canvasActions.setViewport({
-          ...canvasState.viewport,
-          scale: preset / 100,
-        }),
-      );
+      canvasActions.setViewport({
+        ...canvasState.viewport,
+        scale: preset / 100,
+      });
     },
-    [canvasState.viewport, canvasDispatch, canvasActions],
+    [canvasState.viewport, canvasActions],
   );
 
   const handleToggleGrid = React.useCallback(() => {
-    canvasDispatch(
-      canvasActions.updateGridSettings({
-        showGrid: !canvasState.gridSettings.showGrid,
-      }),
-    );
-  }, [canvasState.gridSettings.showGrid, canvasDispatch, canvasActions]);
+    canvasActions.updateGridSettings({
+      showGrid: !canvasState.gridSettings.showGrid,
+    });
+  }, [canvasState.gridSettings.showGrid, canvasActions]);
 
   const handleToggleSnapToGrid = React.useCallback(() => {
-    canvasDispatch(
-      canvasActions.updateGridSettings({
-        snapToGrid: !canvasState.gridSettings.snapToGrid,
-      }),
-    );
-  }, [canvasState.gridSettings.snapToGrid, canvasDispatch, canvasActions]);
+    canvasActions.updateGridSettings({
+      snapToGrid: !canvasState.gridSettings.snapToGrid,
+    });
+  }, [canvasState.gridSettings.snapToGrid, canvasActions]);
 
   // Memoized zoom select options
   const zoomOptions = React.useMemo(() => {

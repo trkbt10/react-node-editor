@@ -22,7 +22,7 @@ export type CanvasBaseProps = {
  * Does not trap events unless necessary for its own operations
  */
 export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) => {
-  const { state: canvasState, dispatch: canvasDispatch, actions: canvasActions, canvasRef, utils } = useNodeCanvas();
+  const { state: canvasState, actions: canvasActions, canvasRef, utils } = useNodeCanvas();
   const { state: actionState, dispatch: actionDispatch, actions: actionActions } = useEditorActionState();
   const { state: nodeEditorState } = useNodeEditor();
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -76,7 +76,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         const rawDelta = e.deltaY * -0.01;
         const newScale = applyZoomDelta(canvasState.viewport.scale, rawDelta);
 
-        canvasDispatch(canvasActions.zoomViewport(newScale, center));
+        canvasActions.zoomViewport(newScale, center);
       } else {
         // Normal scroll for panning
         e.preventDefault();
@@ -85,10 +85,10 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         const deltaX = -e.deltaX;
         const deltaY = -e.deltaY;
 
-        canvasDispatch(canvasActions.panViewport({ x: deltaX, y: deltaY }));
+        canvasActions.panViewport({ x: deltaX, y: deltaY });
       }
     },
-    [canvasState.viewport.scale, canvasDispatch, canvasActions],
+    [canvasState.viewport.scale, canvasActions],
   );
 
   // Handle panning with middle mouse button or space+drag, and box selection
@@ -97,7 +97,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       // Middle mouse button or space key panning
       if (e.button === 1 || canvasState.isSpacePanning) {
         e.preventDefault();
-        canvasDispatch(canvasActions.startPan({ x: e.clientX, y: e.clientY }));
+        canvasActions.startPan({ x: e.clientX, y: e.clientY });
 
         if (containerRef.current) {
           containerRef.current.setPointerCapture(e.pointerId);
@@ -143,13 +143,13 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         }
       }
     },
-    [canvasState.isSpacePanning, canvasState.viewport, canvasDispatch, canvasActions, actionDispatch, actionActions],
+    [canvasState.isSpacePanning, canvasState.viewport, canvasActions, actionDispatch, actionActions],
   );
 
   const handlePointerMove = React.useCallback(
     (e: React.PointerEvent) => {
       if (canvasState.panState.isPanning) {
-        canvasDispatch(canvasActions.updatePan({ x: e.clientX, y: e.clientY }));
+        canvasActions.updatePan({ x: e.clientX, y: e.clientY });
       } else if (isBoxSelecting && actionState.selectionBox) {
         // Update selection box in screen coordinates
         const rect = containerRef.current?.getBoundingClientRect();
@@ -173,7 +173,6 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       canvasState.viewport,
       isBoxSelecting,
       actionState.selectionBox,
-      canvasDispatch,
       canvasActions,
       actionDispatch,
       actionActions,
@@ -183,7 +182,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
   const handlePointerUp = React.useCallback(
     (e: React.PointerEvent) => {
       if (canvasState.panState.isPanning) {
-        canvasDispatch(canvasActions.endPan());
+        canvasActions.endPan();
 
         if (containerRef.current) {
           containerRef.current.releasePointerCapture(e.pointerId);
@@ -253,7 +252,6 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       actionState.selectionBox,
       actionState.selectedNodeIds,
       nodeEditorState.nodes,
-      canvasDispatch,
       canvasActions,
       actionDispatch,
       actionActions,
@@ -305,7 +303,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       // Space for panning mode
       if (e.code === "Space" && !e.repeat && !e.ctrlKey && !e.metaKey) {
         e.preventDefault();
-        canvasDispatch(canvasActions.setSpacePanning(true));
+        canvasActions.setSpacePanning(true);
       }
 
       // Figma style zoom shortcuts
@@ -313,7 +311,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         switch (e.key) {
           case "0": // Reset zoom to 100%
             e.preventDefault();
-            canvasDispatch(canvasActions.resetViewport());
+            canvasActions.resetViewport();
             break;
           case "1": // Zoom to fit
             e.preventDefault();
@@ -322,11 +320,11 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
           case "=":
           case "+": // Zoom in
             e.preventDefault();
-            canvasDispatch(canvasActions.zoomViewport(applyZoomDelta(canvasState.viewport.scale, 1)));
+            canvasActions.zoomViewport(applyZoomDelta(canvasState.viewport.scale, 1));
             break;
           case "-": // Zoom out
             e.preventDefault();
-            canvasDispatch(canvasActions.zoomViewport(applyZoomDelta(canvasState.viewport.scale, -1)));
+            canvasActions.zoomViewport(applyZoomDelta(canvasState.viewport.scale, -1));
             break;
         }
       }
@@ -335,7 +333,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.code === "Space") {
         e.preventDefault();
-        canvasDispatch(canvasActions.setSpacePanning(false));
+        canvasActions.setSpacePanning(false);
       }
     };
 
@@ -346,7 +344,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [canvasDispatch, canvasActions, canvasState.viewport.scale]);
+  }, [canvasActions, canvasState.viewport.scale]);
 
   // Set up wheel event listener
   React.useEffect(() => {

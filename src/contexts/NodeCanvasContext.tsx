@@ -2,7 +2,7 @@
  * @file Context for managing canvas viewport, panning, zooming, and grid settings
  */
 import * as React from "react";
-import { createAction, createActionHandlerMap, type ActionUnion } from "../utils/typedActions";
+import { bindActionCreators, createAction, createActionHandlerMap, type ActionUnion, type BoundActionCreators } from "../utils/typedActions";
 import type { Position, Viewport, GridSettings } from "../types/core";
 import { clampZoomScale } from "../utils/zoomUtils";
 
@@ -194,7 +194,8 @@ export const createCanvasUtils = (canvasRef: React.RefObject<HTMLDivElement | nu
 export type NodeCanvasContextValue = {
   state: NodeCanvasState;
   dispatch: React.Dispatch<NodeCanvasAction>;
-  actions: typeof nodeCanvasActions;
+  actions: BoundActionCreators<typeof nodeCanvasActions>;
+  actionCreators: typeof nodeCanvasActions;
   canvasRef: React.RefObject<HTMLDivElement | null>;
   utils: ReturnType<typeof createCanvasUtils>;
 };
@@ -211,13 +212,15 @@ export const NodeCanvasProvider: React.FC<NodeCanvasProviderProps> = ({ children
   const [state, dispatch] = React.useReducer(nodeCanvasReducer, { ...defaultNodeCanvasState, ...initialState });
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
+  const boundActions = React.useMemo(() => bindActionCreators(nodeCanvasActions, dispatch), [dispatch]);
 
   const utils = React.useMemo(() => createCanvasUtils(canvasRef, state.viewport), [state.viewport]);
 
   const contextValue: NodeCanvasContextValue = {
     state,
     dispatch,
-    actions: nodeCanvasActions,
+    actions: boundActions,
+    actionCreators: nodeCanvasActions,
     canvasRef,
     utils,
   };

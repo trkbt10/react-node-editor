@@ -31,12 +31,7 @@ const CANVAS_PADDING = { top: 10, right: 10, bottom: 10, left: 10 };
 
 export const Minimap: React.FC<MinimapProps> = ({ scale = 0.1, width = 200, height = 150 }) => {
   const { state } = useNodeEditor();
-  const {
-    state: canvasState,
-    dispatch: canvasDispatch,
-    actions: canvasActions,
-    canvasRef: editorCanvasRef,
-  } = useNodeCanvas();
+  const { state: canvasState, actions: canvasActions, canvasRef: editorCanvasRef } = useNodeCanvas();
   const nodeDefinitions = useNodeDefinitionList();
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = React.useState(false);
@@ -232,14 +227,12 @@ export const Minimap: React.FC<MinimapProps> = ({ scale = 0.1, width = 200, heig
       const newOffsetY = screenY - worldPos.y * viewport.scale;
 
       // Dispatch the action to update the viewport
-      canvasDispatch(
-        canvasActions.setViewport({
-          ...viewport,
-          offset: { x: newOffsetX, y: newOffsetY },
-        }),
-      );
+      canvasActions.setViewport({
+        ...viewport,
+        offset: { x: newOffsetX, y: newOffsetY },
+      });
     },
-    [canvasState.viewport, canvasDispatch, canvasActions, minimapToWorld],
+    [canvasState.viewport, canvasActions, minimapToWorld],
   );
 
   // Handle minimap interactions
@@ -297,14 +290,12 @@ export const Minimap: React.FC<MinimapProps> = ({ scale = 0.1, width = 200, heig
       const newOffsetY = dragStart.viewportOffset.y - worldDeltaY * viewport.scale;
 
       // Dispatch the action to update the viewport
-      canvasDispatch(
-        canvasActions.setViewport({
-          ...viewport,
-          offset: { x: newOffsetX, y: newOffsetY },
-        }),
-      );
+      canvasActions.setViewport({
+        ...viewport,
+        offset: { x: newOffsetX, y: newOffsetY },
+      });
     },
-    [isDragging, dragStart, hasDragged, canvasState.viewport, canvasDispatch, canvasActions, nodeBounds, mapWidth, mapHeight],
+    [isDragging, dragStart, hasDragged, canvasState.viewport, canvasActions, nodeBounds, mapWidth, mapHeight],
   );
 
   const handlePointerUp = React.useCallback((e: React.PointerEvent) => {

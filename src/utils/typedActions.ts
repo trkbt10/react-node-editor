@@ -58,6 +58,26 @@ export type ActionUnion<Creators extends ActionCreatorsMap> = ReturnType<Creator
 
 export type CaseReducer<State, Action extends AnyAction, Extra> = (state: State, action: Action, extra: Extra) => State;
 
+export type BoundActionCreators<Creators extends ActionCreatorsMap> = {
+  [Key in keyof Creators]: (...args: Parameters<Creators[Key]>) => ReturnType<Creators[Key]>;
+};
+
+export const bindActionCreators = <Creators extends ActionCreatorsMap>(
+  creators: Creators,
+  dispatch: (action: ActionUnion<Creators>) => unknown,
+): BoundActionCreators<Creators> => {
+  const bound = {} as BoundActionCreators<Creators>;
+  (Object.keys(creators) as Array<keyof Creators>).forEach((key) => {
+    const creator = creators[key];
+    bound[key] = ((...args: Parameters<typeof creator>) => {
+      const action = creator(...args);
+      dispatch(action as ActionUnion<Creators>);
+      return action;
+    }) as BoundActionCreators<Creators>[keyof Creators];
+  });
+  return bound;
+};
+
 export const createActionHandlerMap = <
   State,
   Creators extends ActionCreatorsMap,

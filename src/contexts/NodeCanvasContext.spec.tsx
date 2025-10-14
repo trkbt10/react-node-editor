@@ -6,12 +6,12 @@ import { useEffect, type FC } from "react";
 import { NodeCanvasProvider, useNodeCanvas } from "./NodeCanvasContext";
 
 const Harness: FC = () => {
-  const { state, dispatch, actions } = useNodeCanvas();
+  const { state, actions } = useNodeCanvas();
   useEffect(() => {
-    dispatch(actions.panViewport({ x: 5, y: 7 }));
-    dispatch(actions.zoomViewport(2));
-    dispatch(actions.setSpacePanning(true));
-  }, [dispatch, actions]);
+    actions.panViewport({ x: 5, y: 7 });
+    actions.zoomViewport(2);
+    actions.setSpacePanning(true);
+  }, [actions]);
   return (
     <div>
       <div data-testid="offset">{`${state.viewport.offset.x},${state.viewport.offset.y}`}</div>
