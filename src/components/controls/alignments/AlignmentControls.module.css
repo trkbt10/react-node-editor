@@ -4,7 +4,6 @@
 
 .alignmentLabel {
   display: block;
-  margin-bottom: var(--node-editor-inspector-field-gap);
   font-size: var(--node-editor-inspector-font-size-meta);
   line-height: var(--node-editor-inspector-line-height-meta);
   font-weight: 500;
