@@ -6,8 +6,12 @@ import "./global.css";
 // Core editor component and props
 export { NodeEditor } from "./NodeEditor";
 export type { NodeEditorProps } from "./NodeEditor";
-export type { NodeEditorData } from "./contexts/node-editor";
+export type { NodeEditorData } from "./types/core";
 export type { NodeEditorRenderers, NodeEditorRendererOverrides } from "./types/renderers";
+
+// Helper components for custom node implementations
+export { NodeResizer, normalizeNodeSize } from "./components/node/NodeResizer";
+export type { NodeResizerProps } from "./components/node/NodeResizer";
 
 // Node definition helpers for custom nodes and inspectors
 export {

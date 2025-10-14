@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import type { Node, NodeId, Connection, Port } from "../../../types/core";
-import type { NodeEditorAction } from "../../node-editor";
+import type { NodeEditorAction } from "../../node-editor/actions";
 import type { ConstraintViolation } from "../../../types/NodeDefinition";
 import {
   validateNodeConstraints,

@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import { NodeId, Position } from "../../types/core";
-import { useNodeEditor } from "../../contexts/node-editor";
+import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { getNodeBoundingBox, createBoundingBoxFromCorners, doRectanglesIntersect } from "../../utils/boundingBoxUtils";

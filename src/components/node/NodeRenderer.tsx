@@ -8,7 +8,7 @@ import { createMemoizedComponent, areNodesEqual } from "../../contexts/node-edit
 import styles from "./NodeRenderer.module.css";
 import { NodeView } from "./NodeView";
 import { useOptionalRenderers } from "../../contexts/RendererContext";
-import { useNodeDefinitionList } from "../../contexts/node-definitions";
+import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { nodeHasGroupBehavior } from "../../types/behaviors";
 
 export type CustomNodeRendererProps = {

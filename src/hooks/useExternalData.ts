@@ -4,7 +4,7 @@
 import * as React from "react";
 import type { Node } from "../types/core";
 import type { ExternalDataReference } from "../types/NodeDefinition";
-import { useNodeDefinition } from "../contexts/node-definitions";
+import { useNodeDefinition } from "../contexts/node-definitions/hooks/useNodeDefinition";
 
 /**
  * External data state

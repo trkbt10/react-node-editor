@@ -3,10 +3,10 @@
  */
 import * as React from "react";
 import { Port, NodeId, Position } from "../../../types/core";
-import { useNodeEditor } from "../../../contexts/node-editor";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
-import { useNodeDefinitions } from "../../../contexts/node-definitions";
+import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import { usePointerDrag } from "../../../hooks/usePointerDrag";
 import { usePortPositions } from "../../../contexts/node-ports/context";
 import { isPortConnectable } from "../../../contexts/node-ports/utils/portConnectability";

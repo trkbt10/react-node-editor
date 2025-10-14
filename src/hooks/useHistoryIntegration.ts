@@ -4,7 +4,7 @@
  */
 import * as React from "react";
 import { useHistory } from "../contexts/HistoryContext";
-import { useNodeEditor } from "../contexts/node-editor";
+import { useNodeEditor } from "../contexts/node-editor/context";
 import type { NodeEditorAction } from "../contexts/node-editor/actions";
 
 /**

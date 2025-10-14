@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import { SelectionBox } from "../canvas/SelectionBox";
-import { classNames } from "../elements";
+import { classNames } from "../elements/classNames";
 import styles from "./SelectionOverlay.module.css";
 
 export type SelectionOverlayProps = {

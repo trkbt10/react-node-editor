@@ -2,9 +2,9 @@
  * @file Hook for managing group node relationships and operations
  */
 import * as React from "react";
-import { useNodeEditor } from "../contexts/node-editor";
+import { useNodeEditor } from "../contexts/node-editor/context";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
-import { useNodeDefinitionList } from "../contexts/node-definitions";
+import { useNodeDefinitionList } from "../contexts/node-definitions/hooks/useNodeDefinitionList";
 import type { NodeId, Node } from "../types/core";
 import {
   updateGroupMembership,

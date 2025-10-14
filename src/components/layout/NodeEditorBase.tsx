@@ -2,7 +2,7 @@
  * @file Node editor base component
  */
 import * as React from "react";
-import { classNames } from "../elements";
+import { classNames } from "../elements/classNames";
 import { useNodeEditorShortcuts } from "../../hooks/useNodeEditorShortcuts";
 import styles from "./NodeEditorBase.module.css";
 

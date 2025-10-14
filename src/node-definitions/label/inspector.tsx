@@ -12,7 +12,7 @@ import {
   InspectorDefinitionItem,
 } from "../../components/inspector/parts/InspectorDefinitionList";
 import editorStyles from "../../NodeEditorContent.module.css";
-import { useI18n } from "../../i18n";
+import { useI18n } from "../../i18n/context";
 
 /**
  * Inspector panel renderer for label nodes

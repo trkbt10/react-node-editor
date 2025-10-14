@@ -3,8 +3,8 @@
  */
 import * as React from "react";
 import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
-import { SwitchInput } from "../../elements";
-import { useI18n } from "../../../i18n";
+import { SwitchInput } from "../../elements/SwitchInput";
+import { useI18n } from "../../../i18n/context";
 import { InspectorField } from "../parts/InspectorField";
 import { InspectorInput } from "../parts/InspectorInput";
 

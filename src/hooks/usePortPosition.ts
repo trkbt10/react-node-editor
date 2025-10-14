@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import type { PortPosition } from "../types/portPosition";
-import { useNodeEditor } from "../contexts/node-editor";
+import { useNodeEditor } from "../contexts/node-editor/context";
 import { usePortPositions } from "../contexts/node-ports/context";
 
 /**

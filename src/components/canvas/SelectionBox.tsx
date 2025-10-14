@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { classNames } from "../elements";
+import { classNames } from "../elements/classNames";
 import styles from "./SelectionBox.module.css";
 
 export type SelectionBoxProps = {

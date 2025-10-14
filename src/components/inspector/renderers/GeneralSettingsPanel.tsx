@@ -2,9 +2,9 @@
  * @file General settings panel component
  */
 import * as React from "react";
-import { useNodeEditor } from "../../../contexts/node-editor";
-import { SwitchInput } from "../../elements";
-import { useI18n } from "../../../i18n";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { SwitchInput } from "../../elements/SwitchInput";
+import { useI18n } from "../../../i18n/context";
 import { InspectorField } from "../parts/InspectorField";
 import { InspectorInput } from "../parts/InspectorInput";
 

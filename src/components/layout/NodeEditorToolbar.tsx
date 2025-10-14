@@ -2,10 +2,10 @@
  * @file Node editor toolbar component
  */
 import * as React from "react";
-import { useNodeDefinitionList } from "../../contexts/node-definitions";
+import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { useNodeEditor } from "../../contexts/node-editor";
+import { useNodeEditor } from "../../contexts/node-editor/context";
 import { Button } from "../elements/Button";
 import styles from "./NodeEditorToolbar.module.css";
 import { countNodesByType, canAddNodeType } from "../../contexts/node-definitions/utils/nodeTypeLimits";

@@ -10,7 +10,7 @@ import {
   cubicBezierTangent,
 } from "./utils/connectionUtils";
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
-import { useNodeDefinition } from "../../contexts/node-definitions";
+import { useNodeDefinition } from "../../contexts/node-definitions/hooks/useNodeDefinition";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
 import {
   CONNECTION_APPEARANCES,

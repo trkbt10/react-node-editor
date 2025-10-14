@@ -2,11 +2,12 @@
  * @file Main node layer rendering and interaction handler for the node editor canvas.
  */
 import * as React from "react";
-import { classNames } from "../elements";
+import { classNames } from "../elements/classNames";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { useNodeDefinitions, useNodeDefinitionList } from "../../contexts/node-definitions";
-import { useNodeEditor } from "../../contexts/node-editor";
+import { useNodeDefinitions } from "../../contexts/node-definitions/context";
+import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
+import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useGroupManagement } from "../../hooks/useGroupManagement";
 import { useNodeResize } from "../../hooks/useNodeResize";
 import { useVisibleNodes } from "../../hooks/useVisibleNodes";

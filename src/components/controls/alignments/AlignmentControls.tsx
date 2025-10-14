@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import type { Node } from "../../../types/core";
-import { useI18n } from "../../../i18n";
+import { useI18n } from "../../../i18n/context";
 import { InspectorLabel } from "../../inspector/parts/InspectorLabel";
 import { ALIGNMENT_ACTIONS, ALIGNMENT_GROUPS } from "./constants";
 import type { AlignmentActionConfig, AlignmentActionGroup, AlignmentActionType } from "./types";

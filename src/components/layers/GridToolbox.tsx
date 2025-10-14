@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { useNodeEditor } from "../../contexts/node-editor";
+import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { applyZoomDelta, clampZoomScale } from "../../utils/zoomUtils";
 import styles from "./GridToolbox.module.css";

@@ -11,9 +11,11 @@ import { InspectorTextarea } from "../parts/InspectorTextarea";
 import { PositionInputsGrid } from "../parts/PositionInputsGrid";
 import { ReadOnlyField } from "../parts/ReadOnlyField";
 import { InspectorDefinitionList, InspectorDefinitionItem } from "../parts/InspectorDefinitionList";
-import { useI18n } from "../../../i18n";
-import { AlignmentControls, type AlignmentActionType } from "../../controls/alignments";
-import { SwitchInput, Input } from "../../elements";
+import { useI18n } from "../../../i18n/context";
+import { AlignmentControls } from "../../controls/alignments/AlignmentControls";
+import type { AlignmentActionType } from "../../controls/alignments/types";
+import { SwitchInput } from "../../elements/SwitchInput";
+import { Input } from "../../elements/Input";
 
 // Extended props for supporting multiple selection alignment
 type ExtendedInspectorRenderProps = {

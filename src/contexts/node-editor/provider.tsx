@@ -5,11 +5,11 @@
  */
 import * as React from "react";
 import type { Node, NodeEditorData, NodeId, Port } from "../../types/core";
-import { useSettings } from "../../hooks";
+import { useSettings } from "../../hooks/useSettings";
 import type { SettingsManager } from "../../settings/SettingsManager";
 import type { SettingValue } from "../../settings/types";
 import { createCachedPortResolver } from "../node-ports/utils/portLookup";
-import { NodeDefinitionContext } from "../node-definitions";
+import { NodeDefinitionContext } from "../node-definitions/context";
 import { getFeatureFlags } from "../../config/featureFlags";
 import { nodeEditorActions, type NodeEditorAction } from "./actions";
 import { nodeEditorReducer, defaultNodeEditorData } from "./reducer";

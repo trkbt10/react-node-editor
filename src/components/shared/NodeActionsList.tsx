@@ -4,11 +4,11 @@
 import * as React from "react";
 import styles from "./NodeActionsList.module.css";
 import { DuplicateIcon, CopyIcon, CutIcon, PasteIcon, DeleteIcon } from "../elements/icons";
-import { useI18n } from "../../i18n";
+import { useI18n } from "../../i18n/context";
 import { useNodeEditorActions } from "../../hooks/useNodeEditorActions";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeEditor } from "../../contexts/node-editor";
-import { useNodeDefinitionList } from "../../contexts/node-definitions";
+import { useNodeEditor } from "../../contexts/node-editor/context";
+import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { canAddNodeType, countNodesByType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
 import {
   copyNodesToClipboard,

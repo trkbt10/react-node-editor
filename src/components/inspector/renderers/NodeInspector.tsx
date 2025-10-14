@@ -4,16 +4,17 @@
 import * as React from "react";
 import type { Node } from "../../../types/core";
 import type { InspectorRenderProps } from "../../../types/NodeDefinition";
-import { useNodeEditor } from "../../../contexts/node-editor";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useNodeDefinition } from "../../../contexts/node-definitions";
+import { useNodeDefinition } from "../../../contexts/node-definitions/hooks/useNodeDefinition";
 import { useExternalDataRef } from "../../../contexts/ExternalDataContext";
 import { useExternalData } from "../../../hooks/useExternalData";
 import { NodeBehaviorInspector } from "./NodeBehaviorInspector";
 import { NodeActionsBehaviorInspector } from "./NodeActionsBehaviorInspector";
 import { GroupBehaviorInspector } from "./GroupBehaviorInspector";
 import styles from "./NodeInspector.module.css";
-import { calculateAlignmentPositions, type AlignmentActionType } from "../../controls/alignments";
+import { calculateAlignmentPositions } from "../../controls/alignments/utils";
+import type { AlignmentActionType } from "../../controls/alignments/types";
 import { getBehaviors, behaviorArrayIncludes } from "../../../types/behaviors";
 
 export type NodeInspectorProps = {

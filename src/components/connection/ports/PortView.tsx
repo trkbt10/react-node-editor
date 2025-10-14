@@ -4,8 +4,8 @@
 import * as React from "react";
 import type { Port } from "../../../types/core";
 import { useDynamicPortPosition } from "../../../hooks/usePortPosition";
-import { useNodeEditor } from "../../../contexts/node-editor";
-import { useNodeDefinition } from "../../../contexts/node-definitions";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useNodeDefinition } from "../../../contexts/node-definitions/hooks/useNodeDefinition";
 import type { PortRenderContext } from "../../../types/NodeDefinition";
 import styles from "./PortView.module.css";
 

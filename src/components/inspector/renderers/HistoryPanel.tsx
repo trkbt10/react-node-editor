@@ -3,8 +3,8 @@
  */
 import * as React from "react";
 import { useHistory } from "../../../contexts/HistoryContext";
-import { Button } from "../../elements";
-import { useI18n } from "../../../i18n";
+import { Button } from "../../elements/Button";
+import { useI18n } from "../../../i18n/context";
 import styles from "./HistoryPanel.module.css";
 import { PropertySection } from "../parts/PropertySection";
 

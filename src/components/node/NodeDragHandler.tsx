@@ -4,10 +4,10 @@
 import * as React from "react";
 import { NodeId, Position } from "../../types/core";
 import { usePointerDrag } from "../../hooks/usePointerDrag";
-import { useNodeEditor } from "../../contexts/node-editor";
+import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { useNodeDefinitionList } from "../../contexts/node-definitions";
+import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { nodeHasGroupBehavior } from "../../types/behaviors";
 
 export type NodeDragHandlerProps = {

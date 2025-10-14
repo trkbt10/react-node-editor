@@ -2,7 +2,8 @@
  * @file Custom node definition that embeds a minimap preview of its nested editor
  */
 import * as React from "react";
-import { Button, classNames } from "../../../../components/elements";
+import { Button } from "../../../../components/elements/Button";
+import { classNames } from "../../../../components/elements/classNames";
 import { NodeMapRenderer } from "../../../../components/layers/NodeMapRenderer";
 import type { NodeDefinition, NodeRenderProps, ExternalDataReference } from "../../../../types/NodeDefinition";
 import { createNodeDefinition } from "../../../../types/NodeDefinition";

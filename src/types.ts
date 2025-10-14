@@ -17,7 +17,7 @@ export type {
 } from "./types/core";
 
 // Re-export context-specific types
-export type { NodeEditorAction } from "./contexts/node-editor";
+export type { NodeEditorAction } from "./contexts/node-editor/actions";
 
 export type { PanState, NodeCanvasState, NodeCanvasAction } from "./contexts/NodeCanvasContext";
 

@@ -10,7 +10,7 @@ import { StandardNodeDefinition } from "../../node-definitions/standard";
 import { toUntypedDefinition } from "../../types/NodeDefinition";
 import type { NodeEditorData } from "../../types/core";
 import { isMobileDevice, isMobileViewport } from "../../utils/mobileDetection";
-import { useEditorActionState } from "../../hooks";
+import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 
 const initialData: NodeEditorData = {
   nodes: {

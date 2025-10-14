@@ -2,7 +2,7 @@
  * @file Property section component
  */
 import * as React from "react";
-import { H4 } from "../../elements";
+import { H4 } from "../../elements/Heading";
 import styles from "./PropertySection.module.css";
 
 export type PropertySectionProps = {

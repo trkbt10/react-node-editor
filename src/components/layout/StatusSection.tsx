@@ -2,7 +2,7 @@
  * @file Status section component
  */
 import * as React from "react";
-import { classNames } from "../elements";
+import { classNames } from "../elements/classNames";
 import styles from "./StatusSection.module.css";
 
 export type StatusSectionProps = {

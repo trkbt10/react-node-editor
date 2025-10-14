@@ -2,24 +2,24 @@
  * @file Context action menu component
  */
 import * as React from "react";
-import { classNames, calculateContextMenuPosition, getViewportInfo } from "../elements";
+import { classNames } from "../elements/classNames";
+import { calculateContextMenuPosition, getViewportInfo } from "../elements/dialogUtils";
 import { EditIcon, PlusIcon, PasteIcon } from "../elements/icons";
 import styles from "./ContextActionMenu.module.css";
 import alignmentStyles from "../controls/alignments/AlignmentControls.module.css";
-import {
-  ALIGNMENT_ACTIONS,
-  ALIGNMENT_GROUPS,
-  calculateAlignmentPositions,
-  type AlignmentActionConfig,
-  type AlignmentActionGroup,
-  type AlignmentActionType,
-} from "../controls/alignments";
+import { ALIGNMENT_ACTIONS, ALIGNMENT_GROUPS } from "../controls/alignments/constants";
+import { calculateAlignmentPositions } from "../controls/alignments/utils";
+import type {
+  AlignmentActionConfig,
+  AlignmentActionGroup,
+  AlignmentActionType,
+} from "../controls/alignments/types";
 import type { Position, Node } from "../../types/core";
 import { useNodeEditorActions } from "../../hooks/useNodeEditorActions";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useI18n } from "../../i18n";
-import { useNodeEditor } from "../../contexts/node-editor";
-import { useNodeDefinitionList } from "../../contexts/node-definitions";
+import { useI18n } from "../../i18n/context";
+import { useNodeEditor } from "../../contexts/node-editor/context";
+import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { canAddNodeType, countNodesByType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
 import { getClipboard, setClipboard } from "../../utils/clipboard";
 import { NodeActionsList } from "./NodeActionsList";

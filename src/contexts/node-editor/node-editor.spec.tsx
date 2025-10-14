@@ -3,7 +3,11 @@
  */
 import { render, screen, act } from "@testing-library/react";
 import { useEffect, useRef, useState, type FC } from "react";
-import { NodeEditorProvider, useNodeEditor, nodeEditorActions, nodeEditorReducer, type NodeEditorData } from ".";
+import { NodeEditorProvider } from "./provider";
+import { useNodeEditor } from "./context";
+import { nodeEditorActions } from "./actions";
+import { nodeEditorReducer } from "./reducer";
+import type { NodeEditorData } from "../../types/core";
 
 const makeBasicData = (): NodeEditorData => ({
   nodes: {

@@ -3,13 +3,13 @@
  */
 import * as React from "react";
 import { useRegisterShortcut } from "../contexts/KeyboardShortcutContext";
-import { useNodeEditor } from "../contexts/node-editor";
+import { useNodeEditor } from "../contexts/node-editor/context";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
 import { useHistoryIntegration } from "./useHistoryIntegration";
 import { useAutoLayout } from "./useAutoLayout";
 import { filterDuplicableNodeIds } from "../contexts/node-definitions/utils/nodeTypeLimits";
 import { copyNodesToClipboard, pasteNodesFromClipboard } from "../contexts/node-editor/utils/nodeClipboardOperations";
-import { useNodeDefinitionList } from "../contexts/node-definitions";
+import { useNodeDefinitionList } from "../contexts/node-definitions/hooks/useNodeDefinitionList";
 
 /**
  * Hook that registers all standard node editor keyboard shortcuts

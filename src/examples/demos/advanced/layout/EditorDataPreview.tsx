@@ -2,7 +2,7 @@
  * @file EditorDataPreview component - Shows a preview of editor state
  */
 import * as React from "react";
-import { useNodeEditor } from "../../../../contexts/node-editor";
+import { useNodeEditor } from "../../../../contexts/node-editor/context";
 import type { NodeEditorData } from "../../../../types/core";
 import {
   FloatingPanelFrame,

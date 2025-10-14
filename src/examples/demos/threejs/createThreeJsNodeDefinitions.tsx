@@ -18,7 +18,7 @@ import {
   type MaterialConfig,
   type MaterialMode,
 } from "./materialConfig";
-import { useNodeEditor } from "../../../contexts/node-editor";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
 import classes from "./ThreeJsNodes.module.css";
 import { calculateBezierPath } from "../../../components/connection/utils/connectionUtils";
 

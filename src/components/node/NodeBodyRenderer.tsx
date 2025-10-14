@@ -6,8 +6,8 @@ import type { Node } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import type { CustomNodeRendererProps } from "./NodeView";
 import { GroupNodeRenderer as GroupContent } from "../../node-definitions/group/node";
-import { LockIcon } from "../elements";
-import { useI18n } from "../../i18n";
+import { LockIcon } from "../elements/icons";
+import { useI18n } from "../../i18n/context";
 import styles from "./NodeBodyRenderer.module.css";
 
 export type NodeBodyRendererProps = {

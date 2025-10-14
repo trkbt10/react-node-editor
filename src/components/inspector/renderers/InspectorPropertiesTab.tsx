@@ -3,14 +3,14 @@
  */
 import * as React from "react";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useNodeEditor } from "../../../contexts/node-editor";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { NodeInspector } from "./NodeInspector";
-import { H4 } from "../../elements";
+import { H4 } from "../../elements/Heading";
 import { InspectorField } from "../parts/InspectorField";
 import { InspectorSection } from "../parts/InspectorSection";
 import { InspectorSectionTitle } from "../parts/InspectorSectionTitle";
 import styles from "../InspectorPanel.module.css";
-import { useI18n } from "../../../i18n";
+import { useI18n } from "../../../i18n/context";
 
 export const InspectorPropertiesTab: React.FC = () => {
   const { state: nodeEditorState } = useNodeEditor();

@@ -5,7 +5,7 @@ import * as React from "react";
 import { CanvasBase } from "./CanvasBase";
 import { ConnectionLayer } from "../connection/ConnectionLayer";
 import { NodeLayer } from "../node/NodeLayer";
-import { useNodeEditor } from "../../contexts/node-editor";
+import { useNodeEditor } from "../../contexts/node-editor/context";
 
 export type NodeCanvasProps = {
   showGrid?: boolean;

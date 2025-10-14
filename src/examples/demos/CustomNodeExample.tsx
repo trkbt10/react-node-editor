@@ -12,6 +12,7 @@ import type {
 import { toUntypedDefinition } from "../../types/NodeDefinition";
 import type { NodeEditorData } from "../../types/core";
 import { StandardNodeDefinition } from "../../node-definitions/standard";
+import { NodeResizer } from "../../components/node/NodeResizer";
 import classes from "./CustomNodeExample.module.css";
 
 // Example external data type
@@ -63,32 +64,32 @@ const TaskNodeRenderer = ({
   const initialLoading = externalData === undefined && isLoadingExternalData;
 
   return (
-    <div
-      className={classes.taskNode}
-      data-selected={isSelected ? "true" : undefined}
-      data-dragging={isDragging ? "true" : undefined}
-      data-status={task?.status}
-      onDoubleClick={onStartEdit}
-      style={{
-        width: node.size?.width,
-        height: node.size?.height,
-      }}
-    >
-      {initialLoading ? (
-        <div className={classes.taskNodeLoading}>Loading...</div>
-      ) : task ? (
-        <>
-          <h3 className={classes.taskNodeTitle}>{task.title}</h3>
-          <p className={classes.taskNodeDescription}>{task.description}</p>
-          <div className={classes.taskNodeFooter}>
-            <span className={classes.taskNodeStatus}>{task.status}</span>
-            {task.assignee && <span>👤 {task.assignee}</span>}
-          </div>
-        </>
-      ) : (
-        <div className={classes.taskNodeNoData}>No task data</div>
+    <NodeResizer size={node.size} className={classes.taskNode} defaultWidth={220} defaultHeight={120}>
+      {() => (
+        <div
+          data-selected={isSelected ? "true" : undefined}
+          data-dragging={isDragging ? "true" : undefined}
+          data-status={task?.status}
+          onDoubleClick={onStartEdit}
+          style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column" }}
+        >
+          {initialLoading ? (
+            <div className={classes.taskNodeLoading}>Loading...</div>
+          ) : task ? (
+            <>
+              <h3 className={classes.taskNodeTitle}>{task.title}</h3>
+              <p className={classes.taskNodeDescription}>{task.description}</p>
+              <div className={classes.taskNodeFooter}>
+                <span className={classes.taskNodeStatus}>{task.status}</span>
+                {task.assignee && <span>👤 {task.assignee}</span>}
+              </div>
+            </>
+          ) : (
+            <div className={classes.taskNodeNoData}>No task data</div>
+          )}
+        </div>
       )}
-    </div>
+    </NodeResizer>
   );
 };
 

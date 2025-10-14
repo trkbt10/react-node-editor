@@ -2,7 +2,7 @@
  * @file Floating window that hosts the nested node editor for a sub-editor node
  */
 import * as React from "react";
-import { Button } from "../../../../components/elements";
+import { Button } from "../../../../components/elements/Button";
 import { NodeCanvas } from "../../../../components/canvas/NodeCanvas";
 import {
   FloatingPanelFrame,
@@ -17,7 +17,7 @@ import { StandardNodeDefinition } from "../../../../node-definitions/standard";
 import { toUntypedDefinition, type ExternalDataReference } from "../../../../types/NodeDefinition";
 import type { NodeEditorData } from "../../../../types/core";
 import type { GridLayoutConfig, LayerDefinition } from "../../../../types/panels";
-import { useNodeEditor } from "../../../../contexts/node-editor";
+import { useNodeEditor } from "../../../../contexts/node-editor/context";
 import { createDefaultSubEditorData } from "./initialData";
 import { ensureSubEditorData, getSubEditorData, setSubEditorData } from "./subEditorDataStore";
 import { isSubEditorNodeData } from "./types";

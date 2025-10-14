@@ -2,16 +2,16 @@
  * @file Main node editor content component with port position management and grid layout
  */
 import * as React from "react";
-import { classNames } from "./components/elements";
+import { classNames } from "./components/elements/classNames";
 import { GridLayout } from "./components/layout/GridLayout";
 import { NodeEditorBase } from "./components/layout/NodeEditorBase";
 import { ContextActionMenu } from "./components/shared/ContextActionMenu";
 import { NodeSearchMenu } from "./components/shared/NodeSearchMenu";
 import { defaultEditorGridConfig, defaultEditorGridLayers } from "./config/defaultLayout";
 import { useEditorActionState } from "./contexts/EditorActionStateContext";
-import { useNodeEditor } from "./contexts/node-editor";
+import { useNodeEditor } from "./contexts/node-editor/context";
 import { useNodeCanvas } from "./contexts/NodeCanvasContext";
-import { useNodeDefinitionList } from "./contexts/node-definitions";
+import { useNodeDefinitionList } from "./contexts/node-definitions/hooks/useNodeDefinitionList";
 import { PortPositionProvider } from "./contexts/node-ports/provider";
 import { useSettings } from "./hooks/useSettings";
 import styles from "./NodeEditorContent.module.css";

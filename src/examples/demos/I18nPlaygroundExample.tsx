@@ -4,7 +4,8 @@
 import * as React from "react";
 
 import { NodeEditor } from "../../NodeEditor";
-import { enMessages, type I18nDictionaries, type I18nMessages, type Locale } from "../../i18n";
+import { enMessages } from "../../i18n/dictionaries/en";
+import type { I18nDictionaries, I18nMessages, Locale } from "../../i18n/types";
 import type { NodeEditorData } from "../../types/core";
 import { StandardNodeDefinition } from "../../node-definitions/standard";
 import { toUntypedDefinition } from "../../types/NodeDefinition";

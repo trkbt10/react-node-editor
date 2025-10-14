@@ -2,7 +2,7 @@
  * @file Tab navigation component
  */
 import * as React from "react";
-import { classNames } from "../elements";
+import { classNames } from "../elements/classNames";
 import styles from "./TabNav.module.css";
 
 export type TabNavProps = {

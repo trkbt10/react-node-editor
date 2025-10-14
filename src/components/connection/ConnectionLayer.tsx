@@ -2,7 +2,7 @@
  * @file ConnectionLayer component
  */
 import * as React from "react";
-import { useNodeEditor } from "../../contexts/node-editor";
+import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { calculateBezierPath, getOppositePortPosition } from "./utils/connectionUtils";

@@ -2,16 +2,17 @@
  * @file Node tree list panel component
  */
 import * as React from "react";
-import { useNodeEditor } from "../../../contexts/node-editor";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useNodeDefinitionList } from "../../../contexts/node-definitions";
+import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { hasGroupBehavior } from "../../../types/behaviors";
 import { Node, NodeId } from "../../../types/core";
 import { getNodeIcon } from "../../../contexts/node-definitions/utils/iconUtils";
-import { CloseIcon, classNames, LockIcon, UnlockIcon } from "../../elements";
+import { CloseIcon, LockIcon, UnlockIcon } from "../../elements/icons";
+import { classNames } from "../../elements/classNames";
 import { PropertySection } from "../parts/PropertySection";
 import styles from "./NodeTreeListPanel.module.css";
-import { useI18n } from "../../../i18n";
+import { useI18n } from "../../../i18n/context";
 
 type DragState = {
   draggingNodeId: NodeId | null;

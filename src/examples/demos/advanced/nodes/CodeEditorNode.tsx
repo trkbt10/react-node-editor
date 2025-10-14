@@ -8,7 +8,8 @@ import type {
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../types/NodeDefinition";
-import { Button, Textarea } from "../../../../components/elements";
+import { Button } from "../../../../components/elements/Button";
+import { Textarea } from "../../../../components/elements/Textarea";
 import { getLanguageColor, getTextColor } from "./colorUtils";
 
 export type CodeData = {

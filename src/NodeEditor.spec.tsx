@@ -4,7 +4,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { JSX, useState } from "react";
 import { NodeEditor } from "./NodeEditor";
-import type { NodeEditorData } from "./contexts/node-editor";
+import type { NodeEditorData } from "./types/core";
 import type { LayerDefinition } from "./types/panels";
 
 describe("NodeEditor", () => {

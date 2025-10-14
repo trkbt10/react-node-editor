@@ -4,7 +4,7 @@
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import { NodeEditor } from "../../NodeEditor";
-import type { NodeEditorData } from "../../contexts/node-editor";
+import type { NodeEditorData } from "../../types/core";
 
 // Helper to query flow stripe paths (SVG stroke-dasharray is present only on stripes)
 const queryFlowStripes = () => document.querySelectorAll('path[style*="stroke-dasharray"]');

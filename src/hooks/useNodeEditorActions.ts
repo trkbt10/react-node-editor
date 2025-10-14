@@ -2,7 +2,7 @@
  * @file Pre-bound action creators for node editor operations
  */
 import * as React from "react";
-import { useNodeEditor } from "../contexts/node-editor";
+import { useNodeEditor } from "../contexts/node-editor/context";
 
 /**
  * Hook that provides pre-bound action creators for the NodeEditor

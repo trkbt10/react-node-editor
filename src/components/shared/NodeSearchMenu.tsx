@@ -2,7 +2,9 @@
  * @file Node search menu component
  */
 import * as React from "react";
-import { classNames, calculateContextMenuPosition, getViewportInfo, Input } from "../elements";
+import { classNames } from "../elements/classNames";
+import { calculateContextMenuPosition, getViewportInfo } from "../elements/dialogUtils";
+import { Input } from "../elements/Input";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import type { Position } from "../../types/core";
 import { getNodeIcon } from "../../contexts/node-definitions/utils/iconUtils";

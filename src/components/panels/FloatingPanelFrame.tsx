@@ -2,7 +2,7 @@
  * @file Shared floating panel frame components for reusable overlay styling
  */
 import * as React from "react";
-import { classNames } from "../elements";
+import { classNames } from "../elements/classNames";
 import styles from "./FloatingPanelFrame.module.css";
 
 export type FloatingPanelFrameProps = React.HTMLAttributes<HTMLDivElement>;

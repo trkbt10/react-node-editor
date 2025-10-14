@@ -2,11 +2,11 @@
  * @file Status bar component
  */
 import * as React from "react";
-import { useNodeEditor } from "../../contexts/node-editor";
+import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import type { SettingsManager as _SettingsManager } from "../../settings/SettingsManager";
-import { classNames } from "../elements";
+import { classNames } from "../elements/classNames";
 import { StatusSection, statusSectionStyles } from "./StatusSection";
 import styles from "./StatusBar.module.css";
 

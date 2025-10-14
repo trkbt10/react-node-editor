@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import type { ConstraintViolation } from "../../types/NodeDefinition";
-import { classNames } from "../elements";
+import { classNames } from "../elements/classNames";
 import styles from "./ConstraintViolationDisplay.module.css";
 
 export type ConstraintViolationDisplayProps = {

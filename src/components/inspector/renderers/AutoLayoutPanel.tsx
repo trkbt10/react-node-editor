@@ -2,9 +2,9 @@
  * @file Auto layout panel component
  */
 import * as React from "react";
-import { useNodeEditor } from "../../../contexts/node-editor";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
-import { useTranslation } from "../../../i18n";
+import { useTranslation } from "../../../i18n/context";
 import { InspectorDefinitionList, InspectorDefinitionItem } from "../parts/InspectorDefinitionList";
 import { InspectorButton } from "../parts/InspectorButton";
 import {
