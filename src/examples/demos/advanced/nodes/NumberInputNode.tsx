@@ -69,6 +69,7 @@ export const NumberInputRenderer = ({ node, isSelected, isDragging, externalData
       style={{
         width: node.size?.width,
         height: node.size?.height,
+        border: "2px solid #14b8a6",
       }}
     >
       <div className={classes.header}>

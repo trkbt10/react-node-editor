@@ -78,17 +78,36 @@
 }
 
 .accent {
+  appearance: none;
   background: linear-gradient(
     135deg,
     var(--node-editor-accent-color, #2563eb),
     var(--node-editor-accent-color-hover, #1d4ed8)
   );
   color: var(--node-editor-selected-secondary-color, #ffffff);
+  border: none;
   border-radius: var(--node-editor-radius-sm, 6px);
-  padding: var(--node-editor-space-sm, 8px);
+  padding: var(--node-editor-space-sm, 8px) var(--node-editor-space-lg, 16px);
   font: var(--node-editor-control-text-font, 600 14px/1.4 system-ui);
   text-align: center;
   box-shadow: var(--node-editor-control-box-shadow-primary, 0 8px 16px rgba(37, 99, 235, 0.3));
+  cursor: pointer;
+  outline: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.accent:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--node-editor-control-box-shadow-primary, 0 12px 24px rgba(37, 99, 235, 0.4));
+}
+
+.accent:active {
+  transform: translateY(0);
+}
+
+.accent:focus-visible {
+  outline: 2px solid var(--node-editor-keyboard-focus-indicator-color, rgba(37, 99, 235, 0.5));
+  outline-offset: 2px;
 }
 
 .tokenGroups {

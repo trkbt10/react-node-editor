@@ -17,6 +17,8 @@ import {
   WithToolbarExample,
 } from "./demos/ColumnLayoutExample";
 import { AdvancedLayoutExample } from "./demos/AdvancedLayoutExample";
+import { ResponsiveLayoutExample } from "./demos/ResponsiveLayoutExample";
+import { MobileDrawerExample } from "./demos/MobileDrawerExample";
 import { ThreeJsExample } from "./demos/threejs/ThreeJsExample";
 import CustomNodeExample from "./demos/CustomNodeExample";
 import { ThemeShowcaseExample } from "./demos/design/ThemeShowcaseExample";
@@ -121,6 +123,20 @@ const examples: ExampleEntry[] = [
     title: "Layout: Advanced (Kitchen Sink)",
     description: "Advanced layout with floating sidebar, minimap, grid toolbox, status bar, and more.",
     component: AdvancedLayoutExample,
+    category: "layout",
+  },
+  {
+    id: "layout-responsive",
+    title: "Layout: Responsive (Mobile/Tablet/Desktop)",
+    description: "Dynamically switches between mobile, tablet, and desktop layouts based on viewport size.",
+    component: ResponsiveLayoutExample,
+    category: "layout",
+  },
+  {
+    id: "layout-mobile-drawer",
+    title: "Layout: Mobile Drawer",
+    description: "Mobile-friendly layout with drawer-based inspector panel for touch devices.",
+    component: MobileDrawerExample,
     category: "layout",
   },
   {

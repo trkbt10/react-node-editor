@@ -73,6 +73,7 @@ export const ParticleSizeRenderer = ({ node, isSelected, isDragging, externalDat
       style={{
         width: node.size?.width,
         height: node.size?.height,
+        border: "2px solid #6366f1",
       }}
     >
       <div className={classes.header}>

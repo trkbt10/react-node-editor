@@ -108,6 +108,7 @@ export const ParticleColorRenderer = ({
       style={{
         width: node.size?.width,
         height: node.size?.height,
+        border: "2px solid #f97316",
       }}
     >
       <div className={classes.header}>

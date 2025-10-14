@@ -9,6 +9,7 @@ import { InspectorPanel } from "../../../components/inspector/InspectorPanel";
 import { StatusBar } from "../../../components/layout/StatusBar";
 import { Minimap } from "../../../components/layers/Minimap";
 import { createThreeJsNodeDefinitions } from "./createThreeJsNodeDefinitions";
+import { getMaterialPreset } from "./materialConfig";
 
 const initialData: NodeEditorData = {
   nodes: {
@@ -35,16 +36,38 @@ const initialData: NodeEditorData = {
         step: 0.1,
       },
     },
+    "wireframe-node": {
+      id: "wireframe-node",
+      type: "wireframe-control",
+      position: { x: 120, y: 660 },
+      size: { width: 220, height: 200 },
+      data: {
+        title: "Wireframe Pulse",
+        description: "Ignite the neon lattice to outline the form.",
+        wireframe: true,
+      },
+    },
+    "material-node": {
+      id: "material-node",
+      type: "material-control",
+      position: { x: 120, y: 900 },
+      size: { width: 260, height: 360 },
+      data: {
+        title: "Material Composer",
+        material: getMaterialPreset("hologram"),
+      },
+    },
     "three-node": {
       id: "three-node",
       type: "three-preview",
-      position: { x: 440, y: 260 },
+      position: { x: 460, y: 360 },
       size: { width: 360, height: 380 },
       data: {
         title: "Three.js Preview",
         color: "#60a5fa",
         scale: 1.5,
         background: "space",
+        wireframe: false,
       },
     },
   },
@@ -62,6 +85,20 @@ const initialData: NodeEditorData = {
       fromPortId: "value",
       toNodeId: "three-node",
       toPortId: "scale",
+    },
+    "wireframe-to-three": {
+      id: "wireframe-to-three",
+      fromNodeId: "wireframe-node",
+      fromPortId: "wireframe",
+      toNodeId: "three-node",
+      toPortId: "wireframe",
+    },
+    "material-to-three": {
+      id: "material-to-three",
+      fromNodeId: "material-node",
+      fromPortId: "material",
+      toNodeId: "three-node",
+      toPortId: "material",
     },
   },
 };

@@ -102,6 +102,7 @@ export const GamePadRenderer = ({ node, isSelected, isDragging, externalData, on
       style={{
         width: node.size?.width,
         height: node.size?.height,
+        border: "2px solid #6366f1",
       }}
     >
       <div className={classes.header}>

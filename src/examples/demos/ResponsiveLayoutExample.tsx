@@ -11,7 +11,7 @@ import { GridToolbox } from "../../components/layers/GridToolbox";
 import { StandardNodeDefinition } from "../../node-definitions/standard";
 import { toUntypedDefinition } from "../../types/NodeDefinition";
 import type { NodeEditorData } from "../../types/core";
-import { isMobileDevice, isMobileViewport, getViewportWidth } from "../../utils/mobileDetection";
+import { getViewportWidth } from "../../utils/mobileDetection";
 
 const initialData: NodeEditorData = {
   nodes: {
@@ -174,17 +174,14 @@ const getLayoutMode = (width: number): "mobile" | "tablet" | "desktop" => {
  */
 export const ResponsiveLayoutExample: React.FC = () => {
   const [viewportWidth, setViewportWidth] = React.useState(() => getViewportWidth());
-  const [isMobile, setIsMobile] = React.useState(() => isMobileDevice() || isMobileViewport());
   const [showInspector, setShowInspector] = React.useState(false);
   const [showMinimap, setShowMinimap] = React.useState(true);
   const [layoutKey, setLayoutKey] = React.useState(0);
 
-  // Update viewport width and mobile state on resize
+  // Update viewport width on resize
   React.useEffect(() => {
     const handleResize = () => {
-      const width = getViewportWidth();
-      setViewportWidth(width);
-      setIsMobile(isMobileDevice() || isMobileViewport());
+      setViewportWidth(getViewportWidth());
     };
 
     window.addEventListener("resize", handleResize);

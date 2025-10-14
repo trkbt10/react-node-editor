@@ -302,6 +302,7 @@ export const ParticleSystemRenderer = ({ node, isSelected, isDragging }: NodeRen
       style={{
         width: node.size?.width,
         height: node.size?.height,
+        border: "2px solid #a855f7",
       }}
     >
       <div className={classes.header}>

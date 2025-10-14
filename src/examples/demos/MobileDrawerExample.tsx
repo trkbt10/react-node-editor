@@ -152,6 +152,10 @@ export const MobileDrawerExample: React.FC = () => {
                 backdropOpacity: 0.5,
                 size: "80%",
                 onStateChange: handleInspectorStateChange,
+                header: {
+                  title: "Inspector",
+                  showCloseButton: true,
+                },
               },
             }
           : {

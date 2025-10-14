@@ -1,6 +1,8 @@
 .container {
   padding: var(--node-editor-space-md);
   border-radius: var(--node-editor-radius-sm);
+  background: transparent;
+  border: none;
   min-height: 120px;
   font-family: var(--node-editor-font-mono);
   display: flex;

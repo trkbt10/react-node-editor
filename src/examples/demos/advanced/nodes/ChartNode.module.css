@@ -1,11 +1,12 @@
 .container {
   padding: var(--node-editor-space-md);
   border-radius: var(--node-editor-radius-sm);
+  background: transparent;
+  border: none;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   overflow: hidden;
-  border: 2px solid #10b981;
 }
 
 .container.selected {

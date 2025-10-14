@@ -1,6 +1,7 @@
 .container {
   border-radius: 8px;
-  background-color: #ffffff;
+  background: transparent;
+  border: none;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;

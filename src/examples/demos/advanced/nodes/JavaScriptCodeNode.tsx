@@ -54,6 +54,7 @@ export const JavaScriptCodeRenderer = ({
       style={{
         width: node.size?.width,
         height: node.size?.height,
+        border: "2px solid #f59e0b",
       }}
     >
       <div className={classes.header}>

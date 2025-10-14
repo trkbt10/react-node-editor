@@ -12,6 +12,12 @@ import {
   type ConnectionRenderContext,
 } from "../../../types/NodeDefinition";
 import { ThreeSceneCanvas } from "./ThreeSceneCanvas";
+import {
+  getMaterialPreset,
+  mergeMaterialConfig,
+  type MaterialConfig,
+  type MaterialMode,
+} from "./materialConfig";
 import { useNodeEditor } from "../../../contexts/node-editor";
 import classes from "./ThreeJsNodes.module.css";
 import { calculateBezierPath } from "../../../components/connection/utils/connectionUtils";
@@ -29,11 +35,112 @@ type SliderControlData = {
   step: number;
 };
 
+type WireframeControlData = {
+  title: string;
+  description: string;
+  wireframe: boolean;
+};
+
+type MaterialControlData = {
+  title: string;
+  material: MaterialConfig;
+};
+
 type ThreePreviewData = {
   title: string;
   background: string;
   color?: string;
   scale?: number;
+  wireframe?: boolean;
+  material?: MaterialConfig;
+};
+
+const MATERIAL_MODE_LABELS: Record<MaterialMode, string> = {
+  standard: "Sculpted Alloy",
+  glass: "Prismatic Glass",
+  hologram: "Nebula Hologram",
+};
+
+const MATERIAL_MODE_GRADIENTS: Record<MaterialMode, [string, string, string]> = {
+  standard: ["#22d3ee", "#38bdf8", "#2563eb"],
+  glass: ["#f0f9ff", "#7dd3fc", "#1e3a8a"],
+  hologram: ["#f472b6", "#22d3ee", "#818cf8"],
+};
+
+type NumericMaterialField =
+  | "metalness"
+  | "roughness"
+  | "transmission"
+  | "emissiveIntensity"
+  | "pulseStrength";
+
+const MATERIAL_SLIDER_FIELDS: Array<{
+  key: NumericMaterialField;
+  label: string;
+  min: number;
+  max: number;
+  step: number;
+  formatter?: (value: number) => string;
+}> = [
+  {
+    key: "metalness",
+    label: "Metalness",
+    min: 0,
+    max: 1,
+    step: 0.01,
+    formatter: (value) => `${Math.round(value * 100)}%`,
+  },
+  {
+    key: "roughness",
+    label: "Roughness",
+    min: 0,
+    max: 1,
+    step: 0.01,
+    formatter: (value) => `${Math.round(value * 100)}%`,
+  },
+  {
+    key: "transmission",
+    label: "Transmission",
+    min: 0,
+    max: 1,
+    step: 0.01,
+    formatter: (value) => `${Math.round(value * 100)}%`,
+  },
+  {
+    key: "emissiveIntensity",
+    label: "Glow Intensity",
+    min: 0,
+    max: 3,
+    step: 0.05,
+    formatter: (value) => `${value.toFixed(2)}×`,
+  },
+  {
+    key: "pulseStrength",
+    label: "Pulse Strength",
+    min: 0,
+    max: 2,
+    step: 0.05,
+    formatter: (value) => `${value.toFixed(2)}×`,
+  },
+];
+
+const MATERIAL_OVERRIDE_FACTORIES: Record<NumericMaterialField, (value: number) => Partial<MaterialConfig>> = {
+  metalness: (value) => ({ metalness: value }),
+  roughness: (value) => ({ roughness: value }),
+  transmission: (value) => ({ transmission: value }),
+  emissiveIntensity: (value) => ({ emissiveIntensity: value }),
+  pulseStrength: (value) => ({ pulseStrength: value }),
+};
+
+const isMaterialConfig = (value: unknown): value is MaterialConfig => {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const candidate = value as Partial<MaterialConfig>;
+  if (candidate.mode !== "standard" && candidate.mode !== "glass" && candidate.mode !== "hologram") {
+    return false;
+  }
+  return typeof candidate.metalness === "number" && typeof candidate.roughness === "number";
 };
 
 /**
@@ -121,6 +228,78 @@ const ScaleConnectionRenderer = (context: ConnectionRenderContext, defaultRender
       >
         {scaleValue.toFixed(1)}×
       </text>
+    </g>
+  );
+};
+
+const WireframeConnectionRenderer = (context: ConnectionRenderContext, defaultRender: () => React.ReactElement) => {
+  const { fromPosition, toPosition, fromPort, toPort, connection } = context;
+  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, toPort.position);
+
+  return (
+    <g>
+      <g style={{ opacity: 0, pointerEvents: "auto" }}>{defaultRender()}</g>
+      <g data-connection-id={connection.id} style={{ pointerEvents: "none" }}>
+        <path
+          d={pathData}
+          fill="none"
+          stroke="rgba(255, 255, 255, 0.22)"
+          strokeWidth={6}
+          strokeLinecap="round"
+          vectorEffect="non-scaling-stroke"
+          style={{ filter: "blur(6px)" }}
+        />
+        <path
+          d={pathData}
+          fill="none"
+          stroke="#f97316"
+          strokeWidth={2.5}
+          strokeDasharray="6 6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+        />
+      </g>
+    </g>
+  );
+};
+
+const MaterialConnectionRenderer = (context: ConnectionRenderContext, defaultRender: () => React.ReactElement) => {
+  const { fromPosition, toPosition, fromPort, toPort, connection, fromNode } = context;
+  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, toPort.position);
+  const materialData = fromNode.data as MaterialControlData;
+  const gradientId = `material-gradient-${connection.id}`;
+  const colors = MATERIAL_MODE_GRADIENTS[materialData.material.mode];
+
+  return (
+    <g>
+      <g style={{ opacity: 0, pointerEvents: "auto" }}>{defaultRender()}</g>
+      <defs>
+        <linearGradient id={gradientId} gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor={colors[0]} />
+          <stop offset="50%" stopColor={colors[1]} />
+          <stop offset="100%" stopColor={colors[2]} />
+        </linearGradient>
+        <filter id={`material-glow-${connection.id}`}>
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+      <g data-connection-id={connection.id} style={{ pointerEvents: "none" }}>
+        <path
+          d={pathData}
+          fill="none"
+          stroke={`url(#${gradientId})`}
+          strokeWidth={3.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+          style={{ filter: `url(#material-glow-${connection.id})` }}
+        />
+      </g>
     </g>
   );
 };
@@ -244,6 +423,192 @@ const SliderControlInspector = ({ node, onUpdateNode }: InspectorRenderProps<Sli
   );
 };
 
+const WireframeControlNodeRenderer = ({ node, onUpdateNode }: NodeRenderProps<WireframeControlData>) => {
+  const handleToggle = () => {
+    onUpdateNode({ data: { ...node.data, wireframe: !node.data.wireframe } });
+  };
+
+  return (
+    <div className={classes.controlNode}>
+      <h3 className={classes.nodeTitle}>{node.data.title}</h3>
+      <p className={classes.nodeDescription}>{node.data.description}</p>
+      <button
+        type="button"
+        className={classes.toggleButton}
+        data-active={node.data.wireframe}
+        onClick={handleToggle}
+        aria-pressed={node.data.wireframe}
+      >
+        {node.data.wireframe ? "Wireframe Enabled" : "Wireframe Disabled"}
+      </button>
+      <span className={classes.nodeHint}>Tap to reveal the teapot&apos;s luminous skeleton.</span>
+    </div>
+  );
+};
+
+const WireframeControlInspector = ({ node, onUpdateNode }: InspectorRenderProps<WireframeControlData>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onUpdateNode({ data: { ...node.data, wireframe: event.target.checked } });
+  };
+
+  return (
+    <div className={classes.inspectorSection}>
+      <label className={classes.inspectorLabel} htmlFor={`${node.id}-wireframe`}>
+        Wireframe Overlay
+      </label>
+      <input
+        id={`${node.id}-wireframe`}
+        className={classes.inspectorCheckbox}
+        type="checkbox"
+        checked={node.data.wireframe}
+        onChange={handleChange}
+      />
+      <p className={classes.inspectorHint}>Holographic outlines help spotlight motion and silhouette.</p>
+    </div>
+  );
+};
+
+const MaterialControlNodeRenderer = ({ node, onUpdateNode }: NodeRenderProps<MaterialControlData>) => {
+  const material = React.useMemo(() => {
+    const source = node.data.material ?? getMaterialPreset("standard");
+    return mergeMaterialConfig(source);
+  }, [node.data.material]);
+
+  const commitMaterial = React.useCallback(
+    (input: Partial<MaterialConfig> & { mode?: MaterialMode }) => {
+      const base = material;
+      const merged = mergeMaterialConfig({ ...base, ...input });
+      onUpdateNode({ data: { ...node.data, material: merged } });
+    },
+    [material, node.data, onUpdateNode],
+  );
+
+  const handleModeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const nextMode = event.target.value as MaterialMode;
+    commitMaterial(getMaterialPreset(nextMode));
+  };
+
+  const handleEmissiveChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    commitMaterial({ emissive: event.target.value });
+  };
+
+  const handleSliderChange = (field: NumericMaterialField) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const numericValue = Number(event.target.value);
+    commitMaterial(MATERIAL_OVERRIDE_FACTORIES[field](numericValue));
+  };
+
+  const modeGradient = MATERIAL_MODE_GRADIENTS[material.mode];
+
+  return (
+    <div className={classes.controlNode}>
+      <h3 className={classes.nodeTitle}>{node.data.title}</h3>
+      <div
+        className={classes.materialBadge}
+        style={{ background: `linear-gradient(90deg, ${modeGradient[0]}, ${modeGradient[1]}, ${modeGradient[2]})` }}
+      >
+        {MATERIAL_MODE_LABELS[material.mode]}
+      </div>
+      <label className={classes.materialLabel} htmlFor={`${node.id}-mode`}>
+        Material Style
+      </label>
+      <select id={`${node.id}-mode`} className={classes.selectInput} value={material.mode} onChange={handleModeChange}>
+        <option value="standard">Sculpted Alloy</option>
+        <option value="glass">Prismatic Glass</option>
+        <option value="hologram">Nebula Hologram</option>
+      </select>
+      <div className={classes.sliderList}>
+        {MATERIAL_SLIDER_FIELDS.map((field) => {
+          const sliderValue = material[field.key];
+          const formatted = field.formatter ? field.formatter(sliderValue) : sliderValue.toFixed(2);
+          return (
+            <div key={field.key} className={classes.sliderRow}>
+              <div className={classes.sliderHeader}>
+                <span>{field.label}</span>
+                <span className={classes.sliderValueLabel}>{formatted}</span>
+              </div>
+              <input
+                type="range"
+                min={field.min}
+                max={field.max}
+                step={field.step}
+                value={sliderValue}
+                onChange={handleSliderChange(field.key)}
+                className={classes.sliderTrack}
+              />
+            </div>
+          );
+        })}
+      </div>
+      <label className={classes.materialLabel} htmlFor={`${node.id}-emissive`}>
+        Glow Color
+      </label>
+      <input
+        id={`${node.id}-emissive`}
+        type="color"
+        value={material.emissive}
+        onChange={handleEmissiveChange}
+        className={classes.inspectorInput}
+        aria-label="Choose emissive color"
+      />
+    </div>
+  );
+};
+
+const MaterialControlInspector = ({ node, onUpdateNode }: InspectorRenderProps<MaterialControlData>) => {
+  const material = React.useMemo(() => {
+    const source = node.data.material ?? getMaterialPreset("standard");
+    return mergeMaterialConfig(source);
+  }, [node.data.material]);
+
+  const commitMaterial = (input: Partial<MaterialConfig> & { mode?: MaterialMode }) => {
+    const base = material;
+    const merged = mergeMaterialConfig({ ...base, ...input });
+    onUpdateNode({ data: { ...node.data, material: merged } });
+  };
+
+  return (
+    <div className={classes.inspectorSection}>
+      <label className={classes.inspectorLabel} htmlFor={`${node.id}-mode-inspector`}>
+        Material Style
+      </label>
+      <select
+        id={`${node.id}-mode-inspector`}
+        className={classes.selectInput}
+        value={material.mode}
+        onChange={(event) => commitMaterial(getMaterialPreset(event.target.value as MaterialMode))}
+      >
+        <option value="standard">Sculpted Alloy</option>
+        <option value="glass">Prismatic Glass</option>
+        <option value="hologram">Nebula Hologram</option>
+      </select>
+      <label className={classes.inspectorLabel} htmlFor={`${node.id}-inspector-emissive`}>
+        Glow Color
+      </label>
+      <input
+        id={`${node.id}-inspector-emissive`}
+        type="color"
+        value={material.emissive}
+        onChange={(event) => commitMaterial({ emissive: event.target.value })}
+        className={classes.inspectorInput}
+      />
+      <label className={classes.inspectorLabel} htmlFor={`${node.id}-inspector-emissiveIntensity`}>
+        Glow Intensity
+      </label>
+      <input
+        id={`${node.id}-inspector-emissiveIntensity`}
+        type="range"
+        min={0}
+        max={3}
+        step={0.05}
+        value={material.emissiveIntensity}
+        onChange={(event) => commitMaterial({ emissiveIntensity: Number(event.target.value) })}
+        className={classes.sliderTrack}
+      />
+      <p className={classes.inspectorHint}>Blend modes and emissive glow combine to deliver a stage-worthy reveal.</p>
+    </div>
+  );
+};
+
 const ThreeSceneNodeRenderer = ({ node }: NodeRenderProps<ThreePreviewData>) => {
   const { state } = useNodeEditor();
 
@@ -267,6 +632,12 @@ const ThreeSceneNodeRenderer = ({ node }: NodeRenderProps<ThreePreviewData>) => 
       if (portId === "scale") {
         return sourceData.value;
       }
+      if (portId === "wireframe") {
+        return sourceData.wireframe;
+      }
+      if (portId === "material") {
+        return sourceData.material;
+      }
       return sourceData[inbound.fromPortId];
     },
     [state.connections, state.nodes, node.id],
@@ -288,6 +659,33 @@ const ThreeSceneNodeRenderer = ({ node }: NodeRenderProps<ThreePreviewData>) => 
     return typeof node.data.scale === "number" ? node.data.scale : 1;
   }, [node.data.scale, resolveInputValue]);
 
+  const wireframeEnabled = React.useMemo(() => {
+    const connected = resolveInputValue("wireframe");
+    if (typeof connected === "boolean") {
+      return connected;
+    }
+    if (typeof node.data.wireframe === "boolean") {
+      return node.data.wireframe;
+    }
+    return false;
+  }, [node.data.wireframe, resolveInputValue]);
+
+  const materialConfigValue = React.useMemo(() => {
+    const connected = resolveInputValue("material");
+    if (isMaterialConfig(connected)) {
+      return mergeMaterialConfig(connected);
+    }
+    if (node.data.material) {
+      return mergeMaterialConfig(node.data.material);
+    }
+    return getMaterialPreset("standard");
+  }, [node.data.material, resolveInputValue]);
+
+  const overlayBackground = React.useMemo(() => {
+    const [a, b, c] = MATERIAL_MODE_GRADIENTS[materialConfigValue.mode];
+    return `linear-gradient(135deg, ${a}b3, ${b}99, ${c}b3)`;
+  }, [materialConfigValue.mode]);
+
   return (
     <div
       className={classes.threeScene}
@@ -296,13 +694,16 @@ const ThreeSceneNodeRenderer = ({ node }: NodeRenderProps<ThreePreviewData>) => 
         height: node.size?.height,
       }}
     >
-      <div className={classes.threeOverlay}>
+      <div className={classes.threeOverlay} style={{ background: overlayBackground }}>
         <span>Three.js Preview</span>
         <span>Color: {color.toUpperCase()}</span>
         <span>Scale: {scale.toFixed(2)}×</span>
+        <span>Material: {MATERIAL_MODE_LABELS[materialConfigValue.mode]}</span>
+        <span>Wireframe: {wireframeEnabled ? "ON" : "OFF"}</span>
+        <span>Glow: {materialConfigValue.emissiveIntensity.toFixed(2)}×</span>
       </div>
       <div className={classes.threeCanvasHost}>
-        <ThreeSceneCanvas color={color} scale={scale} />
+        <ThreeSceneCanvas color={color} scale={scale} wireframe={wireframeEnabled} materialConfig={materialConfigValue} />
       </div>
     </div>
   );
@@ -312,7 +713,7 @@ const ThreeSceneInspector = (_props: InspectorRenderProps<ThreePreviewData>) => 
   return (
     <div className={classes.inspectorSection}>
       <p className={classes.inspectorLabel}>
-        Connect color and slider nodes to drive this preview. Inspector settings are read-only while connected.
+        Connect color, scale, wireframe, and material composers to orchestrate the preview. Inspector settings are read-only while connected.
       </p>
     </div>
   );
@@ -367,6 +768,53 @@ const ScaleControlDefinition = createNodeDefinition<SliderControlData>({
   ],
 });
 
+const WireframeControlDefinition = createNodeDefinition<WireframeControlData>({
+  type: "wireframe-control",
+  displayName: "Wireframe Overlay",
+  category: "Three.js",
+  defaultData: {
+    title: "Wireframe Overlay",
+    description: "Reveal neon struts to spotlight the teapot's contours.",
+    wireframe: false,
+  },
+  defaultSize: { width: 220, height: 200 },
+  renderNode: WireframeControlNodeRenderer,
+  renderInspector: WireframeControlInspector,
+  ports: [
+    {
+      id: "wireframe",
+      type: "output",
+      label: "Wireframe",
+      position: "right",
+      dataType: "boolean",
+      renderConnection: WireframeConnectionRenderer,
+    },
+  ],
+});
+
+const MaterialControlDefinition = createNodeDefinition<MaterialControlData>({
+  type: "material-control",
+  displayName: "Material Composer",
+  category: "Three.js",
+  defaultData: {
+    title: "Material Composer",
+    material: getMaterialPreset("standard"),
+  },
+  defaultSize: { width: 260, height: 360 },
+  renderNode: MaterialControlNodeRenderer,
+  renderInspector: MaterialControlInspector,
+  ports: [
+    {
+      id: "material",
+      type: "output",
+      label: "Material",
+      position: "right",
+      dataType: "material",
+      renderConnection: MaterialConnectionRenderer,
+    },
+  ],
+});
+
 const ThreePreviewDefinition = createNodeDefinition<ThreePreviewData>({
   type: "three-preview",
   displayName: "Three.js Preview",
@@ -376,6 +824,8 @@ const ThreePreviewDefinition = createNodeDefinition<ThreePreviewData>({
     background: "space",
     color: "#60a5fa",
     scale: 1.5,
+    wireframe: false,
+    material: getMaterialPreset("standard"),
   },
   defaultSize: { width: 360, height: 380 },
   renderNode: ThreeSceneNodeRenderer,
@@ -395,11 +845,35 @@ const ThreePreviewDefinition = createNodeDefinition<ThreePreviewData>({
       position: "left",
       dataType: "number",
     },
+    {
+      id: "wireframe",
+      type: "input",
+      label: "Wireframe",
+      position: "left",
+      dataType: "boolean",
+      renderConnection: WireframeConnectionRenderer,
+    },
+    {
+      id: "material",
+      type: "input",
+      label: "Material",
+      position: "left",
+      dataType: "material",
+      renderConnection: MaterialConnectionRenderer,
+    },
   ],
 });
 
 export const createThreeJsNodeDefinitions = (): NodeDefinition[] => [
   toUntypedDefinition(ColorControlDefinition),
   toUntypedDefinition(ScaleControlDefinition),
+  toUntypedDefinition(WireframeControlDefinition),
+  toUntypedDefinition(MaterialControlDefinition),
   toUntypedDefinition(ThreePreviewDefinition),
 ];
+
+/*
+debug-notes:
+- Referenced src/components/connection/ConnectionView.tsx to ensure custom renderers wrap the default output for pointer interactions.
+- Reviewed src/types/NodeDefinition.ts to confirm ConnectionRenderContext exposes fromNode data used for gradient styling.
+*/

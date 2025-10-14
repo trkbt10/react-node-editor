@@ -1,8 +1,8 @@
 .container {
   padding: var(--node-editor-space-md);
   border-radius: var(--node-editor-radius-sm);
-  background-color: var(--node-editor-surface-primary);
-  border: 2px solid #f59e0b;
+  background: transparent;
+  border: none;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
