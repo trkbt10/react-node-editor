@@ -15,6 +15,7 @@ export type PortViewProps = {
   onPointerUp?: (e: React.PointerEvent, port: Port) => void;
   onPointerEnter?: (e: React.PointerEvent, port: Port) => void;
   onPointerLeave?: (e: React.PointerEvent, port: Port) => void;
+  onPointerCancel?: (e: React.PointerEvent, port: Port) => void;
   isConnecting?: boolean;
   isConnectable?: boolean;
   isCandidate?: boolean;
@@ -32,6 +33,7 @@ export const PortView: React.FC<PortViewProps> = ({
   onPointerUp,
   onPointerEnter,
   onPointerLeave,
+  onPointerCancel,
   isConnecting = false,
   isConnectable = false,
   isCandidate = false,
@@ -108,6 +110,9 @@ export const PortView: React.FC<PortViewProps> = ({
         onPointerUp={handlePointerUp}
         onPointerEnter={handlePointerEnter}
         onPointerLeave={handlePointerLeave}
+        onPointerCancel={(e) => {
+          onPointerCancel?.(e, port);
+        }}
         data-port-id={port.id}
         data-port-type={port.type}
         data-port-position={port.position}
@@ -139,6 +144,7 @@ export const PortView: React.FC<PortViewProps> = ({
       handlePointerUp,
       handlePointerEnter,
       handlePointerLeave,
+      onPointerCancel,
     ],
   );
 
@@ -167,6 +173,7 @@ export const PortView: React.FC<PortViewProps> = ({
         onPointerUp: handlePointerUp,
         onPointerEnter: handlePointerEnter,
         onPointerLeave: handlePointerLeave,
+        onPointerCancel: (e: React.PointerEvent) => onPointerCancel?.(e, port),
       },
     };
 

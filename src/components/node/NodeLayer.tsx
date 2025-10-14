@@ -62,7 +62,7 @@ export type NodeLayerProps = {
 export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
   const { state: nodeEditorState, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
   const { state: actionState, actions: actionActions } = useEditorActionState();
-  const { state: canvasState, utils } = useNodeCanvas();
+  const { state: canvasState, utils, containerRef } = useNodeCanvas();
   const { node: NodeComponent } = useRenderers();
   const { calculateNodePortPositions, getPortPosition, computePortPosition } = usePortPositions();
   const interactionSettings = useInteractionSettings();
@@ -330,6 +330,10 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         hasConnection: existingConnections.length > 0,
       };
 
+      if (e.pointerType !== "mouse") {
+        containerRef.current?.setPointerCapture?.(e.pointerId);
+      }
+
       // Start new connection drag when:
       // - the port has no connections, or
       // - it's an output port (outputs default to multi-connection unless limited by definition)
@@ -384,6 +388,10 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         portDragStartRef.current = null;
         document.removeEventListener("pointermove", handlePointerMove);
         document.removeEventListener("pointerup", handlePointerUp);
+        document.removeEventListener("pointercancel", handlePointerCancel);
+        if (e.pointerType !== "mouse") {
+          containerRef.current?.releasePointerCapture?.(e.pointerId);
+        }
       };
 
       const startDisconnect = () => {
@@ -441,50 +449,68 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
       // Add listeners
       document.addEventListener("pointermove", handlePointerMove);
       document.addEventListener("pointerup", handlePointerUp);
+      const handlePointerCancel = () => {
+        handlePointerUp();
+      };
+      document.addEventListener("pointercancel", handlePointerCancel);
     },
-    [nodeEditorState.connections, nodeEditorState.nodes, actionActions, nodeEditorActions, getNodePorts],
+    [
+      nodeEditorState.connections,
+      nodeEditorState.nodes,
+      actionActions,
+      nodeEditorActions,
+      getNodePorts,
+      containerRef,
+    ],
   );
 
-  const handlePortPointerUp = React.useCallback(
-    (e: React.PointerEvent, port: Port) => {
-      e.stopPropagation();
-
-      // Handle reconnection from disconnect drag
-      if (actionState.connectionDisconnectState) {
-        const disconnectState = actionState.connectionDisconnectState;
-        const fixedPort = disconnectState.fixedPort;
-
-        if (
-          isValidReconnection(fixedPort, port, nodeEditorState.nodes, nodeEditorState.connections, (type: string) =>
-            getNodeDef.registry.get(type),
-          )
-        ) {
-          const newConnection = createValidatedConnection(
-            fixedPort,
-            port,
-            nodeEditorState.nodes,
-            nodeEditorState.connections,
-            (type: string) => getNodeDef.registry.get(type),
-          );
-          if (newConnection) {
-            nodeEditorActions.addConnection(newConnection);
-          }
-        }
-
-        actionActions.endConnectionDisconnect();
-        actionActions.updateConnectablePorts(createEmptyConnectablePorts());
-        return;
+  const completeDisconnectDrag = React.useCallback(
+    (targetPort: Port): boolean => {
+      const disconnectState = actionState.connectionDisconnectState;
+      if (!disconnectState) {
+        return false;
+      }
+      const fixedPort = disconnectState.fixedPort;
+      if (
+        !isValidReconnection(fixedPort, targetPort, nodeEditorState.nodes, nodeEditorState.connections, (type: string) =>
+          getNodeDef.registry.get(type),
+        )
+      ) {
+        return false;
       }
 
-      // Handle new connection
-      if (!actionState.connectionDragState) {
-        return;
+      const newConnection = createValidatedConnection(
+        fixedPort,
+        targetPort,
+        nodeEditorState.nodes,
+        nodeEditorState.connections,
+        (type: string) => getNodeDef.registry.get(type),
+      );
+      if (!newConnection) {
+        return false;
       }
+      nodeEditorActions.addConnection(newConnection);
+      return true;
+    },
+    [
+      actionState.connectionDisconnectState,
+      nodeEditorState.nodes,
+      nodeEditorState.connections,
+      getNodeDef,
+      nodeEditorActions,
+    ],
+  );
 
-      const fromPort = actionState.connectionDragState.fromPort;
+  const completeConnectionDrag = React.useCallback(
+    (targetPort: Port): boolean => {
+      const drag = actionState.connectionDragState;
+      if (!drag) {
+        return false;
+      }
+      const fromPort = drag.fromPort;
       const plan = planConnectionChange({
         fromPort,
-        toPort: port,
+        toPort: targetPort,
         nodes: nodeEditorState.nodes,
         connections: nodeEditorState.connections,
         getNodeDefinition: (type: string) => getNodeDef.registry.get(type),
@@ -497,29 +523,62 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
               nodeEditorActions.deleteConnection(connectionId);
             });
             nodeEditorActions.addConnection(plan.connection);
+            return true;
           }
           break;
-
         case ConnectionSwitchBehavior.Append:
           if (plan.connection) {
             nodeEditorActions.addConnection(plan.connection);
+            return true;
           }
           break;
-
         case ConnectionSwitchBehavior.Ignore:
         default:
           break;
       }
+      return false;
+    },
+    [actionState.connectionDragState, nodeEditorState.nodes, nodeEditorState.connections, getNodeDef, nodeEditorActions],
+  );
 
-      actionActions.endConnectionDrag();
-      actionActions.updateConnectablePorts(createEmptyConnectablePorts());
+  const handlePortPointerUp = React.useCallback(
+    (e: React.PointerEvent, port: Port) => {
+      e.stopPropagation();
+      if (e.pointerType !== "mouse") {
+        containerRef.current?.releasePointerCapture?.(e.pointerId);
+      }
+
+      if (actionState.connectionDisconnectState) {
+        completeDisconnectDrag(port);
+        actionActions.endConnectionDisconnect();
+        actionActions.updateConnectablePorts(createEmptyConnectablePorts());
+        return;
+      }
+
+      if (actionState.connectionDragState) {
+        completeConnectionDrag(port);
+        actionActions.endConnectionDrag();
+        actionActions.updateConnectablePorts(createEmptyConnectablePorts());
+      }
     },
     [
-      actionState.connectionDragState,
       actionState.connectionDisconnectState,
+      actionState.connectionDragState,
+      completeDisconnectDrag,
+      completeConnectionDrag,
       actionActions,
-      nodeEditorActions,
+      containerRef,
     ],
+  );
+
+  const handlePortPointerCancel = React.useCallback(
+    (e: React.PointerEvent, port: Port) => {
+      if (e.pointerType !== "mouse") {
+        containerRef.current?.releasePointerCapture?.(e.pointerId);
+      }
+      handlePortPointerUp(e, port);
+    },
+    [handlePortPointerUp, containerRef],
   );
 
   const handlePortPointerEnter = React.useCallback(
@@ -647,6 +706,12 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
         return;
       }
       const { fromPort, candidatePort, toPosition } = drag;
+      if (candidatePort && fromPort.id !== candidatePort.id && completeConnectionDrag(candidatePort)) {
+        actionActions.endConnectionDrag();
+        actionActions.updateConnectablePorts(createEmptyConnectablePorts());
+        return;
+      }
+
       if (!candidatePort || fromPort.id === candidatePort.id) {
         // Open Node Search filtered by connectable node types at drop position
         const screen = utils.canvasToScreen(toPosition.x, toPosition.y);
@@ -698,6 +763,10 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
       actionActions.updateConnectionDisconnect(canvasPosition, candidate);
     },
     onPointerUp: () => {
+      const disconnectState = actionState.connectionDisconnectState;
+      if (disconnectState?.candidatePort) {
+        completeDisconnectDrag(disconnectState.candidatePort);
+      }
       actionActions.endConnectionDisconnect();
       actionActions.updateConnectablePorts(createEmptyConnectablePorts());
     },
@@ -718,6 +787,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
           onPortPointerUp={handlePortPointerUp}
           onPortPointerEnter={handlePortPointerEnter}
           onPortPointerLeave={handlePortPointerLeave}
+          onPortPointerCancel={handlePortPointerCancel}
           connectablePorts={actionState.connectablePorts}
           connectingPort={
             actionState.connectionDragState?.fromPort

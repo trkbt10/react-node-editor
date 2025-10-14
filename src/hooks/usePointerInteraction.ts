@@ -86,10 +86,12 @@ export function usePointerInteraction<T>({
 
     window.addEventListener("pointermove", handlePointerMove, pointerMoveOptions);
     window.addEventListener("pointerup", handlePointerUp, { once: true });
+    window.addEventListener("pointercancel", handlePointerUp, { once: true });
 
     return () => {
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
     };
   }, [interactionState, viewport, onPointerMove, onPointerUp, canvasSelector, pointerMoveOptions, screenToCanvas]);
 }

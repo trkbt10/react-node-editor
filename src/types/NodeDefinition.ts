@@ -108,6 +108,7 @@ export type PortRenderContext = {
     onPointerUp: (e: React.PointerEvent) => void;
     onPointerEnter: (e: React.PointerEvent) => void;
     onPointerLeave: (e: React.PointerEvent) => void;
+    onPointerCancel?: (e: React.PointerEvent) => void;
   };
 };
 
