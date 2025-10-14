@@ -5,7 +5,7 @@
   height: 12px;
   border-radius: 50%;
   background-color: var(--node-editor-control-background, #ffffff);
-  border: 2px solid var(--node-editor-input-border, #e0e0e0);
+  border: var(--node-editor-input-border);
   cursor: crosshair;
   transition:
     transform 0.1s ease,

@@ -27,7 +27,7 @@
 
   box-sizing: border-box;
   background: var(--node-editor-control-hover-background, rgba(0, 0, 0, 0.05));
-  border-bottom: 1px solid var(--node-editor-input-border, rgba(0, 0, 0, 0.1));
+  border-bottom: var(--node-editor-input-border);
   font-size: var(--node-editor-font-size-xs);
   min-height: var(--node-editor-space-md);
   flex-shrink: 0;

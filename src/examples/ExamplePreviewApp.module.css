@@ -17,10 +17,8 @@ body,
 body {
   margin: 0;
   font-family: var(--node-editor-theme-default-font-family, system-ui, sans-serif);
-  background: var(
-    --node-editor-background-surface,
-    var(--node-editor-window-background-color, #ffffff)
-  );
+  background: var(--node-editor-background-surface,
+      var(--node-editor-window-background-color, #ffffff));
   color: var(--node-editor-text-color, #0f172a);
 }
 
@@ -29,11 +27,9 @@ body {
   flex-direction: column;
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(
-    135deg,
-    var(--node-editor-under-page-background-color, #0f172a),
-    var(--node-editor-surface-secondary, #1e293b)
-  );
+  background: linear-gradient(135deg,
+      var(--node-editor-under-page-background-color, #0f172a),
+      var(--node-editor-surface-secondary, #1e293b));
   color: var(--node-editor-text-color, #0f172a);
 }
 
@@ -84,7 +80,7 @@ body {
 .select {
   background-color: var(--node-editor-control-background, #1e293b);
   color: var(--node-editor-control-text-color, #f8fafc);
-  border: 1px solid var(--node-editor-input-border, rgba(148, 163, 184, 0.4));
+  border: var(--node-editor-input-border);
   border-radius: var(--node-editor-control-border-radius, 6px);
   padding: var(--node-editor-space-sm, 6px) var(--node-editor-space-md, 12px);
   font: var(--node-editor-control-text-font, 600 14px/1.4 system-ui);
@@ -153,9 +149,7 @@ body {
 .main {
   flex: 1;
   overflow: hidden;
-  background: var(
-    --node-editor-background-surface,
-    var(--node-editor-window-background-color, #0b1120)
-  );
+  background: var(--node-editor-background-surface,
+      var(--node-editor-window-background-color, #0b1120));
   position: relative;
 }
