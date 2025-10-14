@@ -2,6 +2,7 @@
  * @file Context for managing canvas viewport, panning, zooming, and grid settings
  */
 import * as React from "react";
+import { createAction, createActionHandlerMap, type ActionUnion } from "../utils/typedActions";
 import type { Position, Viewport, GridSettings } from "../types/core";
 import { clampZoomScale } from "../utils/zoomUtils";
 
@@ -17,141 +18,125 @@ export type NodeCanvasState = {
   panState: PanState;
 };
 
-// Canvas actions
-export type NodeCanvasAction =
-  | { type: "SET_VIEWPORT"; payload: { viewport: Viewport } }
-  | { type: "PAN_VIEWPORT"; payload: { delta: Position } }
-  | { type: "ZOOM_VIEWPORT"; payload: { scale: number; center?: Position } }
-  | { type: "RESET_VIEWPORT" }
-  | { type: "UPDATE_GRID_SETTINGS"; payload: { settings: Partial<GridSettings> } }
-  | { type: "SET_SPACE_PANNING"; payload: { isSpacePanning: boolean } }
-  | { type: "START_PAN"; payload: { position: Position } }
-  | { type: "UPDATE_PAN"; payload: { position: Position } }
-  | { type: "END_PAN" };
+export const nodeCanvasActions = {
+  setViewport: createAction("SET_VIEWPORT", (viewport: Viewport) => ({ viewport })),
+  panViewport: createAction("PAN_VIEWPORT", (delta: Position) => ({ delta })),
+  zoomViewport: createAction("ZOOM_VIEWPORT", (scale: number, center?: Position) => ({ scale, center })),
+  resetViewport: createAction("RESET_VIEWPORT"),
+  updateGridSettings: createAction("UPDATE_GRID_SETTINGS", (settings: Partial<GridSettings>) => ({ settings })),
+  setSpacePanning: createAction("SET_SPACE_PANNING", (isSpacePanning: boolean) => ({ isSpacePanning })),
+  startPan: createAction("START_PAN", (position: Position) => ({ position })),
+  updatePan: createAction("UPDATE_PAN", (position: Position) => ({ position })),
+  endPan: createAction("END_PAN"),
+} as const;
 
-// Canvas reducer
-export const nodeCanvasReducer = (state: NodeCanvasState, action: NodeCanvasAction): NodeCanvasState => {
-  switch (action.type) {
-    case "SET_VIEWPORT":
-      return {
-        ...state,
-        viewport: action.payload.viewport,
-      };
+export type NodeCanvasAction = ActionUnion<typeof nodeCanvasActions>;
 
-    case "PAN_VIEWPORT": {
-      const { delta } = action.payload;
-      return {
-        ...state,
-        viewport: {
-          ...state.viewport,
-          offset: {
-            x: state.viewport.offset.x + delta.x,
-            y: state.viewport.offset.y + delta.y,
-          },
+const nodeCanvasHandlers = createActionHandlerMap<NodeCanvasState, typeof nodeCanvasActions>(nodeCanvasActions, {
+  setViewport: (state, action) => ({
+    ...state,
+    viewport: action.payload.viewport,
+  }),
+  panViewport: (state, action) => {
+    const { delta } = action.payload;
+    return {
+      ...state,
+      viewport: {
+        ...state.viewport,
+        offset: {
+          x: state.viewport.offset.x + delta.x,
+          y: state.viewport.offset.y + delta.y,
         },
+      },
+    };
+  },
+  zoomViewport: (state, action) => {
+    const { scale, center } = action.payload;
+    const newScale = clampZoomScale(scale);
+    if (center) {
+      const scaleRatio = newScale / state.viewport.scale;
+      const newOffset = {
+        x: center.x - (center.x - state.viewport.offset.x) * scaleRatio,
+        y: center.y - (center.y - state.viewport.offset.y) * scaleRatio,
       };
-    }
-
-    case "ZOOM_VIEWPORT": {
-      const { scale, center } = action.payload;
-      // Zoom limits aligned with design expectations: 1% to 1000%
-      const newScale = clampZoomScale(scale);
-
-      if (center) {
-        // Zoom relative to center point
-        const scaleRatio = newScale / state.viewport.scale;
-        const newOffset = {
-          x: center.x - (center.x - state.viewport.offset.x) * scaleRatio,
-          y: center.y - (center.y - state.viewport.offset.y) * scaleRatio,
-        };
-
-        return {
-          ...state,
-          viewport: {
-            offset: newOffset,
-            scale: newScale,
-          },
-        };
-      }
-
       return {
         ...state,
         viewport: {
-          ...state.viewport,
+          offset: newOffset,
           scale: newScale,
         },
       };
     }
-
-    case "RESET_VIEWPORT":
-      return {
-        ...state,
-        viewport: {
-          offset: { x: 0, y: 0 },
-          scale: 1,
-        },
-      };
-
-    case "UPDATE_GRID_SETTINGS":
-      return {
-        ...state,
-        gridSettings: {
-          ...state.gridSettings,
-          ...action.payload.settings,
-        },
-      };
-
-    case "SET_SPACE_PANNING":
-      return {
-        ...state,
-        isSpacePanning: action.payload.isSpacePanning,
-      };
-
-    case "START_PAN":
-      return {
-        ...state,
-        panState: {
-          isPanning: true,
-          startPosition: action.payload.position,
-        },
-      };
-
-    case "UPDATE_PAN": {
-      if (!state.panState.isPanning || !state.panState.startPosition) {
-        return state;
-      }
-
-      const deltaX = action.payload.position.x - state.panState.startPosition.x;
-      const deltaY = action.payload.position.y - state.panState.startPosition.y;
-
-      return {
-        ...state,
-        viewport: {
-          ...state.viewport,
-          offset: {
-            x: state.viewport.offset.x + deltaX,
-            y: state.viewport.offset.y + deltaY,
-          },
-        },
-        panState: {
-          ...state.panState,
-          startPosition: action.payload.position,
-        },
-      };
-    }
-
-    case "END_PAN":
-      return {
-        ...state,
-        panState: {
-          isPanning: false,
-          startPosition: null,
-        },
-      };
-
-    default:
+    return {
+      ...state,
+      viewport: {
+        ...state.viewport,
+        scale: newScale,
+      },
+    };
+  },
+  resetViewport: (state) => ({
+    ...state,
+    viewport: {
+      offset: { x: 0, y: 0 },
+      scale: 1,
+    },
+  }),
+  updateGridSettings: (state, action) => ({
+    ...state,
+    gridSettings: {
+      ...state.gridSettings,
+      ...action.payload.settings,
+    },
+  }),
+  setSpacePanning: (state, action) => ({
+    ...state,
+    isSpacePanning: action.payload.isSpacePanning,
+  }),
+  startPan: (state, action) => ({
+    ...state,
+    panState: {
+      isPanning: true,
+      startPosition: action.payload.position,
+    },
+  }),
+  updatePan: (state, action) => {
+    if (!state.panState.isPanning || !state.panState.startPosition) {
       return state;
+    }
+    const deltaX = action.payload.position.x - state.panState.startPosition.x;
+    const deltaY = action.payload.position.y - state.panState.startPosition.y;
+    return {
+      ...state,
+      viewport: {
+        ...state.viewport,
+        offset: {
+          x: state.viewport.offset.x + deltaX,
+          y: state.viewport.offset.y + deltaY,
+        },
+      },
+      panState: {
+        ...state.panState,
+        startPosition: action.payload.position,
+      },
+    };
+  },
+  endPan: (state) => ({
+    ...state,
+    panState: {
+      isPanning: false,
+      startPosition: null,
+    },
+  }),
+});
+
+// Canvas reducer
+export const nodeCanvasReducer = (state: NodeCanvasState, action: NodeCanvasAction): NodeCanvasState => {
+  const handler = nodeCanvasHandlers[action.type];
+  if (!handler) {
+    return state;
   }
+  return handler(state, action, undefined);
 };
 
 // Default state
@@ -172,44 +157,6 @@ export const defaultNodeCanvasState: NodeCanvasState = {
     isPanning: false,
     startPosition: null,
   },
-};
-
-// Canvas action creators
-export const nodeCanvasActions = {
-  setViewport: (viewport: Viewport): NodeCanvasAction => ({
-    type: "SET_VIEWPORT",
-    payload: { viewport },
-  }),
-  panViewport: (delta: { x: number; y: number }): NodeCanvasAction => ({
-    type: "PAN_VIEWPORT",
-    payload: { delta },
-  }),
-  zoomViewport: (scale: number, center?: { x: number; y: number }): NodeCanvasAction => ({
-    type: "ZOOM_VIEWPORT",
-    payload: { scale, center },
-  }),
-  resetViewport: (): NodeCanvasAction => ({
-    type: "RESET_VIEWPORT",
-  }),
-  updateGridSettings: (settings: Partial<GridSettings>): NodeCanvasAction => ({
-    type: "UPDATE_GRID_SETTINGS",
-    payload: { settings },
-  }),
-  setSpacePanning: (isSpacePanning: boolean): NodeCanvasAction => ({
-    type: "SET_SPACE_PANNING",
-    payload: { isSpacePanning },
-  }),
-  startPan: (position: { x: number; y: number }): NodeCanvasAction => ({
-    type: "START_PAN",
-    payload: { position },
-  }),
-  updatePan: (position: { x: number; y: number }): NodeCanvasAction => ({
-    type: "UPDATE_PAN",
-    payload: { position },
-  }),
-  endPan: (): NodeCanvasAction => ({
-    type: "END_PAN",
-  }),
 };
 
 // Utility functions for coordinate conversion

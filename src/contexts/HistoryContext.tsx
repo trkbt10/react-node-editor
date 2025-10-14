@@ -2,6 +2,7 @@
  * @file Context for managing undo/redo history with editor state snapshots
  */
 import * as React from "react";
+import { createAction, createActionHandlerMap, type ActionUnion } from "../utils/typedActions";
 import type { NodeEditorData } from "../types/core";
 
 // History types
@@ -19,102 +20,16 @@ export type HistoryState = {
   isRecording: boolean;
 };
 
-// History actions
-export type HistoryAction =
-  | { type: "PUSH_ENTRY"; payload: { action: string; data: NodeEditorData } }
-  | { type: "UNDO" }
-  | { type: "REDO" }
-  | { type: "CLEAR_HISTORY" }
-  | { type: "SET_RECORDING"; payload: { isRecording: boolean } }
-  | { type: "SET_MAX_ENTRIES"; payload: { maxEntries: number } };
+export const historyActions = {
+  pushEntry: createAction("PUSH_ENTRY", (action: string, data: NodeEditorData) => ({ action, data })),
+  undo: createAction("UNDO"),
+  redo: createAction("REDO"),
+  clearHistory: createAction("CLEAR_HISTORY"),
+  setRecording: createAction("SET_RECORDING", (isRecording: boolean) => ({ isRecording })),
+  setMaxEntries: createAction("SET_MAX_ENTRIES", (maxEntries: number) => ({ maxEntries })),
+} as const;
 
-// History reducer
-export const historyReducer = (state: HistoryState, action: HistoryAction): HistoryState => {
-  switch (action.type) {
-    case "PUSH_ENTRY": {
-      if (!state.isRecording) {
-        return state;
-      }
-
-      const { action: actionName, data } = action.payload;
-
-      // Create new entry
-      const newEntry: HistoryEntry = {
-        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        timestamp: Date.now(),
-        action: actionName,
-        data: JSON.parse(JSON.stringify(data)), // Deep clone
-      };
-
-      // Remove any entries after current index (if we're not at the end)
-      const truncatedEntries = state.entries.slice(0, state.currentIndex + 1);
-
-      // Add new entry
-      const newEntries = [...truncatedEntries, newEntry];
-
-      // Limit to max entries (keep the most recent)
-      const limitedEntries = newEntries.slice(-state.maxEntries);
-
-      return {
-        ...state,
-        entries: limitedEntries,
-        currentIndex: limitedEntries.length - 1,
-      };
-    }
-
-    case "UNDO": {
-      if (state.currentIndex <= 0) {
-        return state;
-      }
-
-      return {
-        ...state,
-        currentIndex: state.currentIndex - 1,
-      };
-    }
-
-    case "REDO": {
-      if (state.currentIndex >= state.entries.length - 1) {
-        return state;
-      }
-
-      return {
-        ...state,
-        currentIndex: state.currentIndex + 1,
-      };
-    }
-
-    case "CLEAR_HISTORY": {
-      return {
-        ...state,
-        entries: [],
-        currentIndex: -1,
-      };
-    }
-
-    case "SET_RECORDING": {
-      return {
-        ...state,
-        isRecording: action.payload.isRecording,
-      };
-    }
-
-    case "SET_MAX_ENTRIES": {
-      const { maxEntries } = action.payload;
-      const limitedEntries = state.entries.slice(-maxEntries);
-
-      return {
-        ...state,
-        maxEntries,
-        entries: limitedEntries,
-        currentIndex: Math.min(state.currentIndex, limitedEntries.length - 1),
-      };
-    }
-
-    default:
-      return state;
-  }
-};
+export type HistoryAction = ActionUnion<typeof historyActions>;
 
 // Default state
 export const defaultHistoryState: HistoryState = {
@@ -124,29 +39,73 @@ export const defaultHistoryState: HistoryState = {
   isRecording: true,
 };
 
-// Action creators
-export const historyActions = {
-  pushEntry: (action: string, data: NodeEditorData): HistoryAction => ({
-    type: "PUSH_ENTRY",
-    payload: { action, data },
+const historyHandlers = createActionHandlerMap<HistoryState, typeof historyActions>(historyActions, {
+  pushEntry: (state, action) => {
+    if (!state.isRecording) {
+      return state;
+    }
+    const { action: actionName, data } = action.payload;
+    const newEntry: HistoryEntry = {
+      id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      timestamp: Date.now(),
+      action: actionName,
+      data: JSON.parse(JSON.stringify(data)), // Deep clone to preserve snapshot
+    };
+    const truncatedEntries = state.entries.slice(0, state.currentIndex + 1);
+    const newEntries = [...truncatedEntries, newEntry];
+    const limitedEntries = newEntries.slice(-state.maxEntries);
+    return {
+      ...state,
+      entries: limitedEntries,
+      currentIndex: limitedEntries.length - 1,
+    };
+  },
+  undo: (state) => {
+    if (state.currentIndex <= 0) {
+      return state;
+    }
+    return {
+      ...state,
+      currentIndex: state.currentIndex - 1,
+    };
+  },
+  redo: (state) => {
+    if (state.currentIndex >= state.entries.length - 1) {
+      return state;
+    }
+    return {
+      ...state,
+      currentIndex: state.currentIndex + 1,
+    };
+  },
+  clearHistory: (state) => ({
+    ...state,
+    entries: [],
+    currentIndex: -1,
   }),
-  undo: (): HistoryAction => ({
-    type: "UNDO",
+  setRecording: (state, action) => ({
+    ...state,
+    isRecording: action.payload.isRecording,
   }),
-  redo: (): HistoryAction => ({
-    type: "REDO",
-  }),
-  clearHistory: (): HistoryAction => ({
-    type: "CLEAR_HISTORY",
-  }),
-  setRecording: (isRecording: boolean): HistoryAction => ({
-    type: "SET_RECORDING",
-    payload: { isRecording },
-  }),
-  setMaxEntries: (maxEntries: number): HistoryAction => ({
-    type: "SET_MAX_ENTRIES",
-    payload: { maxEntries },
-  }),
+  setMaxEntries: (state, action) => {
+    const { maxEntries } = action.payload;
+    const limitedEntries = state.entries.slice(-maxEntries);
+    return {
+      ...state,
+      maxEntries,
+      entries: limitedEntries,
+      currentIndex: Math.min(state.currentIndex, limitedEntries.length - 1),
+    };
+  },
+});
+
+// History reducer
+export const historyReducer = (state: HistoryState, action: HistoryAction): HistoryState => {
+  const handler = historyHandlers[action.type];
+  if (!handler) {
+    return state;
+  }
+  return handler(state, action, undefined);
 };
 
 // Context

@@ -2,6 +2,7 @@
  * @file Context for managing global keyboard shortcuts with registration and event handling
  */
 import * as React from "react";
+import { createAction, createActionHandlerMap, type ActionUnion } from "../utils/typedActions";
 
 // Keyboard shortcut types
 export type KeyboardShortcut = {
@@ -24,12 +25,17 @@ export type KeyboardShortcutState = {
   isEnabled: boolean;
 };
 
-// Keyboard shortcut context actions
-export type KeyboardShortcutAction =
-  | { type: "REGISTER_SHORTCUT"; payload: { shortcut: KeyboardShortcut; handler: ShortcutHandler } }
-  | { type: "UNREGISTER_SHORTCUT"; payload: { shortcut: KeyboardShortcut } }
-  | { type: "ENABLE_SHORTCUTS" }
-  | { type: "DISABLE_SHORTCUTS" };
+export const keyboardShortcutActions = {
+  registerShortcut: createAction(
+    "REGISTER_SHORTCUT",
+    (shortcut: KeyboardShortcut, handler: ShortcutHandler) => ({ shortcut, handler }),
+  ),
+  unregisterShortcut: createAction("UNREGISTER_SHORTCUT", (shortcut: KeyboardShortcut) => ({ shortcut })),
+  enableShortcuts: createAction("ENABLE_SHORTCUTS"),
+  disableShortcuts: createAction("DISABLE_SHORTCUTS"),
+} as const;
+
+export type KeyboardShortcutAction = ActionUnion<typeof keyboardShortcutActions>;
 
 // Helper function to create shortcut key
 const createShortcutKey = (shortcut: KeyboardShortcut): string => {
@@ -61,13 +67,10 @@ const matchesShortcut = (event: KeyboardEvent, shortcut: KeyboardShortcut): bool
   );
 };
 
-// Keyboard shortcut reducer
-export const keyboardShortcutReducer = (
-  state: KeyboardShortcutState,
-  action: KeyboardShortcutAction,
-): KeyboardShortcutState => {
-  switch (action.type) {
-    case "REGISTER_SHORTCUT": {
+const keyboardShortcutHandlers = createActionHandlerMap<KeyboardShortcutState, typeof keyboardShortcutActions>(
+  keyboardShortcutActions,
+  {
+    registerShortcut: (state, action) => {
       const key = createShortcutKey(action.payload.shortcut);
       const newShortcuts = new Map(state.shortcuts);
       newShortcuts.set(key, action.payload.handler);
@@ -75,9 +78,8 @@ export const keyboardShortcutReducer = (
         ...state,
         shortcuts: newShortcuts,
       };
-    }
-
-    case "UNREGISTER_SHORTCUT": {
+    },
+    unregisterShortcut: (state, action) => {
       const key = createShortcutKey(action.payload.shortcut);
       const newShortcuts = new Map(state.shortcuts);
       newShortcuts.delete(key);
@@ -85,47 +87,34 @@ export const keyboardShortcutReducer = (
         ...state,
         shortcuts: newShortcuts,
       };
-    }
+    },
+    enableShortcuts: (state) => ({
+      ...state,
+      isEnabled: true,
+    }),
+    disableShortcuts: (state) => ({
+      ...state,
+      isEnabled: false,
+    }),
+  },
+);
 
-    case "ENABLE_SHORTCUTS":
-      return {
-        ...state,
-        isEnabled: true,
-      };
-
-    case "DISABLE_SHORTCUTS":
-      return {
-        ...state,
-        isEnabled: false,
-      };
-
-    default:
-      return state;
+// Keyboard shortcut reducer
+export const keyboardShortcutReducer = (
+  state: KeyboardShortcutState,
+  action: KeyboardShortcutAction,
+): KeyboardShortcutState => {
+  const handler = keyboardShortcutHandlers[action.type];
+  if (!handler) {
+    return state;
   }
+  return handler(state, action, undefined);
 };
 
 // Default state
 export const defaultKeyboardShortcutState: KeyboardShortcutState = {
   shortcuts: new Map(),
   isEnabled: true,
-};
-
-// Action creators
-export const keyboardShortcutActions = {
-  registerShortcut: (shortcut: KeyboardShortcut, handler: ShortcutHandler): KeyboardShortcutAction => ({
-    type: "REGISTER_SHORTCUT",
-    payload: { shortcut, handler },
-  }),
-  unregisterShortcut: (shortcut: KeyboardShortcut): KeyboardShortcutAction => ({
-    type: "UNREGISTER_SHORTCUT",
-    payload: { shortcut },
-  }),
-  enableShortcuts: (): KeyboardShortcutAction => ({
-    type: "ENABLE_SHORTCUTS",
-  }),
-  disableShortcuts: (): KeyboardShortcutAction => ({
-    type: "DISABLE_SHORTCUTS",
-  }),
 };
 
 // Context

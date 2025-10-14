@@ -2,6 +2,7 @@
  * @file Context for managing inline editing state of node titles and data
  */
 import * as React from "react";
+import { createAction, createActionHandlerMap, type ActionUnion } from "../utils/typedActions";
 
 // Inline editing types
 export type NodeId = string;
@@ -14,54 +15,19 @@ export type InlineEditingState = {
   isActive: boolean;
 };
 
-// Inline editing actions
-export type InlineEditingAction =
-  | { type: "START_EDITING"; payload: { nodeId: NodeId; field: "title" | "data"; value: string } }
-  | { type: "UPDATE_VALUE"; payload: { value: string } }
-  | { type: "CONFIRM_EDIT" }
-  | { type: "CANCEL_EDIT" }
-  | { type: "END_EDITING" };
+export const inlineEditingActions = {
+  startEditing: createAction("START_EDITING", (nodeId: NodeId, field: "title" | "data", value: string) => ({
+    nodeId,
+    field,
+    value,
+  })),
+  updateValue: createAction("UPDATE_VALUE", (value: string) => ({ value })),
+  confirmEdit: createAction("CONFIRM_EDIT"),
+  cancelEdit: createAction("CANCEL_EDIT"),
+  endEditing: createAction("END_EDITING"),
+} as const;
 
-// Inline editing reducer
-export const inlineEditingReducer = (state: InlineEditingState, action: InlineEditingAction): InlineEditingState => {
-  switch (action.type) {
-    case "START_EDITING": {
-      const { nodeId, field, value } = action.payload;
-      return {
-        editingNodeId: nodeId,
-        editingField: field,
-        originalValue: value,
-        currentValue: value,
-        isActive: true,
-      };
-    }
-
-    case "UPDATE_VALUE": {
-      if (!state.isActive) {
-        return state;
-      }
-      return {
-        ...state,
-        currentValue: action.payload.value,
-      };
-    }
-
-    case "CONFIRM_EDIT":
-    case "CANCEL_EDIT":
-    case "END_EDITING": {
-      return {
-        editingNodeId: null,
-        editingField: null,
-        originalValue: "",
-        currentValue: "",
-        isActive: false,
-      };
-    }
-
-    default:
-      return state;
-  }
-};
+export type InlineEditingAction = ActionUnion<typeof inlineEditingActions>;
 
 // Default state
 export const defaultInlineEditingState: InlineEditingState = {
@@ -72,25 +38,41 @@ export const defaultInlineEditingState: InlineEditingState = {
   isActive: false,
 };
 
-// Action creators
-export const inlineEditingActions = {
-  startEditing: (nodeId: NodeId, field: "title" | "data", value: string): InlineEditingAction => ({
-    type: "START_EDITING",
-    payload: { nodeId, field, value },
-  }),
-  updateValue: (value: string): InlineEditingAction => ({
-    type: "UPDATE_VALUE",
-    payload: { value },
-  }),
-  confirmEdit: (): InlineEditingAction => ({
-    type: "CONFIRM_EDIT",
-  }),
-  cancelEdit: (): InlineEditingAction => ({
-    type: "CANCEL_EDIT",
-  }),
-  endEditing: (): InlineEditingAction => ({
-    type: "END_EDITING",
-  }),
+const inlineEditingHandlers = createActionHandlerMap<InlineEditingState, typeof inlineEditingActions>(
+  inlineEditingActions,
+  {
+    startEditing: (_state, action) => {
+      const { nodeId, field, value } = action.payload;
+      return {
+        editingNodeId: nodeId,
+        editingField: field,
+        originalValue: value,
+        currentValue: value,
+        isActive: true,
+      };
+    },
+    updateValue: (state, action) => {
+      if (!state.isActive) {
+        return state;
+      }
+      return {
+        ...state,
+        currentValue: action.payload.value,
+      };
+    },
+    confirmEdit: () => ({ ...defaultInlineEditingState }),
+    cancelEdit: () => ({ ...defaultInlineEditingState }),
+    endEditing: () => ({ ...defaultInlineEditingState }),
+  },
+);
+
+// Inline editing reducer
+export const inlineEditingReducer = (state: InlineEditingState, action: InlineEditingAction): InlineEditingState => {
+  const handler = inlineEditingHandlers[action.type];
+  if (!handler) {
+    return state;
+  }
+  return handler(state, action, undefined);
 };
 
 // Context

@@ -4,27 +4,25 @@
  * group operations, clipboard operations, and layout triggers
  */
 import type { Node, NodeEditorData, NodeId } from "../../types/core";
-import type { NodeEditorAction } from "./actions";
+import { nodeEditorActions, type NodeEditorAction } from "./actions";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import { nodeHasGroupBehavior } from "../../types/behaviors";
 import { copyNodesToClipboard, pasteNodesFromClipboard } from "./utils/nodeClipboardOperations";
+import { createActionHandlerMap } from "../../utils/typedActions";
 
-export const nodeEditorReducer = (
-  state: NodeEditorData,
-  action: NodeEditorAction,
-  nodeDefinitions: NodeDefinition[] = [],
-): NodeEditorData => {
-  switch (action.type) {
-    case "ADD_NODE": {
+const nodeEditorHandlers = createActionHandlerMap<NodeEditorData, typeof nodeEditorActions, NodeDefinition[]>(
+  nodeEditorActions,
+  {
+    addNode: (state, action) => {
       const id = generateId();
       const node = { ...action.payload.node, id } as Node;
       return { ...state, nodes: { ...state.nodes, [id]: node } };
-    }
-    case "ADD_NODE_WITH_ID": {
+    },
+    addNodeWithId: (state, action) => {
       const node = action.payload.node as Node;
       return { ...state, nodes: { ...state.nodes, [node.id]: node } };
-    }
-    case "UPDATE_NODE": {
+    },
+    updateNode: (state, action, nodeDefinitions) => {
       const { nodeId, updates } = action.payload;
       const node = state.nodes[nodeId];
       if (!node) {
@@ -32,7 +30,6 @@ export const nodeEditorReducer = (
       }
       const nextNodes = { ...state.nodes, [nodeId]: { ...node, ...updates } as Node };
 
-      // If a group node toggles visibility or lock, propagate to descendants
       const propagateVisibility = Object.prototype.hasOwnProperty.call(updates, "visible");
       const propagateLock = Object.prototype.hasOwnProperty.call(updates, "locked");
       if ((propagateVisibility || propagateLock) && nodeHasGroupBehavior(node, nodeDefinitions)) {
@@ -41,23 +38,23 @@ export const nodeEditorReducer = (
 
         if (typeof targetVisible !== "undefined" || typeof targetLocked !== "undefined") {
           const isDescendant = (childId: NodeId, ancestorId: NodeId): boolean => {
-            const n = nextNodes[childId];
-            if (!n) {
+            const descendant = nextNodes[childId];
+            if (!descendant) {
               return false;
             }
-            if (n.parentId === ancestorId) {
+            if (descendant.parentId === ancestorId) {
               return true;
             }
-            if (n.parentId) {
-              return isDescendant(n.parentId, ancestorId);
+            if (descendant.parentId) {
+              return isDescendant(descendant.parentId, ancestorId);
             }
             return false;
           };
 
-          Object.values(nextNodes).forEach((n) => {
-            if (n.id !== nodeId && isDescendant(n.id, nodeId)) {
-              nextNodes[n.id] = {
-                ...n,
+          Object.values(nextNodes).forEach((candidate) => {
+            if (candidate.id !== nodeId && isDescendant(candidate.id, nodeId)) {
+              nextNodes[candidate.id] = {
+                ...candidate,
                 ...(typeof targetVisible !== "undefined" ? { visible: targetVisible } : {}),
                 ...(typeof targetLocked !== "undefined" ? { locked: targetLocked } : {}),
               };
@@ -67,8 +64,8 @@ export const nodeEditorReducer = (
       }
 
       return { ...state, nodes: nextNodes };
-    }
-    case "DELETE_NODE": {
+    },
+    deleteNode: (state, action) => {
       const { nodeId } = action.payload;
       const { [nodeId]: _deleted, ...remainingNodes } = state.nodes;
       const remainingConnections = Object.entries(state.connections).reduce(
@@ -81,16 +78,16 @@ export const nodeEditorReducer = (
         {} as typeof state.connections,
       );
       return { ...state, nodes: remainingNodes, connections: remainingConnections };
-    }
-    case "MOVE_NODE": {
+    },
+    moveNode: (state, action) => {
       const { nodeId, position } = action.payload;
       const node = state.nodes[nodeId];
       if (!node) {
         return state;
       }
       return { ...state, nodes: { ...state.nodes, [nodeId]: { ...node, position } } };
-    }
-    case "MOVE_NODES": {
+    },
+    moveNodes: (state, action) => {
       const { updates } = action.payload;
       const updatedNodes = { ...state.nodes };
       Object.entries(updates).forEach(([nodeId, position]) => {
@@ -100,23 +97,20 @@ export const nodeEditorReducer = (
         }
       });
       return { ...state, nodes: updatedNodes };
-    }
-    case "ADD_CONNECTION": {
+    },
+    addConnection: (state, action) => {
       const { connection } = action.payload;
       const id = generateId();
-      // Assume upstream validation enforces maxConnections; reducer simply adds
       return { ...state, connections: { ...state.connections, [id]: { ...connection, id } } };
-    }
-    case "DELETE_CONNECTION": {
+    },
+    deleteConnection: (state, action) => {
       const { connectionId } = action.payload;
       const { [connectionId]: _deleted, ...remaining } = state.connections;
       return { ...state, connections: remaining };
-    }
-    case "SET_NODE_DATA":
-      return action.payload.data;
-    case "RESTORE_STATE":
-      return action.payload.data;
-    case "DUPLICATE_NODES": {
+    },
+    setNodeData: (_state, action) => action.payload.data,
+    restoreState: (_state, action) => action.payload.data,
+    duplicateNodes: (state, action, nodeDefinitions) => {
       const { nodeIds } = action.payload;
       if (nodeIds.length === 0) {
         return state;
@@ -146,16 +140,16 @@ export const nodeEditorReducer = (
         newNodes[newId] = duplicatedNode;
       });
       return { ...state, nodes: newNodes, lastDuplicatedNodeIds: duplicatedNodeIds };
-    }
-    case "GROUP_NODES": {
+    },
+    groupNodes: (state, action) => {
       const { nodeIds, groupId = generateId() } = action.payload;
       if (nodeIds.length === 0) {
         return state;
       }
-      let minX = Infinity,
-        minY = Infinity,
-        maxX = -Infinity,
-        maxY = -Infinity;
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
       nodeIds.forEach((id) => {
         const node = state.nodes[id];
         if (node) {
@@ -175,8 +169,8 @@ export const nodeEditorReducer = (
         expanded: true,
       };
       return { ...state, nodes: { ...state.nodes, [groupId]: groupNode } };
-    }
-    case "UNGROUP_NODE": {
+    },
+    ungroupNode: (state, action, nodeDefinitions) => {
       const { groupId } = action.payload;
       const group = state.nodes[groupId];
       if (!group || !nodeHasGroupBehavior(group, nodeDefinitions)) {
@@ -184,8 +178,8 @@ export const nodeEditorReducer = (
       }
       const { [groupId]: _deleted, ...remainingNodes } = state.nodes;
       return { ...state, nodes: remainingNodes };
-    }
-    case "UPDATE_GROUP_MEMBERSHIP": {
+    },
+    updateGroupMembership: (state, action) => {
       const { updates } = action.payload;
       const updatedNodes = { ...state.nodes };
       Object.entries(updates).forEach(([nodeId, update]) => {
@@ -195,8 +189,8 @@ export const nodeEditorReducer = (
         }
       });
       return { ...state, nodes: updatedNodes };
-    }
-    case "MOVE_GROUP_WITH_CHILDREN": {
+    },
+    moveGroupWithChildren: (state, action) => {
       const { groupId, delta } = action.payload;
       const updatedNodes = { ...state.nodes };
       const groupNode = updatedNodes[groupId];
@@ -205,26 +199,24 @@ export const nodeEditorReducer = (
           ...groupNode,
           position: { x: groupNode.position.x + delta.x, y: groupNode.position.y + delta.y },
         };
-        Object.values(updatedNodes).forEach((node) => {
-          if (node.parentId === groupId) {
-            updatedNodes[node.id] = {
-              ...node,
-              position: { x: node.position.x + delta.x, y: node.position.y + delta.y },
+        Object.values(updatedNodes).forEach((candidate) => {
+          if (candidate.parentId === groupId) {
+            updatedNodes[candidate.id] = {
+              ...candidate,
+              position: { x: candidate.position.x + delta.x, y: candidate.position.y + delta.y },
             };
           }
         });
       }
       return { ...state, nodes: updatedNodes };
-    }
-    case "AUTO_LAYOUT": {
-      return state; // trigger-only; actual layout handled elsewhere
-    }
-    case "COPY_NODES": {
+    },
+    autoLayout: (state) => state,
+    copyNodes: (state, action) => {
       const { nodeIds } = action.payload;
       copyNodesToClipboard(nodeIds, state);
-      return state; // No state change, only clipboard side effect
-    }
-    case "PASTE_NODES": {
+      return state;
+    },
+    pasteNodes: (state, action) => {
       const { offsetX = 40, offsetY = 40 } = action.payload;
       const pasteResult = pasteNodesFromClipboard(offsetX, offsetY);
       if (!pasteResult) {
@@ -232,27 +224,32 @@ export const nodeEditorReducer = (
       }
       const newNodes = { ...state.nodes };
       const newConnections = { ...state.connections };
-
-      // Add pasted nodes
       pasteResult.nodes.forEach((node) => {
         newNodes[node.id] = node as Node;
       });
-
-      // Add pasted connections
       pasteResult.connections.forEach((conn) => {
         const id = generateId();
         newConnections[id] = { ...conn, id };
       });
-
       return {
         ...state,
         nodes: newNodes,
         connections: newConnections,
       };
-    }
-    default:
-      return state;
+    },
+  },
+);
+
+export const nodeEditorReducer = (
+  state: NodeEditorData,
+  action: NodeEditorAction,
+  nodeDefinitions: NodeDefinition[] = [],
+): NodeEditorData => {
+  const handler = nodeEditorHandlers[action.type];
+  if (!handler) {
+    return state;
   }
+  return handler(state, action, nodeDefinitions);
 };
 
 export const defaultNodeEditorData: NodeEditorData = { nodes: {}, connections: {} };
