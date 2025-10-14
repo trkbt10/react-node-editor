@@ -23,6 +23,7 @@ import { ThreeJsExample } from "./demos/threejs/ThreeJsExample";
 import CustomNodeExample from "./demos/CustomNodeExample";
 import { ThemeShowcaseExample } from "./demos/design/ThemeShowcaseExample";
 import { AdvancedNestedEditorExample } from "./demos/advanced/subeditor/AdvancedNestedEditorExample";
+import { InteractionCustomizationExample } from "./demos/interaction/InteractionCustomizationExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -46,6 +47,13 @@ const examples: ExampleEntry[] = [
     title: "Internationalization Playground",
     description: "Configure locale, fallback, and message overrides to validate translations.",
     component: I18nPlaygroundExample,
+    category: "advanced",
+  },
+  {
+    id: "interaction-customization",
+    title: "Interaction Customization",
+    description: "Experiment with mobile-friendly panning, pinch zoom, and configurable keyboard shortcuts.",
+    component: InteractionCustomizationExample,
     category: "advanced",
   },
   {

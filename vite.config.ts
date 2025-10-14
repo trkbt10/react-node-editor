@@ -4,6 +4,8 @@
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import { analyzer } from "vite-bundle-analyzer";
+import { terser as rollupTerser } from "rollup-plugin-terser";
+import type { RollupTerserOptions } from "rollup-plugin-terser";
 import { defineConfig, type PluginOption } from "vite";
 
 /**
@@ -35,6 +37,22 @@ const dedupeLibraryCss = (): PluginOption => {
 };
 
 export default defineConfig(({ mode }) => {
+  const terserOptions: RollupTerserOptions = {
+    compress: {
+      ecma: 2020,
+      module: true,
+      passes: 3,
+    },
+    format: {
+      comments: false,
+    },
+    mangle: {
+      safari10: true,
+      toplevel: true,
+    },
+    module: true,
+  } as const;
+
   const plugins: PluginOption[] = [
     react(),
     dts({
@@ -55,6 +73,9 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins,
+    server: {
+      allowedHosts: [".ngrok.app"],
+    },
     build: {
       cssCodeSplit: false,
       lib: {
@@ -84,6 +105,7 @@ export default defineConfig(({ mode }) => {
       outDir: "dist",
       rollupOptions: {
         external: [/node:.+/, "react", "react-dom", "react/jsx-runtime"],
+        plugins: [rollupTerser(terserOptions)],
         output: {
           assetFileNames: (assetInfo) => {
             if (assetInfo.name?.endsWith(".css")) {

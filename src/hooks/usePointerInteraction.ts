@@ -18,6 +18,12 @@ export type PointerInteractionConfig<T> = {
   };
 
   /**
+   * Optional converter that maps screen coordinates to canvas coordinates.
+   * When provided, viewport and canvasSelector are ignored for coordinate conversion.
+   */
+  screenToCanvas?: (screenX: number, screenY: number) => { x: number; y: number };
+
+  /**
    * Callback for pointer move events with canvas coordinates
    */
   onPointerMove: (canvasPosition: { x: number; y: number }, event: PointerEvent) => void;
@@ -49,23 +55,29 @@ export function usePointerInteraction<T>({
   onPointerUp,
   canvasSelector = '[role="application"]',
   pointerMoveOptions = { passive: true },
+  screenToCanvas,
 }: PointerInteractionConfig<T>): void {
   React.useEffect(() => {
     if (!interactionState) {
       return;
     }
 
-    const canvasElement = document.querySelector(canvasSelector);
-    if (!canvasElement) {
-      return;
-    }
-
     const handlePointerMove = (e: PointerEvent) => {
-      const rect = canvasElement.getBoundingClientRect();
-      const canvasX = (e.clientX - rect.left - viewport.offset.x) / viewport.scale;
-      const canvasY = (e.clientY - rect.top - viewport.offset.y) / viewport.scale;
+      const canvasPosition = screenToCanvas
+        ? screenToCanvas(e.clientX, e.clientY)
+        : (() => {
+            const element = document.querySelector(canvasSelector);
+            if (!element) {
+              return { x: e.clientX, y: e.clientY };
+            }
+            const rect = element.getBoundingClientRect();
+            return {
+              x: (e.clientX - rect.left - viewport.offset.x) / viewport.scale,
+              y: (e.clientY - rect.top - viewport.offset.y) / viewport.scale,
+            };
+          })();
 
-      onPointerMove({ x: canvasX, y: canvasY }, e);
+      onPointerMove(canvasPosition, e);
     };
 
     const handlePointerUp = (e: PointerEvent) => {
@@ -79,5 +91,11 @@ export function usePointerInteraction<T>({
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
     };
-  }, [interactionState, viewport, onPointerMove, onPointerUp, canvasSelector, pointerMoveOptions]);
+  }, [interactionState, viewport, onPointerMove, onPointerUp, canvasSelector, pointerMoveOptions, screenToCanvas]);
 }
+
+/*
+debug-notes:
+- Reviewed src/components/node/NodeLayer.tsx to ensure pointer tracking supplies localized screenToCanvas implementations for nested editors.
+- Reviewed src/contexts/NodeCanvasContext.tsx to reuse shared coordinate utilities instead of querying global document nodes.
+*/

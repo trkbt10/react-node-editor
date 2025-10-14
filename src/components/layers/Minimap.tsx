@@ -239,6 +239,7 @@ export const Minimap: React.FC<MinimapProps> = ({ scale = 0.1, width = 200, heig
   const handlePointerDown = React.useCallback(
     (e: React.PointerEvent) => {
       e.preventDefault();
+      e.stopPropagation();
       setIsDragging(true);
       setHasDragged(false); // Reset drag flag
 
@@ -263,6 +264,7 @@ export const Minimap: React.FC<MinimapProps> = ({ scale = 0.1, width = 200, heig
         return;
       }
       e.preventDefault();
+      e.stopPropagation();
 
       // Calculate mouse movement in screen pixels
       const deltaX = e.clientX - dragStart.x;
@@ -299,6 +301,7 @@ export const Minimap: React.FC<MinimapProps> = ({ scale = 0.1, width = 200, heig
   );
 
   const handlePointerUp = React.useCallback((e: React.PointerEvent) => {
+    e.stopPropagation();
     setIsDragging(false);
     setDragStart(null);
 
@@ -316,6 +319,7 @@ export const Minimap: React.FC<MinimapProps> = ({ scale = 0.1, width = 200, heig
   // Handle click for navigation (when not dragging)
   const handleClick = React.useCallback(
     (e: React.MouseEvent) => {
+      e.stopPropagation();
       // Only handle click if we haven't dragged - this prevents navigation after drag operations
       if (!hasDragged && !isDragging && !dragStart) {
         navigateToPosition(e.clientX, e.clientY);

@@ -12,6 +12,9 @@
   flex-direction: column;
   overflow: visible;
   box-sizing: border-box;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .nodeView::before {

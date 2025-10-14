@@ -9,6 +9,7 @@
   );
   cursor: default;
   user-select: none;
+  -webkit-user-select: none;
   /* Prevent default touch behaviors for better control */
   touch-action: none;
   overscroll-behavior: contain;

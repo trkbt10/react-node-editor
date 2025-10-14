@@ -48,7 +48,7 @@ export type PortInteractionHandlerProps = {
 export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ port, children }) => {
   const { state: nodeEditorState, actions, getNodePorts } = useNodeEditor();
   const { state: actionState, actions: actionActions } = useEditorActionState();
-  const { state: canvasState } = useNodeCanvas();
+  const { utils } = useNodeCanvas();
   const { registry } = useNodeDefinitions();
   const { getPortPosition, computePortPosition } = usePortPositions();
 
@@ -150,25 +150,11 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
 
   const handleConnectionDragMove = React.useCallback(
     (event: PointerEvent, _delta: Position) => {
-      const currentPos = {
-        x: event.clientX,
-        y: event.clientY,
-      };
-
-      // Convert to canvas coordinates
-      const containerRect = document.querySelector("[data-node-layer]")?.getBoundingClientRect();
-      if (!containerRect) {
-        return;
-      }
-
-      const canvasPos = {
-        x: (currentPos.x - containerRect.left) / canvasState.viewport.scale - canvasState.viewport.offset.x,
-        y: (currentPos.y - containerRect.top) / canvasState.viewport.scale - canvasState.viewport.offset.y,
-      };
+      const canvasPos = utils.screenToCanvas(event.clientX, event.clientY);
       const candidate = resolveCandidatePort(canvasPos);
       actionActions.updateConnectionDrag(canvasPos, candidate);
     },
-    [canvasState.viewport, actionActions, resolveCandidatePort],
+    [utils, actionActions, resolveCandidatePort],
   );
 
   const handleConnectionDragEnd = React.useCallback(
@@ -281,4 +267,9 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
   );
 };
 
-// Note: Reviewed connectionCandidate.ts and NodeLayer.tsx to align candidate detection flow.
+/*
+debug-notes:
+- Reviewed src/components/node/NodeLayer.tsx to ensure pointer utilities remain compatible with node-layer dataset selectors.
+- Reviewed src/examples/demos/advanced/subeditor/SubEditorWindow.tsx to confirm nested editors encapsulate their own canvas providers and require local screenToCanvas conversions.
+- Reviewed src/contexts/NodeCanvasContext.tsx to reuse screenToCanvas logic instead of querying the global node layer.
+*/

@@ -2,7 +2,11 @@
  * @file Hook for registering all standard keyboard shortcuts for the node editor
  */
 import * as React from "react";
-import { useRegisterShortcut } from "../contexts/KeyboardShortcutContext";
+import {
+  useKeyboardShortcut,
+  type KeyboardShortcut,
+  type ShortcutHandler,
+} from "../contexts/KeyboardShortcutContext";
 import { useNodeEditor } from "../contexts/node-editor/context";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
 import { useHistoryIntegration } from "./useHistoryIntegration";
@@ -10,6 +14,76 @@ import { useAutoLayout } from "./useAutoLayout";
 import { filterDuplicableNodeIds } from "../contexts/node-definitions/utils/nodeTypeLimits";
 import { copyNodesToClipboard, pasteNodesFromClipboard } from "../contexts/node-editor/utils/nodeClipboardOperations";
 import { useNodeDefinitionList } from "../contexts/node-definitions/hooks/useNodeDefinitionList";
+
+const DEFAULT_SHORTCUT_BINDING_MAP: Record<NodeEditorShortcutAction, ShortcutBinding[]> = (() => {
+  const defaults = defaultInteractionSettings.keyboardShortcuts.actions;
+  const map = {} as Record<NodeEditorShortcutAction, ShortcutBinding[]>;
+  (Object.keys(defaults) as NodeEditorShortcutAction[]).forEach((action) => {
+    const bindings = defaults[action]?.bindings ?? [];
+    map[action] = bindings.map((binding) => ({ ...binding }));
+  });
+  return map;
+})();
+
+const expandBinding = (binding: ShortcutBinding): KeyboardShortcut[] => {
+  if (binding.cmdOrCtrl) {
+    const { cmdOrCtrl: _ignore, ...rest } = binding;
+    return [
+      { ...rest, ctrl: true, meta: false },
+      { ...rest, ctrl: false, meta: true },
+    ];
+  }
+  return [{ ...binding }];
+};
+
+const serializeBindings = (bindings: ShortcutBinding[]): string => {
+  return bindings
+    .map((binding) =>
+      JSON.stringify({
+        key: binding.key,
+        ctrl: !!binding.ctrl,
+        shift: !!binding.shift,
+        alt: !!binding.alt,
+        meta: !!binding.meta,
+        cmdOrCtrl: !!binding.cmdOrCtrl,
+      }),
+    )
+    .sort()
+    .join("|");
+};
+
+const useConfigurableShortcut = (
+  action: NodeEditorShortcutAction,
+  defaultBindings: ShortcutBinding[],
+  handler: ShortcutHandler,
+): void => {
+  const { registerShortcut, unregisterShortcut } = useKeyboardShortcut();
+  const { keyboardShortcuts } = useInteractionSettings();
+
+  const actionConfig = keyboardShortcuts.actions[action];
+  const enabled = keyboardShortcuts.enabled && (actionConfig?.enabled ?? true);
+  const bindings =
+    actionConfig?.bindings && actionConfig.bindings.length > 0 ? actionConfig.bindings : defaultBindings;
+  const bindingSignature = React.useMemo(() => serializeBindings(bindings), [bindings]);
+
+  React.useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+
+    const expanded = bindings.flatMap(expandBinding);
+    if (expanded.length === 0) {
+      return;
+    }
+
+    expanded.forEach((combo) => registerShortcut(combo, handler));
+    return () => {
+      expanded.forEach((combo) => unregisterShortcut(combo));
+    };
+  }, [registerShortcut, unregisterShortcut, handler, enabled, bindingSignature]);
+};
+import { useInteractionSettings, defaultInteractionSettings } from "../contexts/InteractionSettingsContext";
+import type { NodeEditorShortcutAction, ShortcutBinding } from "../types/interaction";
 
 /**
  * Hook that registers all standard node editor keyboard shortcuts
@@ -39,9 +113,10 @@ export const useNodeEditorShortcuts = () => {
     nodeDefinitionsRef.current = nodeDefinitions;
   }, [nodeDefinitions]);
 
-  // Delete selected nodes
-  useRegisterShortcut(
-    { key: "Delete" },
+  // Delete selected nodes (Delete/Backspace)
+  useConfigurableShortcut(
+    "delete-selection",
+    DEFAULT_SHORTCUT_BINDING_MAP["delete-selection"],
     React.useCallback(() => {
       console.log("Delete shortcut triggered");
       if (actionState.selectedNodeIds.length > 0) {
@@ -58,28 +133,10 @@ export const useNodeEditorShortcuts = () => {
     }, [actionState.selectedNodeIds, actionState.selectedConnectionIds, nodeEditorActions, actionActions]),
   );
 
-  // Backspace also deletes
-  useRegisterShortcut(
-    { key: "Backspace" },
-    React.useCallback(() => {
-      console.log("Backspace shortcut triggered");
-      if (actionState.selectedNodeIds.length > 0) {
-        actionState.selectedNodeIds.forEach((nodeId) => {
-          nodeEditorActions.deleteNode(nodeId);
-        });
-        actionActions.clearSelection();
-      } else if (actionState.selectedConnectionIds.length > 0) {
-        actionState.selectedConnectionIds.forEach((connectionId) => {
-          nodeEditorActions.deleteConnection(connectionId);
-        });
-        actionActions.clearSelection();
-      }
-    }, [actionState.selectedNodeIds, actionState.selectedConnectionIds, nodeEditorActions, actionActions]),
-  );
-
   // Select all nodes (Ctrl/Cmd+A)
-  useRegisterShortcut(
-    { key: "a", cmdOrCtrl: true },
+  useConfigurableShortcut(
+    "select-all",
+    DEFAULT_SHORTCUT_BINDING_MAP["select-all"],
     React.useCallback(() => {
       console.log("Select All shortcut triggered");
       const allNodeIds = Object.keys(nodeEditorState.nodes);
@@ -88,8 +145,9 @@ export const useNodeEditorShortcuts = () => {
   );
 
   // Clear selection
-  useRegisterShortcut(
-    { key: "Escape" },
+  useConfigurableShortcut(
+    "clear-selection",
+    DEFAULT_SHORTCUT_BINDING_MAP["clear-selection"],
     React.useCallback(() => {
       console.log("Escape shortcut triggered");
       actionActions.clearSelection();
@@ -97,8 +155,9 @@ export const useNodeEditorShortcuts = () => {
   );
 
   // Add new node
-  useRegisterShortcut(
-    { key: "n", ctrl: true },
+  useConfigurableShortcut(
+    "add-node",
+    DEFAULT_SHORTCUT_BINDING_MAP["add-node"],
     React.useCallback(() => {
       console.log("Add Node shortcut triggered");
       const nodeId = `node-${Date.now()}`;
@@ -129,8 +188,9 @@ export const useNodeEditorShortcuts = () => {
   );
 
   // Duplicate selected nodes (Ctrl/Cmd+D)
-  useRegisterShortcut(
-    { key: "d", cmdOrCtrl: true },
+  useConfigurableShortcut(
+    "duplicate-selection",
+    DEFAULT_SHORTCUT_BINDING_MAP["duplicate-selection"],
     React.useCallback(() => {
       console.log("Duplicate shortcut triggered");
       const sel = actionStateRef.current.selectedNodeIds;
@@ -147,8 +207,9 @@ export const useNodeEditorShortcuts = () => {
   );
 
   // Lock selected nodes (Cmd+2 / Ctrl+2)
-  useRegisterShortcut(
-    { key: "2", cmdOrCtrl: true },
+  useConfigurableShortcut(
+    "lock-selection",
+    DEFAULT_SHORTCUT_BINDING_MAP["lock-selection"],
     React.useCallback(() => {
       const selected = actionStateRef.current.selectedNodeIds;
       if (selected.length === 0) {
@@ -159,8 +220,9 @@ export const useNodeEditorShortcuts = () => {
   );
 
   // Unlock all nodes (Cmd+Shift+2 / Ctrl+Shift+2)
-  useRegisterShortcut(
-    { key: "2", cmdOrCtrl: true, shift: true },
+  useConfigurableShortcut(
+    "unlock-all",
+    DEFAULT_SHORTCUT_BINDING_MAP["unlock-all"],
     React.useCallback(() => {
       const allIds = Object.keys(nodeEditorStateRef.current.nodes);
       allIds.forEach((nodeId) => nodeEditorActions.updateNode(nodeId, { locked: false }));
@@ -186,16 +248,18 @@ export const useNodeEditorShortcuts = () => {
   ]);
 
   // Save (Ctrl/Cmd+S)
-  useRegisterShortcut(
-    { key: "s", cmdOrCtrl: true },
+  useConfigurableShortcut(
+    "save",
+    DEFAULT_SHORTCUT_BINDING_MAP.save,
     React.useCallback(() => {
       handleSave();
     }, [handleSave]),
   );
 
   // Auto layout with force-directed algorithm
-  useRegisterShortcut(
-    { key: "l", ctrl: true },
+  useConfigurableShortcut(
+    "auto-layout",
+    DEFAULT_SHORTCUT_BINDING_MAP["auto-layout"],
     React.useCallback(() => {
       console.log("Auto Layout shortcut triggered");
       const selectedOnly = actionState.selectedNodeIds.length > 0;
@@ -204,8 +268,9 @@ export const useNodeEditorShortcuts = () => {
   );
 
   // Undo (Ctrl/Cmd+Z)
-  useRegisterShortcut(
-    { key: "z", cmdOrCtrl: true },
+  useConfigurableShortcut(
+    "undo",
+    DEFAULT_SHORTCUT_BINDING_MAP.undo,
     React.useCallback(() => {
       console.log("Undo shortcut triggered");
       if (canUndo) {
@@ -214,22 +279,12 @@ export const useNodeEditorShortcuts = () => {
     }, [canUndo, performUndo]),
   );
 
-  // Redo (Ctrl/Cmd+Shift+Z)
-  useRegisterShortcut(
-    { key: "z", cmdOrCtrl: true, shift: true },
+  // Redo (Ctrl/Cmd+Shift+Z and Ctrl/Cmd+Y)
+  useConfigurableShortcut(
+    "redo",
+    DEFAULT_SHORTCUT_BINDING_MAP.redo,
     React.useCallback(() => {
       console.log("Redo shortcut triggered");
-      if (canRedo) {
-        performRedo();
-      }
-    }, [canRedo, performRedo]),
-  );
-
-  // Alternative Redo (Ctrl/Cmd+Y)
-  useRegisterShortcut(
-    { key: "y", cmdOrCtrl: true },
-    React.useCallback(() => {
-      console.log("Redo (Y) shortcut triggered");
       if (canRedo) {
         performRedo();
       }
@@ -239,8 +294,9 @@ export const useNodeEditorShortcuts = () => {
   // Clipboard for copy/cut/paste of nodes - use shared storage
 
   // Copy (Ctrl/Cmd+C)
-  useRegisterShortcut(
-    { key: "c", cmdOrCtrl: true },
+  useConfigurableShortcut(
+    "copy",
+    DEFAULT_SHORTCUT_BINDING_MAP.copy,
     React.useCallback(() => {
       const selected = actionStateRef.current.selectedNodeIds;
       const clipboardData = copyNodesToClipboard(selected, nodeEditorStateRef.current);
@@ -251,8 +307,9 @@ export const useNodeEditorShortcuts = () => {
   );
 
   // Cut (Ctrl/Cmd+X)
-  useRegisterShortcut(
-    { key: "x", cmdOrCtrl: true },
+  useConfigurableShortcut(
+    "cut",
+    DEFAULT_SHORTCUT_BINDING_MAP.cut,
     React.useCallback(() => {
       const selected = actionStateRef.current.selectedNodeIds;
       if (selected.length === 0) {
@@ -269,8 +326,9 @@ export const useNodeEditorShortcuts = () => {
   );
 
   // Paste (Ctrl/Cmd+V)
-  useRegisterShortcut(
-    { key: "v", cmdOrCtrl: true },
+  useConfigurableShortcut(
+    "paste",
+    DEFAULT_SHORTCUT_BINDING_MAP.paste,
     React.useCallback(() => {
       const result = pasteNodesFromClipboard();
       if (!result) {

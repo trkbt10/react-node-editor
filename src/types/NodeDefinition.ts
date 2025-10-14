@@ -336,3 +336,8 @@ export function toUntypedDefinition<TData extends Record<string, unknown> = Reco
 ): NodeDefinition {
   return def as NodeDefinition<Record<string, unknown>>;
 }
+
+/**
+ * debug-notes:
+ * - Re-read while enabling customizable context menu behavior to ensure ConnectionRenderContext stays compatible with new handlers.
+ */

@@ -73,3 +73,16 @@ export type {
 export { defaultEditorGridConfig, defaultEditorGridLayers } from "./config/defaultLayout";
 export { defaultSettings } from "./settings/defaultSettings";
 export { SettingsManager, LocalSettingsStorage } from "./settings/SettingsManager";
+export type {
+  CanvasPanActivator,
+  ContextMenuRequest,
+  ContextMenuTarget,
+  ContextMenuBehavior,
+  NodeEditorInteractionSettings,
+  NodeEditorInteractionSettingsPatch,
+  KeyboardShortcutBehavior,
+  KeyboardShortcutActionBehavior,
+  NodeEditorShortcutAction,
+  ShortcutBinding,
+  PinchZoomSettings,
+} from "./types/interaction";

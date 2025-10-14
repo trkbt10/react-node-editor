@@ -42,6 +42,8 @@ import {
   calculateNewPositions,
   handleGroupMovement,
 } from "../../contexts/node-editor/utils/nodeDragHelpers";
+import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
+import type { PointerType } from "../../types/interaction";
 
 const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
   ids: new Set<string>(),
@@ -63,6 +65,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
   const { state: canvasState, utils } = useNodeCanvas();
   const { node: NodeComponent } = useRenderers();
   const { calculateNodePortPositions, getPortPosition, computePortPosition } = usePortPositions();
+  const interactionSettings = useInteractionSettings();
 
   // Helper to get node definition
   const getNodeDef = useNodeDefinitions();
@@ -197,11 +200,33 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
       e.preventDefault();
       e.stopPropagation();
 
-      const position = { x: e.clientX, y: e.clientY };
+      const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
+      const pointerType: PointerType | "unknown" =
+        nativeEvent.pointerType === "mouse" || nativeEvent.pointerType === "touch" || nativeEvent.pointerType === "pen"
+          ? (nativeEvent.pointerType as PointerType)
+          : "unknown";
+
+      const screenPosition = { x: e.clientX, y: e.clientY };
       const canvasPos = utils.screenToCanvas(e.clientX, e.clientY);
-      actionActions.showContextMenu(position, nodeId, canvasPos);
+
+      const defaultShow = () => actionActions.showContextMenu(screenPosition, nodeId, canvasPos);
+
+      const handler = interactionSettings.contextMenu.handleRequest;
+      if (handler) {
+        handler({
+          target: { kind: "node", nodeId },
+          screenPosition,
+          canvasPosition: canvasPos,
+          pointerType,
+          event: nativeEvent,
+          defaultShow,
+        });
+        return;
+      }
+
+      defaultShow();
     },
-    [actionActions, utils],
+    [actionActions, utils, interactionSettings.contextMenu.handleRequest],
   );
 
   const handleNodePointerDown = React.useCallback(
@@ -609,6 +634,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
   usePointerInteraction({
     interactionState: actionState.connectionDragState,
     viewport: canvasState.viewport,
+    screenToCanvas: utils.screenToCanvas,
     onPointerMove: (canvasPosition) => {
       const candidate = resolveCandidatePort(canvasPosition);
       actionActions.updateConnectionDrag(canvasPosition, candidate);
@@ -666,6 +692,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
   usePointerInteraction({
     interactionState: actionState.connectionDisconnectState,
     viewport: canvasState.viewport,
+    screenToCanvas: utils.screenToCanvas,
     onPointerMove: (canvasPosition) => {
       const candidate = resolveDisconnectCandidate(canvasPosition);
       actionActions.updateConnectionDisconnect(canvasPosition, candidate);

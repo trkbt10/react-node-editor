@@ -10,6 +10,8 @@ import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
 import type { Connection, Node as EditorNode, Port as CorePort } from "../../types/core";
 import { useRenderers } from "../../contexts/RendererContext";
 import styles from "./ConnectionLayer.module.css";
+import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
+import type { PointerType } from "../../types/interaction";
 
 export type ConnectionLayerProps = {
   className?: string;
@@ -115,6 +117,7 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
   const { connection: ConnectionComponent } = useRenderers();
+  const interactionSettings = useInteractionSettings();
 
   // Runtime type guard for CorePort
   const isCorePort = (p: unknown): p is CorePort => {
@@ -174,11 +177,33 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
       e.preventDefault();
       e.stopPropagation();
 
+      const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
+      const pointerType: PointerType | "unknown" =
+        nativeEvent.pointerType === "mouse" || nativeEvent.pointerType === "touch" || nativeEvent.pointerType === "pen"
+          ? (nativeEvent.pointerType as PointerType)
+          : "unknown";
+
       const position = { x: e.clientX, y: e.clientY };
       const canvasPos = utils.screenToCanvas(e.clientX, e.clientY);
-      actionActions.showContextMenu(position, undefined, canvasPos, connectionId);
+
+      const defaultShow = () => actionActions.showContextMenu(position, undefined, canvasPos, connectionId);
+
+      const handler = interactionSettings.contextMenu.handleRequest;
+      if (handler) {
+        handler({
+          target: { kind: "connection", connectionId },
+          screenPosition: position,
+          canvasPosition: canvasPos,
+          pointerType,
+          event: nativeEvent,
+          defaultShow,
+        });
+        return;
+      }
+
+      defaultShow();
     },
-    [actionActions, utils],
+    [actionActions, utils, interactionSettings.contextMenu.handleRequest],
   );
   const fromNode = nodeEditorState.nodes[connection.fromNodeId];
   const toNode = nodeEditorState.nodes[connection.toNodeId];

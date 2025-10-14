@@ -160,15 +160,20 @@ export const defaultNodeCanvasState: NodeCanvasState = {
 };
 
 // Utility functions for coordinate conversion
-export const createCanvasUtils = (canvasRef: React.RefObject<HTMLDivElement | null>, viewport: Viewport) => ({
+export const createCanvasUtils = (
+  canvasRef: React.RefObject<HTMLDivElement | null>,
+  containerRef: React.RefObject<HTMLDivElement | null> | undefined,
+  viewport: Viewport,
+) => ({
   // Convert screen coordinates to canvas coordinates
   screenToCanvas: (screenX: number, screenY: number): Position => {
-    if (!canvasRef.current) {
+    const element = containerRef?.current ?? canvasRef.current;
+    if (!element) {
       console.warn("Canvas ref is not available for coordinate conversion");
       return { x: screenX, y: screenY };
     }
 
-    const rect = canvasRef.current.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
     return {
       x: (screenX - rect.left - viewport.offset.x) / viewport.scale,
       y: (screenY - rect.top - viewport.offset.y) / viewport.scale,
@@ -177,12 +182,13 @@ export const createCanvasUtils = (canvasRef: React.RefObject<HTMLDivElement | nu
 
   // Convert canvas coordinates to screen coordinates
   canvasToScreen: (canvasX: number, canvasY: number): Position => {
-    if (!canvasRef.current) {
+    const element = containerRef?.current ?? canvasRef.current;
+    if (!element) {
       console.warn("Canvas ref is not available for coordinate conversion");
       return { x: canvasX, y: canvasY };
     }
 
-    const rect = canvasRef.current.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
     return {
       x: canvasX * viewport.scale + viewport.offset.x + rect.left,
       y: canvasY * viewport.scale + viewport.offset.y + rect.top,
@@ -197,6 +203,8 @@ export type NodeCanvasContextValue = {
   actions: BoundActionCreators<typeof nodeCanvasActions>;
   actionCreators: typeof nodeCanvasActions;
   canvasRef: React.RefObject<HTMLDivElement | null>;
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  setContainerElement: (element: HTMLDivElement | null) => void;
   utils: ReturnType<typeof createCanvasUtils>;
 };
 
@@ -212,9 +220,16 @@ export const NodeCanvasProvider: React.FC<NodeCanvasProviderProps> = ({ children
   const [state, dispatch] = React.useReducer(nodeCanvasReducer, { ...defaultNodeCanvasState, ...initialState });
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const setContainerElement = React.useCallback((element: HTMLDivElement | null) => {
+    containerRef.current = element;
+  }, []);
   const boundActions = React.useMemo(() => bindActionCreators(nodeCanvasActions, dispatch), [dispatch]);
 
-  const utils = React.useMemo(() => createCanvasUtils(canvasRef, state.viewport), [state.viewport]);
+  const utils = React.useMemo(
+    () => createCanvasUtils(canvasRef, containerRef, state.viewport),
+    [state.viewport, containerRef],
+  );
 
   const contextValue: NodeCanvasContextValue = {
     state,
@@ -222,6 +237,8 @@ export const NodeCanvasProvider: React.FC<NodeCanvasProviderProps> = ({ children
     actions: boundActions,
     actionCreators: nodeCanvasActions,
     canvasRef,
+    containerRef,
+    setContainerElement,
     utils,
   };
 

@@ -24,6 +24,8 @@ import type { ExternalDataReference, NodeDefinition } from "./types/NodeDefiniti
 import type { GridLayoutConfig, LayerDefinition } from "./types/panels";
 import { type PortPositionBehavior } from "./types/portPosition";
 import type { NodeEditorRendererOverrides } from "./types/renderers";
+import { InteractionSettingsProvider } from "./contexts/InteractionSettingsContext";
+import type { NodeEditorInteractionSettingsPatch } from "./types/interaction";
 
 export type NodeEditorProps = {
   /** Initial data for uncontrolled mode (like defaultValue) */
@@ -62,6 +64,8 @@ export type NodeEditorProps = {
   renderers?: NodeEditorRendererOverrides;
   /** Customizes how node ports are positioned and rendered */
   portPositionBehavior?: PortPositionBehavior;
+  /** Overrides for canvas interaction behavior (pan, pinch zoom, context menu) */
+  interactionSettings?: NodeEditorInteractionSettingsPatch;
 };
 
 /**
@@ -90,6 +94,7 @@ export function NodeEditor({
   historyMaxEntries = 40,
   renderers,
   portPositionBehavior,
+  interactionSettings,
 }: NodeEditorProps) {
   const mergedRenderers = React.useMemo(
     () => ({
@@ -132,15 +137,17 @@ export function NodeEditor({
                   <HistoryProvider maxEntries={historyMaxEntries}>
                     <InlineEditingProvider>
                       <KeyboardShortcutProvider>
-                        <NodeEditorContent
-                          className={className}
-                          settingsManager={settingsManager}
-                          autoSaveEnabled={autoSaveEnabled}
-                          autoSaveInterval={autoSaveInterval}
-                          gridConfig={gridConfig}
-                          gridLayers={gridLayers}
-                          portPositionBehavior={portPositionBehavior}
-                        />
+                        <InteractionSettingsProvider value={interactionSettings}>
+                          <NodeEditorContent
+                            className={className}
+                            settingsManager={settingsManager}
+                            autoSaveEnabled={autoSaveEnabled}
+                            autoSaveInterval={autoSaveInterval}
+                            gridConfig={gridConfig}
+                            gridLayers={gridLayers}
+                            portPositionBehavior={portPositionBehavior}
+                          />
+                        </InteractionSettingsProvider>
                       </KeyboardShortcutProvider>
                     </InlineEditingProvider>
                   </HistoryProvider>

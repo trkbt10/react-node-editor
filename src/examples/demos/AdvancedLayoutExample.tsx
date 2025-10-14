@@ -79,6 +79,10 @@ const FloatingSidebar: React.FC<{ showMinimap: boolean; onToggleMinimap: () => v
   const [isOpen, setIsOpen] = React.useState(true);
   const { state, actions } = useNodeCanvas();
 
+  const handleToggleSidebar = React.useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
+
   const handleGridToggle = React.useCallback(() => {
     actions.updateGridSettings({ showGrid: !state.gridSettings.showGrid });
   }, [state.gridSettings.showGrid, actions]);
@@ -100,15 +104,17 @@ const FloatingSidebar: React.FC<{ showMinimap: boolean; onToggleMinimap: () => v
   }, [state.viewport, actions]);
 
   return (
-    <div className={`${classes.floatingSidebar} ${isOpen ? classes.open : classes.closed}`}>
-      <div className={classes.sidebarHeader}>
-        <h3 className={classes.sidebarTitle}>Settings</h3>
+    <div className={`${classes.floatingSidebar} ${isOpen ? "" : classes.closed}`} data-open={isOpen ? "true" : "false"}>
+      <div className={`${classes.sidebarHeader} ${isOpen ? "" : classes.sidebarHeaderCollapsed}`}>
+        {isOpen ? <h3 className={classes.sidebarTitle}>Settings</h3> : null}
         <button
-          className={classes.toggleButton}
-          onClick={() => setIsOpen((prev) => !prev)}
+          type="button"
+          className={`${classes.toggleButton} ${isOpen ? "" : classes.toggleButtonCollapsed}`}
+          onClick={handleToggleSidebar}
           aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
+          aria-expanded={isOpen}
         >
-          {isOpen ? "◀" : "▶"}
+          <span aria-hidden="true">{isOpen ? "◀" : "▶"}</span>
         </button>
       </div>
       {isOpen && (
@@ -268,6 +274,7 @@ export const AdvancedLayoutExample: React.FC = () => {
         zIndex: 1000,
         draggable: true,
         pointerEvents: "auto",
+        className: classes.floatingSidebarLayer,
       },
     ],
     [showMinimap, handleToggleMinimap],
@@ -288,6 +295,7 @@ export const AdvancedLayoutExample: React.FC = () => {
 /*
 debug-notes:
 - Reviewed src/components/layout/GridLayout.tsx to verify absolute positioning behaviour for LayerDefinition overlays.
+- Reviewed src/components/layout/GridLayout.module.css to inspect default draggable layer shadows and overflow handling.
 - Reviewed src/examples/demos/ColumnLayoutExample.tsx to compare grid layer patterns used across demos.
 - Reviewed src/examples/demos/threejs/ThreeJsExample.tsx to confirm useMemo usage for grid configuration and layers.
 - Reviewed src/NodeEditorContent.tsx to check project utilities for composing class names.

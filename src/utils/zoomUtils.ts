@@ -60,7 +60,7 @@ export const clampZoomScale = (scale: number): number => {
  * Apply a relative zoom delta with damping near the allowed extremes.
  */
 export const applyZoomDelta = (currentScale: number, delta: number, options: ZoomDeltaOptions = {}): number => {
-  const { baseStep = 0.5, dampingStrength = 0.75, deltaLimit = 1 } = options;
+  const { baseStep = 0.25, dampingStrength = 0.75, deltaLimit = 1 } = options;
   if (delta === 0) {
     return clampZoomScale(currentScale);
   }

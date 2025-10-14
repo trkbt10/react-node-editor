@@ -6,14 +6,89 @@ import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { classNames } from "../elements/classNames";
-import { applyZoomDelta } from "../../utils/zoomUtils";
+import { applyZoomDelta, clampZoomScale } from "../../utils/zoomUtils";
 import { SelectionOverlay } from "./SelectionOverlay";
 import styles from "./CanvasBase.module.css";
+import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
+import type { CanvasPanActivator, ModifierKey, PointerType } from "../../types/interaction";
 
 export type CanvasBaseProps = {
   children: React.ReactNode;
   className?: string;
   showGrid?: boolean;
+};
+
+type PinchPointer = {
+  clientX: number;
+  clientY: number;
+  pointerType: PointerType;
+};
+
+type PinchState = {
+  initialDistance: number;
+  initialScale: number;
+  lastScale: number;
+  center: { x: number; y: number };
+};
+
+const INTERACTIVE_TARGET_SELECTOR =
+  '[data-node-id], [data-port-id], [data-connection-id], button, input, textarea, [role="button"]';
+
+const PINCH_SCALE_EPSILON = 1e-4;
+
+const pointerTypeFromEvent = (event: React.PointerEvent): PointerType => {
+  const type = event.pointerType;
+  if (type === "mouse" || type === "touch" || type === "pen") {
+    return type;
+  }
+  return "mouse";
+};
+
+const isInteractiveElement = (target: Element | null): boolean => {
+  return Boolean(target?.closest?.(INTERACTIVE_TARGET_SELECTOR));
+};
+
+const matchesPanActivator = (
+  event: React.PointerEvent,
+  activator: CanvasPanActivator,
+  pointerType: PointerType,
+  interactiveTarget: boolean,
+): boolean => {
+  if (!activator.pointerTypes.includes(pointerType)) {
+    return false;
+  }
+
+  if (activator.buttons && !activator.buttons.includes(event.button)) {
+    return false;
+  }
+
+  if (activator.requireEmptyTarget && interactiveTarget) {
+    return false;
+  }
+
+  if (activator.modifiers) {
+    const modifierKeys = Object.keys(activator.modifiers) as ModifierKey[];
+    for (const key of modifierKeys) {
+      const required = activator.modifiers[key];
+      if (required === undefined) {
+        continue;
+      }
+      if (required && !event[key]) {
+        return false;
+      }
+      if (!required && event[key]) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+};
+
+const distanceBetween = (a: PinchPointer, b: PinchPointer): number => {
+  const dx = b.clientX - a.clientX;
+  const dy = b.clientY - a.clientY;
+  return Math.hypot(dx, dy);
 };
 
 /**
@@ -22,11 +97,125 @@ export type CanvasBaseProps = {
  * Does not trap events unless necessary for its own operations
  */
 export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) => {
-  const { state: canvasState, actions: canvasActions, canvasRef, utils } = useNodeCanvas();
+  const { state: canvasState, actions: canvasActions, canvasRef, utils, setContainerElement } = useNodeCanvas();
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: nodeEditorState } = useNodeEditor();
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const rawGridPatternId = React.useId();
+  const gridPatternId = React.useMemo(() => rawGridPatternId.replace(/[^a-zA-Z0-9_-]/g, "_"), [rawGridPatternId]);
   const [isBoxSelecting, setIsBoxSelecting] = React.useState(false);
+  const interactionSettings = useInteractionSettings();
+  const activePinchPointersRef = React.useRef<Map<number, PinchPointer>>(new Map());
+  const pinchStateRef = React.useRef<PinchState | null>(null);
+  const [isPinching, setIsPinching] = React.useState(false);
+  const pinchPointerTypes = React.useMemo(() => new Set(interactionSettings.pinchZoom.pointerTypes), [interactionSettings.pinchZoom.pointerTypes]);
+  const pinchMinDistance = interactionSettings.pinchZoom.minDistance ?? 0;
+
+  React.useEffect(() => {
+    setContainerElement(containerRef.current);
+    return () => setContainerElement(null);
+  }, [setContainerElement]);
+
+  const tryStartPinch = React.useCallback((): boolean => {
+    if (!interactionSettings.pinchZoom.enabled) {
+      return false;
+    }
+
+    const container = containerRef.current;
+    if (!container) {
+      return false;
+    }
+
+    const pointers = Array.from(activePinchPointersRef.current.values());
+    if (pointers.length !== 2) {
+      return false;
+    }
+
+    const distance = distanceBetween(pointers[0], pointers[1]);
+    if (distance < pinchMinDistance) {
+      return false;
+    }
+
+    const rect = container.getBoundingClientRect();
+    const center = {
+      x: (pointers[0].clientX + pointers[1].clientX) / 2 - rect.left,
+      y: (pointers[0].clientY + pointers[1].clientY) / 2 - rect.top,
+    };
+
+    pinchStateRef.current = {
+      initialDistance: distance,
+      initialScale: canvasState.viewport.scale,
+      lastScale: canvasState.viewport.scale,
+      center,
+    };
+
+    if (isBoxSelecting) {
+      setIsBoxSelecting(false);
+      actionActions.setSelectionBox(null);
+    }
+
+    if (canvasState.panState.isPanning) {
+      canvasActions.endPan();
+    }
+
+    setIsPinching(true);
+    return true;
+  }, [
+    interactionSettings.pinchZoom.enabled,
+    pinchMinDistance,
+    canvasState.viewport.scale,
+    canvasState.panState.isPanning,
+    isBoxSelecting,
+    actionActions,
+    canvasActions,
+  ]);
+
+  const updatePinchZoom = React.useCallback(() => {
+    const container = containerRef.current;
+    const pinchState = pinchStateRef.current;
+    if (!container || !pinchState) {
+      return;
+    }
+
+    const pointers = Array.from(activePinchPointersRef.current.values());
+    if (pointers.length < 2) {
+      return;
+    }
+
+    const distance = distanceBetween(pointers[0], pointers[1]);
+    if (distance <= 0) {
+      return;
+    }
+
+    const rect = container.getBoundingClientRect();
+    const center = {
+      x: (pointers[0].clientX + pointers[1].clientX) / 2 - rect.left,
+      y: (pointers[0].clientY + pointers[1].clientY) / 2 - rect.top,
+    };
+
+    const targetScale = clampZoomScale((pinchState.initialScale * distance) / pinchState.initialDistance);
+    if (Math.abs(targetScale - pinchState.lastScale) > PINCH_SCALE_EPSILON) {
+      canvasActions.zoomViewport(targetScale, center);
+      pinchStateRef.current = {
+        ...pinchState,
+        lastScale: targetScale,
+        center,
+      };
+    } else {
+      pinchStateRef.current = {
+        ...pinchState,
+        center,
+      };
+    }
+  }, [canvasActions]);
+
+  const endPinch = React.useCallback(() => {
+    if (!isPinching) {
+      return;
+    }
+    setIsPinching(false);
+    pinchStateRef.current = null;
+  }, [isPinching]);
 
   // Canvas transform based on viewport - optimized string creation
   const canvasTransform = React.useMemo(() => {
@@ -35,7 +224,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
   }, [canvasState.viewport]);
 
   // Grid pattern with offset - optimized dependencies
-  const gridPattern = React.useMemo(() => {
+  const gridPatternDefs = React.useMemo(() => {
     if (!canvasState.gridSettings.showGrid) {
       return null;
     }
@@ -48,12 +237,21 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
 
     return (
       <defs>
-        <pattern id="grid" width={scaledSize} height={scaledSize} patternUnits="userSpaceOnUse" x={offsetX} y={offsetY}>
+        <pattern
+          id={gridPatternId}
+          width={scaledSize}
+          height={scaledSize}
+          patternUnits="userSpaceOnUse"
+          x={offsetX}
+          y={offsetY}
+        >
           <path d={`M ${scaledSize} 0 L 0 0 0 ${scaledSize}`} fill="none" strokeWidth="1" className={styles.gridLine} />
         </pattern>
       </defs>
     );
-  }, [canvasState.gridSettings, canvasState.viewport]);
+  }, [canvasState.gridSettings, canvasState.viewport, gridPatternId]);
+
+  const gridPatternFill = React.useMemo(() => `url(#${gridPatternId})`, [gridPatternId]);
 
   // Handle mouse wheel for zoom (Figma style)
   const handleWheel = React.useCallback(
@@ -94,8 +292,35 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
   // Handle panning with middle mouse button or space+drag, and box selection
   const handlePointerDown = React.useCallback(
     (e: React.PointerEvent) => {
-      // Middle mouse button or space key panning
-      if (e.button === 1 || canvasState.isSpacePanning) {
+      const pointerType = pointerTypeFromEvent(e);
+      const target = e.target as Element | null;
+      const interactiveTarget = isInteractiveElement(target);
+
+      if (interactionSettings.pinchZoom.enabled && pinchPointerTypes.has(pointerType)) {
+        activePinchPointersRef.current.set(e.pointerId, {
+          clientX: e.clientX,
+          clientY: e.clientY,
+          pointerType,
+        });
+        if (containerRef.current) {
+          containerRef.current.setPointerCapture(e.pointerId);
+        }
+        if (activePinchPointersRef.current.size === 2 && tryStartPinch()) {
+          return;
+        }
+      }
+
+      if (isPinching) {
+        return;
+      }
+
+      const shouldPan =
+        canvasState.isSpacePanning ||
+        interactionSettings.canvasPanActivators.some((activator) =>
+          matchesPanActivator(e, activator, pointerType, interactiveTarget),
+        );
+
+      if (shouldPan) {
         e.preventDefault();
         canvasActions.startPan({ x: e.clientX, y: e.clientY });
 
@@ -105,33 +330,25 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         return;
       }
 
-      // Left click for box selection (if not clicking on interactive elements)
-      // More permissive targeting - only exclude specific interactive elements
-      const target = e.target as Element;
-      // Use data- attributes (CSS Modules class names are hashed)
-      const isInteractiveElement = target?.closest?.(
-        '[data-node-id], [data-port-id], [data-connection-id], button, input, textarea, [role="button"]',
-      );
+      if (pointerType !== "mouse" && pointerType !== "pen") {
+        return;
+      }
 
-      // Allow box selection unless clicking on interactive elements
-      if (e.button === 0 && !isInteractiveElement) {
+      if (e.button === 0 && !interactiveTarget) {
         const rect = containerRef.current?.getBoundingClientRect();
         if (!rect) {
           return;
         }
 
-        // Use screen coordinates for selection box display
         const screenX = e.clientX - rect.left;
         const screenY = e.clientY - rect.top;
 
-        // Start box selection
         setIsBoxSelecting(true);
         actionActions.setSelectionBox({
           start: { x: screenX, y: screenY },
           end: { x: screenX, y: screenY },
         });
 
-        // Clear current selection if not holding modifier keys
         if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
           actionActions.clearSelection();
         }
@@ -141,15 +358,44 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         }
       }
     },
-    [canvasState.isSpacePanning, canvasState.viewport, canvasActions, actionActions],
+    [
+      interactionSettings.pinchZoom.enabled,
+      pinchPointerTypes,
+      tryStartPinch,
+      isPinching,
+      canvasState.isSpacePanning,
+      interactionSettings.canvasPanActivators,
+      canvasActions,
+      actionActions,
+    ],
   );
 
   const handlePointerMove = React.useCallback(
     (e: React.PointerEvent) => {
+      const pointerType = pointerTypeFromEvent(e);
+
+      if (interactionSettings.pinchZoom.enabled && pinchPointerTypes.has(pointerType)) {
+        if (activePinchPointersRef.current.has(e.pointerId)) {
+          activePinchPointersRef.current.set(e.pointerId, {
+            clientX: e.clientX,
+            clientY: e.clientY,
+            pointerType,
+          });
+        }
+      }
+
+      if (isPinching) {
+        e.preventDefault();
+        updatePinchZoom();
+        return;
+      }
+
       if (canvasState.panState.isPanning) {
         canvasActions.updatePan({ x: e.clientX, y: e.clientY });
-      } else if (isBoxSelecting && actionState.selectionBox) {
-        // Update selection box in screen coordinates
+        return;
+      }
+
+      if (isBoxSelecting && actionState.selectionBox) {
         const rect = containerRef.current?.getBoundingClientRect();
         if (!rect) {
           return;
@@ -165,8 +411,11 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       }
     },
     [
+      interactionSettings.pinchZoom.enabled,
+      pinchPointerTypes,
+      isPinching,
+      updatePinchZoom,
       canvasState.panState.isPanning,
-      canvasState.viewport,
       isBoxSelecting,
       actionState.selectionBox,
       canvasActions,
@@ -176,24 +425,44 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
 
   const handlePointerUp = React.useCallback(
     (e: React.PointerEvent) => {
+      const pointerType = pointerTypeFromEvent(e);
+
+      if (interactionSettings.pinchZoom.enabled && pinchPointerTypes.has(pointerType)) {
+        if (activePinchPointersRef.current.has(e.pointerId)) {
+          activePinchPointersRef.current.delete(e.pointerId);
+        }
+
+        if (containerRef.current) {
+          containerRef.current.releasePointerCapture(e.pointerId);
+        }
+
+        if (activePinchPointersRef.current.size < 2) {
+          endPinch();
+        }
+
+        if (isPinching) {
+          return;
+        }
+      }
+
       if (canvasState.panState.isPanning) {
         canvasActions.endPan();
 
         if (containerRef.current) {
           containerRef.current.releasePointerCapture(e.pointerId);
         }
-      } else if (isBoxSelecting && actionState.selectionBox) {
-        // Complete box selection
+        return;
+      }
+
+      if (isBoxSelecting && actionState.selectionBox) {
         setIsBoxSelecting(false);
 
-        // Convert screen coordinates back to canvas coordinates for node intersection check
         const { start, end } = actionState.selectionBox;
         const rect = containerRef.current?.getBoundingClientRect();
         if (!rect) {
           return;
         }
 
-        // Convert selection box bounds to canvas coordinates
         const canvasStartX = (start.x - canvasState.viewport.offset.x) / canvasState.viewport.scale;
         const canvasStartY = (start.y - canvasState.viewport.offset.y) / canvasState.viewport.scale;
         const canvasEndX = (end.x - canvasState.viewport.offset.x) / canvasState.viewport.scale;
@@ -209,7 +478,6 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
           const nodeWidth = node.size?.width || 150;
           const nodeHeight = node.size?.height || 50;
 
-          // Check if node intersects with selection box in canvas coordinates
           const intersects =
             node.position.x < maxX &&
             node.position.x + nodeWidth > minX &&
@@ -221,19 +489,15 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
           }
         });
 
-        // Update selection
         if (selectedNodeIds.length > 0) {
           if (e.shiftKey || e.ctrlKey || e.metaKey) {
-            // Add to existing selection
             const newSelection = [...new Set([...actionState.selectedNodeIds, ...selectedNodeIds])];
             actionActions.selectAllNodes(newSelection);
           } else {
-            // Replace selection
             actionActions.selectAllNodes(selectedNodeIds);
           }
         }
 
-        // Clear selection box
         actionActions.setSelectionBox(null);
 
         if (containerRef.current) {
@@ -242,6 +506,10 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       }
     },
     [
+      interactionSettings.pinchZoom.enabled,
+      pinchPointerTypes,
+      endPinch,
+      isPinching,
       canvasState.panState.isPanning,
       isBoxSelecting,
       actionState.selectionBox,
@@ -252,24 +520,46 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
     ],
   );
 
+  const handlePointerCancel = React.useCallback(
+    (e: React.PointerEvent) => {
+      handlePointerUp(e);
+    },
+    [handlePointerUp],
+  );
+
   // Handle context menu
   const handleContextMenu = React.useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
 
-      // Convert screen coordinates to canvas coordinates using utils
+      const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
+      const pointerType: PointerType | "unknown" =
+        nativeEvent.pointerType === "mouse" || nativeEvent.pointerType === "touch" || nativeEvent.pointerType === "pen"
+          ? (nativeEvent.pointerType as PointerType)
+          : "unknown";
+
+      const screenPosition = { x: e.clientX, y: e.clientY };
       const canvasPosition = utils.screenToCanvas(e.clientX, e.clientY);
 
-      const position = {
-        x: e.clientX, // Keep screen coordinates for menu positioning
-        y: e.clientY,
-      };
+      const defaultShow = () => actionActions.showContextMenu(screenPosition, undefined, canvasPosition);
 
-      // Show context menu for canvas (no specific node)
-      actionActions.showContextMenu(position, undefined, canvasPosition);
+      const handler = interactionSettings.contextMenu.handleRequest;
+      if (handler) {
+        handler({
+          target: { kind: "canvas" },
+          screenPosition,
+          canvasPosition,
+          pointerType,
+          event: nativeEvent,
+          defaultShow,
+        });
+        return;
+      }
+
+      defaultShow();
     },
-    [actionActions, utils],
+    [actionActions, utils, interactionSettings.contextMenu.handleRequest],
   );
 
   // Handle double click to open Node Search
@@ -364,6 +654,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
       onContextMenu={handleContextMenu}
       onDoubleClick={handleDoubleClick}
       role="application"
@@ -372,8 +663,8 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       {/* Grid background */}
       {canvasState.gridSettings.showGrid && (
         <svg className={styles.gridSvg}>
-          {gridPattern}
-          <rect width="100%" height="100%" fill="url(#grid)" />
+          {gridPatternDefs}
+          <rect width="100%" height="100%" fill={gridPatternFill} />
         </svg>
       )}
 

@@ -12,6 +12,9 @@
     box-shadow 0.1s ease;
   z-index: 10;
   pointer-events: all;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .port:hover {

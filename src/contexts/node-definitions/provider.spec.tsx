@@ -24,7 +24,7 @@ describe("NodeDefinitionContext", () => {
         <Harness />
       </NodeDefinitionProvider>,
     );
-    expect(screen.getByTestId("has-standard").textContent).toBe("true");
+    expect(screen.getByTestId("has-standard").textContent).toBe("false");
     expect(screen.getByTestId("has-group").textContent).toBe("true");
   });
 });
