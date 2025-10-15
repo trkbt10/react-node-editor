@@ -14,6 +14,7 @@ export type PortViewProps = {
   onPointerDown?: (e: React.PointerEvent, port: Port) => void;
   onPointerUp?: (e: React.PointerEvent, port: Port) => void;
   onPointerEnter?: (e: React.PointerEvent, port: Port) => void;
+  onPointerMove?: (e: React.PointerEvent, port: Port) => void;
   onPointerLeave?: (e: React.PointerEvent, port: Port) => void;
   onPointerCancel?: (e: React.PointerEvent, port: Port) => void;
   isConnecting?: boolean;
@@ -32,6 +33,7 @@ export const PortView: React.FC<PortViewProps> = ({
   onPointerDown,
   onPointerUp,
   onPointerEnter,
+  onPointerMove,
   onPointerLeave,
   onPointerCancel,
   isConnecting = false,
@@ -109,6 +111,7 @@ export const PortView: React.FC<PortViewProps> = ({
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerEnter={handlePointerEnter}
+        onPointerMove={(e) => onPointerMove?.(e, port)}
         onPointerLeave={handlePointerLeave}
         onPointerCancel={(e) => {
           onPointerCancel?.(e, port);

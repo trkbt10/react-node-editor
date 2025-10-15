@@ -15,6 +15,7 @@ export type NodePortsRendererProps = {
   onPortPointerDown?: (e: React.PointerEvent, port: Port) => void;
   onPortPointerUp?: (e: React.PointerEvent, port: Port) => void;
   onPortPointerEnter?: (e: React.PointerEvent, port: Port) => void;
+  onPortPointerMove?: (e: React.PointerEvent, port: Port) => void;
   onPortPointerLeave?: (e: React.PointerEvent, port: Port) => void;
   onPortPointerCancel?: (e: React.PointerEvent, port: Port) => void;
   hoveredPort?: Port;
@@ -30,6 +31,7 @@ export const NodePortsRenderer: React.FC<NodePortsRendererProps> = ({
   onPortPointerDown,
   onPortPointerUp,
   onPortPointerEnter,
+  onPortPointerMove,
   onPortPointerLeave,
   onPortPointerCancel,
   hoveredPort,
@@ -55,6 +57,7 @@ export const NodePortsRenderer: React.FC<NodePortsRendererProps> = ({
             onPointerDown={onPortPointerDown}
             onPointerUp={onPortPointerUp}
             onPointerEnter={onPortPointerEnter}
+            onPointerMove={onPortPointerMove}
             onPointerLeave={onPortPointerLeave}
             onPointerCancel={onPortPointerCancel}
             isConnecting={actionState.connectionDragState?.fromPort.id === port.id}

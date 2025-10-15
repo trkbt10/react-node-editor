@@ -581,24 +581,17 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
     [handlePortPointerUp, containerRef],
   );
 
-  const handlePortPointerEnter = React.useCallback(
-    (_e: React.PointerEvent, port: Port) => {
-      const actionPort: Port = {
-        id: port.id,
-        nodeId: port.nodeId,
-        type: port.type,
-        label: port.label,
-        position: port.position,
-        dataType: port.dataType,
-        maxConnections: port.maxConnections,
-        allowedNodeTypes: port.allowedNodeTypes,
-        allowedPortTypes: port.allowedPortTypes,
-      };
-      actionActions.setHoveredPort(actionPort);
+  const updatePortHoverState = React.useCallback(
+    (clientX: number, clientY: number, fallbackPort: Port) => {
+      const canvasPosition = utils.screenToCanvas(clientX, clientY);
+      const candidate =
+        resolveCandidatePort(canvasPosition) || resolveDisconnectCandidate(canvasPosition) || fallbackPort;
+
+      actionActions.setHoveredPort(candidate);
       const connectable = computeConnectablePortIds({
         dragState: actionState.connectionDragState,
         disconnectState: actionState.connectionDisconnectState,
-        fallbackPort: actionPort,
+        fallbackPort: candidate,
         nodes: nodeEditorState.nodes,
         connections: nodeEditorState.connections,
         getNodePorts,
@@ -612,9 +605,29 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
       actionState.connectionDisconnectState,
       nodeEditorState.nodes,
       nodeEditorState.connections,
-      getNodeDef,
+      utils,
+      resolveCandidatePort,
+      resolveDisconnectCandidate,
       getNodePorts,
+      getNodeDef,
     ],
+  );
+
+  const handlePortPointerEnter = React.useCallback(
+    (e: React.PointerEvent, port: Port) => {
+      updatePortHoverState(e.clientX, e.clientY, port);
+    },
+    [updatePortHoverState],
+  );
+
+  const handlePortPointerMove = React.useCallback(
+    (e: React.PointerEvent, port: Port) => {
+      if (!actionState.connectionDragState && !actionState.connectionDisconnectState) {
+        return;
+      }
+      updatePortHoverState(e.clientX, e.clientY, port);
+    },
+    [actionState.connectionDragState, actionState.connectionDisconnectState, updatePortHoverState],
   );
 
   const handlePortPointerLeave = React.useCallback(() => {
@@ -786,6 +799,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
           onPortPointerDown={handlePortPointerDown}
           onPortPointerUp={handlePortPointerUp}
           onPortPointerEnter={handlePortPointerEnter}
+          onPortPointerMove={handlePortPointerMove}
           onPortPointerLeave={handlePortPointerLeave}
           onPortPointerCancel={handlePortPointerCancel}
           connectablePorts={actionState.connectablePorts}

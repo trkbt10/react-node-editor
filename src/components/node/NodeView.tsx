@@ -42,6 +42,7 @@ export type NodeViewProps = {
   onPortPointerDown?: (e: React.PointerEvent, port: Port) => void;
   onPortPointerUp?: (e: React.PointerEvent, port: Port) => void;
   onPortPointerEnter?: (e: React.PointerEvent, port: Port) => void;
+  onPortPointerMove?: (e: React.PointerEvent, port: Port) => void;
   onPortPointerLeave?: (e: React.PointerEvent, port: Port) => void;
   onPortPointerCancel?: (e: React.PointerEvent, port: Port) => void;
   connectingPort?: Port;
@@ -64,6 +65,7 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   onPortPointerDown,
   onPortPointerUp,
   onPortPointerEnter,
+  onPortPointerMove,
   onPortPointerLeave,
   onPortPointerCancel,
   hoveredPort,
@@ -343,13 +345,14 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
         onEditingBlur={handleEditingBlur}
       />
 
-        <NodePortsRenderer
-          ports={ports}
-          onPortPointerDown={onPortPointerDown}
-          onPortPointerUp={onPortPointerUp}
-          onPortPointerEnter={onPortPointerEnter}
-          onPortPointerLeave={onPortPointerLeave}
-          onPortPointerCancel={onPortPointerCancel}
+      <NodePortsRenderer
+        ports={ports}
+        onPortPointerDown={onPortPointerDown}
+        onPortPointerUp={onPortPointerUp}
+        onPortPointerEnter={onPortPointerEnter}
+        onPortPointerMove={onPortPointerMove}
+        onPortPointerLeave={onPortPointerLeave}
+        onPortPointerCancel={onPortPointerCancel}
         hoveredPort={hoveredPort}
         connectedPorts={connectedPorts}
         connectablePorts={connectablePorts}
