@@ -1,0 +1,25 @@
+/* Shared overlay container for floating context menus rendered via <dialog> */
+
+.contextDialog {
+  position: fixed;
+  inset: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  background: transparent;
+  pointer-events: none;
+  z-index: 20000;
+}
+
+.contextDialog::backdrop {
+  background: transparent;
+}
+
+.contextContent {
+  position: absolute;
+  pointer-events: auto;
+}

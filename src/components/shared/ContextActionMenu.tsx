@@ -2,7 +2,6 @@
  * @file Context action menu component
  */
 import * as React from "react";
-import { calculateContextMenuPosition, getViewportInfo } from "../elements/dialogUtils";
 import { EditIcon, PlusIcon, PasteIcon } from "../elements/icons";
 import styles from "./ContextActionMenu.module.css";
 import alignmentStyles from "../controls/alignments/AlignmentControls.module.css";
@@ -22,6 +21,7 @@ import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/use
 import { canAddNodeType, countNodesByType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
 import { getClipboard, setClipboard } from "../../utils/clipboard";
 import { NodeActionsList } from "./NodeActionsList";
+import { ContextMenuOverlay } from "./ContextMenuOverlay";
 
 export type ContextTarget = { type: "node"; id: string } | { type: "connection"; id: string } | { type: "canvas" };
 
@@ -38,8 +38,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: editorState } = useNodeEditor();
   const nodeDefinitions = useNodeDefinitionList();
-  const [menuPosition, setMenuPosition] = React.useState({ x: position.x, y: position.y });
-  const menuRef = React.useRef<HTMLDivElement>(null);
+  const [resolvedPosition, setResolvedPosition] = React.useState({ x: position.x, y: position.y });
   const selectedNodeIds = actionState.selectedNodeIds;
   const isTargetSelected = target.type === "node" && selectedNodeIds.includes(target.id);
   const isMultiSelect = isTargetSelected && selectedNodeIds.length > 1;
@@ -62,28 +61,9 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
 
   React.useEffect(() => {
     if (visible) {
-      setTimeout(() => {
-        if (menuRef.current) {
-          const rect = menuRef.current.getBoundingClientRect();
-          const viewport = getViewportInfo();
-          const calculated = calculateContextMenuPosition(position.x, position.y, rect.width, rect.height, viewport);
-          setMenuPosition(calculated);
-        }
-      }, 0);
+      setResolvedPosition({ x: position.x, y: position.y });
     }
   }, [visible, position.x, position.y]);
-
-  React.useEffect(() => {
-    const handleClickOutside = (e: PointerEvent) => {
-      if (visible && e.target instanceof Element) {
-        if (menuRef.current && !menuRef.current.contains(e.target)) {
-          onClose();
-        }
-      }
-    };
-    document.addEventListener("pointerdown", handleClickOutside);
-    return () => document.removeEventListener("pointerdown", handleClickOutside);
-  }, [visible, onClose]);
 
   if (!visible) {
     return null;
@@ -202,10 +182,13 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
   };
 
   return (
-    <div
-      ref={menuRef}
-      className={`${styles.menu} ${styles.menuContainer}`}
-      style={{ left: menuPosition.x, top: menuPosition.y }}
+    <ContextMenuOverlay
+      anchor={position}
+      visible={visible}
+      onClose={onClose}
+      onPositionChange={setResolvedPosition}
+      contentClassName={`${styles.menu} ${styles.menuContainer}`}
+      dataAttributes={{ "context-action-menu": true }}
     >
       <ul className={styles.menuList}>
         {showAlignmentControls && (
@@ -269,7 +252,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
               onClick={() => {
                 // Close this menu then open NodeSearch at the same screen position
                 onClose();
-                actionActions.showContextMenu(menuPosition, undefined, undefined, undefined, "search");
+                actionActions.showContextMenu(resolvedPosition, undefined, undefined, undefined, "search");
               }}
             >
               <PlusIcon size={14} /> {t("addConnection") || "Add Connection…"}
@@ -280,7 +263,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
           </>
         )}
       </ul>
-    </div>
+    </ContextMenuOverlay>
   );
 };
 

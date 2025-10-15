@@ -2,12 +2,12 @@
  * @file Node search menu component
  */
 import * as React from "react";
-import { calculateContextMenuPosition, getViewportInfo } from "../elements/dialogUtils";
 import { Input } from "../elements/Input";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import type { Position } from "../../types/core";
 import { getNodeIcon } from "../../contexts/node-definitions/utils/iconUtils";
 import styles from "./NodeSearchMenu.module.css";
+import { ContextMenuOverlay } from "./ContextMenuOverlay";
 
 export type NodeSearchMenuProps = {
   position: Position;
@@ -38,9 +38,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
-  const [menuPosition, setMenuPosition] = React.useState({ x: position.x, y: position.y });
   const searchInputRef = React.useRef<HTMLInputElement>(null);
-  const menuRef = React.useRef<HTMLDivElement>(null);
 
   // Group nodes by category
   const categories = React.useMemo(() => {
@@ -113,22 +111,6 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
       setSearchQuery("");
       setSelectedIndex(0);
       setSelectedCategory(null);
-
-      // Calculate position after a brief delay to ensure menu dimensions are available
-      setTimeout(() => {
-        if (menuRef.current) {
-          const rect = menuRef.current.getBoundingClientRect();
-          const viewport = getViewportInfo();
-          const calculatedPosition = calculateContextMenuPosition(
-            position.x,
-            position.y,
-            rect.width,
-            rect.height,
-            viewport,
-          );
-          setMenuPosition(calculatedPosition);
-        }
-      }, 0);
     }
   }, [visible, position]);
 
@@ -186,35 +168,18 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
     [onCreateNode, position, onClose, disabledSet],
   );
 
-  // Handle click outside to close
-  React.useEffect(() => {
-    const handleClickOutside = (e: PointerEvent) => {
-      if (visible && e.target instanceof Element) {
-        const menuElement = document.querySelector("[data-node-search-menu]");
-        if (menuElement && !menuElement.contains(e.target)) {
-          onClose();
-        }
-      }
-    };
-
-    document.addEventListener("pointerdown", handleClickOutside);
-    return () => document.removeEventListener("pointerdown", handleClickOutside);
-  }, [visible, onClose]);
-
   if (!visible) {
     return null;
   }
 
   return (
-    <div
-      ref={menuRef}
-      className={`${styles.nodeSearchMenu} ${styles.nodeSearchMenuContainer}`}
-      style={{
-        left: menuPosition.x,
-        top: menuPosition.y,
-      }}
-      data-node-search-menu
+    <ContextMenuOverlay
+      anchor={position}
+      visible={visible}
+      onClose={onClose}
       onKeyDown={handleKeyDown}
+      contentClassName={`${styles.nodeSearchMenu} ${styles.nodeSearchMenuContainer}`}
+      dataAttributes={{ "node-search-menu": true }}
     >
       <div className={styles.searchHeader}>
         <Input
@@ -292,7 +257,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
           </div>
         </div>
       )}
-    </div>
+    </ContextMenuOverlay>
   );
 };
 
