@@ -20,7 +20,7 @@ import {
 } from "./materialConfig";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import classes from "./ThreeJsNodes.module.css";
-import { calculateBezierPath } from "../../../components/connection/utils/connectionUtils";
+import { calculateBezierPath, getOppositePortPosition } from "../../../components/connection/utils/connectionUtils";
 
 type ColorControlData = {
   title: string;
@@ -153,7 +153,9 @@ const ColorConnectionRenderer = (context: ConnectionRenderContext, defaultRender
   // Get color from source node
   const nodeColor = (fromNode.data as ColorControlData).color || "#60a5fa";
 
-  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, toPort.position);
+  const targetPortPosition = toPort?.position ?? getOppositePortPosition(fromPort.position);
+  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, targetPortPosition);
+  const connectionId = connection?.id ?? `preview-${context.phase}-${fromPort.id}-${toPort?.id ?? "floating"}`;
 
   // Render default connection for interaction, then overlay custom colored visuals
   return (
@@ -162,7 +164,7 @@ const ColorConnectionRenderer = (context: ConnectionRenderContext, defaultRender
       <g style={{ opacity: 0, pointerEvents: "auto" }}>{defaultRender()}</g>
 
       {/* Custom colored connection visual */}
-      <g data-connection-id={connection.id} style={{ pointerEvents: "none" }}>
+      <g data-connection-id={connectionId} style={{ pointerEvents: "none" }}>
         <path
           d={pathData}
           fill="none"
@@ -175,7 +177,7 @@ const ColorConnectionRenderer = (context: ConnectionRenderContext, defaultRender
         {/* Arrow marker at the end */}
         <defs>
           <marker
-            id={`arrow-color-${connection.id}`}
+            id={`arrow-color-${connectionId}`}
             viewBox="0 0 10 10"
             refX="10"
             refY="5"
@@ -191,7 +193,7 @@ const ColorConnectionRenderer = (context: ConnectionRenderContext, defaultRender
           d={pathData}
           fill="none"
           stroke="transparent"
-          markerEnd={`url(#arrow-color-${connection.id})`}
+          markerEnd={`url(#arrow-color-${connectionId})`}
           vectorEffect="non-scaling-stroke"
         />
       </g>
@@ -234,12 +236,14 @@ const ScaleConnectionRenderer = (context: ConnectionRenderContext, defaultRender
 
 const WireframeConnectionRenderer = (context: ConnectionRenderContext, defaultRender: () => React.ReactElement) => {
   const { fromPosition, toPosition, fromPort, toPort, connection } = context;
-  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, toPort.position);
+  const toPortPosition = toPort?.position ?? getOppositePortPosition(fromPort.position);
+  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, toPortPosition);
+  const connectionId = connection?.id ?? `preview-${context.phase}-${fromPort.id}-${toPort?.id ?? "floating"}`;
 
   return (
     <g>
       <g style={{ opacity: 0, pointerEvents: "auto" }}>{defaultRender()}</g>
-      <g data-connection-id={connection.id} style={{ pointerEvents: "none" }}>
+      <g data-connection-id={connectionId} style={{ pointerEvents: "none" }}>
         <path
           d={pathData}
           fill="none"
@@ -266,9 +270,11 @@ const WireframeConnectionRenderer = (context: ConnectionRenderContext, defaultRe
 
 const MaterialConnectionRenderer = (context: ConnectionRenderContext, defaultRender: () => React.ReactElement) => {
   const { fromPosition, toPosition, fromPort, toPort, connection, fromNode } = context;
-  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, toPort.position);
+  const toPortPosition = toPort?.position ?? getOppositePortPosition(fromPort.position);
+  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, toPortPosition);
   const materialData = fromNode.data as MaterialControlData;
-  const gradientId = `material-gradient-${connection.id}`;
+  const connectionId = connection?.id ?? `preview-${context.phase}-${fromPort.id}-${toPort?.id ?? "floating"}`;
+  const gradientId = `material-gradient-${connectionId}`;
   const colors = MATERIAL_MODE_GRADIENTS[materialData.material.mode];
 
   return (
@@ -280,7 +286,7 @@ const MaterialConnectionRenderer = (context: ConnectionRenderContext, defaultRen
           <stop offset="50%" stopColor={colors[1]} />
           <stop offset="100%" stopColor={colors[2]} />
         </linearGradient>
-        <filter id={`material-glow-${connection.id}`}>
+        <filter id={`material-glow-${connectionId}`}>
           <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
@@ -288,7 +294,7 @@ const MaterialConnectionRenderer = (context: ConnectionRenderContext, defaultRen
           </feMerge>
         </filter>
       </defs>
-      <g data-connection-id={connection.id} style={{ pointerEvents: "none" }}>
+      <g data-connection-id={connectionId} style={{ pointerEvents: "none" }}>
         <path
           d={pathData}
           fill="none"
@@ -297,7 +303,7 @@ const MaterialConnectionRenderer = (context: ConnectionRenderContext, defaultRen
           strokeLinecap="round"
           strokeLinejoin="round"
           vectorEffect="non-scaling-stroke"
-          style={{ filter: `url(#material-glow-${connection.id})` }}
+          style={{ filter: `url(#material-glow-${connectionId})` }}
         />
       </g>
     </g>

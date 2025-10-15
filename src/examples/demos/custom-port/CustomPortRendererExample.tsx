@@ -5,28 +5,44 @@ import * as React from "react";
 import { NodeEditor } from "../../../NodeEditor";
 import type { NodeEditorData } from "../../../types/core";
 import { createInitialData, getUntypedNodeDefinitions } from "./nodes";
+import { ExampleLayout } from "../parts/ExampleLayout";
+import { ExampleHeader } from "../parts/ExampleHeader";
+import { ExampleWrapper } from "../parts/ExampleWrapper";
 import styles from "./CustomPortRendererExample.module.css";
 
 export const CustomPortRendererExample: React.FC = () => {
   const [data, setData] = React.useState<NodeEditorData>(() => createInitialData());
 
   return (
-    <div className={styles.wrapper}>
-      <h2 className={styles.title}>Custom Port Renderer Example</h2>
-      <p className={styles.description}>
-        This example showcases the updated port layout pipeline, combining SVG layering and canvas-driven telemetry to
-        render ports and connections with richer visual context.
-      </p>
-      <ul className={styles.list}>
-        <li>
-          Ports expose dynamic radial gauges that react to connection count, with clear IN / OUT orientation badges
-        </li>
-        <li>Canvas overlays draw live tick marks while SVG gradients highlight directional flow and data categories</li>
-        <li>Connections render with multi-stop gradients, flowing energy bands, and data-specific overlays</li>
-        <li>Custom renderers rely on provided layout context so visuals stay synchronized with live node movement</li>
-      </ul>
-      <NodeEditor data={data} onDataChange={setData} nodeDefinitions={getUntypedNodeDefinitions()} />
-    </div>
+    <ExampleLayout
+      header={
+        <ExampleHeader
+          title="Custom Port Renderer"
+          description="Layered SVG and canvas affordances highlight connection state while staying synchronized with node motion."
+        />
+      }
+    >
+      <ExampleWrapper>
+        <div className={styles.content}>
+          <aside className={styles.summaryPanel}>
+            <p className={styles.summaryLead}>
+              Explore how the port and connection render hooks allow you to ship opinionated visual systems without
+              losing live editor ergonomics.
+            </p>
+            <ul className={styles.summaryList}>
+              <li>Radial gauges respond to connection count and hover states in real time.</li>
+              <li>Directional badges and port labels stay aligned as nodes move or resize.</li>
+              <li>Connections blend gradients, halos, and overlays while respecting selection feedback.</li>
+            </ul>
+          </aside>
+          <div className={styles.editorPanel}>
+            <div className={styles.editorSurface}>
+              <NodeEditor data={data} onDataChange={setData} nodeDefinitions={getUntypedNodeDefinitions()} />
+            </div>
+          </div>
+        </div>
+      </ExampleWrapper>
+    </ExampleLayout>
   );
 };
 

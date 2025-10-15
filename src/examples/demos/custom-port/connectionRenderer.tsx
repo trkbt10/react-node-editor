@@ -9,6 +9,7 @@ import {
   calculateBezierControlPoints,
   cubicBezierPoint,
   cubicBezierTangent,
+  getOppositePortPosition,
 } from "../../../components/connection/utils/connectionUtils";
 import { getStyleForDataType } from "./dataStyles";
 import { CONNECTION_VARIANT_TOKENS, type ConnectionVariant, resolveConnectionVariant } from "./connectionTokens";
@@ -153,7 +154,8 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
   return (context: ConnectionRenderContext, defaultRender: () => React.ReactElement): React.ReactElement => {
     const defaultElement = defaultRender() as React.ReactElement<DefaultConnectionElementProps>;
     const fromStyle = getStyleForDataType(context.fromPort.dataType);
-    const toStyle = getStyleForDataType(context.toPort.dataType);
+    const toStyle = getStyleForDataType(context.toPort?.dataType ?? context.fromPort.dataType);
+    const toPortPosition = context.toPort?.position ?? getOppositePortPosition(context.fromPort.position);
 
     const resolvedVariant = variant ?? resolveConnectionVariant(context);
     const tokens = CONNECTION_VARIANT_TOKENS[resolvedVariant];
@@ -163,7 +165,7 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
         context.fromPosition,
         context.toPosition,
         context.fromPort.position,
-        context.toPort.position,
+        toPortPosition,
       );
     }, [
       context.fromPosition.x,
@@ -171,7 +173,7 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
       context.toPosition.x,
       context.toPosition.y,
       context.fromPort.position,
-      context.toPort.position,
+      toPortPosition,
     ]);
 
     const { cp1, cp2 } = React.useMemo(() => {
@@ -179,7 +181,7 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
         context.fromPosition,
         context.toPosition,
         context.fromPort.position,
-        context.toPort.position,
+        toPortPosition,
       );
     }, [
       context.fromPosition.x,
@@ -187,7 +189,7 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
       context.toPosition.x,
       context.toPosition.y,
       context.fromPort.position,
-      context.toPort.position,
+      toPortPosition,
     ]);
 
     const midpoint = React.useMemo(() => {
@@ -217,9 +219,13 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
     const gradientId = React.useId();
     const energyGradientId = React.useId();
     const haloGradientId = React.useId();
+    const toPortId = context.toPort?.id ?? "floating";
+    const connectionKey = React.useMemo(() => {
+      return context.connection?.id ?? `preview-${context.phase}-${context.fromPort.id}-${toPortId}`;
+    }, [context.connection?.id, context.phase, context.fromPort.id, toPortId]);
     const markerId = React.useMemo(() => {
-      return `advanced-connection-arrow-${context.connection.id}`;
-    }, [context.connection.id]);
+      return `advanced-connection-arrow-${connectionKey}`;
+    }, [connectionKey]);
 
     const samplePoints = React.useMemo(() => createSamplePoints(context, cp1, cp2), [context, cp1, cp2]);
     const overlayElements = React.useMemo(
@@ -274,17 +280,17 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
             strokeLinejoin="round"
             opacity={haloOpacity}
           />
-          <path
-            className={styles.connectionMainPath}
-            d={pathData}
-            fill="none"
-            stroke={`url(#${gradientId})`}
-            strokeWidth={mainStrokeWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            markerEnd={`url(#${markerId})`}
-            opacity={0.96}
-          />
+      <path
+        className={styles.connectionMainPath}
+        d={pathData}
+        fill="none"
+        stroke={`url(#${gradientId})`}
+        strokeWidth={mainStrokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        markerEnd={`url(#${markerId})`}
+        opacity={0.96}
+      />
           <path
             className={styles.connectionEnergyPath}
             d={pathData}

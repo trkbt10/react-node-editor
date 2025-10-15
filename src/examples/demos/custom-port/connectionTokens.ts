@@ -91,7 +91,7 @@ export const resolveConnectionVariant = (context: ConnectionRenderContext): Conn
   if (isConnectionVariant(context.fromPort.dataType)) {
     return context.fromPort.dataType;
   }
-  if (isConnectionVariant(context.toPort.dataType)) {
+  if (context.toPort && isConnectionVariant(context.toPort.dataType)) {
     return context.toPort.dataType;
   }
   return "default";

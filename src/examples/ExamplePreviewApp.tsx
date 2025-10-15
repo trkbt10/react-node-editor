@@ -24,6 +24,7 @@ import CustomNodeExample from "./demos/CustomNodeExample";
 import { ThemeShowcaseExample } from "./demos/design/ThemeShowcaseExample";
 import { AdvancedNestedEditorExample } from "./demos/advanced/subeditor/AdvancedNestedEditorExample";
 import { InteractionCustomizationExample } from "./demos/interaction/InteractionCustomizationExample";
+import { CustomConnectorExample } from "./demos/CustomConnectorExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -31,7 +32,7 @@ type ExampleEntry = {
   title: string;
   description: string;
   component: React.ComponentType;
-  category: "basic" | "advanced" | "layout" | "design";
+  category: "basic" | "advanced" | "custom" | "layout" | "design";
 };
 
 const examples: ExampleEntry[] = [
@@ -61,7 +62,7 @@ const examples: ExampleEntry[] = [
     title: "Custom Nodes with External Data",
     description: "Shows how to connect custom renderers to external data sources.",
     component: CustomNodeExample,
-    category: "basic",
+    category: "custom",
   },
   {
     id: "typed-nodes",
@@ -96,7 +97,14 @@ const examples: ExampleEntry[] = [
     title: "Custom Port Renderer",
     description: "Customize port and connection appearance with custom renderers.",
     component: CustomPortRendererExample,
-    category: "basic",
+    category: "custom",
+  },
+  {
+    id: "custom-connector-renderer",
+    title: "Custom Connector Playground",
+    description: "Render bezier connectors with live handle overlays and animated accents.",
+    component: CustomConnectorExample,
+    category: "custom",
   },
   {
     id: "layout-default",
@@ -235,6 +243,7 @@ export function ExamplePreviewApp(): React.ReactElement {
       advanced: [],
       layout: [],
       design: [],
+      custom: [],
     };
 
     for (const example of examples) {
@@ -249,6 +258,7 @@ export function ExamplePreviewApp(): React.ReactElement {
     advanced: "Advanced Examples",
     layout: "Layout Examples",
     design: "Design Examples",
+    custom: "Custom Renderer Examples",
   };
 
   return (

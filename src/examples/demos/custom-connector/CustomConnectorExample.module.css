@@ -1,0 +1,221 @@
+.content {
+  display: flex;
+  gap: 28px;
+  padding: 28px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(34, 211, 238, 0.18), transparent 55%),
+    radial-gradient(circle at 80% 85%, rgba(168, 85, 247, 0.2), transparent 50%),
+    linear-gradient(140deg, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.65));
+}
+
+.summaryPanel {
+  flex: 0 0 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px;
+  border-radius: 20px;
+  background:
+    linear-gradient(165deg, rgba(15, 23, 42, 0.92), rgba(8, 47, 73, 0.9)),
+    rgba(15, 23, 42, 0.92);
+  box-shadow:
+    0 28px 70px rgba(6, 182, 212, 0.3),
+    inset 0 1px 0 rgba(148, 163, 184, 0.2);
+  color: rgba(226, 232, 240, 0.92);
+  max-height: 100%;
+  overflow: auto;
+}
+
+.summaryTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: rgba(94, 234, 212, 0.95);
+}
+
+.summaryLead {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(226, 232, 240, 0.85);
+}
+
+.summaryList {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13px;
+  color: rgba(148, 163, 184, 0.88);
+}
+
+.summaryList li {
+  line-height: 1.6;
+}
+
+.legend {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(15, 118, 110, 0.25);
+  border: 1px solid rgba(13, 148, 136, 0.35);
+  font-size: 12px;
+  line-height: 1.6;
+  color: rgba(20, 184, 166, 0.88);
+}
+
+.legend strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(94, 234, 212, 0.95);
+  margin-bottom: 6px;
+}
+
+.editorPanel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+}
+
+.editorSurface {
+  position: relative;
+  flex: 1;
+  border-radius: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at center, rgba(14, 165, 233, 0.2), rgba(15, 23, 42, 0.95)),
+    linear-gradient(200deg, rgba(15, 118, 110, 0.4), rgba(99, 102, 241, 0.35));
+  box-shadow:
+    0 60px 120px rgba(15, 23, 42, 0.55),
+    inset 0 1px 0 rgba(241, 245, 249, 0.12);
+}
+
+.editorSurface :global([data-node-editor-root="true"]) {
+  height: 100%;
+}
+
+.editorOverlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 22px;
+  color: rgba(226, 232, 240, 0.8);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.overlayGradient {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(236, 72, 153, 0.22), transparent 55%),
+    radial-gradient(circle at 78% 78%, rgba(14, 165, 233, 0.18), transparent 60%);
+  mix-blend-mode: screen;
+  opacity: 0.85;
+}
+
+.overlayFooter {
+  display: grid;
+  gap: 10px;
+  align-content: end;
+  margin-left: auto;
+  text-align: right;
+}
+
+.swatchRow {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-end;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+  color: rgba(226, 232, 240, 0.78);
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #22d3ee);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.8);
+}
+
+.swatchHandle {
+  background: linear-gradient(135deg, #34d399, #14b8a6);
+  box-shadow: 0 0 14px rgba(20, 184, 166, 0.7);
+}
+
+.swatchAnchor {
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  box-shadow: 0 0 14px rgba(249, 115, 22, 0.75);
+}
+
+.swatchSpark {
+  background: linear-gradient(135deg, #f472b6, #ec4899);
+  box-shadow: 0 0 16px rgba(236, 72, 153, 0.8);
+}
+
+.canvasHost {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.connectorCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.connectorFallback {
+  fill: none;
+  stroke: rgba(56, 189, 248, 0.18);
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-opacity: 0.45;
+  filter: drop-shadow(0 0 18px rgba(16, 185, 129, 0.4));
+  mix-blend-mode: screen;
+  pointer-events: stroke;
+}
+
+@media (max-width: 960px) {
+  .content {
+    flex-direction: column;
+    padding: 22px;
+  }
+
+  .summaryPanel {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .editorOverlay {
+    position: static;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .content {
+    padding: 18px;
+  }
+
+  .summaryPanel {
+    padding: 18px;
+  }
+}

@@ -11,6 +11,7 @@ import {
   type KeyboardShortcutActionBehavior,
   type ContextMenuRequest,
   type CanvasPanActivator,
+  toUntypedDefinition,
 } from "../../../index";
 import { NodeCanvas } from "../../../components/canvas/NodeCanvas";
 import { InspectorPanel } from "../../../components/inspector/InspectorPanel";
@@ -19,6 +20,7 @@ import { defaultInteractionSettings } from "../../../contexts/InteractionSetting
 import classes from "./InteractionCustomizationExample.module.css";
 import { SettingsPanel } from "./SettingsPanel";
 import type { PanOptionsState, PinchOptionsState, ShortcutBindingMap, ShortcutOverrideState } from "./panelTypes";
+import { StandardNodeDefinition } from "../../../node-definitions";
 
 const demoInitialData: NodeEditorData = {
   nodes: {
@@ -74,11 +76,7 @@ const DEFAULT_SHORTCUT_BINDINGS: ShortcutBindingMap = (() => {
 
 const gridConfig: GridLayoutConfig = {
   areas: [["settings", "canvas", "inspector"]],
-  columns: [
-    { size: "320px" },
-    { size: "1fr" },
-    { size: "320px", resizable: true, minSize: 220, maxSize: 460 },
-  ],
+  columns: [{ size: "320px" }, { size: "1fr" }, { size: "320px", resizable: true, minSize: 220, maxSize: 460 }],
   rows: [{ size: "1fr" }],
   gap: "0",
 };
@@ -137,20 +135,17 @@ export const InteractionCustomizationExample: React.FC = () => {
     setContextMenuLog([]);
   }, []);
 
-  const customContextMenuHandler = React.useCallback(
-    (request: ContextMenuRequest) => {
-      setContextMenuLog((prev) => {
-        const entry = formatContextEntry(request);
-        const next = [entry, ...prev];
-        if (next.length > MAX_LOG_ENTRIES) {
-          next.length = MAX_LOG_ENTRIES;
-        }
-        return next;
-      });
-      request.defaultShow();
-    },
-    [],
-  );
+  const customContextMenuHandler = React.useCallback((request: ContextMenuRequest) => {
+    setContextMenuLog((prev) => {
+      const entry = formatContextEntry(request);
+      const next = [entry, ...prev];
+      if (next.length > MAX_LOG_ENTRIES) {
+        next.length = MAX_LOG_ENTRIES;
+      }
+      return next;
+    });
+    request.defaultShow();
+  }, []);
 
   const interactionSettings = React.useMemo<NodeEditorInteractionSettingsPatch>(() => {
     const panActivators: CanvasPanActivator[] = [];
@@ -250,6 +245,7 @@ export const InteractionCustomizationExample: React.FC = () => {
         gridConfig={gridConfig}
         gridLayers={gridLayers}
         interactionSettings={interactionSettings}
+        nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
       />
     </div>
   );
