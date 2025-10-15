@@ -66,6 +66,9 @@
   --node-editor-shadow-md: 0 2px 4px rgba(27, 77, 165, 0.12);
   --node-editor-shadow-lg: 0 4px 8px rgba(27, 77, 165, 0.16);
 
+  /* Transition system */
+  --node-editor-transition-duration: 0.15s;
+
   /* Inspector shadows */
   --node-editor-inspector-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.25), inset 1px 1px 0 rgba(255, 255, 255, 0.7);
   --node-editor-inspector-header-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
@@ -83,19 +86,19 @@
   --node-editor-icon-selected-brightness: 1.2;
 
   /* Text colors */
-  --node-editor-text-color: #1b2a4a;
-  --node-editor-text-secondary: #3f5175;
+  --node-editor-text-color: #000000;
+  --node-editor-text-secondary: #3f3f3f;
   --node-editor-header-text-color: #ffffff;
   --node-editor-label-color: var(--node-editor-text-color);
-  --node-editor-secondary-label-color: #4c5f84;
-  --node-editor-tertiary-label-color: #7283a7;
-  --node-editor-quaternary-label-color: #aebbd2;
+  --node-editor-secondary-label-color: #5f5f5f;
+  --node-editor-tertiary-label-color: #808080;
+  --node-editor-quaternary-label-color: #adadad;
   --node-editor-control-text-color: var(--node-editor-text-color);
   --node-editor-control-text-color-primary: #ffffff;
   --node-editor-control-text-color-secondary: var(--node-editor-text-color);
   --node-editor-control-hover-text-color-primary: #ffffff;
   --node-editor-input-text-color: var(--node-editor-text-color);
-  --node-editor-selected-control-text-color: #2348b4;
+  --node-editor-selected-control-text-color: #ffffff;
   --node-editor-selected-menu-item-text-color: #ffffff;
 
   /* Status & accent colors */
@@ -112,21 +115,21 @@
   --node-editor-connection-color: #2460d7;
 
   /* Surface colors */
-  --node-editor-surface-primary: #f0f8ff;
-  --node-editor-surface-secondary: #e6f0ff;
-  --node-editor-surface-tertiary: #d4e4ff;
-  --node-editor-selected-content-background-color: rgba(36, 96, 215, 0.18);
-  --node-editor-selected-control-color: rgba(36, 96, 215, 0.22);
+  --node-editor-surface-primary: #ecf3fd;
+  --node-editor-surface-secondary: #dce8f8;
+  --node-editor-surface-tertiary: #ccdff3;
+  --node-editor-selected-content-background-color: linear-gradient(180deg, #316ac5 0%, #c2e0ff 100%);
+  --node-editor-selected-control-color: linear-gradient(180deg, #316ac5 0%, #c2e0ff 100%);
   --node-editor-under-page-background-color: linear-gradient(180deg, #9cd36d 0%, #5da631 35%, #3b77c3 100%);
-  --node-editor-window-background-color: #f0f8ff;
+  --node-editor-window-background-color: #ecf3fd;
 
   /* Control surfaces */
-  --node-editor-control-background: linear-gradient(180deg, #ffffff 0%, #dbe8ff 100%);
+  --node-editor-control-background: #ecf3fd;
   --node-editor-control-background-primary: linear-gradient(180deg, #5b9bd5 0%, #1b4da5 100%);
-  --node-editor-control-background-secondary: linear-gradient(180deg, #f2f6ff 0%, #d6e5ff 100%);
-  --node-editor-control-hover-background: linear-gradient(180deg, #ffffff 0%, #c9dcff 100%);
+  --node-editor-control-background-secondary: #dce8f8;
+  --node-editor-control-hover-background: linear-gradient(180deg, #ffeebf 0%, #ffe7a0 50%, #ffd95c 100%);
   --node-editor-control-hover-background-primary: linear-gradient(180deg, #6ca4e0 0%, #2057bc 100%);
-  --node-editor-hover-background: rgba(36, 96, 215, 0.12);
+  --node-editor-hover-background: linear-gradient(180deg, #ffeebf 0%, #ffe7a0 50%, #ffd95c 100%);
   --node-editor-control-box-shadow-primary: inset 0 1px 0 rgba(255, 255, 255, 0.75), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
   --node-editor-control-box-shadow-secondary:
     inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(0, 0, 0, 0.08);
@@ -153,7 +156,7 @@
   --node-editor-card-hover-border-color: rgba(27, 77, 165, 0.5);
 
   /* Dialogs & overlays */
-  --node-editor-dialog-background: rgba(240, 248, 255, 0.95);
+  --node-editor-dialog-background: #ecf3fd;
   --node-editor-dialog-box-shadow: 0 36px 72px rgba(27, 77, 165, 0.3);
   --node-editor-dialog-level-elevation: 1000;
 
@@ -163,7 +166,7 @@
 
   /* Selected State Colors */
   --node-editor-selected-secondary-color: rgba(255, 255, 255, 0.88);
-  --node-editor-selected-hover-background: rgba(36, 96, 215, 0.24);
+  --node-editor-selected-hover-background: linear-gradient(180deg, #ffeebf 0%, #ffe7a0 50%, #ffd95c 100%);
 
   /* Tables & list accents */
   --node-editor-table-header-background-color: linear-gradient(180deg, #5b9bd5 0%, #1b4da5 100%);
@@ -200,8 +203,8 @@
 
   /* Segment controls */
   --node-editor-segment-backdrop-filter: none;
-  --node-editor-segment-control-background: linear-gradient(180deg, #ece9d8 0%, #dfdbc7 100%);
-  --node-editor-segment-control-background-color: #ece9d8;
+  --node-editor-segment-control-background: #ecf3fd;
+  --node-editor-segment-control-background-color: #ecf3fd;
   --node-editor-segment-control-text-color: #000000;
   --node-editor-segment-control-active-background-color: linear-gradient(180deg, #0054e3 0%, #003c99 100%);
   --node-editor-segment-control-active-text-color: #ffffff;

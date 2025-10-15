@@ -66,6 +66,9 @@
   --node-editor-shadow-md: 0 0 6px rgba(0, 255, 0, 0.4);
   --node-editor-shadow-lg: 0 0 8px rgba(0, 255, 0, 0.5);
 
+  /* Transition system */
+  --node-editor-transition-duration: 0.15s;
+
   /* Inspector shadows - sharp CRT glow */
   --node-editor-inspector-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
   --node-editor-inspector-header-shadow: 0 0 4px rgba(0, 255, 0, 0.3);
