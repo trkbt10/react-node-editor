@@ -216,7 +216,7 @@
 
 .externalDataInfo {
   padding: 0.5em;
-  background-color: var(--node-editor-control-hover-background);
+  background-color: var(--node-editor-card-filled-background);
   border-radius: var(--node-editor-card-border-radius);
   font-size: var(--node-editor-inspector-font-size-body);
   margin-bottom: 0.5em;
