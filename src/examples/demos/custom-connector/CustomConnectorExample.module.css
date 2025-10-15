@@ -168,28 +168,45 @@
   box-shadow: 0 0 16px rgba(236, 72, 153, 0.8);
 }
 
-.canvasHost {
-  width: 100%;
-  height: 100%;
+.connectorGroup {
+  mix-blend-mode: screen;
+}
+
+.connectorHalo {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.7;
+}
+
+.connectorCore {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 12px rgba(14, 165, 233, 0.4));
+}
+
+.connectorFlow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  mix-blend-mode: lighten;
+}
+
+.connectorSparkLayer {
   pointer-events: none;
 }
 
-.connectorCanvas {
-  display: block;
-  width: 100%;
-  height: 100%;
+.connectorSparkLayer circle {
+  filter: drop-shadow(0 0 10px rgba(244, 114, 182, 0.75));
+  transition: opacity 160ms ease, transform 160ms ease;
 }
 
-.connectorFallback {
+.connectorHitArea {
   fill: none;
-  stroke: rgba(56, 189, 248, 0.18);
-  stroke-width: 12;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-opacity: 0.45;
-  filter: drop-shadow(0 0 18px rgba(16, 185, 129, 0.4));
-  mix-blend-mode: screen;
+  stroke: transparent;
   pointer-events: stroke;
+  cursor: pointer;
 }
 
 @media (max-width: 960px) {

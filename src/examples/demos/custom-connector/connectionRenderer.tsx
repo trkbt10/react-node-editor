@@ -1,429 +1,176 @@
 /**
- * @file Custom connection renderer that uses Three.js to render volumetric bezier conduits.
+ * @file Custom connection renderer with a luminous ribbon aesthetic and lightweight SVG animation.
  */
 import * as React from "react";
-import {
-  AdditiveBlending,
-  AmbientLight,
-  Color,
-  Mesh,
-  MeshPhysicalMaterial,
-  PerspectiveCamera,
-  PointLight,
-  Scene,
-  Vector3,
-  WebGLRenderer,
-  CatmullRomCurve3,
-  TubeGeometry,
-  SphereGeometry,
-} from "three";
 import type { ConnectionRenderContext } from "../../../types/NodeDefinition";
 import {
-  calculateBezierPath,
   calculateBezierControlPoints,
+  calculateBezierPath,
   cubicBezierPoint,
-  cubicBezierTangent,
   getOppositePortPosition,
 } from "../../../components/connection/utils/connectionUtils";
 import styles from "./CustomConnectorExample.module.css";
 
-type AnimationPhase = "idle" | "hovered" | "selected";
+type VisualPhase = "idle" | "hovered" | "active";
 
-type GeometryData = {
-  originX: number;
-  originY: number;
-  width: number;
-  height: number;
-  localPoints: Vector3[];
-  key: string;
-  pathData: string;
+type Point = { x: number; y: number };
+
+type GradientStop = {
+  offset: string;
+  color: string;
+  opacity?: number;
 };
 
-const MIN_CANVAS_SIZE = 200;
-const CANVAS_PADDING = 100;
-const UP_AXIS = new Vector3(0, 0, 1);
+type PhaseBase = {
+  gradient: GradientStop[];
+  haloColor: string;
+  haloOpacity: number;
+  flowColor: string;
+  flowOpacity: number;
+  sparkColor: string;
+  sparkOpacity: number;
+  sparkRadius: number;
+  haloWidth: number;
+  coreWidth: number;
+  flowWidth: number;
+  hitWidth: number;
+  baseSpeed: number;
+};
 
-const PHASE_SETTINGS: Record<AnimationPhase, { emissiveBoost: number; glowBoost: number; speed: number; depthShift: number }> =
-  {
-    idle: {
-      emissiveBoost: 0.6,
-      glowBoost: 0.25,
-      speed: 0.4,
-      depthShift: 28,
-    },
-    hovered: {
-      emissiveBoost: 1.2,
-      glowBoost: 0.45,
-      speed: 0.8,
-      depthShift: 46,
-    },
-    selected: {
-      emissiveBoost: 1.8,
-      glowBoost: 0.65,
-      speed: 1.4,
-      depthShift: 72,
-    },
-  };
+type PhaseAppearance = PhaseBase & {
+  speed: number;
+};
 
-const getGeometryData = (
-  from: { x: number; y: number },
-  to: { x: number; y: number },
-  cp1: { x: number; y: number },
-  cp2: { x: number; y: number },
-  fromPortPosition?: "left" | "right" | "top" | "bottom",
-  toPortPosition?: "left" | "right" | "top" | "bottom",
-): GeometryData => {
+type Bounds = {
+  minX: number;
+  minY: number;
+  width: number;
+  height: number;
+};
+
+const SPARK_COUNT = 3;
+const BOUNDS_PADDING = 140;
+
+const PHASE_BASE: Record<VisualPhase, PhaseBase> = {
+  idle: {
+    gradient: [
+      { offset: "0%", color: "#38bdf8", opacity: 0.92 },
+      { offset: "40%", color: "#22d3ee", opacity: 0.9 },
+      { offset: "72%", color: "#a855f7", opacity: 0.85 },
+      { offset: "100%", color: "#f472b6", opacity: 0.88 },
+    ],
+    haloColor: "rgba(56, 189, 248, 0.32)",
+    haloOpacity: 0.55,
+    flowColor: "rgba(224, 242, 254, 0.78)",
+    flowOpacity: 0.52,
+    sparkColor: "rgba(165, 243, 252, 0.95)",
+    sparkOpacity: 0.75,
+    sparkRadius: 3.6,
+    haloWidth: 18,
+    coreWidth: 6.5,
+    flowWidth: 2.2,
+    hitWidth: 24,
+    baseSpeed: 0.35,
+  },
+  hovered: {
+    gradient: [
+      { offset: "0%", color: "#22d3ee", opacity: 0.95 },
+      { offset: "46%", color: "#38bdf8", opacity: 0.95 },
+      { offset: "72%", color: "#8b5cf6", opacity: 0.92 },
+      { offset: "100%", color: "#f472b6", opacity: 0.92 },
+    ],
+    haloColor: "rgba(56, 189, 248, 0.45)",
+    haloOpacity: 0.7,
+    flowColor: "rgba(240, 249, 255, 0.9)",
+    flowOpacity: 0.72,
+    sparkColor: "rgba(244, 114, 182, 0.95)",
+    sparkOpacity: 0.85,
+    sparkRadius: 4.3,
+    haloWidth: 22,
+    coreWidth: 7.2,
+    flowWidth: 2.6,
+    hitWidth: 26,
+    baseSpeed: 0.52,
+  },
+  active: {
+    gradient: [
+      { offset: "0%", color: "#2dd4bf", opacity: 0.98 },
+      { offset: "36%", color: "#38bdf8", opacity: 0.96 },
+      { offset: "72%", color: "#8b5cf6", opacity: 0.95 },
+      { offset: "100%", color: "#f97316", opacity: 0.98 },
+    ],
+    haloColor: "rgba(45, 212, 191, 0.55)",
+    haloOpacity: 0.85,
+    flowColor: "rgba(248, 250, 252, 0.95)",
+    flowOpacity: 0.86,
+    sparkColor: "rgba(251, 191, 36, 0.92)",
+    sparkOpacity: 0.92,
+    sparkRadius: 4.9,
+    haloWidth: 26,
+    coreWidth: 8.3,
+    flowWidth: 3,
+    hitWidth: 30,
+    baseSpeed: 0.74,
+  },
+};
+
+const computeBounds = (from: Point, to: Point, cp1: Point, cp2: Point): Bounds => {
   const minX = Math.min(from.x, to.x, cp1.x, cp2.x);
   const maxX = Math.max(from.x, to.x, cp1.x, cp2.x);
   const minY = Math.min(from.y, to.y, cp1.y, cp2.y);
   const maxY = Math.max(from.y, to.y, cp1.y, cp2.y);
 
-  const spanX = Math.max(1, maxX - minX);
-  const spanY = Math.max(1, maxY - minY);
+  return {
+    minX,
+    minY,
+    width: Math.max(1, maxX - minX),
+    height: Math.max(1, maxY - minY),
+  };
+};
 
-  const width = Math.max(MIN_CANVAS_SIZE, spanX + CANVAS_PADDING);
-  const height = Math.max(MIN_CANVAS_SIZE, spanY + CANVAS_PADDING);
-
-  const centerX = minX + spanX * 0.5;
-  const centerY = minY + spanY * 0.5;
-
-  const minSpan = Math.min(width, height);
-  const baseRadiusEstimate = Math.max(10, minSpan * 0.04);
-  const depthAmplitude = Math.min(160, Math.max(80, baseRadiusEstimate * 5.5));
-  const swirlAmplitude = Math.min(28, Math.max(12, baseRadiusEstimate * 1.4));
-  const sampleCount = 24;
-  const localPoints: Vector3[] = [];
-
-  for (let index = 0; index < sampleCount; index += 1) {
-    const t = index / (sampleCount - 1);
-    const envelope = Math.sin(Math.PI * t);
-    const basePoint = cubicBezierPoint(from, cp1, cp2, to, t);
-    const tangent2d = cubicBezierTangent(from, cp1, cp2, to, t);
-
-    const tangent = new Vector3(tangent2d.x, -tangent2d.y, 0);
-    if (tangent.lengthSq() < 1e-6) {
-      tangent.set(1, 0, 0);
-    } else {
-      tangent.normalize();
-    }
-
-    let normal = new Vector3().crossVectors(UP_AXIS, tangent);
-    if (normal.lengthSq() < 1e-6) {
-      normal = new Vector3(0, 1, 0);
-    } else {
-      normal.normalize();
-    }
-
-    const binormal = new Vector3().crossVectors(tangent, normal).normalize();
-
-    const depth = Math.sin(t * Math.PI) * depthAmplitude + Math.cos(t * Math.PI * 1.8) * (depthAmplitude * 0.12);
-    const swirl = Math.sin(t * Math.PI * 2.6) * swirlAmplitude * envelope * 0.85;
-    const lift = Math.cos(t * Math.PI * 3.8 + Math.PI / 4) * swirlAmplitude * 0.32 * envelope;
-
-    const position = new Vector3(basePoint.x - centerX, -(basePoint.y - centerY), depth);
-    position.add(normal.clone().multiplyScalar(swirl));
-    position.add(binormal.clone().multiplyScalar(lift));
-
-    localPoints.push(position);
-  }
-
-  const pathData = calculateBezierPath(from, to, fromPortPosition, toPortPosition);
+const buildAppearance = (
+  phase: VisualPhase,
+  interactionBoost: number,
+): PhaseAppearance => {
+  const base = PHASE_BASE[phase];
+  const multiplier = 1 + interactionBoost;
 
   return {
-    originX: centerX - width / 2,
-    originY: centerY - height / 2,
-    width,
-    height,
-    localPoints,
-    key: `${Math.round(centerX)}:${Math.round(centerY)}:${Math.round(width)}:${Math.round(height)}:${Math.round(
-      cp1.x,
-    )}:${Math.round(cp1.y)}:${Math.round(cp2.x)}:${Math.round(cp2.y)}`,
-    pathData,
+    ...base,
+    haloOpacity: Math.min(1, base.haloOpacity + interactionBoost * 0.4),
+    flowOpacity: Math.min(1, base.flowOpacity + interactionBoost * 0.45),
+    sparkOpacity: Math.min(1, base.sparkOpacity + interactionBoost * 0.5),
+    sparkRadius: base.sparkRadius * (1 + interactionBoost * 0.5),
+    haloWidth: base.haloWidth * multiplier,
+    coreWidth: base.coreWidth * (1 + interactionBoost * 0.35),
+    flowWidth: base.flowWidth * (1 + interactionBoost * 0.3),
+    hitWidth: base.hitWidth * (1 + interactionBoost * 0.2),
+    speed: base.baseSpeed * (1 + interactionBoost * 0.9),
   };
 };
 
-type SceneBundle = {
-  renderer: WebGLRenderer;
-  scene: Scene;
-  camera: PerspectiveCamera;
-  coreMesh: Mesh<TubeGeometry, MeshPhysicalMaterial>;
-  haloMesh: Mesh<TubeGeometry, MeshPhysicalMaterial>;
-  curve: CatmullRomCurve3;
-  pulseGeometry: SphereGeometry;
-  pulseMeshes: Array<Mesh<SphereGeometry, MeshPhysicalMaterial>>;
-  pulseMaterials: MeshPhysicalMaterial[];
-  frameId: number | null;
-  dispose: () => void;
-  updateGeometry: (geometry: GeometryData) => void;
+const getInteractionBoost = (
+  isSelected: boolean,
+  isHovered: boolean,
+  isAdjacent: boolean | undefined,
+  phase: ConnectionRenderContext["phase"],
+): number => {
+  if (phase === "disconnecting") {
+    return 0.45;
+  }
+  if (isSelected) {
+    return 0.4;
+  }
+  if (isHovered || phase === "connecting") {
+    return 0.28;
+  }
+  if (isAdjacent) {
+    return 0.14;
+  }
+  return 0;
 };
 
-const createBundle = (
-  canvas: HTMLCanvasElement,
-  geometry: GeometryData,
-  phaseRef: React.MutableRefObject<AnimationPhase>,
-): SceneBundle => {
-  const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(typeof window !== "undefined" ? window.devicePixelRatio : 1);
-  renderer.setSize(geometry.width, geometry.height, false);
-
-  const scene = new Scene();
-  scene.background = null;
-
-  const camera = new PerspectiveCamera(48, geometry.width / geometry.height, 0.1, 2000);
-  camera.position.set(0, 0, 620);
-  camera.lookAt(new Vector3(0, 0, 0));
-
-  const computeParameters = (geom: GeometryData) => {
-    const nextCurve = new CatmullRomCurve3(geom.localPoints, false, "catmullrom", 0.42);
-    const approximateLength = nextCurve.getLength();
-    const tubularSegments = Math.max(220, Math.round(approximateLength * 1.2));
-    const radialSegments = 96;
-    const baseRadius = Math.max(8, Math.min(geom.width, geom.height) * 0.04);
-    return { curve: nextCurve, tubularSegments, radialSegments, baseRadius };
-  };
-
-  const parameters = computeParameters(geometry);
-
-  let curve = parameters.curve;
-  let tubularSegments = parameters.tubularSegments;
-  let radialSegments = parameters.radialSegments;
-  let baseRadius = parameters.baseRadius;
-
-  let coreGeometry = new TubeGeometry(curve, tubularSegments, baseRadius, radialSegments, false);
-  let haloGeometry = new TubeGeometry(curve, tubularSegments, baseRadius * 1.55, radialSegments, false);
-
-  const coreMaterial = new MeshPhysicalMaterial({
-    color: new Color("#38bdf8"),
-    emissive: new Color("#0ea5e9"),
-    emissiveIntensity: 1.6,
-    roughness: 0.18,
-    metalness: 0.7,
-    clearcoat: 0.6,
-    clearcoatRoughness: 0.15,
-    transmission: 0.28,
-    thickness: 18,
-    transparent: true,
-    opacity: 0.92,
-  });
-
-  const haloMaterial = new MeshPhysicalMaterial({
-    color: new Color("#bae6fd"),
-    emissive: new Color("#38bdf8"),
-    emissiveIntensity: 2.8,
-    transparent: true,
-    opacity: 0.32,
-    depthWrite: false,
-    blending: AdditiveBlending,
-  });
-
-  let pulseGeometry = new SphereGeometry(baseRadius * 1.45, 32, 32);
-  const pulsePalette = ["#22d3ee", "#34d399", "#f472b6"];
-  const pulseMaterials = pulsePalette.map((hex) => {
-    return new MeshPhysicalMaterial({
-      color: new Color(hex),
-      emissive: new Color(hex),
-      emissiveIntensity: 4.2,
-      transparent: true,
-      opacity: 0.85,
-      roughness: 0.18,
-      metalness: 0.3,
-    });
-  });
-
-  const coreMesh = new Mesh(coreGeometry, coreMaterial);
-  const haloMesh = new Mesh(haloGeometry, haloMaterial);
-  haloMesh.renderOrder = -1;
-
-  const pulseMeshes = pulseMaterials.map((material, index) => {
-    const mesh = new Mesh(pulseGeometry, material);
-    mesh.scale.setScalar(0.75 + index * 0.1);
-    scene.add(mesh);
-    return mesh;
-  });
-
-  const ambient = new AmbientLight(0xffffff, 0.35);
-  const sourceLight = new PointLight(0x38bdf8, 2.4, 1900);
-  const firstPoint = geometry.localPoints[0];
-  const lastPoint = geometry.localPoints[geometry.localPoints.length - 1];
-  sourceLight.position.set(firstPoint.x, firstPoint.y, 140);
-  const targetLight = new PointLight(0xf472b6, 3, 1900);
-  targetLight.position.set(lastPoint.x, lastPoint.y, 140);
-  const midLight = new PointLight(0x22d3ee, 1.8, 1600);
-  midLight.position.set(0, 0, 260);
-
-  scene.add(coreMesh);
-  scene.add(haloMesh);
-  scene.add(ambient);
-  scene.add(sourceLight);
-  scene.add(targetLight);
-  scene.add(midLight);
-
-  const stateRef = {
-    geometry,
-    curve,
-    baseRadius,
-    tubularSegments,
-    radialSegments,
-    cameraOrbitBaseX: geometry.width * 0.05 + 90,
-    cameraOrbitBaseY: geometry.height * 0.045 + 70,
-    pulseOrbitBase: baseRadius * 3,
-  };
-
-  const tempPoint = new Vector3();
-  const tempTangent = new Vector3();
-  const tempNormal = new Vector3();
-  const tempBinormal = new Vector3();
-  const tempOffset = new Vector3();
-  const tempSecondary = new Vector3();
-
-  const animate = (timestamp: number) => {
-    const seconds = timestamp * 0.001;
-    const { emissiveBoost, glowBoost, speed, depthShift } = PHASE_SETTINGS[phaseRef.current];
-    const wave = (Math.sin(seconds * speed * 2.1) + 1) * 0.5;
-    const innerWave = (Math.sin(seconds * speed * 1.2 + Math.PI / 3) + 1) * 0.5;
-
-    coreMaterial.emissiveIntensity = 1.6 + wave * emissiveBoost;
-    coreMaterial.thickness = 18 + wave * 12;
-    coreMaterial.opacity = 0.88 + wave * 0.06;
-    haloMaterial.opacity = 0.24 + innerWave * glowBoost;
-    haloMaterial.emissiveIntensity = 2.4 + glowBoost * 1.3 + wave * 1.2;
-
-    const wobble = Math.sin(seconds * 0.45) * 0.18;
-    coreMesh.rotation.z = wobble;
-    haloMesh.rotation.z = wobble * 1.35;
-    scene.rotation.y = Math.sin(seconds * 0.22) * 0.12;
-
-    const orbitPhase = seconds * 0.2;
-    camera.position.x = Math.sin(orbitPhase) * stateRef.cameraOrbitBaseX;
-    camera.position.y = Math.cos(orbitPhase) * stateRef.cameraOrbitBaseY;
-    camera.position.z = 520 + innerWave * depthShift;
-    camera.lookAt(0, 0, 0);
-
-    sourceLight.intensity = 2.1 + wave * 0.9;
-    sourceLight.position.z = 160 + Math.sin(seconds * speed + 1.2) * 60;
-    targetLight.intensity = 2.8 + innerWave * 1;
-    targetLight.position.z = 160 + Math.cos(seconds * speed + 2.2) * 60;
-    midLight.intensity = 1.4 + wave * 1.1;
-
-    pulseMeshes.forEach((mesh, index) => {
-      const travel = (seconds * (0.08 + speed * 0.06) + index * 0.28) % 1;
-      stateRef.curve.getPointAt(travel, tempPoint);
-      stateRef.curve.getTangentAt(travel, tempTangent).normalize();
-
-      tempNormal.crossVectors(UP_AXIS, tempTangent);
-      if (tempNormal.lengthSq() < 1e-6) {
-        tempNormal.set(1, 0, 0);
-      } else {
-        tempNormal.normalize();
-      }
-      tempBinormal.crossVectors(tempTangent, tempNormal).normalize();
-
-      const orbitAngle = seconds * (0.9 + index * 0.35);
-      const orbitRadius = stateRef.pulseOrbitBase + Math.sin(seconds * 1.1 + index) * stateRef.baseRadius * 0.8;
-
-      tempOffset.copy(tempNormal).multiplyScalar(Math.cos(orbitAngle) * orbitRadius);
-      tempSecondary.copy(tempBinormal).multiplyScalar(Math.sin(orbitAngle) * orbitRadius * 0.7);
-      tempOffset.add(tempSecondary);
-
-      mesh.position.copy(tempPoint).add(tempOffset);
-      const scale = 0.9 + Math.sin(seconds * 1.8 + index * 1.4) * 0.25;
-      mesh.scale.setScalar(scale);
-      const material = pulseMaterials[index];
-      material.emissiveIntensity = 4 + wave * 3 + innerWave * 1.5;
-      material.opacity = 0.7 + innerWave * 0.2;
-    });
-
-    renderer.render(scene, camera);
-    bundle.frameId = renderer.getContext() ? requestAnimationFrame(animate) : null;
-  };
-
-  const bundle: SceneBundle = {
-    renderer,
-    scene,
-    camera,
-    coreMesh,
-    haloMesh,
-    curve,
-    pulseGeometry,
-    pulseMeshes,
-    pulseMaterials,
-    frameId: requestAnimationFrame(animate),
-    dispose: () => {
-      if (bundle.frameId !== null) {
-        cancelAnimationFrame(bundle.frameId);
-        bundle.frameId = null;
-      }
-      pulseMeshes.forEach((mesh) => {
-        scene.remove(mesh);
-      });
-      coreMesh.geometry.dispose();
-      haloMesh.geometry.dispose();
-      pulseGeometry.dispose();
-      pulseMaterials.forEach((material) => material.dispose());
-      coreMaterial.dispose();
-      haloMaterial.dispose();
-      renderer.dispose();
-    },
-    updateGeometry: (nextGeometry: GeometryData) => {
-      stateRef.geometry = nextGeometry;
-
-      const params = computeParameters(nextGeometry);
-      stateRef.curve = params.curve;
-      stateRef.baseRadius = params.baseRadius;
-      stateRef.tubularSegments = params.tubularSegments;
-      stateRef.radialSegments = params.radialSegments;
-      curve = params.curve;
-      tubularSegments = params.tubularSegments;
-      radialSegments = params.radialSegments;
-      baseRadius = params.baseRadius;
-      stateRef.cameraOrbitBaseX = nextGeometry.width * 0.05 + 90;
-      stateRef.cameraOrbitBaseY = nextGeometry.height * 0.045 + 70;
-      stateRef.pulseOrbitBase = params.baseRadius * 3;
-
-      renderer.setSize(nextGeometry.width, nextGeometry.height, false);
-
-      const newCoreGeometry = new TubeGeometry(
-        params.curve,
-        params.tubularSegments,
-        params.baseRadius,
-        params.radialSegments,
-        false,
-      );
-      coreMesh.geometry.dispose();
-      coreMesh.geometry = newCoreGeometry;
-      coreGeometry = newCoreGeometry;
-
-      const newHaloGeometry = new TubeGeometry(
-        params.curve,
-        params.tubularSegments,
-        params.baseRadius * 1.55,
-        params.radialSegments,
-        false,
-      );
-      haloMesh.geometry.dispose();
-      haloMesh.geometry = newHaloGeometry;
-      haloGeometry = newHaloGeometry;
-
-      const previousPulseGeometry = pulseGeometry;
-      pulseGeometry = new SphereGeometry(params.baseRadius * 1.45, 32, 32);
-      pulseMeshes.forEach((mesh, index) => {
-        mesh.geometry = pulseGeometry;
-        mesh.scale.setScalar(0.75 + index * 0.1);
-      });
-      previousPulseGeometry.dispose();
-
-      bundle.curve = curve;
-      bundle.pulseGeometry = pulseGeometry;
-
-      const first = nextGeometry.localPoints[0];
-      const last = nextGeometry.localPoints[nextGeometry.localPoints.length - 1];
-      sourceLight.position.set(first.x, first.y, 140);
-      targetLight.position.set(last.x, last.y, 140);
-    },
-  };
-
-  return bundle;
-};
+const sparkOffsets = Array.from({ length: SPARK_COUNT }, (_value, index) => index / SPARK_COUNT);
 
 export const bezierConnectionRenderer = (
   context: ConnectionRenderContext,
@@ -432,7 +179,18 @@ export const bezierConnectionRenderer = (
   const defaultElement = defaultRender();
   const hitElement = React.isValidElement(defaultElement) ? <g style={{ opacity: 0 }}>{defaultElement}</g> : defaultElement;
 
-  const { fromPort, toPort, fromPosition, toPosition, isSelected, isHovered, handlers, phase } = context;
+  const {
+    fromPort,
+    toPort,
+    fromPosition,
+    toPosition,
+    isSelected,
+    isHovered,
+    isAdjacentToSelectedNode,
+    handlers,
+    phase,
+  } = context;
+
   const targetPortPosition = toPort?.position ?? getOppositePortPosition(fromPort.position);
   const { cp1, cp2 } = React.useMemo(
     () => calculateBezierControlPoints(fromPosition, toPosition, fromPort.position, targetPortPosition),
@@ -446,13 +204,11 @@ export const bezierConnectionRenderer = (
     ],
   );
 
-  const geometry = React.useMemo(
+  const pathData = React.useMemo(
     () =>
-      getGeometryData(
+      calculateBezierPath(
         fromPosition,
         toPosition,
-        cp1,
-        cp2,
         fromPort.position,
         toPort?.position ?? getOppositePortPosition(fromPort.position),
       ),
@@ -461,66 +217,207 @@ export const bezierConnectionRenderer = (
       fromPosition.y,
       toPosition.x,
       toPosition.y,
-      cp1.x,
-      cp1.y,
-      cp2.x,
-      cp2.y,
       fromPort.position,
       toPort?.position,
     ],
   );
 
-  const animationPhase: AnimationPhase = React.useMemo(() => {
+  const bounds = React.useMemo(
+    () => computeBounds(fromPosition, toPosition, cp1, cp2),
+    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, cp1.x, cp1.y, cp2.x, cp2.y],
+  );
+
+  const phaseKey: VisualPhase = React.useMemo(() => {
     if (phase === "disconnecting" || isSelected) {
-      return "selected";
+      return "active";
     }
     if (phase === "connecting" || isHovered) {
       return "hovered";
     }
     return "idle";
-  }, [phase, isHovered, isSelected]);
+  }, [isHovered, isSelected, phase]);
 
-const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
-  const phaseRef = React.useRef<AnimationPhase>(animationPhase);
-  const bundleRef = React.useRef<SceneBundle | null>(null);
+  const appearance = React.useMemo(
+    () => buildAppearance(phaseKey, getInteractionBoost(isSelected, isHovered, isAdjacentToSelectedNode, phase)),
+    [phaseKey, isSelected, isHovered, isAdjacentToSelectedNode, phase],
+  );
+
+  const glowFilterId = React.useId();
+  const coreGradientId = React.useId();
+  const flowGradientId = React.useId();
+  const sparkGradientId = React.useId();
+
+  const flowPathRef = React.useRef<SVGPathElement | null>(null);
+  const sparkRefs = React.useRef<Array<SVGCircleElement | null>>([]);
+  const animationState = React.useRef<{ start: number; pathLength: number; frameId: number | null }>({
+    start: 0,
+    pathLength: 1,
+    frameId: null,
+  });
 
   React.useEffect(() => {
-    phaseRef.current = animationPhase;
-  }, [animationPhase]);
+    const flowPath = flowPathRef.current;
+    const state = animationState.current;
+    state.start = performance.now();
 
-  React.useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      return () => undefined;
+    if (flowPath) {
+      const length = flowPath.getTotalLength();
+      state.pathLength = length || 1;
+      flowPath.style.strokeDasharray = `${state.pathLength} ${state.pathLength}`;
+      flowPath.style.strokeDashoffset = `${state.pathLength}`;
     }
 
-    bundleRef.current = createBundle(canvas, geometry, phaseRef);
+    const run = (timestamp: number) => {
+      const elapsed = (timestamp - state.start) / 1000;
+      const normalized = elapsed * appearance.speed;
+
+      if (flowPath) {
+        const dashOffset = state.pathLength - ((normalized % 1) * state.pathLength);
+        flowPath.style.strokeDashoffset = `${dashOffset}`;
+      }
+
+      sparkRefs.current.forEach((spark, index) => {
+        if (!spark) {
+          return;
+        }
+        const offset = (normalized + sparkOffsets[index]) % 1;
+        const position = cubicBezierPoint(fromPosition, cp1, cp2, toPosition, offset);
+        spark.setAttribute("cx", position.x.toFixed(2));
+        spark.setAttribute("cy", position.y.toFixed(2));
+      });
+
+      state.frameId = requestAnimationFrame(run);
+    };
+
+    state.frameId = requestAnimationFrame(run);
 
     return () => {
-      bundleRef.current?.dispose();
-      bundleRef.current = null;
+      if (state.frameId !== null) {
+        cancelAnimationFrame(state.frameId);
+        state.frameId = null;
+      }
     };
-  }, []);
+  }, [
+    appearance.speed,
+    fromPosition.x,
+    fromPosition.y,
+    toPosition.x,
+    toPosition.y,
+    cp1.x,
+    cp1.y,
+    cp2.x,
+    cp2.y,
+    pathData,
+  ]);
 
   React.useEffect(() => {
-    bundleRef.current?.updateGeometry(geometry);
-  }, [geometry.key]);
+    sparkRefs.current = sparkRefs.current.slice(0, SPARK_COUNT);
+  }, []);
+
+  const filterX = bounds.minX - BOUNDS_PADDING;
+  const filterY = bounds.minY - BOUNDS_PADDING;
+  const filterWidth = bounds.width + BOUNDS_PADDING * 2;
+  const filterHeight = bounds.height + BOUNDS_PADDING * 2;
 
   return (
-    <g>
+    <g className={styles.connectorGroup}>
+      <defs>
+        <filter
+          id={glowFilterId}
+          x={filterX}
+          y={filterY}
+          width={filterWidth}
+          height={filterHeight}
+          filterUnits="userSpaceOnUse"
+        >
+          <feGaussianBlur in="SourceGraphic" stdDeviation={appearance.haloWidth * 0.7} result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        <linearGradient
+          id={coreGradientId}
+          gradientUnits="userSpaceOnUse"
+          x1={fromPosition.x}
+          y1={fromPosition.y}
+          x2={toPosition.x}
+          y2={toPosition.y}
+        >
+          {appearance.gradient.map((stop) => (
+            <stop key={stop.offset} offset={stop.offset} stopColor={stop.color} stopOpacity={stop.opacity ?? 1} />
+          ))}
+        </linearGradient>
+
+        <linearGradient
+          id={flowGradientId}
+          gradientUnits="userSpaceOnUse"
+          x1={fromPosition.x}
+          y1={fromPosition.y}
+          x2={toPosition.x}
+          y2={toPosition.y}
+        >
+          <stop offset="0%" stopColor={appearance.flowColor} stopOpacity={appearance.flowOpacity} />
+          <stop offset="100%" stopColor={appearance.flowColor} stopOpacity={appearance.flowOpacity * 0.35} />
+        </linearGradient>
+
+        <radialGradient id={sparkGradientId}>
+          <stop offset="0%" stopColor={appearance.sparkColor} stopOpacity={appearance.sparkOpacity} />
+          <stop offset="100%" stopColor={appearance.sparkColor} stopOpacity={0} />
+        </radialGradient>
+      </defs>
+
       <path
-        d={geometry.pathData}
-        className={styles.connectorFallback}
+        d={pathData}
+        className={styles.connectorHalo}
+        stroke={appearance.haloColor}
+        strokeWidth={appearance.haloWidth}
+        opacity={appearance.haloOpacity}
+        filter={`url(#${glowFilterId})`}
+      />
+
+      <path
+        d={pathData}
+        className={styles.connectorCore}
+        stroke={`url(#${coreGradientId})`}
+        strokeWidth={appearance.coreWidth}
+      />
+
+      <path
+        ref={flowPathRef}
+        d={pathData}
+        className={styles.connectorFlow}
+        stroke={`url(#${flowGradientId})`}
+        strokeWidth={appearance.flowWidth}
+        opacity={appearance.flowOpacity}
+      />
+
+      <g className={styles.connectorSparkLayer}>
+        {sparkOffsets.map((offset, index) => (
+          <circle
+            key={offset}
+            ref={(element) => {
+              sparkRefs.current[index] = element;
+            }}
+            r={appearance.sparkRadius}
+            fill={`url(#${sparkGradientId})`}
+            opacity={appearance.sparkOpacity}
+            data-spark-index={index}
+          />
+        ))}
+      </g>
+
+      <path
+        d={pathData}
+        className={styles.connectorHitArea}
+        strokeWidth={appearance.hitWidth}
         onPointerDown={handlers.onPointerDown}
         onPointerEnter={handlers.onPointerEnter}
         onPointerLeave={handlers.onPointerLeave}
         onContextMenu={handlers.onContextMenu}
       />
-      <foreignObject x={geometry.originX} y={geometry.originY} width={geometry.width} height={geometry.height}>
-        <div className={styles.canvasHost}>
-          <canvas ref={canvasRef} className={styles.connectorCanvas} width={geometry.width} height={geometry.height} />
-        </div>
-      </foreignObject>
+
       {hitElement}
     </g>
   );
