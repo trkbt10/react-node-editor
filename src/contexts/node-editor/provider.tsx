@@ -4,13 +4,12 @@
  * Supports both controlled and uncontrolled modes with auto-save capabilities
  */
 import * as React from "react";
-import type { Node, NodeEditorData, NodeId, Port } from "../../types/core";
+import type { NodeEditorData, NodeId, Port } from "../../types/core";
 import { useSettings } from "../../hooks/useSettings";
 import type { SettingsManager } from "../../settings/SettingsManager";
 import type { SettingValue } from "../../settings/types";
 import { createCachedPortResolver } from "../node-ports/utils/portLookup";
 import { NodeDefinitionContext } from "../node-definitions/context";
-import { getFeatureFlags } from "../../config/featureFlags";
 import { bindActionCreators } from "../../utils/typedActions";
 import { nodeEditorActions, type NodeEditorAction } from "./actions";
 import { nodeEditorReducer, defaultNodeEditorData } from "./reducer";
@@ -43,19 +42,7 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
   autoSaveEnabled,
   autoSaveInterval,
 }) => {
-  const nodeDefinitionsContext = React.useContext(NodeDefinitionContext);
-  const registry = React.useMemo(() => {
-    try {
-      return nodeDefinitionsContext.registry;
-    } catch {
-      return undefined;
-    }
-  }, [nodeDefinitionsContext]);
-
-  const featureFlags = React.useMemo(() => getFeatureFlags(), []);
-  // Keep latest feature flags in a ref for stable callbacks
-  const featureFlagsRef = React.useRef(featureFlags);
-  featureFlagsRef.current = featureFlags;
+  const { registry } = React.useContext(NodeDefinitionContext);
   const portResolver = React.useMemo(() => createCachedPortResolver(), []);
 
   const initialData: NodeEditorData = React.useMemo(() => {
@@ -65,7 +52,7 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
     };
   }, [initialState]);
 
-  const nodeDefinitions = React.useMemo(() => registry?.getAll() || [], [registry]);
+  const nodeDefinitions = React.useMemo(() => registry.getAll(), [registry]);
 
   const reducerWithDefinitions = React.useCallback(
     (state: NodeEditorData, action: NodeEditorAction) => nodeEditorReducer(state, action, nodeDefinitions),
@@ -188,49 +175,18 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
       if (!node) {
         return [];
       }
-      if (featureFlags.useInferredPortsOnly) {
-        if (!registry) {
-          console.error("NodeDefinitionRegistry is required when useInferredPortsOnly is enabled");
-          return [];
-        }
-        const definition = registry.get(node.type);
-        if (!definition) {
-          console.warn(`No definition found for node type: ${node.type}`);
-          return [];
-        }
-        return portResolver.getNodePorts(node, definition);
+      const definition = registry.get(node.type);
+      if (!definition) {
+        throw new Error(`No node definition registered for type "${node.type}"`);
       }
-      if (registry) {
-        const definition = registry.get(node.type);
-        if (definition) {
-          return portResolver.getNodePorts(node, definition);
-        }
-      }
-      return node._ports || [];
+      return portResolver.getNodePorts(node, definition);
     },
-    [state.nodes, registry, portResolver, featureFlags.useInferredPortsOnly],
+    [state.nodes, registry, portResolver],
   );
 
   const portLookupMap = React.useMemo(() => {
-    if (featureFlags.useInferredPortsOnly) {
-      if (!registry) {
-        console.error("NodeDefinitionRegistry is required when useInferredPortsOnly is enabled");
-        return new Map<string, { node: Node; port: Port }>();
-      }
-      return portResolver.createPortLookupMap(state.nodes, (type: string) => registry.get(type));
-    }
-    if (!registry) {
-      const map = new Map<string, { node: Node; port: Port }>();
-      for (const node of Object.values(state.nodes)) {
-        const ports = node._ports || [];
-        for (const port of ports) {
-          map.set(`${node.id}:${port.id}`, { node, port });
-        }
-      }
-      return map;
-    }
     return portResolver.createPortLookupMap(state.nodes, (type: string) => registry.get(type));
-  }, [state.nodes, registry, portResolver, featureFlags.useInferredPortsOnly]);
+  }, [state.nodes, registry, portResolver]);
 
   React.useEffect(() => {
     portResolver.clearCache();

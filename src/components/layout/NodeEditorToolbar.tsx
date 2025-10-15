@@ -58,7 +58,8 @@ export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({ className,
       };
 
       actions.addNode(newNode);
-      actionActions.selectNode(nodeId, false);
+      actionActions.setInteractionSelection([nodeId]);
+      actionActions.setEditingSelection([nodeId]);
     },
     [nodeDefinitions, nodeTypeCounts, canvasState.viewport, actions, actionActions],
   );

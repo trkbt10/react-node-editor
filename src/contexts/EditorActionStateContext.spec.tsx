@@ -8,7 +8,8 @@ import { EditorActionStateProvider, useEditorActionState } from "./EditorActionS
 const Harness: FC = () => {
   const { state, actions } = useEditorActionState();
   useEffect(() => {
-    actions.selectNode("n1", false);
+    actions.selectInteractionNode("n1", false);
+    actions.selectEditingNode("n1", false);
     actions.setSelectionBox({ start: { x: 0, y: 0 }, end: { x: 10, y: 10 } });
     actions.clearSelection();
   }, [actions]);

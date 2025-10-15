@@ -33,6 +33,7 @@ export type SelectionBox = {
 
 export type EditorActionState = {
   selectedNodeIds: NodeId[];
+  editingSelectedNodeIds: NodeId[];
   selectedConnectionIds: ConnectionId[];
   selectionBox: SelectionBox | null;
   dragState: DragState | null;
@@ -49,13 +50,23 @@ export type EditorActionState = {
 };
 
 export const editorActionStateActions = {
-  selectNode: createAction("SELECT_NODE", (nodeId: NodeId, multiple: boolean = false) => ({ nodeId, multiple })),
+  selectInteractionNode: createAction(
+    "SELECT_INTERACTION_NODE",
+    (nodeId: NodeId, multiple: boolean = false) => ({ nodeId, multiple }),
+  ),
+  setInteractionSelection: createAction("SET_INTERACTION_SELECTION", (nodeIds: NodeId[]) => ({ nodeIds })),
+  clearInteractionSelection: createAction("CLEAR_INTERACTION_SELECTION"),
+  selectEditingNode: createAction(
+    "SELECT_EDITING_NODE",
+    (nodeId: NodeId, multiple: boolean = false) => ({ nodeId, multiple }),
+  ),
+  setEditingSelection: createAction("SET_EDITING_SELECTION", (nodeIds: NodeId[]) => ({ nodeIds })),
+  clearEditingSelection: createAction("CLEAR_EDITING_SELECTION"),
   selectConnection: createAction(
     "SELECT_CONNECTION",
     (connectionId: ConnectionId, multiple: boolean = false) => ({ connectionId, multiple }),
   ),
   clearSelection: createAction("CLEAR_SELECTION"),
-  selectAllNodes: createAction("SELECT_ALL_NODES", (nodeIds: NodeId[]) => ({ nodeIds })),
   setSelectionBox: createAction("SET_SELECTION_BOX", (box: SelectionBox | null) => ({ box })),
   startNodeDrag: createAction(
     "START_NODE_DRAG",
@@ -137,7 +148,7 @@ export type EditorActionStateAction = ActionUnion<typeof editorActionStateAction
 const editorActionStateHandlers = createActionHandlerMap<EditorActionState, typeof editorActionStateActions>(
   editorActionStateActions,
   {
-    selectNode: (state, action) => {
+    selectInteractionNode: (state, action) => {
       const { nodeId, multiple } = action.payload;
       if (multiple) {
         const isSelected = state.selectedNodeIds.includes(nodeId);
@@ -154,6 +165,40 @@ const editorActionStateHandlers = createActionHandlerMap<EditorActionState, type
         selectedConnectionIds: [],
       };
     },
+    setInteractionSelection: (state, action) => ({
+      ...state,
+      selectedNodeIds: action.payload.nodeIds,
+      selectedConnectionIds: [],
+    }),
+    clearInteractionSelection: (state) => ({
+      ...state,
+      selectedNodeIds: [],
+      selectedConnectionIds: [],
+    }),
+    selectEditingNode: (state, action) => {
+      const { nodeId, multiple } = action.payload;
+      if (multiple) {
+        const isSelected = state.editingSelectedNodeIds.includes(nodeId);
+        return {
+          ...state,
+          editingSelectedNodeIds: isSelected
+            ? state.editingSelectedNodeIds.filter((id) => id !== nodeId)
+            : [...state.editingSelectedNodeIds, nodeId],
+        };
+      }
+      return {
+        ...state,
+        editingSelectedNodeIds: [nodeId],
+      };
+    },
+    setEditingSelection: (state, action) => ({
+      ...state,
+      editingSelectedNodeIds: action.payload.nodeIds,
+    }),
+    clearEditingSelection: (state) => ({
+      ...state,
+      editingSelectedNodeIds: [],
+    }),
     selectConnection: (state, action) => {
       const { connectionId, multiple } = action.payload;
       if (multiple) {
@@ -169,21 +214,18 @@ const editorActionStateHandlers = createActionHandlerMap<EditorActionState, type
         ...state,
         selectedConnectionIds: [connectionId],
         selectedNodeIds: [],
+        editingSelectedNodeIds: [],
       };
     },
     clearSelection: (state) => ({
       ...state,
       selectedNodeIds: [],
+      editingSelectedNodeIds: [],
       selectedConnectionIds: [],
       selectionBox: null,
       hoveredConnectionId: null,
       hoveredNodeId: null,
       hoveredPort: null,
-    }),
-    selectAllNodes: (state, action) => ({
-      ...state,
-      selectedNodeIds: action.payload.nodeIds,
-      selectedConnectionIds: [],
     }),
     setSelectionBox: (state, action) => ({
       ...state,
@@ -368,6 +410,7 @@ export const editorActionStateReducer = (
 // Default state
 export const defaultEditorActionState: EditorActionState = {
   selectedNodeIds: [],
+  editingSelectedNodeIds: [],
   selectedConnectionIds: [],
   selectionBox: null,
   dragState: null,

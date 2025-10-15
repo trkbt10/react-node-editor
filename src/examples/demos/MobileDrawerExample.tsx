@@ -57,18 +57,63 @@ const initialData: NodeEditorData = {
 /**
  * Inspector wrapper that monitors node selection and triggers drawer open
  */
-const InspectorWithDrawerControl: React.FC<{ onNodeSelect: (hasSelection: boolean) => void }> = ({ onNodeSelect }) => {
-  const { state: editorActionState } = useEditorActionState();
+type InspectorWithDrawerControlProps = {
+  onNodeSelect: (hasSelection: boolean) => void;
+  shouldResetSelection: boolean;
+  onSelectionResetComplete: () => void;
+};
+
+const InspectorWithDrawerControl: React.FC<InspectorWithDrawerControlProps> = ({
+  onNodeSelect,
+  shouldResetSelection,
+  onSelectionResetComplete,
+}) => {
+  const { state: editorActionState, actions: actionActions } = useEditorActionState();
 
   const hasSelectedNode = React.useMemo(() => {
-    return editorActionState.selectedNodeIds.length > 0;
-  }, [editorActionState.selectedNodeIds]);
+    return editorActionState.editingSelectedNodeIds.length > 0;
+  }, [editorActionState.editingSelectedNodeIds]);
 
   React.useEffect(() => {
     onNodeSelect(hasSelectedNode);
   }, [hasSelectedNode, onNodeSelect]);
 
+  React.useEffect(() => {
+    if (!shouldResetSelection) {
+      return;
+    }
+    actionActions.clearInteractionSelection();
+    actionActions.clearEditingSelection();
+    onSelectionResetComplete();
+  }, [shouldResetSelection, actionActions, onSelectionResetComplete]);
+
   return <InspectorPanel />;
+};
+
+export const useInspectorDrawerState = (isMobile: boolean) => {
+  const [isInspectorOpen, setIsInspectorOpen] = React.useState(false);
+
+  const handleNodeSelect = React.useCallback(
+    (hasSelection: boolean) => {
+      if (!isMobile) {
+        return;
+      }
+
+      setIsInspectorOpen((prev) => {
+        if (prev === hasSelection) {
+          return prev;
+        }
+        return hasSelection;
+      });
+    },
+    [isMobile],
+  );
+
+  const handleInspectorStateChange = React.useCallback((open: boolean) => {
+    setIsInspectorOpen(open);
+  }, []);
+
+  return { isInspectorOpen, handleNodeSelect, handleInspectorStateChange };
 };
 
 /**
@@ -77,7 +122,26 @@ const InspectorWithDrawerControl: React.FC<{ onNodeSelect: (hasSelection: boolea
  */
 export const MobileDrawerExample: React.FC = () => {
   const [isMobile, setIsMobile] = React.useState(false);
-  const [isInspectorOpen, setIsInspectorOpen] = React.useState(false);
+  const [shouldResetSelection, setShouldResetSelection] = React.useState(false);
+
+  const { isInspectorOpen, handleNodeSelect, handleInspectorStateChange: baseHandleInspectorStateChange } =
+    useInspectorDrawerState(isMobile);
+
+  const handleSelectionResetComplete = React.useCallback(() => {
+    setShouldResetSelection(false);
+  }, []);
+
+  const handleInspectorStateChange = React.useCallback(
+    (open: boolean) => {
+      baseHandleInspectorStateChange(open);
+      if (!open) {
+        setShouldResetSelection(true);
+      } else {
+        setShouldResetSelection(false);
+      }
+    },
+    [baseHandleInspectorStateChange],
+  );
 
   // Check if we're on mobile on mount and viewport changes
   React.useEffect(() => {
@@ -88,19 +152,6 @@ export const MobileDrawerExample: React.FC = () => {
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const handleNodeSelect = React.useCallback(
-    (hasSelection: boolean) => {
-      if (isMobile && hasSelection) {
-        setIsInspectorOpen(true);
-      }
-    },
-    [isMobile],
-  );
-
-  const handleInspectorStateChange = React.useCallback((open: boolean) => {
-    setIsInspectorOpen(open);
   }, []);
 
   // Grid configuration - full screen canvas
@@ -125,7 +176,15 @@ export const MobileDrawerExample: React.FC = () => {
       },
       {
         id: "inspector",
-        component: isMobile ? <InspectorWithDrawerControl onNodeSelect={handleNodeSelect} /> : <InspectorPanel />,
+        component: isMobile ? (
+          <InspectorWithDrawerControl
+            onNodeSelect={handleNodeSelect}
+            shouldResetSelection={shouldResetSelection}
+            onSelectionResetComplete={handleSelectionResetComplete}
+          />
+        ) : (
+          <InspectorPanel />
+        ),
         // Use drawer on mobile, fixed position on desktop
         ...(isMobile
           ? {
@@ -156,7 +215,14 @@ export const MobileDrawerExample: React.FC = () => {
             }),
       },
     ],
-    [isMobile, isInspectorOpen, handleInspectorStateChange, handleNodeSelect],
+    [
+      isMobile,
+      isInspectorOpen,
+      handleInspectorStateChange,
+      handleNodeSelect,
+      shouldResetSelection,
+      handleSelectionResetComplete,
+    ],
   );
 
   return (

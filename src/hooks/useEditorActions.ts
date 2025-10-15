@@ -16,7 +16,7 @@ import { useActionStateActions } from "./useActionStateActions";
  * // Direct action calls without dispatch
  * actions.editor.addNode(newNode);
  * actions.canvas.setViewport(newViewport);
- * actions.interaction.selectNode(nodeId);
+ * actions.interaction.selectInteractionNode(nodeId);
  * ```
  */
 export function useEditorActions() {
@@ -53,8 +53,8 @@ export function useCommonActions() {
     removeConnection: actions.editor.deleteConnection,
 
     // Selection operations
-    selectNode: actions.interaction.selectNode,
-    selectAllNodes: actions.interaction.selectAllNodes,
+    selectNode: actions.interaction.selectInteractionNode,
+    selectAllNodes: actions.interaction.setInteractionSelection,
     clearSelection: actions.interaction.clearSelection,
 
     // Viewport operations

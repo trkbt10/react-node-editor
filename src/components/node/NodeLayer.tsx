@@ -243,8 +243,12 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
       const clickedNode = nodeEditorState.nodes[nodeId];
       const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey;
 
+      if (!isMultiSelect) {
+        actionActions.selectEditingNode(nodeId, false);
+      }
+
       if (clickedNode?.locked) {
-        actionActions.selectNode(nodeId, isMultiSelect);
+        actionActions.selectInteractionNode(nodeId, isMultiSelect);
         return;
       }
 
@@ -255,7 +259,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
       // For interactive nodes, check if dragging is allowed
       if (isInteractive && !isDragAllowed && !actionState.selectedNodeIds.includes(nodeId)) {
         // Just select the node without starting drag
-        actionActions.selectNode(nodeId, isMultiSelect);
+        actionActions.selectInteractionNode(nodeId, isMultiSelect);
         return;
       }
 
@@ -271,7 +275,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
 
       // Handle selection if not already selected
       if (!actionState.selectedNodeIds.includes(nodeId)) {
-        actionActions.selectNode(nodeId, isMultiSelect);
+        actionActions.selectInteractionNode(nodeId, isMultiSelect);
       }
 
       if (nodesToDrag.length === 0) {

@@ -67,7 +67,11 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
     (event: PointerEvent, data: ReturnType<typeof createDragData>) => {
       // Select node if not already selected
       if (!actionState.selectedNodeIds.includes(nodeId)) {
-        actionActions.selectNode(nodeId, event.shiftKey || event.metaKey || event.ctrlKey);
+        const isMulti = event.shiftKey || event.metaKey || event.ctrlKey;
+        if (!isMulti) {
+          actionActions.selectEditingNode(nodeId, false);
+        }
+        actionActions.selectInteractionNode(nodeId, isMulti);
       }
 
       // Start drag state

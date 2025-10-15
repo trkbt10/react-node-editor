@@ -8,6 +8,9 @@ import { useNodeEditor } from "./context";
 import { nodeEditorActions } from "./actions";
 import { nodeEditorReducer } from "./reducer";
 import type { NodeEditorData } from "../../types/core";
+import { NodeDefinitionProvider } from "../node-definitions/provider";
+import type { NodeDefinition } from "../../types/NodeDefinition";
+import { StandardNodeDefinition } from "../../node-definitions/standard";
 
 const makeBasicData = (): NodeEditorData => ({
   nodes: {
@@ -20,6 +23,12 @@ const makeBasicData = (): NodeEditorData => ({
   },
   connections: {},
 });
+
+const testNodeDefinitions: NodeDefinition[] = [StandardNodeDefinition as unknown as NodeDefinition];
+
+const withNodeDefinitions = (children: React.ReactNode): React.ReactElement => (
+  <NodeDefinitionProvider nodeDefinitions={testNodeDefinitions}>{children}</NodeDefinitionProvider>
+);
 
 const UncontrolledHarness: FC = () => {
   const { state, actions } = useNodeEditor();
@@ -149,9 +158,11 @@ describe("NodeEditorProvider - uncontrolled vs controlled updates", () => {
   it("uncontrolled: dispatch mutates internal state", async () => {
     await act(async () => {
       render(
-        <NodeEditorProvider initialState={makeBasicData()}>
-          <UncontrolledHarness />
-        </NodeEditorProvider>,
+        withNodeDefinitions(
+          <NodeEditorProvider initialState={makeBasicData()}>
+            <UncontrolledHarness />
+          </NodeEditorProvider>,
+        ),
       );
     });
     expect(screen.getByTestId("pos-x").textContent).toBe("10");
@@ -166,9 +177,11 @@ describe("NodeEditorProvider - uncontrolled vs controlled updates", () => {
     const data = makeBasicData();
     await act(async () => {
       render(
-        <NodeEditorProvider controlledData={data} onDataChange={onChange}>
-          <ControlledHarness />
-        </NodeEditorProvider>,
+        withNodeDefinitions(
+          <NodeEditorProvider controlledData={data} onDataChange={onChange}>
+            <ControlledHarness />
+          </NodeEditorProvider>,
+        ),
       );
     });
     expect(screen.getByTestId("pos-x").textContent).toBe("0");
@@ -188,7 +201,7 @@ describe("onDataChange loop prevention", () => {
     const Parent: FC = () => {
       const [mirror, setMirror] = useState<NodeEditorData | null>(null);
       const callsRef = useRef(0);
-      return (
+      return withNodeDefinitions(
         <NodeEditorProvider
           initialState={initial}
           onDataChange={(d) => {
@@ -199,7 +212,7 @@ describe("onDataChange loop prevention", () => {
           <UncontrolledHarness />
           <div data-testid="calls">{String(callsRef.current)}</div>
           <div data-testid="mirror-null">{String(mirror === null)}</div>
-        </NodeEditorProvider>
+        </NodeEditorProvider>,
       );
     };
     await act(async () => {
@@ -216,7 +229,7 @@ describe("onDataChange loop prevention", () => {
     const Parent: FC = () => {
       const [data, setData] = useState<NodeEditorData>(initial);
       const callsRef = useRef(0);
-      return (
+      return withNodeDefinitions(
         <NodeEditorProvider
           controlledData={data}
           onDataChange={(d) => {
@@ -226,7 +239,7 @@ describe("onDataChange loop prevention", () => {
         >
           <ControlledHarness />
           <div data-testid="calls">{String(callsRef.current)}</div>
-        </NodeEditorProvider>
+        </NodeEditorProvider>,
       );
     };
     await act(async () => {
