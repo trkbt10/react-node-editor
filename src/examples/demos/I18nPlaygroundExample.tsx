@@ -77,14 +77,15 @@ const overrideKeys: readonly I18nOverrideKey[] = [
 const SUPPORTED_LOCALE_OPTIONS = [
   { value: "en", label: "English" },
   { value: "ja", label: "日本語" },
-  { value: "zh", label: "中文 (简体)" },
+  { value: "zh", label: "中文 (繁體)" },
+  { value: "zh-CN", label: "中文 (简体)" },
   { value: "ko", label: "한국어" },
   { value: "es", label: "Español" },
   { value: "fr", label: "Français" },
   { value: "de", label: "Deutsch" },
 ] as const satisfies ReadonlyArray<{ value: Locale; label: string }>;
 
-const LOCALE_DICTIONARY_CODES = ["ja", "zh", "ko", "es", "fr", "de"] as const;
+const LOCALE_DICTIONARY_CODES = ["ja", "zh", "zh-CN", "ko", "es", "fr", "de"] as const;
 type LocaleWithDictionary = (typeof LOCALE_DICTIONARY_CODES)[number];
 
 type LocaleDictionaryLoader = () => Promise<I18nMessages>;
@@ -92,6 +93,7 @@ type LocaleDictionaryLoader = () => Promise<I18nMessages>;
 const LOCALE_DICTIONARY_LOADERS: Record<LocaleWithDictionary, LocaleDictionaryLoader> = {
   ja: async () => (await import("../../i18n/dictionaries/ja")).jaMessages,
   zh: async () => (await import("../../i18n/dictionaries/zh")).zhMessages,
+  "zh-CN": async () => (await import("../../i18n/dictionaries/zh-CN")).zhCNMessages,
   ko: async () => (await import("../../i18n/dictionaries/ko")).koMessages,
   es: async () => (await import("../../i18n/dictionaries/es")).esMessages,
   fr: async () => (await import("../../i18n/dictionaries/fr")).frMessages,

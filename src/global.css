@@ -66,6 +66,9 @@
   --node-editor-shadow-md: 0 2px 4px rgba(15, 23, 42, 0.1);
   --node-editor-shadow-lg: 0 4px 8px rgba(15, 23, 42, 0.15);
 
+  /* Transition system */
+  --node-editor-transition-duration: 0.2s;
+
   /* Inspector shadows - using toolbar shadow tokens */
   --node-editor-inspector-shadow: var(--node-editor-scrolled-app-main-toolbar-box-shadow);
   --node-editor-inspector-header-shadow: var(--node-editor-scrolled-app-main-toolbar-box-shadow);

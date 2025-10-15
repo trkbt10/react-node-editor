@@ -2,7 +2,7 @@
  * @file Type definitions for internationalization system
  */
 
-export type Locale = "en" | "ja" | "zh" | "ko" | "es" | "fr" | "de" | (string & Record<never, never>);
+export type Locale = "en" | "ja" | "zh" | "zh-CN" | "ko" | "es" | "fr" | "de" | (string & Record<never, never>);
 
 export type I18nMessages = {
   // General UI
