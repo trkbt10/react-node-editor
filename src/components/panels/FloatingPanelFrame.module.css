@@ -1,8 +1,5 @@
 /* Shared floating panel frame styles */
-.frame,
-.minimapContainer,
-.previewContainer,
-.subEditorContainer {
+.frame {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -16,49 +13,38 @@
   overflow: hidden;
 }
 
-.header,
-.minimapHeader,
-.previewHeader,
-.subEditorHeader {
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: var(--node-editor-space-sm) var(--node-editor-space-md);
-
+  gap: var(--node-editor-space-sm);
   box-sizing: border-box;
-  background: var(--node-editor-control-hover-background, rgba(0, 0, 0, 0.05));
+  background: var(--node-editor-control-background-secondary, rgba(0, 0, 0, 0.05));
   border-bottom: var(--node-editor-input-border);
   font-size: var(--node-editor-font-size-xs);
   min-height: var(--node-editor-space-md);
   flex-shrink: 0;
 }
 
-.title,
-.minimapTitle,
-.previewTitle,
-.subEditorTitle {
+.title {
   font-weight: 600;
   color: var(--node-editor-text-color, #000);
 }
 
-.meta,
-.minimapStats,
-.previewStats,
-.subEditorMeta {
+.meta {
   color: var(--node-editor-secondary-label-color, #666);
   font-size: 10px;
 }
 
-.controls,
-.subEditorControls {
+.controls {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-left: auto;
 }
 
-.content,
-.subEditorContent {
+.content {
   flex: 1;
   display: flex;
   flex-direction: column;
