@@ -281,9 +281,9 @@ describe("NodeEditor - Controlled Mode (data/value behavior)", () => {
 
     // Even if we try to change initialData, it should be ignored in controlled mode
     rerender(
-      <NodeEditor
-        data={mockControlledData}
-        initialData={{
+      createNodeEditorElement({
+        data: mockControlledData,
+        initialData: {
           nodes: {
             node2: {
               id: "node2",
@@ -294,9 +294,9 @@ describe("NodeEditor - Controlled Mode (data/value behavior)", () => {
             },
           },
           connections: {},
-        }}
-        onDataChange={onDataChange}
-      />,
+        },
+        onDataChange,
+      }),
     );
 
     // Should still show controlled data
@@ -309,15 +309,13 @@ describe("NodeEditor - Controlled Mode (data/value behavior)", () => {
     const TestWrapper = (): JSX.Element => {
       const [data, setData] = useState(mockControlledData);
 
-      return (
-        <NodeEditor
-          data={data}
-          onDataChange={(newData) => {
-            onDataChangeCalls.push(newData);
-            setData(newData);
-          }}
-        />
-      );
+      return createNodeEditorElement({
+        data,
+        onDataChange: (newData) => {
+          onDataChangeCalls.push(newData);
+          setData(newData);
+        },
+      });
     };
 
     render(<TestWrapper />);

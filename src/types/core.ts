@@ -119,11 +119,12 @@ export type ResizeState = {
   handle: ResizeHandle;
   startSize: Size;
   startPosition: Position;
+  startNodePosition: Position;
   currentSize: Size;
   currentPosition: Position;
 };
 
-export type ResizeHandle = "se"; // Only bottom-right resize to avoid conflicts with ports
+export type ResizeHandle = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
 
 // Connection drag state types
 export type ConnectionDragState = {

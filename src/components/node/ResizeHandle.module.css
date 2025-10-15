@@ -1,33 +1,41 @@
-/* Resize Handles - Transparent by default, accent color fill on hover */
-.resizeHandle {
+.resizeOverlay {
   position: absolute;
-  background-color: transparent;
-  border: none;
-  opacity: 0;
-  transition:
-    opacity 0.1s ease,
-    transform 0.1s ease,
-    background-color 0.1s ease;
+  inset: 0;
   z-index: 15;
-  pointer-events: all;
-  /* Corner-specific border radius - only bottom-right is rounded */
-  border-radius: 0 0 4px 0;
+  pointer-events: none;
 }
 
-.resizeHandle[data-is-visible="true"] {
-  opacity: 0.6;
+.resizeSvg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
 }
 
-/* Accent color fill on hover */
-.resizeHandle:hover {
-  background-color: var(--node-editor-accent-color, #007aff);
-  opacity: 1;
-  transform: scale(1.1);
+.resizeHandle {
+  fill: transparent;
+  stroke: color-mix(in srgb, var(--node-editor-accent-color, #007aff) 70%, transparent);
+  stroke-width: var(--node-editor-border-width, 1px);
+  pointer-events: auto;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(0.92);
+  transition:
+    fill var(--node-editor-transition-duration) ease,
+    stroke var(--node-editor-transition-duration) ease,
+    opacity var(--node-editor-transition-duration) ease,
+    transform var(--node-editor-transition-duration) ease,
+    filter var(--node-editor-transition-duration) ease;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(var(--node-editor-shadow-sm));
 }
 
-/* Active state during resize */
+.resizeHandle:hover,
 .resizeHandle[data-is-resizing="true"] {
-  background-color: var(--node-editor-accent-color, #007aff);
+  fill: transparent;
+  stroke: var(--node-editor-accent-color, #007aff);
   opacity: 1;
-  transform: scale(1.1);
+  transform: scale(1.05);
+  filter: drop-shadow(var(--node-editor-shadow-md));
 }

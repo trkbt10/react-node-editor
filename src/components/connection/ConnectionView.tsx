@@ -372,4 +372,7 @@ ConnectionView.displayName = "ConnectionView";
 debug-notes:
 - Reviewed src/components/connection/connectionAppearance.ts to align arrow head size fields (depth/halfBase).
 - Reviewed src/types/NodeDefinition.ts for ConnectionRenderContext details.
+- Reviewed src/components/node/NodeLayer.tsx to check how connection hover states propagate through interaction handlers.
+- Reviewed src/components/node/NodeDragHandler.tsx to confirm drag selection updates keep connection overlays in sync.
+- Reviewed src/components/inspector/renderers/NodeTreeListPanel.tsx to understand how inspector-driven selections should reflect on custom connectors.
 */

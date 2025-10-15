@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useNodeEditor } from "../contexts/node-editor/context";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
+import type { Position, ResizeHandle, Size } from "../types/core";
 
 export type UseNodeResizeOptions = {
   /** Minimum width for nodes */
@@ -17,19 +18,22 @@ export type UseNodeResizeOptions = {
 };
 
 export type UseNodeResizeResult = {
-  /** Start resizing a node - only 'se' (bottom-right) is supported */
+  /** Start resizing a node from a specific handle */
   startResize: (
     nodeId: string,
-    handle: "se",
-    startPosition: { x: number; y: number },
-    startSize: { width: number; height: number },
+    handle: ResizeHandle,
+    startPosition: Position,
+    startSize: Size,
+    startNodePosition: Position,
   ) => void;
   /** Check if a specific node is being resized */
   isResizing: (nodeId: string) => boolean;
   /** Get the current resize handle for a node */
-  getResizeHandle: (nodeId: string) => "se" | null;
+  getResizeHandle: (nodeId: string) => ResizeHandle | null;
   /** Get the current size during resize */
-  getCurrentSize: (nodeId: string) => { width: number; height: number } | null;
+  getCurrentSize: (nodeId: string) => Size | null;
+  /** Get the current position during resize (only differs for handles that move the origin) */
+  getCurrentPosition: (nodeId: string) => Position | null;
 };
 
 /**
@@ -42,30 +46,78 @@ export const useNodeResize = (options: UseNodeResizeOptions = {}): UseNodeResize
 
   const { minWidth = 100, minHeight = 40, snapToGrid = false, gridSize = 20 } = options;
 
-  // Calculate new size based on handle direction and deltas
-  // Only 'se' (bottom-right) resize is supported to avoid conflicts with ports
-  const calculateNewSize = React.useCallback(
+  // Calculate new size and position based on handle direction and deltas
+  const calculateResize = React.useCallback(
     (
-      _handle: "se",
-      startSize: { width: number; height: number },
+      handle: ResizeHandle,
+      startSize: Size,
+      startNodePosition: Position,
       deltaX: number,
       deltaY: number,
-    ): { width: number; height: number } => {
-      // Southeast - resize both width and height
-      const newSize = {
-        width: Math.max(minWidth, startSize.width + deltaX),
-        height: Math.max(minHeight, startSize.height + deltaY),
-      };
+    ): { size: Size; position: Position } => {
+      let width = startSize.width;
+      let height = startSize.height;
+      let hasWidthChanged = false;
+      let hasHeightChanged = false;
 
-      // Apply grid snapping if enabled
-      if (snapToGrid) {
-        newSize.width = Math.round(newSize.width / gridSize) * gridSize;
-        newSize.height = Math.round(newSize.height / gridSize) * gridSize;
+      const affectsLeft = handle.includes("w");
+      const affectsRight = handle.includes("e");
+      const affectsTop = handle.includes("n");
+      const affectsBottom = handle.includes("s");
+
+      if (affectsLeft) {
+        width = startSize.width - deltaX;
+        hasWidthChanged = true;
+      } else if (affectsRight) {
+        width = startSize.width + deltaX;
+        hasWidthChanged = true;
       }
 
-      return newSize;
+      if (affectsTop) {
+        height = startSize.height - deltaY;
+        hasHeightChanged = true;
+      } else if (affectsBottom) {
+        height = startSize.height + deltaY;
+        hasHeightChanged = true;
+      }
+
+      if (hasWidthChanged) {
+        width = Math.max(minWidth, width);
+        if (snapToGrid) {
+          width = Math.max(minWidth, Math.round(width / gridSize) * gridSize);
+        }
+      } else {
+        width = startSize.width;
+      }
+
+      if (hasHeightChanged) {
+        height = Math.max(minHeight, height);
+        if (snapToGrid) {
+          height = Math.max(minHeight, Math.round(height / gridSize) * gridSize);
+        }
+      } else {
+        height = startSize.height;
+      }
+
+      const position: Position = {
+        x: startNodePosition.x,
+        y: startNodePosition.y,
+      };
+
+      if (affectsLeft) {
+        position.x = startNodePosition.x + (startSize.width - width);
+      }
+
+      if (affectsTop) {
+        position.y = startNodePosition.y + (startSize.height - height);
+      }
+
+      return {
+        size: { width, height },
+        position,
+      };
     },
-    [minWidth, minHeight, snapToGrid, gridSize],
+    [gridSize, minHeight, minWidth, snapToGrid],
   );
 
   // Handle resize operations
@@ -74,22 +126,23 @@ export const useNodeResize = (options: UseNodeResizeOptions = {}): UseNodeResize
       return;
     }
 
-    const { startPosition, startSize, handle } = actionState.resizeState;
+    const { startPosition, startSize, handle, startNodePosition } = actionState.resizeState;
 
     const handlePointerMove = (e: PointerEvent) => {
       const deltaX = e.clientX - startPosition.x;
       const deltaY = e.clientY - startPosition.y;
 
-      const newSize = calculateNewSize(handle, startSize, deltaX, deltaY);
-      actionActions.updateNodeResize(newSize);
+      const { size, position } = calculateResize(handle, startSize, startNodePosition, deltaX, deltaY);
+      actionActions.updateNodeResize(size, position);
     };
 
     const handlePointerUp = (_e: PointerEvent) => {
       if (actionState.resizeState) {
         // Apply the final size to the node
-        const { nodeId, currentSize } = actionState.resizeState;
+        const { nodeId, currentSize, currentPosition } = actionState.resizeState;
         nodeEditorActions.updateNode(nodeId, {
           size: currentSize,
+          position: currentPosition,
         });
       }
 
@@ -112,16 +165,17 @@ export const useNodeResize = (options: UseNodeResizeOptions = {}): UseNodeResize
       window.removeEventListener("pointerup", handlePointerUp);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [actionState.resizeState, calculateNewSize, actionActions, nodeEditorActions]);
+  }, [actionState.resizeState, calculateResize, actionActions, nodeEditorActions]);
 
   const startResize = React.useCallback(
     (
       nodeId: string,
-      handle: "se",
-      startPosition: { x: number; y: number },
-      startSize: { width: number; height: number },
+      handle: ResizeHandle,
+      startPosition: Position,
+      startSize: Size,
+      startNodePosition: Position,
     ) => {
-      actionActions.startNodeResize(nodeId, startPosition, startSize, handle);
+      actionActions.startNodeResize(nodeId, startPosition, startSize, handle, startNodePosition);
     },
     [actionActions],
   );
@@ -147,10 +201,18 @@ export const useNodeResize = (options: UseNodeResizeOptions = {}): UseNodeResize
     [actionState.resizeState],
   );
 
+  const getCurrentPosition = React.useCallback(
+    (nodeId: string) => {
+      return actionState.resizeState?.nodeId === nodeId ? actionState.resizeState.currentPosition : null;
+    },
+    [actionState.resizeState],
+  );
+
   return {
     startResize,
     isResizing,
     getResizeHandle,
     getCurrentSize,
+    getCurrentPosition,
   };
 };

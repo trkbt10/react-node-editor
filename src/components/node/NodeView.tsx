@@ -2,7 +2,7 @@
  * @file Node view component
  */
 import * as React from "react";
-import type { Node, Position, Port } from "../../types/core";
+import type { Node, Position, Port, ResizeHandle as NodeResizeHandle } from "../../types/core";
 import { useInlineEditing } from "../../contexts/InlineEditingContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useNodeDefinition } from "../../contexts/node-definitions/hooks/useNodeDefinition";
@@ -10,7 +10,7 @@ import { useExternalDataRef } from "../../contexts/ExternalDataContext";
 import { useExternalData } from "../../hooks/useExternalData";
 import styles from "./NodeView.module.css";
 import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
-import { ResizeHandle } from "./ResizeHandle";
+import { ResizeHandles } from "./ResizeHandles";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeResize } from "../../hooks/useNodeResize";
 import { useGroupManagement } from "../../hooks/useGroupManagement";
@@ -75,7 +75,13 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   const { actions: nodeEditorActions, getNodePorts } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
   const { isEditing, startEditing, updateValue, confirmEdit, cancelEdit, state: editingState } = useInlineEditing();
-  const nodeResize = useNodeResize();
+  const {
+    startResize,
+    isResizing: isNodeResizing,
+    getResizeHandle,
+    getCurrentSize,
+    getCurrentPosition,
+  } = useNodeResize();
   const groupManager = useGroupManagement({ autoUpdateMembership: false });
   const nodeDefinition = useNodeDefinition(node.type);
   const externalDataRef = useExternalDataRef(node.id);
@@ -85,8 +91,8 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   const nodeRef = React.useRef<HTMLDivElement>(null);
 
   // Check if this node is being resized
-  const isResizing = nodeResize.isResizing(node.id);
-  const currentResizeHandle = nodeResize.getResizeHandle(node.id);
+  const isResizing = isNodeResizing(node.id);
+  const currentResizeHandle = getResizeHandle(node.id);
 
   // Group-related state (behavior-driven)
   const isGroupBehavior = hasGroupBehavior(nodeDefinition);
@@ -112,26 +118,36 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
     let transformX = basePosition.x;
     let transformY = basePosition.y;
 
-    // Apply drag offset if dragging
-    if (isDragging && dragOffset) {
-      transformX += dragOffset.x;
-      transformY += dragOffset.y;
-    } else if (actionState.dragState) {
-      // Check if this is a child being dragged
-      const { affectedChildNodes, offset } = actionState.dragState;
-      const isChildOfDraggingGroup = Object.entries(affectedChildNodes).some(([_groupId, childIds]) =>
-        childIds.includes(node.id),
-      );
+    if (isResizing) {
+      const resizePosition = getCurrentPosition(node.id);
+      if (resizePosition) {
+        transformX = resizePosition.x;
+        transformY = resizePosition.y;
+      }
+    }
 
-      if (isChildOfDraggingGroup) {
-        transformX += offset.x;
-        transformY += offset.y;
+    // Apply drag offset if dragging
+    if (!isResizing) {
+      if (isDragging && dragOffset) {
+        transformX += dragOffset.x;
+        transformY += dragOffset.y;
+      } else if (actionState.dragState) {
+        // Check if this is a child being dragged
+        const { affectedChildNodes, offset } = actionState.dragState;
+        const isChildOfDraggingGroup = Object.entries(affectedChildNodes).some(([_groupId, childIds]) =>
+          childIds.includes(node.id),
+        );
+
+        if (isChildOfDraggingGroup) {
+          transformX += offset.x;
+          transformY += offset.y;
+        }
       }
     }
 
     // Apply transform directly to DOM for performance
     nodeRef.current.style.transform = `translate(${transformX}px, ${transformY}px)`;
-  }, [basePosition, isDragging, dragOffset, actionState.dragState, node.id]);
+  }, [basePosition, isDragging, dragOffset, actionState.dragState, node.id, isResizing, getCurrentPosition]);
 
   // Calculate actual size including resize state
   const size = React.useMemo(() => {
@@ -139,12 +155,12 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
       width: node.size?.width || 150,
       height: node.size?.height || 50,
     };
-    const currentSize = nodeResize.getCurrentSize(node.id);
+    const currentSize = getCurrentSize(node.id);
     if (isResizing && currentSize) {
       return currentSize;
     }
     return baseSize;
-  }, [node.size, isResizing, nodeResize, node.id]);
+  }, [node.size, isResizing, getCurrentSize, node.id]);
 
   // Memoized event handlers
   const handleTitleDoubleClick = React.useCallback(
@@ -205,7 +221,7 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   );
 
   const handleResizeStart = React.useCallback(
-    (e: React.PointerEvent, handle: "se") => {
+    (e: React.PointerEvent, handle: NodeResizeHandle) => {
       e.stopPropagation();
       e.preventDefault();
 
@@ -218,9 +234,15 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
         height: node.size?.height || 50,
       };
 
-      nodeResize.startResize(node.id, handle, { x: e.clientX, y: e.clientY }, currentSize);
+      startResize(
+        node.id,
+        handle,
+        { x: e.clientX, y: e.clientY },
+        currentSize,
+        { x: node.position.x, y: node.position.y },
+      );
     },
-    [node.id, node.size, node.locked, nodeResize],
+    [node.id, node.size, node.locked, startResize, node.position.x, node.position.y],
   );
 
   // Custom renderer props
@@ -358,14 +380,9 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
         connectablePorts={connectablePorts}
       />
 
-      {/* Render resize handle when selected and not locked */}
+      {/* Render resize handles when selected and not locked */}
       {isSelected && !node.locked && (
-        <ResizeHandle
-          position="se"
-          onResizeStart={handleResizeStart}
-          isResizing={currentResizeHandle === "se"}
-          isVisible={true}
-        />
+        <ResizeHandles size={size} activeHandle={currentResizeHandle} onResizeStart={handleResizeStart} />
       )}
     </div>
   );

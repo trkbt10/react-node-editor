@@ -118,14 +118,24 @@ export const editorActionStateActions = {
   ),
   startNodeResize: createAction(
     "START_NODE_RESIZE",
-    (nodeId: NodeId, startPosition: Position, startSize: Size, handle: ResizeHandle) => ({
+    (
+      nodeId: NodeId,
+      startPosition: Position,
+      startSize: Size,
+      handle: ResizeHandle,
+      startNodePosition: Position,
+    ) => ({
       nodeId,
       startPosition,
       startSize,
       handle,
+      startNodePosition,
     }),
   ),
-  updateNodeResize: createAction("UPDATE_NODE_RESIZE", (currentSize: Size) => ({ currentSize })),
+  updateNodeResize: createAction(
+    "UPDATE_NODE_RESIZE",
+    (currentSize: Size, currentPosition: Position) => ({ currentSize, currentPosition }),
+  ),
   endNodeResize: createAction("END_NODE_RESIZE"),
   showContextMenu: createAction(
     "SHOW_CONTEXT_MENU",
@@ -336,15 +346,16 @@ const editorActionStateHandlers = createActionHandlerMap<EditorActionState, type
       connectablePorts: action.payload.connectablePorts,
     }),
     startNodeResize: (state, action) => {
-      const { nodeId, startPosition, startSize, handle } = action.payload;
+      const { nodeId, startPosition, startSize, handle, startNodePosition } = action.payload;
       return {
         ...state,
         resizeState: {
           nodeId,
           startPosition,
           startSize,
+          startNodePosition,
           currentSize: startSize,
-          currentPosition: startPosition,
+          currentPosition: startNodePosition,
           handle,
         },
       };
@@ -358,6 +369,7 @@ const editorActionStateHandlers = createActionHandlerMap<EditorActionState, type
         resizeState: {
           ...state.resizeState,
           currentSize: action.payload.currentSize,
+          currentPosition: action.payload.currentPosition,
         },
       };
     },
