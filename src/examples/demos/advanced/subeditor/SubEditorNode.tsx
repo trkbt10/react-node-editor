@@ -3,7 +3,6 @@
  */
 import * as React from "react";
 import { Button } from "../../../../components/elements/Button";
-import { classNames } from "../../../../components/elements/classNames";
 import { NodeMapRenderer } from "../../../../components/layers/NodeMapRenderer";
 import type { NodeDefinition, NodeRenderProps, ExternalDataReference } from "../../../../types/NodeDefinition";
 import { createNodeDefinition } from "../../../../types/NodeDefinition";
@@ -102,8 +101,9 @@ const SubEditorNodeRenderer = ({
 
   return (
     <div
-      className={classNames(styles.node, isDragging && styles.dragging)}
+      className={styles.node}
       style={{ width: node.size?.width, height: node.size?.height }}
+      data-is-dragging={isDragging}
     >
       <div className={styles.header}>
         <h3 className={styles.title}>{nodeTitle}</h3>

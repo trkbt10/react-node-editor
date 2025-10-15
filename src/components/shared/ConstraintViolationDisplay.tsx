@@ -3,13 +3,11 @@
  */
 import * as React from "react";
 import type { ConstraintViolation } from "../../types/NodeDefinition";
-import { classNames } from "../elements/classNames";
 import styles from "./ConstraintViolationDisplay.module.css";
 
 export type ConstraintViolationDisplayProps = {
   violations: ConstraintViolation[];
   onDismiss?: (violationId: string) => void;
-  className?: string;
 };
 
 /**
@@ -18,7 +16,6 @@ export type ConstraintViolationDisplayProps = {
 export const ConstraintViolationDisplay: React.FC<ConstraintViolationDisplayProps> = ({
   violations,
   onDismiss,
-  className,
 }) => {
   if (violations.length === 0) {
     return null;
@@ -37,21 +34,8 @@ export const ConstraintViolationDisplay: React.FC<ConstraintViolationDisplayProp
     }
   };
 
-  const getSeverityClassName = (severity: ConstraintViolation["severity"]): string => {
-    switch (severity) {
-      case "error":
-        return styles.violationItemError;
-      case "warning":
-        return styles.violationItemWarning;
-      case "info":
-        return styles.violationItemInfo;
-      default:
-        return styles.violationItemDefault;
-    }
-  };
-
   return (
-    <div className={classNames(styles.constraintViolations, className)}>
+    <div className={styles.constraintViolations}>
       <div className={styles.violationContainer}>
         <h4 className={styles.violationHeader}>Constraint Violations ({violations.length})</h4>
 
@@ -59,7 +43,8 @@ export const ConstraintViolationDisplay: React.FC<ConstraintViolationDisplayProp
           {violations.map((violation, index) => (
             <div
               key={`${violation.type}-${index}`}
-              className={classNames(styles.violationItem, getSeverityClassName(violation.severity))}
+              className={styles.violationItem}
+              data-severity={violation.severity}
             >
               <span className={styles.violationIcon}>{getSeverityIcon(violation.severity)}</span>
 

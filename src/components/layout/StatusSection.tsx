@@ -2,13 +2,11 @@
  * @file Status section component
  */
 import * as React from "react";
-import { classNames } from "../elements/classNames";
 import styles from "./StatusSection.module.css";
 
 export type StatusSectionProps = {
   label: string;
   value: React.ReactNode;
-  className?: string;
   labelClassName?: string;
   valueClassName?: string;
 };
@@ -16,14 +14,16 @@ export type StatusSectionProps = {
 export const StatusSection: React.FC<StatusSectionProps> = ({
   label,
   value,
-  className,
   labelClassName,
   valueClassName,
 }) => {
+  const mergedLabelClassName = labelClassName ? `${styles.statusLabel} ${labelClassName}` : styles.statusLabel;
+  const mergedValueClassName = valueClassName ? `${styles.statusValue} ${valueClassName}` : styles.statusValue;
+
   return (
-    <div className={classNames(styles.statusSection, className)}>
-      <span className={classNames(styles.statusLabel, labelClassName)}>{label}:</span>
-      <span className={classNames(styles.statusValue, valueClassName)}>{value}</span>
+    <div className={styles.statusSection} data-status-section="true">
+      <span className={mergedLabelClassName}>{label}:</span>
+      <span className={mergedValueClassName}>{value}</span>
     </div>
   );
 };

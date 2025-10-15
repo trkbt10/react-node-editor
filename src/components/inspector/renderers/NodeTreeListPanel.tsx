@@ -9,7 +9,6 @@ import { hasGroupBehavior } from "../../../types/behaviors";
 import { Node, NodeId } from "../../../types/core";
 import { getNodeIcon } from "../../../contexts/node-definitions/utils/iconUtils";
 import { CloseIcon, LockIcon, UnlockIcon } from "../../elements/icons";
-import { classNames } from "../../elements/classNames";
 import { PropertySection } from "../parts/PropertySection";
 import styles from "./NodeTreeListPanel.module.css";
 import { useI18n } from "../../../i18n/context";
@@ -367,11 +366,9 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
   );
 };
 
-export type NodeTreeListPanelProps = {
-  className?: string;
-};
+export type NodeTreeListPanelProps = Record<string, never>;
 
-export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = ({ className }) => {
+export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = () => {
   const { state: editorState, actions: editorActions } = useNodeEditor();
   const { actions: actionActions } = useEditorActionState();
   const nodeDefinitions = useNodeDefinitionList();
@@ -505,7 +502,7 @@ export const NodeTreeListPanel: React.FC<NodeTreeListPanelProps> = ({ className 
     <PropertySection
       title={layerTitle}
       headerRight={<span className={styles.nodeCount}>{nodeCountLabel}</span>}
-      className={classNames(styles.nodeTreeList, className)}
+      className={styles.nodeTreeList}
       bodyClassName={styles.nodeTreeListBody}
     >
       <div className={styles.treeContainer} onClick={handleDeselectAll}>

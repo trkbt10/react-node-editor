@@ -2,7 +2,6 @@
  * @file Main node editor content component with port position management and grid layout
  */
 import * as React from "react";
-import { classNames } from "./components/elements/classNames";
 import { GridLayout } from "./components/layout/GridLayout";
 import { NodeEditorBase } from "./components/layout/NodeEditorBase";
 import { ContextActionMenu } from "./components/shared/ContextActionMenu";
@@ -325,13 +324,11 @@ export const NodeEditorContent: React.FC<{
 
   return (
     <NodeEditorBase
-      className={classNames(
-        className,
-        theme === "dark" && styles.darkTheme,
-        smoothAnimations && styles.smoothAnimations,
-      )}
+      className={className}
       style={editorStyles}
       data-theme={theme}
+      data-node-editor-root="true"
+      data-smooth-animations={smoothAnimations}
     >
       <PortPositionProvider portPositions={portPositions} behavior={portPositionBehavior} config={portPositionConfig}>
         <GridLayout

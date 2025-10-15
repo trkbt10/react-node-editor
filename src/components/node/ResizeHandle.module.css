@@ -14,8 +14,7 @@
   border-radius: 0 0 4px 0;
 }
 
-/* Visible when node is hovered or selected - will be applied programmatically */
-.resizeHandleVisible {
+.resizeHandle[data-is-visible="true"] {
   opacity: 0.6;
 }
 
@@ -27,7 +26,7 @@
 }
 
 /* Active state during resize */
-.resizeHandleActive {
+.resizeHandle[data-is-resizing="true"] {
   background-color: var(--node-editor-accent-color, #007aff);
   opacity: 1;
   transform: scale(1.1);

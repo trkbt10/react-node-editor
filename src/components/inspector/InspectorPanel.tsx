@@ -8,7 +8,6 @@ import { HistoryPanel } from "./renderers/HistoryPanel";
 import { AutoLayoutPanel } from "./renderers/AutoLayoutPanel";
 import { InspectorPropertiesTab } from "./renderers/InspectorPropertiesTab";
 import { TabNav } from "../layout/TabNav";
-import { classNames } from "../elements/classNames";
 import { InspectorSection } from "./parts/InspectorSection";
 import styles from "./InspectorPanel.module.css";
 import { useI18n } from "../../i18n/context";
@@ -24,16 +23,11 @@ export type InspectorPanelTabConfig = {
 };
 
 export type InspectorPanelProps = {
-  className?: string;
   tabs?: InspectorPanelTabConfig[];
   settingsPanels?: InspectorSettingsPanelConfig[];
 };
 
-export const InspectorPanel: React.FC<InspectorPanelProps> = ({
-  className,
-  tabs: providedTabs,
-  settingsPanels = [],
-}) => {
+export const InspectorPanel: React.FC<InspectorPanelProps> = ({ tabs: providedTabs, settingsPanels = [] }) => {
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { t } = useI18n();
 
@@ -79,9 +73,12 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({
   );
 
   const activeTab = boundedActiveTabIndex >= 0 ? tabs[boundedActiveTabIndex] : undefined;
+  const contentClassName = [styles.inspectorContent, activeTab?.contentClassName]
+    .filter((value): value is string => Boolean(value))
+    .join(" ");
 
   return (
-    <div className={classNames(styles.inspectorPanel, className)}>
+    <div className={styles.inspectorPanel}>
       {tabs.length > 0 && (
         <div className={styles.inspectorHeader}>
           <TabNav
@@ -92,7 +89,7 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({
         </div>
       )}
 
-      <div className={classNames(styles.inspectorContent, activeTab?.contentClassName)}>
+      <div className={contentClassName}>
         {activeTab ? activeTab.render() : null}
       </div>
     </div>

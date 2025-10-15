@@ -2,7 +2,6 @@
  * @file Resize handle component
  */
 import * as React from "react";
-import { classNames } from "../elements/classNames";
 import styles from "./ResizeHandle.module.css";
 
 export type ResizeHandleProps = {
@@ -50,11 +49,7 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
 
   return (
     <div
-      className={classNames(
-        styles.resizeHandle,
-        isVisible && styles.resizeHandleVisible,
-        isResizing && styles.resizeHandleActive,
-      )}
+      className={styles.resizeHandle}
       style={{
         position: "absolute",
         zIndex: 10,
@@ -62,6 +57,8 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
       }}
       onPointerDown={handlePointerDown}
       data-resize-handle={position}
+      data-is-visible={isVisible}
+      data-is-resizing={isResizing}
     />
   );
 };

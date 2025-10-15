@@ -129,7 +129,7 @@
   filter: brightness(0.95);
 }
 
-.selectedCategory {
+.categoryHeader[data-is-selected="true"] {
   border-bottom-color: var(--node-editor-accent-color);
 }
 
@@ -156,27 +156,27 @@
   color: var(--node-editor-text-color);
 }
 
-.nodeItem:not(.selectedNode):hover {
+.nodeItem:not([data-is-selected="true"]):hover {
   background: var(--node-editor-control-hover-background);
 }
 
-.selectedNode {
+.nodeItem[data-is-selected="true"] {
   color: var(--node-editor-selected-control-text-color);
   background: var(--node-editor-selected-control-color);
 }
 
-.selectedNode:hover {
+.nodeItem[data-is-selected="true"]:hover {
   color: var(--node-editor-selected-control-text-color);
   background: var(--node-editor-selected-control-color);
   filter: brightness(0.95);
 }
 
-.disabledNode {
+.nodeItem[data-is-disabled="true"] {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.disabledNode:hover {
+.nodeItem[data-is-disabled="true"]:hover {
   background: transparent;
 }
 

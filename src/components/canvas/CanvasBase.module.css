@@ -16,18 +16,18 @@
   -webkit-overflow-scrolling: touch;
 }
 
-.canvasContainer.panning {
+.canvasContainer[data-is-panning="true"] {
   cursor: grabbing;
 }
-.canvasContainer.spacePanning {
+.canvasContainer[data-is-space-panning="true"] {
   cursor: grab;
 }
-.canvasContainer.spacePanning.panning {
+.canvasContainer[data-is-space-panning="true"][data-is-panning="true"] {
   cursor: grabbing;
 }
 
-.canvasContainer.boxSelecting,
-.canvasContainer.boxSelecting .canvas {
+.canvasContainer[data-is-box-selecting="true"],
+.canvasContainer[data-is-box-selecting="true"] .canvas {
   cursor: crosshair;
 }
 
@@ -54,12 +54,12 @@
   cursor: inherit;
 }
 
-.canvas.panning {
+.canvasContainer[data-is-panning="true"] .canvas {
   cursor: grabbing;
 }
-.canvas.spacePanning {
+.canvasContainer[data-is-space-panning="true"] .canvas {
   cursor: grab;
 }
-.canvas.spacePanning.panning {
+.canvasContainer[data-is-space-panning="true"][data-is-panning="true"] .canvas {
   cursor: grabbing;
 }

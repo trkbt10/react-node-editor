@@ -2,19 +2,17 @@
  * @file Tab navigation component
  */
 import * as React from "react";
-import { classNames } from "../elements/classNames";
 import styles from "./TabNav.module.css";
 
 export type TabNavProps = {
   tabs: string[];
   activeTabIndex: number;
   onTabChange: (index: number) => void;
-  className?: string;
 };
 
-export const TabNav: React.FC<TabNavProps> = ({ tabs, activeTabIndex, onTabChange, className }) => {
+export const TabNav: React.FC<TabNavProps> = ({ tabs, activeTabIndex, onTabChange }) => {
   return (
-    <div className={classNames(styles.tabNav, className)}>
+    <div className={styles.tabNav}>
       {tabs.map((tab, index) => (
         <button
           key={index}

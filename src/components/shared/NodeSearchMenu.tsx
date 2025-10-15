@@ -2,7 +2,6 @@
  * @file Node search menu component
  */
 import * as React from "react";
-import { classNames } from "../elements/classNames";
 import { calculateContextMenuPosition, getViewportInfo } from "../elements/dialogUtils";
 import { Input } from "../elements/Input";
 import type { NodeDefinition } from "../../types/NodeDefinition";
@@ -209,7 +208,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
   return (
     <div
       ref={menuRef}
-      className={classNames(styles.nodeSearchMenu, styles.nodeSearchMenuContainer)}
+      className={`${styles.nodeSearchMenu} ${styles.nodeSearchMenuContainer}`}
       style={{
         left: menuPosition.x,
         top: menuPosition.y,
@@ -246,11 +245,9 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
             {filteredResults.map((category) => (
               <div key={category.name} className={styles.categoryGroup}>
                 <div
-                  className={classNames(
-                    styles.categoryHeader,
-                    selectedCategory === category.name && styles.selectedCategory,
-                  )}
+                  className={styles.categoryHeader}
                   onClick={() => setSelectedCategory(selectedCategory === category.name ? null : category.name)}
+                  data-is-selected={selectedCategory === category.name}
                 >
                   <span className={styles.categoryName}>{category.name}</span>
                   <span className={styles.nodeCount}>{category.nodes.length}</span>
@@ -265,14 +262,12 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
                     return (
                       <div
                         key={node.type}
-                        className={classNames(
-                          styles.nodeItem,
-                          isSelected && styles.selectedNode,
-                          isDisabled && styles.disabledNode,
-                        )}
+                        className={styles.nodeItem}
                         onClick={() => !isDisabled && handleNodeSelect(node.type)}
                         onPointerEnter={() => setSelectedIndex(globalIndex)}
                         aria-disabled={isDisabled}
+                        data-is-selected={isSelected}
+                        data-is-disabled={isDisabled}
                       >
                         <div className={styles.nodeIcon}>{getNodeIcon(node.type, nodeDefinitions)}</div>
                         <div className={styles.nodeInfo}>

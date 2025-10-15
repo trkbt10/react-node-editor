@@ -3,18 +3,13 @@
  */
 import * as React from "react";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { classNames } from "../elements/classNames";
 import styles from "./SelectionBox.module.css";
-
-export type SelectionBoxProps = {
-  className?: string;
-};
 
 /**
  * SelectionBox - Renders the selection box during box selection in overlay layer
  * This component is purely visual and does not handle events
  */
-export const SelectionBox: React.FC<SelectionBoxProps> = ({ className }) => {
+export const SelectionBox: React.FC = () => {
   const { state: actionState } = useEditorActionState();
 
   if (!actionState.selectionBox) {
@@ -31,7 +26,7 @@ export const SelectionBox: React.FC<SelectionBoxProps> = ({ className }) => {
 
   return (
     <div
-      className={classNames(styles.selectionBoxOverlay, className)}
+      className={styles.selectionBoxOverlay}
       style={{
         left,
         top,

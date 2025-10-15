@@ -682,33 +682,33 @@
 }
 
 /* Theme-specific styles */
-.darkTheme {
+:global([data-node-editor-root="true"][data-theme="dark"]) {
   background-color: var(--node-editor-dark-background-color);
   color: var(--node-editor-dark-text-color);
 }
 
-.darkTheme .minimap {
+:global([data-node-editor-root="true"][data-theme="dark"]) .minimap {
   background: var(--node-editor-dark-control-background);
   border-color: var(--node-editor-dark-input-border);
 }
 
-.darkTheme .minimapTitle {
+:global([data-node-editor-root="true"][data-theme="dark"]) .minimapTitle {
   background: var(--node-editor-dark-table-header-background);
   color: var(--node-editor-dark-text-color);
   border-bottom-color: var(--node-editor-dark-input-border);
 }
 
-.darkTheme .minimapViewport,
-.darkTheme .minimapNodes {
+:global([data-node-editor-root="true"][data-theme="dark"]) .minimapViewport,
+:global([data-node-editor-root="true"][data-theme="dark"]) .minimapNodes {
   color: var(--node-editor-dark-secondary-text-color);
 }
 
 /* Smooth animations - selective only for non-performance critical elements */
-.smoothAnimations .statusSection {
+:global([data-node-editor-root="true"][data-smooth-animations="true"]) :global([data-status-section="true"]) {
   transition: opacity var(--node-editor-transition-duration) ease;
 }
 
-.smoothAnimations .minimap {
+:global([data-node-editor-root="true"][data-smooth-animations="true"]) .minimap {
   transition: opacity var(--node-editor-transition-duration) ease;
 }
 

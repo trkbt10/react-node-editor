@@ -2,7 +2,6 @@
  * @file Context action menu component
  */
 import * as React from "react";
-import { classNames } from "../elements/classNames";
 import { calculateContextMenuPosition, getViewportInfo } from "../elements/dialogUtils";
 import { EditIcon, PlusIcon, PasteIcon } from "../elements/icons";
 import styles from "./ContextActionMenu.module.css";
@@ -205,7 +204,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
   return (
     <div
       ref={menuRef}
-      className={classNames(styles.menu, styles.menuContainer)}
+      className={`${styles.menu} ${styles.menuContainer}`}
       style={{ left: menuPosition.x, top: menuPosition.y }}
     >
       <ul className={styles.menuList}>
@@ -258,7 +257,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
         {target.type === "connection" && (
           <>
             <li className={styles.menuSectionTitle}>{t("inspectorConnectionProperties")}</li>
-            <li className={classNames(styles.menuItem, styles.menuItemDanger)} onClick={handleDeleteConnection}>
+            <li className={`${styles.menuItem} ${styles.menuItemDanger}`} onClick={handleDeleteConnection}>
               {t("contextMenuDeleteConnection")}
             </li>
           </>

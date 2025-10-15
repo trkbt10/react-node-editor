@@ -23,11 +23,11 @@
   /* Prevents scrolling while dragging on touch devices */
 }
 
-.minimapCanvasDragging {
+.minimapCanvas[data-is-dragging="true"] {
   cursor: grabbing;
 }
 
-.minimapCanvasDragging .minimapViewport {
+.minimapCanvas[data-is-dragging="true"] .minimapViewport {
   transition: none;
   /* Disable transitions during drag for smoother experience */
 }
@@ -44,7 +44,7 @@
   transition: background-color 0.2s ease;
 }
 
-.minimapViewportDragging {
+.minimapViewport[data-is-dragging="true"] {
   background: rgba(0, 122, 255, 0.2);
   border-color: var(--node-editor-accent-color, #007aff);
   box-shadow: 0 0 8px rgba(0, 122, 255, 0.4);

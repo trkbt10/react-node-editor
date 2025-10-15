@@ -2,7 +2,6 @@
  * @file Main node layer rendering and interaction handler for the node editor canvas.
  */
 import * as React from "react";
-import { classNames } from "../elements/classNames";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
@@ -52,14 +51,14 @@ const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
 });
 
 export type NodeLayerProps = {
-  className?: string;
   doubleClickToEdit?: boolean;
 };
 
 /**
  * NodeLayer - Renders all nodes with optimized performance
  */
-export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
+export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
+  void doubleClickToEdit;
   const { state: nodeEditorState, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: canvasState, utils, containerRef } = useNodeCanvas();
@@ -786,7 +785,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ className }) => {
   });
 
   return (
-    <div className={classNames(styles.nodeLayer, className)} data-node-layer>
+    <div className={styles.nodeLayer} data-node-layer>
       {sortedNodes.map((node) => (
         <NodeComponent
           key={node.id}

@@ -5,7 +5,6 @@ import * as React from "react";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { classNames } from "../elements/classNames";
 import {
   FloatingPanelFrame,
   FloatingPanelHeader,
@@ -341,11 +340,12 @@ export const Minimap: React.FC<MinimapProps> = ({ scale = 0.1, width = 200, heig
       </FloatingPanelHeader>
       <FloatingPanelContent
         ref={canvasRef}
-        className={classNames(styles.minimapCanvas, isDragging && styles.minimapCanvasDragging)}
+        className={styles.minimapCanvas}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onClick={handleClick}
+        data-is-dragging={isDragging}
       >
         <NodeMapRenderer
           nodes={state.nodes}
@@ -359,13 +359,14 @@ export const Minimap: React.FC<MinimapProps> = ({ scale = 0.1, width = 200, heig
 
         {/* Render viewport indicator */}
         <div
-          className={classNames(styles.minimapViewport, isDragging && styles.minimapViewportDragging)}
+          className={styles.minimapViewport}
           style={{
             left: viewportRect.x,
             top: viewportRect.y,
             width: viewportRect.width,
             height: viewportRect.height,
           }}
+          data-is-dragging={isDragging}
         />
       </FloatingPanelContent>
     </FloatingPanelFrame>

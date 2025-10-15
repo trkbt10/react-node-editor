@@ -2,7 +2,6 @@
  * @file Shared floating panel frame components for reusable overlay styling
  */
 import * as React from "react";
-import { classNames } from "../elements/classNames";
 import styles from "./FloatingPanelFrame.module.css";
 
 export type FloatingPanelFrameProps = React.HTMLAttributes<HTMLDivElement>;
@@ -11,38 +10,44 @@ export const FloatingPanelFrame = React.forwardRef<HTMLDivElement, FloatingPanel
   { className, ...rest },
   ref,
 ) {
-  return <div ref={ref} className={classNames(styles.frame, className)} {...rest} />;
+  const frameClassName = className ? `${styles.frame} ${className}` : styles.frame;
+  return <div ref={ref} className={frameClassName} {...rest} />;
 });
 
 export type FloatingPanelHeaderProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const FloatingPanelHeader: React.FC<FloatingPanelHeaderProps> = ({ className, ...rest }) => {
-  return <div className={classNames(styles.header, className)} {...rest} />;
+  const headerClassName = className ? `${styles.header} ${className}` : styles.header;
+  return <div className={headerClassName} {...rest} />;
 };
 
 export type FloatingPanelTitleProps = React.HTMLAttributes<HTMLSpanElement>;
 
 export const FloatingPanelTitle: React.FC<FloatingPanelTitleProps> = ({ className, ...rest }) => {
-  return <span className={classNames(styles.title, className)} {...rest} />;
+  const titleClassName = className ? `${styles.title} ${className}` : styles.title;
+  return <span className={titleClassName} {...rest} />;
 };
 
 export type FloatingPanelMetaProps = React.HTMLAttributes<HTMLSpanElement>;
 
 export const FloatingPanelMeta: React.FC<FloatingPanelMetaProps> = ({ className, ...rest }) => {
-  return <span className={classNames(styles.meta, className)} {...rest} />;
+  const metaClassName = className ? `${styles.meta} ${className}` : styles.meta;
+  return <span className={metaClassName} {...rest} />;
 };
 
 export type FloatingPanelControlsProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const FloatingPanelControls: React.FC<FloatingPanelControlsProps> = ({ className, ...rest }) => {
-  return <div className={classNames(styles.controls, className)} {...rest} />;
+  const controlsClassName = className ? `${styles.controls} ${className}` : styles.controls;
+  return <div className={controlsClassName} {...rest} />;
 };
 
 export type FloatingPanelContentProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const FloatingPanelContent = React.forwardRef<HTMLDivElement, FloatingPanelContentProps>(
   function FloatingPanelContent({ className, ...rest }, ref) {
-    return <div ref={ref} className={classNames(styles.content, className)} {...rest} />;
+    const contentClassName = className ? `${styles.content} ${className}` : styles.content;
+    return <div ref={ref} className={contentClassName} {...rest} />;
   },
 );
 

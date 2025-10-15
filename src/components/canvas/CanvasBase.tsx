@@ -5,7 +5,6 @@ import * as React from "react";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
-import { classNames } from "../elements/classNames";
 import { applyZoomDelta, clampZoomScale } from "../../utils/zoomUtils";
 import { SelectionOverlay } from "./SelectionOverlay";
 import styles from "./CanvasBase.module.css";
@@ -641,16 +640,12 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
     return () => container.removeEventListener("wheel", handleWheel);
   }, [handleWheel]);
 
+  const containerClassName = className ? `${styles.canvasContainer} ${className}` : styles.canvasContainer;
+
   return (
     <div
       ref={containerRef}
-      className={classNames(
-        styles.canvasContainer,
-        canvasState.panState.isPanning && styles.panning,
-        canvasState.isSpacePanning && styles.spacePanning,
-        isBoxSelecting && styles.boxSelecting,
-        className,
-      )}
+      className={containerClassName}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
@@ -659,6 +654,9 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       onDoubleClick={handleDoubleClick}
       role="application"
       aria-label="Node Editor Canvas"
+      data-is-panning={canvasState.panState.isPanning}
+      data-is-space-panning={canvasState.isSpacePanning}
+      data-is-box-selecting={isBoxSelecting}
     >
       {/* Grid background */}
       {canvasState.gridSettings.showGrid && (

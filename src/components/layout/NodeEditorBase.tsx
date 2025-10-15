@@ -2,7 +2,6 @@
  * @file Node editor base component
  */
 import * as React from "react";
-import { classNames } from "../elements/classNames";
 import { useNodeEditorShortcuts } from "../../hooks/useNodeEditorShortcuts";
 import styles from "./NodeEditorBase.module.css";
 
@@ -20,9 +19,11 @@ export const NodeEditorBase: React.FC<NodeEditorBaseProps> = ({ children, classN
   // Initialize keyboard shortcuts
   useNodeEditorShortcuts();
 
+  const mergedClassName = className ? `${styles.nodeEditorBase} ${className}` : styles.nodeEditorBase;
+
   return (
     <div
-      className={classNames(styles.nodeEditorBase, className)}
+      className={mergedClassName}
       style={style}
       tabIndex={0} // Make focusable for keyboard events
     >
