@@ -5,6 +5,8 @@ import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import { NodeEditor } from "../../NodeEditor";
 import type { NodeEditorData } from "../../types/core";
+import { toUntypedDefinition } from "../../types/NodeDefinition";
+import { StandardNodeDefinition } from "../../node-definitions/standard";
 
 // Helper to query flow stripe paths (SVG stroke-dasharray is present only on stripes)
 const queryFlowStripes = () => document.querySelectorAll('path[style*="stroke-dasharray"]');
@@ -21,7 +23,13 @@ describe("Connection flow highlight behavior", () => {
   };
 
   it("shows stripes when node is selected and hides them after clearing selection by clicking canvas", async () => {
-    render(<NodeEditor initialData={initialData} />);
+    render(
+      <NodeEditor
+        initialData={initialData}
+        nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
+        includeDefaultDefinitions={false}
+      />,
+    );
 
     // Initially: no stripes
     expect(queryFlowStripes().length).toBe(0);

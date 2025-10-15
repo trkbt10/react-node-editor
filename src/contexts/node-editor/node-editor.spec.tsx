@@ -9,7 +9,7 @@ import { nodeEditorActions } from "./actions";
 import { nodeEditorReducer } from "./reducer";
 import type { NodeEditorData } from "../../types/core";
 import { NodeDefinitionProvider } from "../node-definitions/provider";
-import type { NodeDefinition } from "../../types/NodeDefinition";
+import { toUntypedDefinition, type NodeDefinition } from "../../types/NodeDefinition";
 import { StandardNodeDefinition } from "../../node-definitions/standard";
 
 const makeBasicData = (): NodeEditorData => ({
@@ -24,7 +24,7 @@ const makeBasicData = (): NodeEditorData => ({
   connections: {},
 });
 
-const testNodeDefinitions: NodeDefinition[] = [StandardNodeDefinition as unknown as NodeDefinition];
+const testNodeDefinitions: NodeDefinition[] = [toUntypedDefinition(StandardNodeDefinition)];
 
 const withNodeDefinitions = (children: React.ReactNode): React.ReactElement => (
   <NodeDefinitionProvider nodeDefinitions={testNodeDefinitions}>{children}</NodeDefinitionProvider>

@@ -3,10 +3,18 @@
  */
 import { render, screen } from "@testing-library/react";
 import { NodeEditor } from "./NodeEditor";
+import { toUntypedDefinition } from "./types/NodeDefinition";
+import { StandardNodeDefinition } from "./node-definitions/standard";
 
 describe("NodeEditor autoSave override", () => {
   it("hides Auto-save status when autoSaveEnabled is false", () => {
-    render(<NodeEditor autoSaveEnabled={false} initialData={{ nodes: {}, connections: {} }} />);
+    render(
+      <NodeEditor
+        autoSaveEnabled={false}
+        initialData={{ nodes: {}, connections: {} }}
+        nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
+      />,
+    );
     // StatusBar is rendered by default (showStatusBar default true)
     const statusBar = screen.getByTestId("status-bar");
     expect(statusBar).toBeTruthy();
