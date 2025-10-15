@@ -101,6 +101,11 @@ export const koMessages: I18nMessages = {
   inspectorTabHistory: "히스토리",
   inspectorTabSettings: "설정",
   inspectorActions: "동작",
+  inspectorInteractionHelpTitle: "상호작용 가이드",
+  inspectorInteractionHelpSectionClipboard: "클립보드 및 편집",
+  inspectorInteractionHelpSectionSelection: "선택 및 레이아웃",
+  inspectorInteractionHelpSectionHistory: "기록 및 저장",
+  inspectorInteractionHelpUnassigned: "미할당",
 
   // Auto Layout Panel
   autoLayoutPanelDescription:

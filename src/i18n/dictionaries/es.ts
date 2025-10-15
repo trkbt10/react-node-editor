@@ -101,6 +101,11 @@ export const esMessages: I18nMessages = {
   inspectorTabHistory: "Historial",
   inspectorTabSettings: "Configuración",
   inspectorActions: "Acciones",
+  inspectorInteractionHelpTitle: "Guía de interacción",
+  inspectorInteractionHelpSectionClipboard: "Portapapeles y edición",
+  inspectorInteractionHelpSectionSelection: "Selección y disposición",
+  inspectorInteractionHelpSectionHistory: "Historial y guardado",
+  inspectorInteractionHelpUnassigned: "Sin asignar",
 
   // Auto Layout Panel
   autoLayoutPanelDescription:

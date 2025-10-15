@@ -107,6 +107,7 @@ export type PortRenderContext = {
     onPointerDown: (e: React.PointerEvent) => void;
     onPointerUp: (e: React.PointerEvent) => void;
     onPointerEnter: (e: React.PointerEvent) => void;
+    onPointerMove: (e: React.PointerEvent) => void;
     onPointerLeave: (e: React.PointerEvent) => void;
     onPointerCancel?: (e: React.PointerEvent) => void;
   };
@@ -116,16 +117,18 @@ export type PortRenderContext = {
  * Context provided to connection render functions
  */
 export type ConnectionRenderContext = {
-  /** The connection being rendered */
-  connection: Connection;
-  /** The source port */
+  /** The connection being rendered (null when previewing during drag) */
+  connection: Connection | null;
+  /** Rendering phase */
+  phase: "connected" | "connecting" | "disconnecting";
+  /** The source port (typically the output side) */
   fromPort: Port;
-  /** The target port */
-  toPort: Port;
+  /** The target port (may be undefined while previewing or when the anchor is floating) */
+  toPort?: Port;
   /** The source node */
   fromNode: Node;
-  /** The target node */
-  toNode: Node;
+  /** The target node (undefined when no target is resolved yet) */
+  toNode?: Node;
   /** Absolute position of the source port */
   fromPosition: { x: number; y: number };
   /** Absolute position of the target port */
@@ -140,6 +143,13 @@ export type ConnectionRenderContext = {
   isDragging?: boolean;
   /** Drag progress (0-1) for visual feedback */
   dragProgress?: number;
+  /** Pointer and context menu handlers that preserve editor behavior */
+  handlers: {
+    onPointerDown: (e: React.PointerEvent) => void;
+    onPointerEnter: (e: React.PointerEvent) => void;
+    onPointerLeave: (e: React.PointerEvent) => void;
+    onContextMenu?: (e: React.MouseEvent) => void;
+  };
 };
 
 /**

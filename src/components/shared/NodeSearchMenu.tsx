@@ -7,7 +7,7 @@ import type { NodeDefinition } from "../../types/NodeDefinition";
 import type { Position } from "../../types/core";
 import { getNodeIcon } from "../../contexts/node-definitions/utils/iconUtils";
 import styles from "./NodeSearchMenu.module.css";
-import { ContextMenuOverlay } from "./ContextMenuOverlay";
+import { ContextMenuOverlay } from "../layout/ContextMenuOverlay";
 
 export type NodeSearchMenuProps = {
   position: Position;

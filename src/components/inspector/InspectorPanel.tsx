@@ -5,7 +5,6 @@ import * as React from "react";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { NodeTreeListPanel } from "./renderers/NodeTreeListPanel";
 import { HistoryPanel } from "./renderers/HistoryPanel";
-import { AutoLayoutPanel } from "./renderers/AutoLayoutPanel";
 import { InspectorPropertiesTab } from "./renderers/InspectorPropertiesTab";
 import { TabNav } from "../layout/TabNav";
 import { InspectorSection } from "./parts/InspectorSection";
@@ -14,6 +13,7 @@ import { useI18n } from "../../i18n/context";
 import { GeneralSettingsPanel } from "./renderers/GeneralSettingsPanel";
 import { GridSettingsPanel } from "./renderers/GridSettingsPanel";
 import { PropertySection } from "./parts/PropertySection";
+import { InteractionHelpPanel } from "./renderers/InteractionHelpPanel";
 
 export type InspectorPanelTabConfig = {
   id: string;
@@ -120,6 +120,7 @@ export type InspectorSettingsTabProps = {
 };
 
 export const InspectorSettingsTab: React.FC<InspectorSettingsTabProps> = ({ panels }) => {
+  const { t } = useI18n();
   // If no custom panels are provided, show default panels
   const effectivePanels = React.useMemo(() => {
     if (panels.length > 0) {
@@ -128,19 +129,19 @@ export const InspectorSettingsTab: React.FC<InspectorSettingsTabProps> = ({ pane
     // Default panels
     return [
       {
-        title: "Auto Layout",
-        component: AutoLayoutPanel,
+        title: t("inspectorInteractionHelpTitle") || "Interaction Guide",
+        component: InteractionHelpPanel,
       },
       {
-        title: "Feature Flags",
+        title: t("inspectorGeneralSettings") || "General Settings",
         component: GeneralSettingsPanel,
       },
       {
-        title: "General Settings",
+        title: t("inspectorGridSettings") || "Grid Settings",
         component: GridSettingsPanel,
       },
     ];
-  }, [panels]);
+  }, [panels, t]);
 
   return (
     <>

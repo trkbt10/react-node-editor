@@ -101,6 +101,11 @@ export const zhMessages: I18nMessages = {
   inspectorTabHistory: "历史",
   inspectorTabSettings: "设置",
   inspectorActions: "操作",
+  inspectorInteractionHelpTitle: "交互指南",
+  inspectorInteractionHelpSectionClipboard: "剪贴板与编辑",
+  inspectorInteractionHelpSectionSelection: "选择与布局",
+  inspectorInteractionHelpSectionHistory: "历史与保存",
+  inspectorInteractionHelpUnassigned: "未分配",
 
   // Auto Layout Panel
   autoLayoutPanelDescription: "使用内置预设自动排列节点。",

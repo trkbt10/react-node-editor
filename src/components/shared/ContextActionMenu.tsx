@@ -17,11 +17,14 @@ import { useNodeEditorActions } from "../../hooks/useNodeEditorActions";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useI18n } from "../../i18n/context";
 import { useNodeEditor } from "../../contexts/node-editor/context";
-import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { canAddNodeType, countNodesByType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
-import { getClipboard, setClipboard } from "../../utils/clipboard";
+import { pasteNodesFromClipboard } from "../../contexts/node-editor/utils/nodeClipboardOperations";
 import { NodeActionsList } from "./NodeActionsList";
-import { ContextMenuOverlay } from "./ContextMenuOverlay";
+import { ContextMenuOverlay } from "../layout/ContextMenuOverlay";
+import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
+import {
+  detectShortcutDisplayPlatform,
+  getShortcutLabelForAction,
+} from "../../utils/shortcutDisplay";
 
 export type ContextTarget = { type: "node"; id: string } | { type: "connection"; id: string } | { type: "canvas" };
 
@@ -37,7 +40,8 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
   const editorActions = useNodeEditorActions();
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: editorState } = useNodeEditor();
-  const nodeDefinitions = useNodeDefinitionList();
+  const interactionSettings = useInteractionSettings();
+  const platform = React.useMemo(() => detectShortcutDisplayPlatform(), []);
   const [resolvedPosition, setResolvedPosition] = React.useState({ x: position.x, y: position.y });
   const selectedNodeIds = actionState.selectedNodeIds;
   const isTargetSelected = target.type === "node" && selectedNodeIds.includes(target.id);
@@ -65,12 +69,13 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
     }
   }, [visible, position.x, position.y]);
 
+  const pasteShortcut = React.useMemo(() => {
+    return getShortcutLabelForAction(interactionSettings.keyboardShortcuts, "paste", platform);
+  }, [interactionSettings.keyboardShortcuts, platform]);
+
   if (!visible) {
     return null;
   }
-
-  const isMac = typeof navigator !== "undefined" && /Mac|iPod|iPhone|iPad/.test(navigator.platform);
-  const shortcut = (mac: string, win: string) => <span className={styles.shortcutHint}>{isMac ? mac : win}</span>;
 
   const handleAlignFromMenu = React.useCallback(
     (alignmentType: AlignmentActionType) => {
@@ -88,95 +93,29 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
     [editorActions, onClose, selectedNodes, showAlignmentControls],
   );
 
-  const _handleDuplicateNode = () => {
-    if (target.type !== "node") {
+  const handlePasteFromClipboard = React.useCallback(() => {
+    const result = pasteNodesFromClipboard();
+    if (!result) {
       return;
     }
-    const node = editorState.nodes[target.id];
-    if (!node) {
-      return;
-    }
-    const counts = countNodesByType(editorState);
-    if (!canAddNodeType(node.type, nodeDefinitions, counts)) {
-      onClose();
-      return;
-    }
-    editorActions.duplicateNodes([target.id]);
-    onClose();
-  };
 
-  const _handleCutSelected = () => {
-    let selected = actionState.selectedNodeIds;
-    if (target.type === "node" && !selected.includes(target.id)) {
-      selected = [target.id];
-    }
-    if (selected.length === 0) {
-      return;
-    }
-    const nodes = selected
-      .map((id) => editorState.nodes[id])
-      .filter(Boolean)
-      .map((n) => ({ id: n.id, type: n.type, position: n.position, size: n.size, data: n.data }));
-    const selSet = new Set(selected);
-    const connections = Object.values(editorState.connections)
-      .filter((c) => selSet.has(c.fromNodeId) && selSet.has(c.toNodeId))
-      .map((c) => ({ fromNodeId: c.fromNodeId, fromPortId: c.fromPortId, toNodeId: c.toNodeId, toPortId: c.toPortId }));
-    setClipboard({ nodes, connections });
-    selected.forEach((nodeId) => editorActions.deleteNode(nodeId));
-    actionActions.clearSelection();
-    onClose();
-  };
+    result.nodes.forEach((node) => {
+      editorActions.addNodeWithId(node);
+    });
 
-  const handlePasteFromClipboard = () => {
-    const clip = getClipboard();
-    if (!clip || clip.nodes.length === 0) {
-      return;
-    }
-    const idMap = new Map<string, string>();
-    clip.nodes.forEach((n) => {
-      const newId = Math.random().toString(36).slice(2, 10);
-      idMap.set(n.id, newId);
-      const newNode = {
-        id: newId,
-        type: n.type,
-        position: { x: n.position.x + 40, y: n.position.y + 40 },
-        size: n.size,
-        data: { ...(n.data || {}), title: typeof n.data?.title === "string" ? `${n.data.title} Copy` : n.data?.title },
-      };
-      editorActions.addNodeWithId(newNode);
+    result.connections.forEach((connection) => {
+      editorActions.addConnection(connection);
     });
-    clip.connections.forEach((c) => {
-      const fromId = idMap.get(c.fromNodeId);
-      const toId = idMap.get(c.toNodeId);
-      if (fromId && toId) {
-        editorActions.addConnection({
-          fromNodeId: fromId,
-          fromPortId: c.fromPortId,
-          toNodeId: toId,
-          toPortId: c.toPortId,
-        });
-      }
-    });
-    const newIds = Array.from(idMap.values());
-    actionActions.selectAllNodes(newIds);
+
+    const newIds = Array.from(result.idMap.values());
+    actionActions.setInteractionSelection(newIds);
     onClose();
-  };
+  }, [editorActions, actionActions, onClose]);
 
   const handleDeleteConnection = () => {
     if (target.type !== "connection") {
       return;
     }
-    editorActions.deleteConnection(target.id);
-    onClose();
-  };
-
-  // Optional: Start a disconnect drag from context menu
-  const _handleDisconnectFrom = (_end: "from" | "to") => {
-    if (target.type !== "connection") {
-      return;
-    }
-    // We only implement Delete here to keep logic simple and safe.
-    // Future: implement startConnectionDisconnect with fixedPort using portLookupMap.
     editorActions.deleteConnection(target.id);
     onClose();
   };
@@ -227,7 +166,8 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
                   return;
                 }
                 // Ensure node is selected and switch inspector to Properties tab
-                actionActions.selectNode(target.id, false);
+                actionActions.setInteractionSelection([target.id]);
+                actionActions.setEditingSelection([target.id]);
                 actionActions.setInspectorActiveTab(1);
                 onClose();
               }}
@@ -258,7 +198,8 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
               <PlusIcon size={14} /> {t("addConnection") || "Add Connection…"}
             </li>
             <li className={styles.menuItem} onClick={() => handlePasteFromClipboard()}>
-              <PasteIcon size={14} /> {t("paste")} {shortcut("⌘V", "Ctrl+V")}
+              <PasteIcon size={14} /> {t("paste")}{" "}
+              {pasteShortcut ? <span className={styles.shortcutHint}>{pasteShortcut}</span> : null}
             </li>
           </>
         )}

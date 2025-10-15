@@ -491,9 +491,9 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         if (selectedNodeIds.length > 0) {
           if (e.shiftKey || e.ctrlKey || e.metaKey) {
             const newSelection = [...new Set([...actionState.selectedNodeIds, ...selectedNodeIds])];
-            actionActions.selectAllNodes(newSelection);
+            actionActions.setInteractionSelection(newSelection);
           } else {
-            actionActions.selectAllNodes(selectedNodeIds);
+            actionActions.setInteractionSelection(selectedNodeIds);
           }
         }
 

@@ -1,82 +1,35 @@
 /**
- * @file Feature flag management for node editor configuration and migration control
+ * @file Feature flag management for node editor configuration.
+ *
+ * At the moment all feature flags have been retired. This module remains in place to
+ * centralize future toggles without forcing a sweeping refactor when a new flag is added.
  */
 
-export type NodeEditorFeatureFlags = {
-  /**
-   * When true, uses the new port inference system exclusively
-   * When false, maintains backward compatibility with embedded ports
-   */
-  useInferredPortsOnly: boolean;
-};
+import * as React from "react";
+
+export type NodeEditorFeatureFlags = Record<string, never>;
+
+export const defaultFeatureFlags: NodeEditorFeatureFlags = {};
 
 /**
- * Default feature flags - start with backward compatibility enabled
- */
-export const defaultFeatureFlags: NodeEditorFeatureFlags = {
-  useInferredPortsOnly: false,
-};
-
-/**
- * Get feature flags from environment or local storage
+ * Retrieve the currently active feature flag set.
  */
 export function getFeatureFlags(): NodeEditorFeatureFlags {
-  // Check environment variables first
-  if (typeof process !== "undefined" && process.env) {
-    return {
-      useInferredPortsOnly: process.env.NODE_EDITOR_USE_INFERRED_PORTS_ONLY === "true",
-    };
-  }
-
-  // Check local storage for development
-  if (typeof window !== "undefined" && window.localStorage) {
-    try {
-      const stored = window.localStorage.getItem("nodeEditorFeatureFlags");
-      if (stored) {
-        return { ...defaultFeatureFlags, ...JSON.parse(stored) };
-      }
-    } catch (e) {
-      console.warn("Failed to parse feature flags from localStorage", e);
-    }
-  }
-
   return defaultFeatureFlags;
 }
 
 /**
- * Set feature flags in local storage (for development/testing)
+ * Reset feature flag overrides that may have been persisted between sessions.
  */
-export function setFeatureFlags(flags: Partial<NodeEditorFeatureFlags>): void {
+export function setFeatureFlags(): void {
   if (typeof window !== "undefined" && window.localStorage) {
-    const current = getFeatureFlags();
-    const updated = { ...current, ...flags };
-    window.localStorage.setItem("nodeEditorFeatureFlags", JSON.stringify(updated));
-
-    // Reload to apply changes
-    if (flags.useInferredPortsOnly !== current.useInferredPortsOnly) {
-      console.log("Port inference mode changed. Reload required for changes to take effect.");
-    }
+    window.localStorage.removeItem("nodeEditorFeatureFlags");
   }
 }
 
 /**
- * React hook for feature flags
+ * React hook that exposes the memoized feature flag configuration.
  */
 export function useFeatureFlags(): NodeEditorFeatureFlags {
-  const [flags, setFlags] = React.useState(getFeatureFlags);
-
-  React.useEffect(() => {
-    // Listen for storage changes
-    const handleStorageChange = () => {
-      setFlags(getFeatureFlags());
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
-
-  return flags;
+  return React.useMemo(() => defaultFeatureFlags, []);
 }
-
-// For React import
-import * as React from "react";

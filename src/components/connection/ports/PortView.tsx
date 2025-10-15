@@ -87,11 +87,25 @@ export const PortView: React.FC<PortViewProps> = ({
     [onPointerEnter, port],
   );
 
+  const handlePointerMove = React.useCallback(
+    (e: React.PointerEvent) => {
+      onPointerMove?.(e, port);
+    },
+    [onPointerMove, port],
+  );
+
   const handlePointerLeave = React.useCallback(
     (e: React.PointerEvent) => {
       onPointerLeave?.(e, port);
     },
     [onPointerLeave, port],
+  );
+
+  const handlePointerCancel = React.useCallback(
+    (e: React.PointerEvent) => {
+      onPointerCancel?.(e, port);
+    },
+    [onPointerCancel, port],
   );
 
   // Get node editor state for custom renderer context
@@ -111,11 +125,9 @@ export const PortView: React.FC<PortViewProps> = ({
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerEnter={handlePointerEnter}
-        onPointerMove={(e) => onPointerMove?.(e, port)}
+        onPointerMove={handlePointerMove}
         onPointerLeave={handlePointerLeave}
-        onPointerCancel={(e) => {
-          onPointerCancel?.(e, port);
-        }}
+        onPointerCancel={handlePointerCancel}
         data-port-id={port.id}
         data-port-type={port.type}
         data-port-position={port.position}
@@ -146,8 +158,9 @@ export const PortView: React.FC<PortViewProps> = ({
       handlePointerDown,
       handlePointerUp,
       handlePointerEnter,
+      handlePointerMove,
       handlePointerLeave,
-      onPointerCancel,
+      handlePointerCancel,
     ],
   );
 
@@ -175,8 +188,9 @@ export const PortView: React.FC<PortViewProps> = ({
         onPointerDown: handlePointerDown,
         onPointerUp: handlePointerUp,
         onPointerEnter: handlePointerEnter,
+        onPointerMove: handlePointerMove,
         onPointerLeave: handlePointerLeave,
-        onPointerCancel: (e: React.PointerEvent) => onPointerCancel?.(e, port),
+        onPointerCancel: handlePointerCancel,
       },
     };
 

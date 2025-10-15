@@ -101,6 +101,11 @@ export const enMessages: I18nMessages = {
   inspectorTabHistory: "History",
   inspectorTabSettings: "Settings",
   inspectorActions: "Actions",
+  inspectorInteractionHelpTitle: "Interaction Guide",
+  inspectorInteractionHelpSectionClipboard: "Clipboard & Editing",
+  inspectorInteractionHelpSectionSelection: "Selection & Layout",
+  inspectorInteractionHelpSectionHistory: "History & Saving",
+  inspectorInteractionHelpUnassigned: "Not assigned",
 
   // Auto Layout Panel
   autoLayoutPanelDescription: "Arrange nodes automatically using the built-in layout presets.",

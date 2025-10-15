@@ -109,7 +109,7 @@ export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) 
 
       const nodesInBox = candidateNodes.filter((nodeId) => isNodeInSelectionBox(nodeId, box));
 
-      actions.selectAllNodes(nodesInBox as NodeId[]);
+      actions.setInteractionSelection(nodesInBox as NodeId[]);
     },
     [isSelecting, clientToCanvas, nodeEditorState.nodes, isNodeInSelectionBox, actions],
   );

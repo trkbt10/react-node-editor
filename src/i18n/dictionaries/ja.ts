@@ -101,6 +101,11 @@ export const jaMessages: I18nMessages = {
   inspectorTabHistory: "履歴",
   inspectorTabSettings: "設定",
   inspectorActions: "アクション",
+  inspectorInteractionHelpTitle: "操作ガイド",
+  inspectorInteractionHelpSectionClipboard: "クリップボードと編集",
+  inspectorInteractionHelpSectionSelection: "選択とレイアウト",
+  inspectorInteractionHelpSectionHistory: "履歴と保存",
+  inspectorInteractionHelpUnassigned: "未割り当て",
 
   // Auto Layout Panel
   autoLayoutPanelDescription: "組み込みプリセットを利用して、自動的にノードを配置します。",

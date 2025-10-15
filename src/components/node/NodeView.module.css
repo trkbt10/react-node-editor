@@ -38,7 +38,7 @@
 .nodeView[data-locked="true"] {}
 
 .nodeView[data-selected="true"] {
-  box-shadow: var(--node-editor-shadow-selection);
+  box-shadow: var(--node-editor-shadow-md);
 }
 
 .nodeView[data-selected="true"]::before {

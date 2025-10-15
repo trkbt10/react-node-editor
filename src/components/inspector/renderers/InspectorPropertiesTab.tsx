@@ -18,7 +18,9 @@ export const InspectorPropertiesTab: React.FC = () => {
   const { t } = useI18n();
 
   const selectedNode =
-    actionState.selectedNodeIds.length > 0 ? nodeEditorState.nodes[actionState.selectedNodeIds[0]] : null;
+    actionState.editingSelectedNodeIds.length > 0
+      ? nodeEditorState.nodes[actionState.editingSelectedNodeIds[0]]
+      : null;
 
   const selectedConnection =
     actionState.selectedConnectionIds.length > 0
@@ -61,10 +63,10 @@ export const InspectorPropertiesTab: React.FC = () => {
         </div>
       )}
 
-      {actionState.selectedNodeIds.length > 1 && (
+      {actionState.editingSelectedNodeIds.length > 1 && (
         <InspectorSection>
           <H4>{t("inspectorMultipleSelection")}</H4>
-          <p>{actionState.selectedNodeIds.length} nodes selected</p>
+          <p>{actionState.editingSelectedNodeIds.length} nodes selected</p>
         </InspectorSection>
       )}
     </>

@@ -284,7 +284,7 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
     return null;
   }
 
-  const isSelected = actionState.selectedNodeIds.includes(nodeId);
+  const isSelected = actionState.editingSelectedNodeIds.includes(nodeId);
   const childNodes = React.useMemo(() => {
     const list = Object.values(editorState.nodes).filter((n) => n.parentId === nodeId);
     return list.sort((a, b) => {
@@ -301,10 +301,22 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
   }, [editorState.nodes, nodeId]);
 
   const handleSelect = React.useCallback(
-    (nodeId: NodeId, multiSelect: boolean) => {
-      actionActions.selectNode(nodeId, multiSelect);
+    (targetNodeId: NodeId, multiSelect: boolean) => {
+      if (multiSelect) {
+        const editingSelected = actionState.editingSelectedNodeIds;
+        const interactionSelected = actionState.selectedNodeIds;
+        const isAlreadySelected = editingSelected.includes(targetNodeId);
+        const nextInteraction = isAlreadySelected
+          ? interactionSelected.filter((id) => id !== targetNodeId)
+          : [...new Set([...interactionSelected, targetNodeId])];
+        actionActions.setInteractionSelection(nextInteraction);
+        actionActions.selectEditingNode(targetNodeId, true);
+        return;
+      }
+      actionActions.setInteractionSelection([targetNodeId]);
+      actionActions.setEditingSelection([targetNodeId]);
     },
-    [actionActions],
+    [actionActions, actionState.editingSelectedNodeIds, actionState.selectedNodeIds],
   );
 
   const handleToggleVisibility = React.useCallback(

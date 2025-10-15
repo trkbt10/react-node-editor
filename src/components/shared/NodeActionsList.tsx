@@ -14,6 +14,12 @@ import {
   copyNodesToClipboard,
   pasteNodesFromClipboard,
 } from "../../contexts/node-editor/utils/nodeClipboardOperations";
+import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
+import {
+  detectShortcutDisplayPlatform,
+  getShortcutLabelForAction,
+} from "../../utils/shortcutDisplay";
+import type { NodeEditorShortcutAction } from "../../types/interaction";
 
 export type NodeActionsListProps = {
   targetNodeId: string;
@@ -40,6 +46,21 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: editorState } = useNodeEditor();
   const nodeDefinitions = useNodeDefinitionList();
+  const interactionSettings = useInteractionSettings();
+  const platform = React.useMemo(() => detectShortcutDisplayPlatform(), []);
+
+  const shortcutFor = React.useCallback(
+    (action: NodeEditorShortcutAction) => {
+      return getShortcutLabelForAction(interactionSettings.keyboardShortcuts, action, platform);
+    },
+    [interactionSettings.keyboardShortcuts, platform],
+  );
+
+  const duplicateShortcut = shortcutFor("duplicate-selection");
+  const copyShortcut = shortcutFor("copy");
+  const cutShortcut = shortcutFor("cut");
+  const pasteShortcut = shortcutFor("paste");
+  const deleteShortcut = shortcutFor("delete-selection");
 
   const handleDuplicate = React.useCallback(() => {
     const node = editorState.nodes[targetNodeId];
@@ -56,7 +77,7 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
 
   const handleCopy = React.useCallback(() => {
     const selected =
-      actionState.selectedNodeIds.length > 0 && actionState.selectedNodeIds.includes(targetNodeId)
+      actionState.selectedNodeIds.includes(targetNodeId) && actionState.selectedNodeIds.length > 0
         ? actionState.selectedNodeIds
         : [targetNodeId];
     copyNodesToClipboard(selected, editorState);
@@ -65,7 +86,7 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
 
   const handleCut = React.useCallback(() => {
     const selected =
-      actionState.selectedNodeIds.length > 0 && actionState.selectedNodeIds.includes(targetNodeId)
+      actionState.selectedNodeIds.includes(targetNodeId) && actionState.selectedNodeIds.length > 0
         ? actionState.selectedNodeIds
         : [targetNodeId];
     copyNodesToClipboard(selected, editorState);
@@ -92,7 +113,7 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
 
     // Select pasted nodes
     const newIds = Array.from(result.idMap.values());
-    actionActions.selectAllNodes(newIds);
+    actionActions.setInteractionSelection(newIds);
     onAction?.();
   }, [editorActions, actionActions, onAction]);
 
@@ -106,26 +127,31 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
       {includeDuplicate && (
         <li className={styles.actionItem} onClick={handleDuplicate}>
           <DuplicateIcon size={14} /> {t("contextMenuDuplicateNode")}
+          {duplicateShortcut ? <span className={styles.actionShortcut}>{duplicateShortcut}</span> : null}
         </li>
       )}
       {includeCopy && (
         <li className={styles.actionItem} onClick={handleCopy}>
           <CopyIcon size={14} /> {t("copy")}
+          {copyShortcut ? <span className={styles.actionShortcut}>{copyShortcut}</span> : null}
         </li>
       )}
       {includeCut && (
         <li className={styles.actionItem} onClick={handleCut}>
           <CutIcon size={14} /> {t("cut")}
+          {cutShortcut ? <span className={styles.actionShortcut}>{cutShortcut}</span> : null}
         </li>
       )}
       {includePaste && (
         <li className={styles.actionItem} onClick={handlePaste}>
           <PasteIcon size={14} /> {t("paste")}
+          {pasteShortcut ? <span className={styles.actionShortcut}>{pasteShortcut}</span> : null}
         </li>
       )}
       {includeDelete && (
         <li className={[styles.actionItem, styles.actionItemDanger].join(" ")} onClick={handleDelete}>
           <DeleteIcon size={14} /> {t("contextMenuDeleteNode")}
+          {deleteShortcut ? <span className={styles.actionShortcut}>{deleteShortcut}</span> : null}
         </li>
       )}
     </>

@@ -174,6 +174,14 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
     [connection.id, onPointerLeave],
   );
 
+  const handleContextMenu = React.useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      onContextMenu?.(e, connection.id);
+    },
+    [connection.id, onContextMenu],
+  );
+
   // Get node definitions to check for custom connection renderer
   const fromNodeDefinition = useNodeDefinition(fromNode.type);
   const toNodeDefinition = useNodeDefinition(toNode.type);
@@ -205,10 +213,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
           onPointerDown={handlePointerDown}
           onPointerEnter={handlePointerEnter}
           onPointerLeave={handlePointerLeave}
-          onContextMenu={(e) => {
-            e.stopPropagation();
-            onContextMenu?.(e, connection.id);
-          }}
+          onContextMenu={handleContextMenu}
         />
 
         {/* Flow stripes when hovered or selected (render after base so they appear on top) */}
@@ -263,6 +268,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
       handlePointerEnter,
       handlePointerLeave,
       onContextMenu,
+      handleContextMenu,
     ],
   );
 
@@ -271,6 +277,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
     // Build context for custom renderer
     const context: ConnectionRenderContext = {
       connection,
+      phase: "connected",
       fromPort,
       toPort,
       fromNode,
@@ -282,6 +289,12 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
       isAdjacentToSelectedNode,
       isDragging,
       dragProgress,
+      handlers: {
+        onPointerDown: handlePointerDown,
+        onPointerEnter: handlePointerEnter,
+        onPointerLeave: handlePointerLeave,
+        onContextMenu: handleContextMenu,
+      },
     };
 
     return customRenderer(context, defaultRender);

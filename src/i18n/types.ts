@@ -103,6 +103,11 @@ export type I18nMessages = {
   inspectorTabHistory?: string;
   inspectorTabSettings?: string;
   inspectorActions?: string;
+  inspectorInteractionHelpTitle?: string;
+  inspectorInteractionHelpSectionClipboard?: string;
+  inspectorInteractionHelpSectionSelection?: string;
+  inspectorInteractionHelpSectionHistory?: string;
+  inspectorInteractionHelpUnassigned?: string;
 
   // Auto Layout Panel
   autoLayoutPanelDescription: string;

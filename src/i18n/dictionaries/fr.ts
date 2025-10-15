@@ -102,6 +102,11 @@ export const frMessages: I18nMessages = {
   inspectorTabHistory: "Historique",
   inspectorTabSettings: "Paramètres",
   inspectorActions: "Actions",
+  inspectorInteractionHelpTitle: "Guide d'interaction",
+  inspectorInteractionHelpSectionClipboard: "Presse-papiers et édition",
+  inspectorInteractionHelpSectionSelection: "Sélection et disposition",
+  inspectorInteractionHelpSectionHistory: "Historique et sauvegarde",
+  inspectorInteractionHelpUnassigned: "Non attribué",
 
   // Auto Layout Panel
   autoLayoutPanelDescription:

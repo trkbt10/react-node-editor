@@ -102,6 +102,11 @@ export const deMessages: I18nMessages = {
   inspectorTabHistory: "Verlauf",
   inspectorTabSettings: "Einstellungen",
   inspectorActions: "Aktionen",
+  inspectorInteractionHelpTitle: "Interaktionsleitfaden",
+  inspectorInteractionHelpSectionClipboard: "Zwischenablage und Bearbeitung",
+  inspectorInteractionHelpSectionSelection: "Auswahl und Layout",
+  inspectorInteractionHelpSectionHistory: "Verlauf und Speichern",
+  inspectorInteractionHelpUnassigned: "Nicht zugewiesen",
 
   // Auto Layout Panel
   autoLayoutPanelDescription:

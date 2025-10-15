@@ -17,3 +17,10 @@
 .actionItemDanger {
   color: var(--node-editor-caution-color, #ff3b30);
 }
+
+.actionShortcut {
+  margin-left: auto;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: var(--node-editor-tertiary-label-color, #9ca3af);
+}
