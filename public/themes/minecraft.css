@@ -61,6 +61,11 @@
   --node-editor-grid-color: #8ccf3f;
   --node-editor-grid-opacity: 0.18;
 
+  /* Shadow system */
+  --node-editor-shadow-sm: 0 2px 0 rgba(0, 0, 0, 0.3);
+  --node-editor-shadow-md: 0 3px 0 rgba(0, 0, 0, 0.4);
+  --node-editor-shadow-lg: 0 4px 0 rgba(0, 0, 0, 0.5);
+
   /* Inspector shadows */
   --node-editor-inspector-shadow: 0 4px 0 rgba(0, 0, 0, 0.4);
   --node-editor-inspector-header-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
