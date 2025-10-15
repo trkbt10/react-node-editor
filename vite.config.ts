@@ -84,6 +84,7 @@ export default defineConfig(({ mode }) => {
           "i18n/en": "src/i18n/dictionaries/en.ts",
           "i18n/ja": "src/i18n/dictionaries/ja.ts",
           "i18n/zh": "src/i18n/dictionaries/zh.ts",
+          "i18n/zh-cn": "src/i18n/dictionaries/zh-CN.ts",
           "i18n/ko": "src/i18n/dictionaries/ko.ts",
           "i18n/es": "src/i18n/dictionaries/es.ts",
           "i18n/fr": "src/i18n/dictionaries/fr.ts",

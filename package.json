@@ -42,6 +42,11 @@
       "import": "./dist/i18n/zh.js",
       "require": "./dist/i18n/zh.cjs"
     },
+    "./i18n/zh-cn": {
+      "types": "./dist/i18n/zh-cn.d.ts",
+      "import": "./dist/i18n/zh-cn.js",
+      "require": "./dist/i18n/zh-cn.cjs"
+    },
     "./i18n/ko": {
       "types": "./dist/i18n/ko.d.ts",
       "import": "./dist/i18n/ko.js",
