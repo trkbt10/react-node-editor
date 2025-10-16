@@ -26,6 +26,9 @@ import { AdvancedNestedEditorExample } from "./demos/advanced/subeditor/Advanced
 import { InteractionCustomizationExample } from "./demos/interaction/InteractionCustomizationExample";
 import { CustomConnectorExample } from "./demos/CustomConnectorExample";
 import { OpalThemeExample } from "./demos/opal-theme/OpalThemeExample";
+import { UnityThemeExample } from "./demos/unity-theme/UnityThemeExample";
+import { AdobeThemeExample } from "./demos/adobe-theme/AdobeThemeExample";
+import { FigmaThemeExample } from "./demos/figma-theme/FigmaThemeExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -168,6 +171,27 @@ const examples: ExampleEntry[] = [
     title: "Design: Opal Theme",
     description: "Soft pastel aesthetic with custom connection and port renderers inspired by Opal AI.",
     component: OpalThemeExample,
+    category: "design",
+  },
+  {
+    id: "design-unity-theme",
+    title: "Design: Unity Theme",
+    description: "Professional dark theme inspired by Unity Editor's interface design.",
+    component: UnityThemeExample,
+    category: "design",
+  },
+  {
+    id: "design-adobe-theme",
+    title: "Design: Adobe Theme",
+    description: "Sleek dark interface inspired by Adobe Creative Cloud applications.",
+    component: AdobeThemeExample,
+    category: "design",
+  },
+  {
+    id: "design-figma-theme",
+    title: "Design: Figma Theme",
+    description: "Clean light interface with Figma's signature blue and minimal design language.",
+    component: FigmaThemeExample,
     category: "design",
   },
 ];

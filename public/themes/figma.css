@@ -1,0 +1,238 @@
+:root {
+  /* Core spacing scale */
+  --node-editor-space-xs: 4px;
+  --node-editor-space-sm: 8px;
+  --node-editor-space-md: 12px;
+  --node-editor-space-lg: 16px;
+  --node-editor-space-xl: 24px;
+  --node-editor-space-xxl: 32px;
+
+  /* Layout spacing */
+  --node-editor-control-padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+
+  /* Inspector spacing system */
+  --node-editor-inspector-space-xs: var(--node-editor-space-xs);
+  --node-editor-inspector-space-sm: var(--node-editor-space-sm);
+  --node-editor-inspector-space-md: var(--node-editor-space-md);
+  --node-editor-inspector-space-lg: var(--node-editor-space-lg);
+  --node-editor-inspector-space-xl: var(--node-editor-space-xl);
+  --node-editor-inspector-space-xxl: var(--node-editor-space-xxl);
+  --node-editor-inspector-content-padding: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-xs);
+  --node-editor-inspector-header-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-section-gap: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-field-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
+  --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+  --node-editor-inspector-input-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+
+  /* Inspector typography */
+  --node-editor-inspector-font-size-title: 0.6875rem;
+  --node-editor-inspector-line-height-title: 1.429;
+  --node-editor-inspector-font-size-body: 0.875rem;
+  --node-editor-inspector-line-height-body: 1.429;
+  --node-editor-inspector-font-size-meta: 0.75rem;
+  --node-editor-inspector-line-height-meta: 1.333;
+  --node-editor-inspector-font-weight-medium: 500;
+  --node-editor-inspector-font-size-heading: 0.875rem;
+  --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
+  --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+  /* Font families & typography - Figma uses Inter */
+  --node-editor-theme-default-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --node-editor-theme-control-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --node-editor-theme-label-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --node-editor-system-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --node-editor-font-mono: "Roboto Mono", "SF Mono", "Consolas", monospace;
+  --node-editor-title-font: 500 0.875rem/1.429 var(--node-editor-theme-label-font-family);
+  --node-editor-subtitle-font: 400 0.875rem/1.429 var(--node-editor-theme-label-font-family);
+  --node-editor-caption-font: 400 0.75rem/1.333 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 400 var(--node-editor-inspector-font-size-body) / 1.429
+    var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.429
+    var(--node-editor-theme-default-font-family);
+  --node-editor-font-size-lg: 1rem;
+  --node-editor-font-size-sm: 0.875rem;
+  --node-editor-font-size-xs: 0.75rem;
+
+  /* Canvas grid - Figma's pixel grid */
+  --node-editor-grid-color: #000000;
+  --node-editor-grid-opacity: 0.06;
+
+  /* Shadow system - Figma's crisp elevation shadows */
+  --node-editor-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --node-editor-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --node-editor-shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0, 0, 0, 0.08);
+
+  /* Transition system - Figma's snappy animations */
+  --node-editor-transition-duration: 0.1s;
+
+  /* Inspector shadows */
+  --node-editor-inspector-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --node-editor-inspector-header-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+
+  /* Tree & List Components */
+  --node-editor-tree-item-height: 28px;
+  --node-editor-tree-indent: 16px;
+
+  /* Control Buttons */
+  --node-editor-control-button-size-sm: 16px;
+  --node-editor-control-button-size: 20px;
+
+  /* Icons */
+  --node-editor-icon-size-sm: 14px;
+  --node-editor-icon-selected-brightness: 1.15;
+
+  /* Text colors - Figma UI design language */
+  --node-editor-text-color: #1d1d1d;
+  --node-editor-text-secondary: #676767;
+  --node-editor-header-text-color: #1d1d1d;
+  --node-editor-label-color: #1d1d1d;
+  --node-editor-secondary-label-color: #676767;
+  --node-editor-tertiary-label-color: #999999;
+  --node-editor-quaternary-label-color: #b8b8b8;
+  --node-editor-control-text-color: var(--node-editor-text-color);
+  --node-editor-control-text-color-primary: #ffffff;
+  --node-editor-control-text-color-secondary: var(--node-editor-text-color);
+  --node-editor-control-hover-text-color-primary: #ffffff;
+  --node-editor-input-text-color: var(--node-editor-text-color);
+  --node-editor-selected-control-text-color: #ffffff;
+  --node-editor-selected-menu-item-text-color: #ffffff;
+
+  /* Status & accent colors - Figma's signature blue (#18a0fb) */
+  --node-editor-accent-color: #18a0fb;
+  --node-editor-accent-color-hover: #0d8de0;
+  --node-editor-color-primary: #18a0fb;
+  --node-editor-keyboard-focus-indicator-color: rgba(24, 160, 251, 0.35);
+  --node-editor-success-color: #0fa958;
+  --node-editor-warning-color: #ffad2e;
+  --node-editor-caution-color: #f24822;
+  --node-editor-caution-hover-background: rgba(242, 72, 34, 0.08);
+  --node-editor-system-orange-color: #ffad2e;
+  --node-editor-system-red-color: #f24822;
+  --node-editor-connection-color: #999999;
+
+  /* Surface colors - Figma's precise gray scale */
+  --node-editor-surface-primary: #ffffff;
+  --node-editor-surface-secondary: #f7f7f7;
+  --node-editor-surface-tertiary: #e8e8e8;
+  --node-editor-selected-content-background-color: rgba(24, 160, 251, 0.1);
+  --node-editor-selected-control-color: rgba(24, 160, 251, 0.15);
+  --node-editor-under-page-background-color: #e8e8e8;
+  --node-editor-window-background-color: #e8e8e8;
+
+  /* Control surfaces - Figma button components */
+  --node-editor-control-background: #ffffff;
+  --node-editor-control-background-primary: #18a0fb;
+  --node-editor-control-background-secondary: #f7f7f7;
+  --node-editor-control-hover-background: #f0f0f0;
+  --node-editor-control-hover-background-primary: #0d8de0;
+  --node-editor-hover-background: rgba(0, 0, 0, 0.038);
+  --node-editor-control-box-shadow-primary: 0 1px 2px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --node-editor-control-box-shadow-secondary: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  --node-editor-disabled-control-text-color: rgba(29, 29, 29, 0.3);
+
+  /* Input surfaces - Figma input field styling */
+  --node-editor-input-background: #ffffff;
+  --node-editor-input-border: 1px solid #e3e3e3;
+  --node-editor-input-border-hover: #18a0fb;
+  --node-editor-input-box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --node-editor-input-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  /* Card & panel styling - Figma property panel design */
+  --node-editor-card-border-color: rgba(0, 0, 0, 0.1);
+  --node-editor-card-border: 1px solid var(--node-editor-card-border-color);
+  --node-editor-card-border-radius: var(--node-editor-radius-sm);
+  --node-editor-card-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  --node-editor-card-hover-box-shadow: 0 3px 6px rgba(0, 0, 0, 0.11), 0 0 0 1px rgba(0, 0, 0, 0.07);
+  --node-editor-card-elevated-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --node-editor-card-focus-box-shadow: 0 0 0 2px var(--node-editor-keyboard-focus-indicator-color);
+  --node-editor-card-disabled-background: rgba(0, 0, 0, 0.04);
+  --node-editor-card-filled-background: rgba(24, 160, 251, 0.08);
+  --node-editor-card-filled-hover-background: rgba(24, 160, 251, 0.12);
+  --node-editor-card-hover-border-color: rgba(24, 160, 251, 0.3);
+
+  /* Dialogs & overlays - Figma modal design */
+  --node-editor-dialog-background: var(--node-editor-surface-primary);
+  --node-editor-dialog-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --node-editor-dialog-level-elevation: 1000;
+
+  /* Scrollbars - Figma minimal scrollbar */
+  --node-editor-scroll-bar-thumb-color: rgba(0, 0, 0, 0.18);
+  --node-editor-active-scroll-bar-thumb-color: rgba(0, 0, 0, 0.32);
+
+  /* Selected State Colors */
+  --node-editor-selected-secondary-color: rgba(13, 153, 255, 0.95);
+  --node-editor-selected-hover-background: rgba(13, 153, 255, 0.2);
+
+  /* Tables & list accents */
+  --node-editor-table-header-background-color: #f5f5f5;
+  --node-editor-table-header-background-color-hover: #eeeeee;
+  --node-editor-table-header-background-color-active: #e5e5e5;
+
+  /* Node-specific colors - Figma FigJam / node graph colors */
+  --node-editor-group-node-background: rgba(24, 160, 251, 0.06);
+  --node-editor-group-node-border: rgba(24, 160, 251, 0.2);
+  --node-editor-group-node-active-background: rgba(24, 160, 251, 0.12);
+  --node-editor-group-node-active-color: rgba(24, 160, 251, 0.5);
+  --node-editor-node-port-input-color: #0fa958;
+  --node-editor-node-port-output-color: #f24822;
+
+  /* System fills */
+  --node-editor-tertiary-system-background: rgba(0, 0, 0, 0.03);
+  --node-editor-tertiary-system-fill-color: rgba(0, 0, 0, 0.04);
+  --node-editor-quaternary-system-fill-color: rgba(0, 0, 0, 0.06);
+
+  /* Border Radii - Figma's rounded corners */
+  --node-editor-border-radius-xxs: 2px;
+  --node-editor-border-radius-xs: 4px;
+  --node-editor-radius-xs: 4px;
+  --node-editor-radius-sm: 6px;
+  --node-editor-radius-md: 8px;
+  --node-editor-control-border-radius: var(--node-editor-radius-sm);
+  --node-editor-segment-control-border-radius: 6px;
+
+  /* Borders */
+  --node-editor-border-width: 1px;
+  --node-editor-border-color: rgba(0, 0, 0, 0.1);
+  --node-editor-divider-color: rgba(0, 0, 0, 0.08);
+  --node-editor-separator-color: rgba(0, 0, 0, 0.06);
+
+  /* Segment controls */
+  --node-editor-segment-backdrop-filter: none;
+  --node-editor-segment-control-background: rgba(0, 0, 0, 0.06);
+  --node-editor-segment-control-background-color: transparent;
+  --node-editor-segment-control-text-color: #666666;
+  --node-editor-segment-control-active-background-color: #ffffff;
+  --node-editor-segment-control-active-text-color: #000000;
+  --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+
+  /* Connection styling - Figma's smooth vector connections */
+  --node-editor-connection-base-stroke-width: 2;
+  --node-editor-connection-active-stroke-width: 3;
+  --node-editor-connection-flow-stripe-stroke-width: 1.5;
+  --node-editor-connection-flow-stripe-active-stroke-width: 2.5;
+  --node-editor-connection-direction-stroke-width: 2;
+  --node-editor-connection-hover-shadow: drop-shadow(0 1px 3px rgba(24, 160, 251, 0.3));
+  --node-editor-connection-selected-shadow: drop-shadow(0 2px 5px rgba(24, 160, 251, 0.45));
+  --node-editor-connection-hover-opacity: 0.88;
+  --node-editor-connection-dragging-opacity: 0.58;
+  --node-editor-connection-stripe-dash-array: 6 8;
+  --node-editor-connection-stripe-dash-offset-bg: -7;
+  --node-editor-connection-stripe-opacity-accent: 0.88;
+  --node-editor-connection-stripe-opacity-background: 0.48;
+  --node-editor-connection-flow-animation-duration: 0.75s;
+  --node-editor-connection-flow-animation-distance: -14;
+  --node-editor-connection-base-transition: stroke 0.1s cubic-bezier(0.4, 0, 0.2, 1), stroke-width 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  --node-editor-connection-arrow-transition: fill 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Connection drag styling */
+  --node-editor-connection-drag-stroke-width-connecting: 2;
+  --node-editor-connection-drag-stroke-width-disconnecting: 3;
+  --node-editor-connection-drag-dash-array-connecting: 3 3;
+  --node-editor-connection-drag-dash-array-disconnecting: 6 3;
+  --node-editor-connection-drag-animation-duration: 0.4s;
+  --node-editor-connection-drag-animation-distance: -6;
+}

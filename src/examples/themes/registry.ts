@@ -18,7 +18,8 @@ export type NodeEditorThemeId =
   | "stellar"
   | "opal"
   | "unity"
-  | "adobe";
+  | "adobe"
+  | "figma";
 
 export type NodeEditorTheme = {
   id: NodeEditorThemeId;
@@ -134,6 +135,12 @@ const AVAILABLE_THEMES: NodeEditorTheme[] = [
     label: "Adobe",
     description: "Sleek dark interface inspired by Adobe Creative Cloud with refined blue accents.",
     cssPath: "/themes/adobe.css",
+  },
+  {
+    id: "figma",
+    label: "Figma",
+    description: "Clean light interface with Figma's signature blue and minimal design language.",
+    cssPath: "/themes/figma.css",
   },
 ];
 

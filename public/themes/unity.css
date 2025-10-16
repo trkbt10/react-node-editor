@@ -85,14 +85,14 @@
   --node-editor-icon-size-sm: 14px;
   --node-editor-icon-selected-brightness: 1.3;
 
-  /* Text colors - Unity dark theme colors */
-  --node-editor-text-color: #c4c4c4;
-  --node-editor-text-secondary: #9e9e9e;
-  --node-editor-header-text-color: #d2d2d2;
-  --node-editor-label-color: #c4c4c4;
-  --node-editor-secondary-label-color: #9e9e9e;
-  --node-editor-tertiary-label-color: #808080;
-  --node-editor-quaternary-label-color: #606060;
+  /* Text colors - Unity Editor Professional dark theme */
+  --node-editor-text-color: #c8c8c8;
+  --node-editor-text-secondary: #a0a0a0;
+  --node-editor-header-text-color: #d4d4d4;
+  --node-editor-label-color: #c8c8c8;
+  --node-editor-secondary-label-color: #a0a0a0;
+  --node-editor-tertiary-label-color: #7f7f7f;
+  --node-editor-quaternary-label-color: #5a5a5a;
   --node-editor-control-text-color: var(--node-editor-text-color);
   --node-editor-control-text-color-primary: #ffffff;
   --node-editor-control-text-color-secondary: var(--node-editor-text-color);
@@ -101,58 +101,58 @@
   --node-editor-selected-control-text-color: #ffffff;
   --node-editor-selected-menu-item-text-color: #ffffff;
 
-  /* Status & accent colors - Unity blue accent */
-  --node-editor-accent-color: #00a6ed;
-  --node-editor-accent-color-hover: #0095d9;
-  --node-editor-color-primary: #00a6ed;
-  --node-editor-keyboard-focus-indicator-color: rgba(0, 166, 237, 0.5);
-  --node-editor-success-color: #5fb963;
-  --node-editor-warning-color: #f5a623;
-  --node-editor-caution-color: #e74c3c;
-  --node-editor-caution-hover-background: rgba(231, 76, 60, 0.15);
-  --node-editor-system-orange-color: #f5a623;
-  --node-editor-system-red-color: #e74c3c;
-  --node-editor-connection-color: #606060;
+  /* Status & accent colors - Unity's signature blue (#2c5aa0) */
+  --node-editor-accent-color: #3f87f5;
+  --node-editor-accent-color-hover: #4c8df7;
+  --node-editor-color-primary: #3f87f5;
+  --node-editor-keyboard-focus-indicator-color: rgba(63, 135, 245, 0.5);
+  --node-editor-success-color: #6bc046;
+  --node-editor-warning-color: #ffb900;
+  --node-editor-caution-color: #ff4040;
+  --node-editor-caution-hover-background: rgba(255, 64, 64, 0.15);
+  --node-editor-system-orange-color: #ffb900;
+  --node-editor-system-red-color: #ff4040;
+  --node-editor-connection-color: #5a5a5a;
 
-  /* Surface colors - Unity dark backgrounds */
-  --node-editor-surface-primary: #383838;
-  --node-editor-surface-secondary: #2d2d2d;
-  --node-editor-surface-tertiary: #242424;
-  --node-editor-selected-content-background-color: rgba(0, 166, 237, 0.15);
-  --node-editor-selected-control-color: rgba(0, 166, 237, 0.2);
-  --node-editor-under-page-background-color: #1c1c1c;
-  --node-editor-window-background-color: #1c1c1c;
+  /* Surface colors - Unity Editor hierarchy/inspector backgrounds */
+  --node-editor-surface-primary: #3c3c3c;
+  --node-editor-surface-secondary: #2b2b2b;
+  --node-editor-surface-tertiary: #222222;
+  --node-editor-selected-content-background-color: rgba(63, 135, 245, 0.18);
+  --node-editor-selected-control-color: rgba(63, 135, 245, 0.25);
+  --node-editor-under-page-background-color: #1e1e1e;
+  --node-editor-window-background-color: #1e1e1e;
 
-  /* Control surfaces */
-  --node-editor-control-background: #2d2d2d;
-  --node-editor-control-background-primary: #00a6ed;
-  --node-editor-control-background-secondary: #383838;
-  --node-editor-control-hover-background: #3a3a3a;
-  --node-editor-control-hover-background-primary: #0095d9;
-  --node-editor-hover-background: rgba(255, 255, 255, 0.05);
-  --node-editor-control-box-shadow-primary: 0 2px 4px rgba(0, 0, 0, 0.6);
-  --node-editor-control-box-shadow-secondary: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
-  --node-editor-disabled-control-text-color: rgba(196, 196, 196, 0.3);
+  /* Control surfaces - Unity Editor button/control styling */
+  --node-editor-control-background: #2b2b2b;
+  --node-editor-control-background-primary: #3f87f5;
+  --node-editor-control-background-secondary: #3c3c3c;
+  --node-editor-control-hover-background: #404040;
+  --node-editor-control-hover-background-primary: #4c8df7;
+  --node-editor-hover-background: rgba(255, 255, 255, 0.06);
+  --node-editor-control-box-shadow-primary: 0 1px 3px rgba(0, 0, 0, 0.7);
+  --node-editor-control-box-shadow-secondary: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --node-editor-disabled-control-text-color: rgba(200, 200, 200, 0.3);
 
-  /* Input surfaces */
-  --node-editor-input-background: #242424;
-  --node-editor-input-border: 1px solid #1a1a1a;
-  --node-editor-input-border-hover: #00a6ed;
-  --node-editor-input-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+  /* Input surfaces - Unity Editor input field styling */
+  --node-editor-input-background: #222222;
+  --node-editor-input-border: 1px solid #191919;
+  --node-editor-input-border-hover: #3f87f5;
+  --node-editor-input-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
   --node-editor-input-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
 
-  /* Card & panel styling - Unity panel look */
-  --node-editor-card-border-color: rgba(0, 0, 0, 0.6);
+  /* Card & panel styling - Unity Inspector/Window panels */
+  --node-editor-card-border-color: rgba(0, 0, 0, 0.7);
   --node-editor-card-border: 1px solid var(--node-editor-card-border-color);
   --node-editor-card-border-radius: var(--node-editor-radius-xs);
-  --node-editor-card-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  --node-editor-card-hover-box-shadow: 0 3px 8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  --node-editor-card-elevated-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  --node-editor-card-focus-box-shadow: 0 0 0 2px var(--node-editor-keyboard-focus-indicator-color);
-  --node-editor-card-disabled-background: rgba(0, 0, 0, 0.2);
-  --node-editor-card-filled-background: rgba(0, 166, 237, 0.1);
-  --node-editor-card-filled-hover-background: rgba(0, 166, 237, 0.15);
-  --node-editor-card-hover-border-color: rgba(0, 166, 237, 0.4);
+  --node-editor-card-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --node-editor-card-hover-box-shadow: 0 3px 8px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --node-editor-card-elevated-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --node-editor-card-focus-box-shadow: 0 0 0 1px var(--node-editor-keyboard-focus-indicator-color);
+  --node-editor-card-disabled-background: rgba(0, 0, 0, 0.25);
+  --node-editor-card-filled-background: rgba(63, 135, 245, 0.1);
+  --node-editor-card-filled-hover-background: rgba(63, 135, 245, 0.15);
+  --node-editor-card-hover-border-color: rgba(63, 135, 245, 0.4);
 
   /* Dialogs & overlays */
   --node-editor-dialog-background: var(--node-editor-surface-secondary);
@@ -172,13 +172,13 @@
   --node-editor-table-header-background-color-hover: #333333;
   --node-editor-table-header-background-color-active: #383838;
 
-  /* Node-specific colors */
-  --node-editor-group-node-background: rgba(0, 166, 237, 0.08);
-  --node-editor-group-node-border: rgba(0, 166, 237, 0.25);
-  --node-editor-group-node-active-background: rgba(0, 166, 237, 0.15);
-  --node-editor-group-node-active-color: rgba(0, 166, 237, 0.6);
-  --node-editor-node-port-input-color: #5fb963;
-  --node-editor-node-port-output-color: #e74c3c;
+  /* Node-specific colors - Unity Shader Graph / Visual Scripting style */
+  --node-editor-group-node-background: rgba(63, 135, 245, 0.08);
+  --node-editor-group-node-border: rgba(63, 135, 245, 0.25);
+  --node-editor-group-node-active-background: rgba(63, 135, 245, 0.15);
+  --node-editor-group-node-active-color: rgba(63, 135, 245, 0.6);
+  --node-editor-node-port-input-color: #6bc046;
+  --node-editor-node-port-output-color: #ff4040;
 
   /* System fills */
   --node-editor-tertiary-system-background: rgba(255, 255, 255, 0.03);
@@ -209,22 +209,22 @@
   --node-editor-segment-control-active-text-color: #ffffff;
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
 
-  /* Connection styling - Unity node editor connections */
-  --node-editor-connection-base-stroke-width: 2;
-  --node-editor-connection-active-stroke-width: 3;
-  --node-editor-connection-flow-stripe-stroke-width: 1.5;
-  --node-editor-connection-flow-stripe-active-stroke-width: 2.5;
-  --node-editor-connection-direction-stroke-width: 2;
-  --node-editor-connection-hover-shadow: drop-shadow(0 2px 4px rgba(0, 166, 237, 0.4));
-  --node-editor-connection-selected-shadow: drop-shadow(0 3px 6px rgba(0, 166, 237, 0.6));
-  --node-editor-connection-hover-opacity: 0.9;
-  --node-editor-connection-dragging-opacity: 0.6;
-  --node-editor-connection-stripe-dash-array: 8 12;
-  --node-editor-connection-stripe-dash-offset-bg: -10;
-  --node-editor-connection-stripe-opacity-accent: 0.9;
-  --node-editor-connection-stripe-opacity-background: 0.5;
-  --node-editor-connection-flow-animation-duration: 1.2s;
-  --node-editor-connection-flow-animation-distance: -20;
+  /* Connection styling - Unity Shader Graph connections */
+  --node-editor-connection-base-stroke-width: 2.5;
+  --node-editor-connection-active-stroke-width: 3.5;
+  --node-editor-connection-flow-stripe-stroke-width: 2;
+  --node-editor-connection-flow-stripe-active-stroke-width: 3;
+  --node-editor-connection-direction-stroke-width: 2.5;
+  --node-editor-connection-hover-shadow: drop-shadow(0 2px 4px rgba(63, 135, 245, 0.4));
+  --node-editor-connection-selected-shadow: drop-shadow(0 3px 6px rgba(63, 135, 245, 0.6));
+  --node-editor-connection-hover-opacity: 0.95;
+  --node-editor-connection-dragging-opacity: 0.65;
+  --node-editor-connection-stripe-dash-array: 10 14;
+  --node-editor-connection-stripe-dash-offset-bg: -12;
+  --node-editor-connection-stripe-opacity-accent: 0.95;
+  --node-editor-connection-stripe-opacity-background: 0.55;
+  --node-editor-connection-flow-animation-duration: 1.4s;
+  --node-editor-connection-flow-animation-distance: -24;
   --node-editor-connection-base-transition: stroke 0.15s ease-out, stroke-width 0.15s ease-out;
   --node-editor-connection-arrow-transition: fill 0.15s ease-out;
 
