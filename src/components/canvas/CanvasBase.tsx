@@ -10,6 +10,7 @@ import { SelectionOverlay } from "./SelectionOverlay";
 import styles from "./CanvasBase.module.css";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
 import type { CanvasPanActivator, ModifierKey, PointerType } from "../../types/interaction";
+import { isPointerShortcutEvent } from "../../utils/pointerShortcuts";
 
 export type CanvasBaseProps = {
   children: React.ReactNode;
@@ -333,27 +334,41 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         return;
       }
 
-      if (e.button === 0 && !interactiveTarget) {
-        const rect = containerRef.current?.getBoundingClientRect();
-        if (!rect) {
+      if (!interactiveTarget) {
+        const pointerShortcuts = interactionSettings.pointerShortcuts;
+        const nativeEvent = e.nativeEvent;
+
+        const rangeSelection = isPointerShortcutEvent(pointerShortcuts, "canvas-range-select", nativeEvent);
+        if (rangeSelection) {
+          const additiveSelection = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", nativeEvent);
+
+          const rect = containerRef.current?.getBoundingClientRect();
+          if (!rect) {
+            return;
+          }
+
+          const screenX = nativeEvent.clientX - rect.left;
+          const screenY = nativeEvent.clientY - rect.top;
+
+          setIsBoxSelecting(true);
+          actionActions.setSelectionBox({
+            start: { x: screenX, y: screenY },
+            end: { x: screenX, y: screenY },
+          });
+
+          if (!additiveSelection) {
+            actionActions.clearSelection();
+          }
+
+          if (containerRef.current) {
+            containerRef.current.setPointerCapture(e.pointerId);
+          }
           return;
         }
 
-        const screenX = e.clientX - rect.left;
-        const screenY = e.clientY - rect.top;
-
-        setIsBoxSelecting(true);
-        actionActions.setSelectionBox({
-          start: { x: screenX, y: screenY },
-          end: { x: screenX, y: screenY },
-        });
-
-        if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
+        if (isPointerShortcutEvent(pointerShortcuts, "canvas-clear-selection", nativeEvent)) {
           actionActions.clearSelection();
-        }
-
-        if (containerRef.current) {
-          containerRef.current.setPointerCapture(e.pointerId);
+          return;
         }
       }
     },
@@ -364,6 +379,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       isPinching,
       canvasState.isSpacePanning,
       interactionSettings.canvasPanActivators,
+      interactionSettings.pointerShortcuts,
       canvasActions,
       actionActions,
     ],
@@ -489,7 +505,9 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         });
 
         if (selectedNodeIds.length > 0) {
-          if (e.shiftKey || e.ctrlKey || e.metaKey) {
+          const pointerShortcuts = interactionSettings.pointerShortcuts;
+          const additiveSelection = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", e.nativeEvent);
+          if (additiveSelection) {
             const newSelection = [...new Set([...actionState.selectedNodeIds, ...selectedNodeIds])];
             actionActions.setInteractionSelection(newSelection);
           } else {
@@ -514,6 +532,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       actionState.selectionBox,
       actionState.selectedNodeIds,
       nodeEditorState.nodes,
+      interactionSettings.pointerShortcuts,
       canvasActions,
       actionActions,
     ],
@@ -529,10 +548,15 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
   // Handle context menu
   const handleContextMenu = React.useCallback(
     (e: React.MouseEvent) => {
+      const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
+      const pointerShortcuts = interactionSettings.pointerShortcuts;
+      if (!isPointerShortcutEvent(pointerShortcuts, "canvas-open-context-menu", nativeEvent)) {
+        return;
+      }
+
       e.preventDefault();
       e.stopPropagation();
 
-      const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
       const pointerType: PointerType | "unknown" =
         nativeEvent.pointerType === "mouse" || nativeEvent.pointerType === "touch" || nativeEvent.pointerType === "pen"
           ? (nativeEvent.pointerType as PointerType)
@@ -558,7 +582,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
 
       defaultShow();
     },
-    [actionActions, utils, interactionSettings.contextMenu.handleRequest],
+    [actionActions, utils, interactionSettings.contextMenu.handleRequest, interactionSettings.pointerShortcuts],
   );
 
   // Handle double click to open Node Search

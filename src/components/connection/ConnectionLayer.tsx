@@ -14,6 +14,7 @@ import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import styles from "./ConnectionLayer.module.css";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
 import type { PointerType } from "../../types/interaction";
+import { isPointerShortcutEvent } from "../../utils/pointerShortcuts";
 
 export type ConnectionLayerProps = {
   className?: string;
@@ -290,11 +291,26 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
         return;
       }
 
-      // Select the connection
-      const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey;
-      actionActions.selectConnection(connectionId, isMultiSelect);
+      const pointerShortcuts = interactionSettings.pointerShortcuts;
+      const nativeEvent = e.nativeEvent;
+      const matchesMultiSelect = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", nativeEvent);
+      const matchesSelect = isPointerShortcutEvent(pointerShortcuts, "node-select", nativeEvent) || matchesMultiSelect;
+
+      if (!matchesSelect && !matchesMultiSelect) {
+        return;
+      }
+
+      actionActions.selectConnection(connectionId, matchesMultiSelect);
     },
-    [connection, nodeEditorState, portLookupMap, actionActions, fromPortPos, toPortPos],
+    [
+      connection,
+      nodeEditorState,
+      portLookupMap,
+      actionActions,
+      fromPortPos,
+      toPortPos,
+      interactionSettings.pointerShortcuts,
+    ],
   );
 
   const handleConnectionPointerEnter = React.useCallback(
@@ -313,10 +329,15 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
 
   const handleConnectionContextMenu = React.useCallback(
     (e: React.MouseEvent, connectionId: string) => {
+      const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
+      const pointerShortcuts = interactionSettings.pointerShortcuts;
+      if (!isPointerShortcutEvent(pointerShortcuts, "node-open-context-menu", nativeEvent)) {
+        return;
+      }
+
       e.preventDefault();
       e.stopPropagation();
 
-      const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
       const pointerType: PointerType | "unknown" =
         nativeEvent.pointerType === "mouse" || nativeEvent.pointerType === "touch" || nativeEvent.pointerType === "pen"
           ? (nativeEvent.pointerType as PointerType)
@@ -342,7 +363,12 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
 
       defaultShow();
     },
-    [actionActions, utils, interactionSettings.contextMenu.handleRequest],
+    [
+      actionActions,
+      utils,
+      interactionSettings.contextMenu.handleRequest,
+      interactionSettings.pointerShortcuts,
+    ],
   );
   const fromNode = nodeEditorState.nodes[connection.fromNodeId];
   const toNode = nodeEditorState.nodes[connection.toNodeId];

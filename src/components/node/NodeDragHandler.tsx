@@ -9,6 +9,8 @@ import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { nodeHasGroupBehavior } from "../../types/behaviors";
+import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
+import { isPointerShortcutEvent } from "../../utils/pointerShortcuts";
 
 export type NodeDragHandlerProps = {
   nodeId: NodeId;
@@ -24,6 +26,7 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: canvasState } = useNodeCanvas();
   const nodeDefinitions = useNodeDefinitionList();
+  const interactionSettings = useInteractionSettings();
 
   const node = nodeEditorState.nodes[nodeId];
   const isDragging = actionState.dragState?.nodeIds.includes(nodeId) || false;
@@ -65,13 +68,21 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
 
   const handleDragStart = React.useCallback(
     (event: PointerEvent, data: ReturnType<typeof createDragData>) => {
+      const pointerShortcuts = interactionSettings.pointerShortcuts;
+      const matchesMultiSelect = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", event);
+      const matchesSelect = isPointerShortcutEvent(pointerShortcuts, "node-select", event) || matchesMultiSelect;
+      if (!matchesSelect && !matchesMultiSelect) {
+        return;
+      }
+
+      const finalIsMultiSelect = matchesMultiSelect;
+
       // Select node if not already selected
       if (!actionState.selectedNodeIds.includes(nodeId)) {
-        const isMulti = event.shiftKey || event.metaKey || event.ctrlKey;
-        if (!isMulti) {
+        if (!finalIsMultiSelect) {
           actionActions.selectEditingNode(nodeId, false);
         }
-        actionActions.selectInteractionNode(nodeId, isMulti);
+        actionActions.selectInteractionNode(nodeId, finalIsMultiSelect);
       }
 
       // Start drag state
@@ -82,7 +93,7 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
         data.affectedChildNodes,
       );
     },
-    [nodeId, actionState.selectedNodeIds, actionActions],
+    [nodeId, actionState.selectedNodeIds, actionActions, interactionSettings.pointerShortcuts],
   );
 
   const handleDragMove = React.useCallback(

@@ -25,6 +25,7 @@ import { ThemeShowcaseExample } from "./demos/design/ThemeShowcaseExample";
 import { AdvancedNestedEditorExample } from "./demos/advanced/subeditor/AdvancedNestedEditorExample";
 import { InteractionCustomizationExample } from "./demos/interaction/InteractionCustomizationExample";
 import { CustomConnectorExample } from "./demos/CustomConnectorExample";
+import { OpalThemeExample } from "./demos/opal-theme/OpalThemeExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -160,6 +161,13 @@ const examples: ExampleEntry[] = [
     title: "Design: Theme Showcase",
     description: "Preview core design tokens and UI components under the active theme.",
     component: ThemeShowcaseExample,
+    category: "design",
+  },
+  {
+    id: "design-opal-theme",
+    title: "Design: Opal Theme",
+    description: "Soft pastel aesthetic with custom connection and port renderers inspired by Opal AI.",
+    component: OpalThemeExample,
     category: "design",
   },
 ];

@@ -1,0 +1,66 @@
+/* Displays shortcut binding text with minimal branching for keyboard/pointer types. */
+
+.value {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--node-editor-space-2xs, 4px);
+  width: 100%;
+  color: var(--node-editor-text-color, #111827);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.value[data-state="empty"] {
+  color: var(--node-editor-quaternary-label-color, #d1d5db);
+  font-style: italic;
+}
+
+.value[data-state="capturing"] {
+  color: var(--node-editor-accent-color, #2563eb);
+  font-style: normal;
+}
+
+.modifier {
+  font-weight: 500;
+}
+
+.operator {
+  color: var(--node-editor-tertiary-label-color, #9ca3af);
+  font-weight: 500;
+}
+
+.pointerGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  color: var(--node-editor-text-color, #111827);
+}
+
+.pointerIcon {
+  width: 13px;
+  height: 13px;
+  display: block;
+  color: inherit;
+}
+
+.pointerToken {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-right: 1px;
+}
+
+.modifierGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.gesture {
+  font-weight: 500;
+}
+
+.suffix {
+  color: var(--node-editor-tertiary-label-color, #9ca3af);
+  font-weight: 500;
+}

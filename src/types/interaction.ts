@@ -125,6 +125,39 @@ export type ShortcutBinding = {
   cmdOrCtrl?: boolean;
 };
 
+export type PointerShortcutModifiers = {
+  ctrl?: boolean;
+  shift?: boolean;
+  alt?: boolean;
+  meta?: boolean;
+  /**
+   * When true, accepts either Ctrl (Windows/Linux) or Cmd (macOS).
+   */
+  cmdOrCtrl?: boolean;
+};
+
+/**
+ * Pointer shortcut binding describing a button + modifier combination.
+ */
+export type PointerShortcutBinding = {
+  /**
+   * Pointer button index that activates the shortcut (0 = primary button).
+   */
+  button: number;
+  /**
+   * Pointer types that can trigger this shortcut. When omitted, any type is accepted.
+   */
+  pointerTypes?: PointerType[];
+  /**
+   * Modifier constraints required for activation.
+   */
+  modifiers?: PointerShortcutModifiers;
+  /**
+   * When true, activation requires the pointer target to be non-interactive (empty surface).
+   */
+  requireEmptyTarget?: boolean;
+};
+
 /**
  * Well-known shortcut actions exposed for configuration.
  */
@@ -143,6 +176,18 @@ export type NodeEditorShortcutAction =
   | "copy"
   | "cut"
   | "paste";
+
+/**
+ * Pointer-based interaction actions that can be configured.
+ */
+export type NodeEditorPointerAction =
+  | "canvas-clear-selection"
+  | "canvas-pan"
+  | "canvas-range-select"
+  | "node-select"
+  | "node-add-to-selection"
+  | "node-open-context-menu"
+  | "canvas-open-context-menu";
 
 /**
  * Configuration for a single shortcut action.
@@ -173,6 +218,34 @@ export type KeyboardShortcutBehavior = {
 };
 
 /**
+ * Configuration for a single pointer shortcut action.
+ */
+export type PointerShortcutActionBehavior = {
+  /**
+   * Enable or disable this pointer shortcut. Defaults to true.
+   */
+  enabled?: boolean;
+  /**
+   * Pointer binding overriding the default.
+   */
+  binding?: PointerShortcutBinding | null;
+};
+
+/**
+ * Aggregated pointer shortcut behavior customizations.
+ */
+export type PointerShortcutBehavior = {
+  /**
+   * Global toggle for pointer shortcuts.
+   */
+  enabled: boolean;
+  /**
+   * Action-specific overrides.
+   */
+  actions: Partial<Record<NodeEditorPointerAction, PointerShortcutActionBehavior>>;
+};
+
+/**
  * Aggregated interaction settings that can be supplied to the node editor.
  */
 export type NodeEditorInteractionSettings = {
@@ -180,6 +253,7 @@ export type NodeEditorInteractionSettings = {
   pinchZoom: PinchZoomSettings;
   contextMenu: ContextMenuBehavior;
   keyboardShortcuts: KeyboardShortcutBehavior;
+  pointerShortcuts: PointerShortcutBehavior;
 };
 
 /**
@@ -192,5 +266,9 @@ export type NodeEditorInteractionSettingsPatch = {
   keyboardShortcuts?: {
     enabled?: boolean;
     actions?: Partial<Record<NodeEditorShortcutAction, KeyboardShortcutActionBehavior>>;
+  };
+  pointerShortcuts?: {
+    enabled?: boolean;
+    actions?: Partial<Record<NodeEditorPointerAction, PointerShortcutActionBehavior>>;
   };
 };

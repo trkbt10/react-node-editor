@@ -1,0 +1,32 @@
+/* Simple Connection Styles */
+.simpleConnectorGroup {
+  transition: opacity 0.2s ease-out;
+}
+
+.simpleConnector {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.simpleConnectorHitArea {
+  fill: none;
+  stroke-linecap: round;
+  cursor: pointer;
+}
+
+/* Simple Port Styles */
+.simplePortAnchor {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.simplePortCircle {
+  position: relative;
+  cursor: pointer;
+}
+
+.simplePortDot {
+  pointer-events: none;
+}

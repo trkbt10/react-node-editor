@@ -10,6 +10,8 @@ import { getNodeBoundingBox, createBoundingBoxFromCorners, doRectanglesIntersect
 import { SpatialGrid } from "../../contexts/node-editor/utils/nodeLookupUtils";
 import styles from "./SelectionManager.module.css";
 import { SelectionOverlay } from "./SelectionOverlay";
+import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
+import { isPointerShortcutEvent } from "../../utils/pointerShortcuts";
 
 export type SelectionManagerProps = {
   children: React.ReactNode;
@@ -22,6 +24,7 @@ export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) 
   const { state: nodeEditorState } = useNodeEditor();
   const { actions } = useEditorActionState();
   const { state: canvasState } = useNodeCanvas();
+  const interactionSettings = useInteractionSettings();
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [isSelecting, setIsSelecting] = React.useState(false);
@@ -77,18 +80,30 @@ export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) 
         return;
       }
 
-      const canvasPos = clientToCanvas({ x: e.clientX, y: e.clientY });
-      startPosRef.current = canvasPos;
-      setIsSelecting(true);
+      const pointerShortcuts = interactionSettings.pointerShortcuts;
+      const nativeEvent = e.nativeEvent;
 
-      actions.setSelectionBox({ start: canvasPos, end: canvasPos });
+      const rangeSelection = isPointerShortcutEvent(pointerShortcuts, "canvas-range-select", nativeEvent);
+      if (rangeSelection) {
+        const additiveSelection = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", nativeEvent);
 
-      // Clear selection if not holding modifier
-      if (!e.shiftKey && !e.metaKey && !e.ctrlKey) {
+        const canvasPos = clientToCanvas({ x: nativeEvent.clientX, y: nativeEvent.clientY });
+        startPosRef.current = canvasPos;
+        setIsSelecting(true);
+
+        actions.setSelectionBox({ start: canvasPos, end: canvasPos });
+
+        if (!additiveSelection) {
+          actions.clearSelection();
+        }
+        return;
+      }
+
+      if (isPointerShortcutEvent(pointerShortcuts, "canvas-clear-selection", nativeEvent)) {
         actions.clearSelection();
       }
     },
-    [clientToCanvas, actions],
+    [clientToCanvas, actions, interactionSettings.pointerShortcuts],
   );
 
   const handlePointerMove = React.useCallback(

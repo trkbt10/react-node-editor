@@ -12,9 +12,16 @@
   gap: var(--node-editor-space-sm, 8px);
 }
 
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--node-editor-space-sm, 8px);
+}
+
 .sectionTitle {
   font-weight: 600;
-  font-size: 13px;
+  font-size: var(--node-editor-inspector-font-size-title);
   color: var(--node-editor-secondary-label-color, #4b5563);
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -30,24 +37,108 @@
 }
 
 .shortcutItem {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(128px, auto) minmax(132px, 1fr);
   align-items: center;
-  gap: var(--node-editor-space-xs, 4px);
+  gap: var(--node-editor-space-sm, 8px);
 }
 
 .shortcutLabel {
-  flex: 1;
   font-size: 13px;
   color: var(--node-editor-text-color, #111827);
+  white-space: nowrap;
 }
 
-.shortcutBinding {
+.bindingFieldContainer {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--node-editor-space-3xs, 2px);
+  flex: 1 1 auto;
+}
+
+.bindingField {
+  box-sizing: border-box;
+  width: 100%;
+  appearance: none;
+  border: 1px solid var(--node-editor-border-color, #d1d5db);
+  background: var(--node-editor-surface-secondary, #f9fafb);
+  color: var(--node-editor-text-color, #111827);
   font-size: 12px;
+  padding: var(--node-editor-space-2xs, 2px) var(--node-editor-space-xs, 4px);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  text-align: center;
   font-variant-numeric: tabular-nums;
-  color: var(--node-editor-tertiary-label-color, #9ca3af);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--node-editor-space-3xs, 2px);
 }
 
-.shortcutBinding[data-disabled="true"] {
+.bindingField[data-empty="true"] {
   color: var(--node-editor-quaternary-label-color, #d1d5db);
   font-style: italic;
+}
+
+.bindingField[data-state="active"] {
+  border-color: var(--node-editor-accent-color, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  background: var(--node-editor-surface, #ffffff);
+}
+
+.bindingField[data-state="active"][data-empty="true"] {
+  color: var(--node-editor-accent-color, #2563eb);
+  font-style: normal;
+}
+
+.bindingValue {
+  width: 100%;
+}
+
+.bindingField:focus-visible {
+  outline: none;
+  border-color: var(--node-editor-accent-color, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.16);
+  background: var(--node-editor-surface, #ffffff);
+}
+
+.bindingResetButton {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  border: 1px solid var(--node-editor-border-color, #d1d5db);
+  background: var(--node-editor-surface, #ffffff);
+  color: var(--node-editor-tertiary-label-color, #9ca3af);
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.bindingResetButton:hover {
+  background: var(--node-editor-surface-hover, #eef2ff);
+  border-color: var(--node-editor-accent-color, #2563eb);
+  color: var(--node-editor-accent-color, #2563eb);
+}
+
+.shortcutItem[data-active="true"] .bindingField {
+  border-color: var(--node-editor-accent-color, #2563eb);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+}
+
+.shortcutItem[data-active="true"] .bindingField[data-empty="true"] {
+  color: var(--node-editor-accent-color, #2563eb);
+  font-style: normal;
+}
+
+.shortcutItem[data-active="true"] .bindingResetButton {
+  border-color: var(--node-editor-accent-color, #2563eb);
+  color: var(--node-editor-accent-color, #2563eb);
 }

@@ -43,6 +43,7 @@ import {
 } from "../../contexts/node-editor/utils/nodeDragHelpers";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
 import type { PointerType } from "../../types/interaction";
+import { isPointerShortcutEvent } from "../../utils/pointerShortcuts";
 
 const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
   ids: new Set<string>(),
@@ -196,10 +197,15 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
   // Event handlers
   const handleNodeContextMenu = React.useCallback(
     (e: React.MouseEvent, nodeId: string) => {
+      const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
+      const pointerShortcuts = interactionSettings.pointerShortcuts;
+      if (!isPointerShortcutEvent(pointerShortcuts, "node-open-context-menu", nativeEvent)) {
+        return;
+      }
+
       e.preventDefault();
       e.stopPropagation();
 
-      const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
       const pointerType: PointerType | "unknown" =
         nativeEvent.pointerType === "mouse" || nativeEvent.pointerType === "touch" || nativeEvent.pointerType === "pen"
           ? (nativeEvent.pointerType as PointerType)
@@ -225,14 +231,20 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
 
       defaultShow();
     },
-    [actionActions, utils, interactionSettings.contextMenu.handleRequest],
+    [actionActions, utils, interactionSettings.contextMenu.handleRequest, interactionSettings.pointerShortcuts],
   );
 
   const handleNodePointerDown = React.useCallback(
-    (e: React.PointerEvent, nodeId: string, isDragAllowed: boolean = true) => {
-      if (e.button !== 0) {
+    (e: React.PointerEvent, targetNodeId: string, isDragAllowed: boolean = true) => {
+      const nativeEvent = e.nativeEvent;
+      const pointerShortcuts = interactionSettings.pointerShortcuts;
+      const matchesMultiSelect = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", nativeEvent);
+      const matchesSelect = isPointerShortcutEvent(pointerShortcuts, "node-select", nativeEvent) || matchesMultiSelect;
+
+      if (!matchesSelect && !matchesMultiSelect) {
         return;
       }
+
       e.stopPropagation();
       const isInputElement =
         e.target instanceof HTMLElement && ["INPUT", "TEXTAREA", "SELECT", "BUTTON"].includes(e.target.tagName);
@@ -240,15 +252,15 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
         return;
       }
 
-      const clickedNode = nodeEditorState.nodes[nodeId];
-      const isMultiSelect = e.shiftKey || e.metaKey || e.ctrlKey;
+      const finalIsMultiSelect = matchesMultiSelect;
+      const clickedNode = nodeEditorState.nodes[targetNodeId];
 
-      if (!isMultiSelect) {
-        actionActions.selectEditingNode(nodeId, false);
+      if (!finalIsMultiSelect) {
+        actionActions.selectEditingNode(targetNodeId, false);
       }
 
       if (clickedNode?.locked) {
-        actionActions.selectInteractionNode(nodeId, isMultiSelect);
+        actionActions.selectInteractionNode(targetNodeId, finalIsMultiSelect);
         return;
       }
 
@@ -257,16 +269,16 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
       const isInteractive = nodeDefinition?.interactive || false;
 
       // For interactive nodes, check if dragging is allowed
-      if (isInteractive && !isDragAllowed && !actionState.selectedNodeIds.includes(nodeId)) {
+      if (isInteractive && !isDragAllowed && !actionState.selectedNodeIds.includes(targetNodeId)) {
         // Just select the node without starting drag
-        actionActions.selectInteractionNode(nodeId, isMultiSelect);
+        actionActions.selectInteractionNode(targetNodeId, finalIsMultiSelect);
         return;
       }
 
       // Determine nodes to drag using helper function
       const nodesToDrag = getNodesToDrag(
-        nodeId,
-        isMultiSelect,
+        targetNodeId,
+        finalIsMultiSelect,
         actionState.selectedNodeIds,
         nodeEditorState.nodes,
         isInteractive,
@@ -274,8 +286,8 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
       );
 
       // Handle selection if not already selected
-      if (!actionState.selectedNodeIds.includes(nodeId)) {
-        actionActions.selectInteractionNode(nodeId, isMultiSelect);
+      if (!actionState.selectedNodeIds.includes(targetNodeId)) {
+        actionActions.selectInteractionNode(targetNodeId, finalIsMultiSelect);
       }
 
       if (nodesToDrag.length === 0) {
@@ -297,7 +309,15 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
 
       actionActions.startNodeDrag(nodesToDrag, startPosition, initialPositions, affectedChildNodes);
     },
-    [actionActions, actionState.selectedNodeIds, nodeEditorState.nodes, groupManager, getNodeDef],
+    [
+      actionActions,
+      actionState.selectedNodeIds,
+      nodeEditorState.nodes,
+      groupManager,
+      getNodeDef,
+      interactionSettings.pointerShortcuts,
+      nodeDefinitions,
+    ],
   );
 
   // Track drag start for disconnect threshold

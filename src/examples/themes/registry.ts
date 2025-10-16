@@ -15,7 +15,9 @@ export type NodeEditorThemeId =
   | "windows11"
   | "minecraft"
   | "wargames"
-  | "stellar";
+  | "stellar"
+  | "opal"
+  | "unity";
 
 export type NodeEditorTheme = {
   id: NodeEditorThemeId;
@@ -113,6 +115,18 @@ const AVAILABLE_THEMES: NodeEditorTheme[] = [
     label: "Stellar",
     description: "Gray background with dark cards, warm orange accents, and clean flat design.",
     cssPath: "/themes/stellar.css",
+  },
+  {
+    id: "opal",
+    label: "Opal",
+    description: "Soft pastel aesthetic with gentle purples, warm cream surfaces, and flowing connections.",
+    cssPath: "/themes/opal.css",
+  },
+  {
+    id: "unity",
+    label: "Unity",
+    description: "Professional dark theme with Unity's signature blue accent and flat panel design.",
+    cssPath: "/themes/unity.css",
   },
 ];
 

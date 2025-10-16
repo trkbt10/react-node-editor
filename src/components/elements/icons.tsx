@@ -87,13 +87,15 @@ export const CopyIcon = createIcon(
 
 export const CutIcon = createIcon(
   <>
-    <circle cx="6" cy="6" r="2" />
-    <circle cx="14" cy="6" r="2" />
-    <line x1="20" y1="4" x2="4" y2="16" />
-    <line x1="12" y1="12" x2="4" y2="4" />
+    <circle cx="6" cy="7" r="3" />
+    <circle cx="6" cy="17" r="3" />
+    <circle cx="11.5" cy="12" r="1" />
+    <line x1="6" y1="9" x2="11" y2="12" />
+    <line x1="6" y1="15" x2="11" y2="12" />
+    <line x1="11" y1="12" x2="20" y2="4" />
+    <line x1="11" y1="12" x2="20" y2="20" />
   </>,
-  "0 0 24 24",
-);
+  );
 
 export const PasteIcon = createIcon(
   "M19 21H8A2 2 0 0 1 6 19V7H10V5A2 2 0 0 1 12 3H14A2 2 0 0 1 16 5V7H20V19A2 2 0 0 1 18 21ZM12 7H14",

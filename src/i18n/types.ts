@@ -108,6 +108,21 @@ export type I18nMessages = {
   inspectorInteractionHelpSectionSelection?: string;
   inspectorInteractionHelpSectionHistory?: string;
   inspectorInteractionHelpUnassigned?: string;
+  inspectorInteractionHelpSectionPointer?: string;
+  inspectorInteractionHelpPointerNodeSelect?: string;
+  inspectorInteractionHelpPointerNodeMultiSelect?: string;
+  inspectorInteractionHelpPointerRangeSelect?: string;
+  inspectorInteractionHelpPointerNodeContextMenu?: string;
+  inspectorInteractionHelpPointerCanvasContextMenu?: string;
+  inspectorInteractionHelpPointerCanvasClearSelection?: string;
+  inspectorInteractionHelpPointerCanvasPan?: string;
+  inspectorInteractionHelpPointerEmptyTargetSuffix?: string;
+  inspectorInteractionHelpEdit?: string;
+  inspectorInteractionHelpCancel?: string;
+  inspectorInteractionHelpReset?: string;
+  inspectorInteractionHelpClear?: string;
+  inspectorInteractionHelpKeyboardPrompt?: string;
+  inspectorInteractionHelpPointerPrompt?: string;
 
   // Auto Layout Panel
   autoLayoutPanelDescription: string;
