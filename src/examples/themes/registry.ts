@@ -17,7 +17,8 @@ export type NodeEditorThemeId =
   | "wargames"
   | "stellar"
   | "opal"
-  | "unity";
+  | "unity"
+  | "adobe";
 
 export type NodeEditorTheme = {
   id: NodeEditorThemeId;
@@ -127,6 +128,12 @@ const AVAILABLE_THEMES: NodeEditorTheme[] = [
     label: "Unity",
     description: "Professional dark theme with Unity's signature blue accent and flat panel design.",
     cssPath: "/themes/unity.css",
+  },
+  {
+    id: "adobe",
+    label: "Adobe",
+    description: "Sleek dark interface inspired by Adobe Creative Cloud with refined blue accents.",
+    cssPath: "/themes/adobe.css",
   },
 ];
 

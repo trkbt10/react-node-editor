@@ -11,7 +11,7 @@ export type { NodeEditorRenderers, NodeEditorRendererOverrides } from "./types/r
 
 // Helper components for custom node implementations
 export { NodeResizer, normalizeNodeSize } from "./components/node/NodeResizer";
-export type { NodeResizerProps, NodeResizeDelta } from "./components/node/NodeResizer";
+export type { NodeResizerProps } from "./components/node/NodeResizer";
 
 // Node definition helpers for custom nodes and inspectors
 export {

@@ -1,0 +1,238 @@
+:root {
+  /* Core spacing scale */
+  --node-editor-space-xs: 4px;
+  --node-editor-space-sm: 8px;
+  --node-editor-space-md: 12px;
+  --node-editor-space-lg: 16px;
+  --node-editor-space-xl: 24px;
+  --node-editor-space-xxl: 32px;
+
+  /* Layout spacing */
+  --node-editor-control-padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+
+  /* Inspector spacing system */
+  --node-editor-inspector-space-xs: var(--node-editor-space-xs);
+  --node-editor-inspector-space-sm: var(--node-editor-space-sm);
+  --node-editor-inspector-space-md: var(--node-editor-space-md);
+  --node-editor-inspector-space-lg: var(--node-editor-space-lg);
+  --node-editor-inspector-space-xl: var(--node-editor-space-xl);
+  --node-editor-inspector-space-xxl: var(--node-editor-space-xxl);
+  --node-editor-inspector-content-padding: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-xs);
+  --node-editor-inspector-header-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-section-gap: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-field-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
+  --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+  --node-editor-inspector-input-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+
+  /* Inspector typography */
+  --node-editor-inspector-font-size-title: 0.6875rem;
+  --node-editor-inspector-line-height-title: 1.429;
+  --node-editor-inspector-font-size-body: 0.875rem;
+  --node-editor-inspector-line-height-body: 1.429;
+  --node-editor-inspector-font-size-meta: 0.75rem;
+  --node-editor-inspector-line-height-meta: 1.333;
+  --node-editor-inspector-font-weight-medium: 500;
+  --node-editor-inspector-font-size-heading: 0.875rem;
+  --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
+  --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+  /* Font families & typography - Opal uses softer, more rounded fonts */
+  --node-editor-theme-default-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Inter", "Segoe UI", sans-serif;
+  --node-editor-theme-control-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Inter", "Segoe UI", sans-serif;
+  --node-editor-theme-label-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Inter", "Segoe UI", sans-serif;
+  --node-editor-system-font: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Inter", "Segoe UI", sans-serif;
+  --node-editor-font-mono: "SF Mono", "Cascadia Code", "Fira Code", "Courier New", monospace;
+  --node-editor-title-font: 500 0.875rem/1.429 var(--node-editor-theme-label-font-family);
+  --node-editor-subtitle-font: 400 0.875rem/1.429 var(--node-editor-theme-label-font-family);
+  --node-editor-caption-font: 400 0.75rem/1.333 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 500 var(--node-editor-inspector-font-size-body) / 1.429
+    var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.429
+    var(--node-editor-theme-default-font-family);
+  --node-editor-font-size-lg: 1rem;
+  --node-editor-font-size-sm: 0.875rem;
+  --node-editor-font-size-xs: 0.75rem;
+
+  /* Canvas grid - subtle soft grid */
+  --node-editor-grid-color: #c5c9d0;
+  --node-editor-grid-opacity: 0.15;
+
+  /* Shadow system - soft, diffused shadows */
+  --node-editor-shadow-sm: 0 2px 8px rgba(186, 157, 237, 0.12);
+  --node-editor-shadow-md: 0 4px 16px rgba(186, 157, 237, 0.16);
+  --node-editor-shadow-lg: 0 8px 32px rgba(186, 157, 237, 0.2);
+
+  /* Transition system - smooth transitions */
+  --node-editor-transition-duration: 0.25s;
+
+  /* Inspector shadows */
+  --node-editor-inspector-shadow: 0 4px 16px 0 rgba(186, 157, 237, 0.15), 0 2px 8px 0 rgba(186, 157, 237, 0.1);
+  --node-editor-inspector-header-shadow: 0 1px 0 rgba(212, 181, 232, 0.2);
+
+  /* Tree & List Components */
+  --node-editor-tree-item-height: 28px;
+  --node-editor-tree-indent: 16px;
+
+  /* Control Buttons */
+  --node-editor-control-button-size-sm: 16px;
+  --node-editor-control-button-size: 20px;
+
+  /* Icons */
+  --node-editor-icon-size-sm: 14px;
+  --node-editor-icon-selected-brightness: 1.15;
+
+  /* Text colors - matching design */
+  --node-editor-text-color: #4a5568;
+  --node-editor-text-secondary: #718096;
+  --node-editor-header-text-color: #4a5568;
+  --node-editor-label-color: #4a5568;
+  --node-editor-secondary-label-color: #718096;
+  --node-editor-tertiary-label-color: #a0aec0;
+  --node-editor-quaternary-label-color: #cbd5e0;
+  --node-editor-control-text-color: var(--node-editor-text-color);
+  --node-editor-control-text-color-primary: #ffffff;
+  --node-editor-control-text-color-secondary: var(--node-editor-text-color);
+  --node-editor-control-hover-text-color-primary: #ffffff;
+  --node-editor-input-text-color: var(--node-editor-text-color);
+  --node-editor-selected-control-text-color: #6b5a88;
+  --node-editor-selected-menu-item-text-color: #ffffff;
+
+  /* Status & accent colors - blue accent matching design */
+  --node-editor-accent-color: #4299e1;
+  --node-editor-accent-color-hover: #3182ce;
+  --node-editor-color-primary: #4299e1;
+  --node-editor-keyboard-focus-indicator-color: rgba(66, 153, 225, 0.35);
+  --node-editor-success-color: #48bb78;
+  --node-editor-warning-color: #ed8936;
+  --node-editor-caution-color: #f56565;
+  --node-editor-caution-hover-background: rgba(245, 101, 101, 0.12);
+  --node-editor-system-orange-color: #ed8936;
+  --node-editor-system-red-color: #f56565;
+  --node-editor-connection-color: #a0aec0;
+
+  /* Surface colors - warm cream matching design */
+  --node-editor-surface-primary: #ffffff;
+  --node-editor-surface-secondary: #f7f9fa;
+  --node-editor-surface-tertiary: #edf2f7;
+  --node-editor-selected-content-background-color: rgba(66, 153, 225, 0.08);
+  --node-editor-selected-control-color: rgba(66, 153, 225, 0.12);
+  --node-editor-under-page-background-color: #f0ebe5;
+  --node-editor-window-background-color: #f0ebe5;
+
+  /* Control surfaces */
+  --node-editor-control-background: #fefdfb;
+  --node-editor-control-background-primary: #ba9ded;
+  --node-editor-control-background-secondary: #f9f7f5;
+  --node-editor-control-hover-background: #f3eef9;
+  --node-editor-control-hover-background-primary: #a788d8;
+  --node-editor-hover-background: rgba(186, 157, 237, 0.06);
+  --node-editor-control-box-shadow-primary: 0 2px 8px rgba(186, 157, 237, 0.3);
+  --node-editor-control-box-shadow-secondary: inset 0 0 0 1px rgba(212, 181, 232, 0.15);
+  --node-editor-disabled-control-text-color: rgba(74, 68, 88, 0.35);
+
+  /* Input surfaces */
+  --node-editor-input-background: #fefdfb;
+  --node-editor-input-border: 1px solid #e8e3df;
+  --node-editor-input-border-hover: #ba9ded;
+  --node-editor-input-box-shadow: none;
+  --node-editor-input-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  /* Card & panel styling - soft, rounded aesthetic */
+  --node-editor-card-border-color: rgba(212, 181, 232, 0.15);
+  --node-editor-card-border: 1px solid var(--node-editor-card-border-color);
+  --node-editor-card-border-radius: var(--node-editor-radius-md);
+  --node-editor-card-box-shadow: 0 4px 16px rgba(186, 157, 237, 0.12), 0 2px 8px rgba(186, 157, 237, 0.08);
+  --node-editor-card-hover-box-shadow: 0 8px 24px rgba(186, 157, 237, 0.16), 0 4px 12px rgba(186, 157, 237, 0.12);
+  --node-editor-card-elevated-box-shadow: 0 12px 32px rgba(186, 157, 237, 0.18), 0 6px 16px rgba(186, 157, 237, 0.14);
+  --node-editor-card-focus-box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
+  --node-editor-card-disabled-background: rgba(122, 112, 136, 0.06);
+  --node-editor-card-filled-background: rgba(186, 157, 237, 0.06);
+  --node-editor-card-filled-hover-background: rgba(186, 157, 237, 0.1);
+  --node-editor-card-hover-border-color: rgba(186, 157, 237, 0.3);
+
+  /* Dialogs & overlays */
+  --node-editor-dialog-background: var(--node-editor-surface-primary);
+  --node-editor-dialog-box-shadow: 0 16px 48px rgba(186, 157, 237, 0.2), 0 8px 24px rgba(186, 157, 237, 0.15);
+  --node-editor-dialog-level-elevation: 1000;
+
+  /* Scrollbars - soft and subtle */
+  --node-editor-scroll-bar-thumb-color: rgba(186, 157, 237, 0.25);
+  --node-editor-active-scroll-bar-thumb-color: rgba(186, 157, 237, 0.45);
+
+  /* Selected State Colors */
+  --node-editor-selected-secondary-color: rgba(255, 255, 255, 0.95);
+  --node-editor-selected-hover-background: rgba(186, 157, 237, 0.14);
+
+  /* Tables & list accents */
+  --node-editor-table-header-background-color: #f3eef9;
+  --node-editor-table-header-background-color-hover: #ebe4f4;
+  --node-editor-table-header-background-color-active: #ddd0ed;
+
+  /* Node-specific colors - soft pastels */
+  --node-editor-group-node-background: rgba(186, 157, 237, 0.04);
+  --node-editor-group-node-border: rgba(186, 157, 237, 0.18);
+  --node-editor-group-node-active-background: rgba(186, 157, 237, 0.1);
+  --node-editor-group-node-active-color: rgba(186, 157, 237, 0.5);
+  --node-editor-node-port-input-color: #8bc9a3;
+  --node-editor-node-port-output-color: #f4a6d0;
+
+  /* System fills */
+  --node-editor-tertiary-system-background: rgba(186, 157, 237, 0.05);
+  --node-editor-tertiary-system-fill-color: rgba(186, 157, 237, 0.08);
+  --node-editor-quaternary-system-fill-color: rgba(186, 157, 237, 0.1);
+
+  /* Border Radii - more rounded for softer aesthetic */
+  --node-editor-border-radius-xxs: 4px;
+  --node-editor-border-radius-xs: 6px;
+  --node-editor-radius-xs: 6px;
+  --node-editor-radius-sm: 8px;
+  --node-editor-radius-md: 12px;
+  --node-editor-control-border-radius: var(--node-editor-radius-sm);
+  --node-editor-segment-control-border-radius: 100px;
+
+  /* Borders */
+  --node-editor-border-width: 1px;
+  --node-editor-border-color: rgba(212, 181, 232, 0.15);
+  --node-editor-divider-color: rgba(212, 181, 232, 0.15);
+  --node-editor-separator-color: rgba(212, 181, 232, 0.12);
+
+  /* Segment controls */
+  --node-editor-segment-backdrop-filter: blur(12px);
+  --node-editor-segment-control-background: rgba(186, 157, 237, 0.06);
+  --node-editor-segment-control-background-color: transparent;
+  --node-editor-segment-control-text-color: #7a7088;
+  --node-editor-segment-control-active-background-color: #f3eef9;
+  --node-editor-segment-control-active-text-color: #6b5a88;
+  --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+
+  /* Connection styling - soft and flowing */
+  --node-editor-connection-base-stroke-width: 2.5;
+  --node-editor-connection-active-stroke-width: 3.5;
+  --node-editor-connection-flow-stripe-stroke-width: 2;
+  --node-editor-connection-flow-stripe-active-stroke-width: 3;
+  --node-editor-connection-direction-stroke-width: 2.5;
+  --node-editor-connection-hover-shadow: drop-shadow(0 4px 8px rgba(186, 157, 237, 0.25));
+  --node-editor-connection-selected-shadow: drop-shadow(0 6px 12px rgba(186, 157, 237, 0.35));
+  --node-editor-connection-hover-opacity: 0.85;
+  --node-editor-connection-dragging-opacity: 0.65;
+  --node-editor-connection-stripe-dash-array: 12 16;
+  --node-editor-connection-stripe-dash-offset-bg: -14;
+  --node-editor-connection-stripe-opacity-accent: 0.85;
+  --node-editor-connection-stripe-opacity-background: 0.55;
+  --node-editor-connection-flow-animation-duration: 1.5s;
+  --node-editor-connection-flow-animation-distance: -28;
+  --node-editor-connection-base-transition: stroke 0.25s ease-out, stroke-width 0.25s ease-out;
+  --node-editor-connection-arrow-transition: fill 0.25s ease-out;
+
+  /* Connection drag styling */
+  --node-editor-connection-drag-stroke-width-connecting: 2.5;
+  --node-editor-connection-drag-stroke-width-disconnecting: 3.5;
+  --node-editor-connection-drag-dash-array-connecting: 6 6;
+  --node-editor-connection-drag-dash-array-disconnecting: 10 5;
+  --node-editor-connection-drag-animation-duration: 0.6s;
+  --node-editor-connection-drag-animation-distance: -12;
+}
