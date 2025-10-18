@@ -14,6 +14,8 @@ import { useAutoLayout } from "./useAutoLayout";
 import { filterDuplicableNodeIds } from "../contexts/node-definitions/utils/nodeTypeLimits";
 import { copyNodesToClipboard, pasteNodesFromClipboard } from "../contexts/node-editor/utils/nodeClipboardOperations";
 import { useNodeDefinitionList } from "../contexts/node-definitions/hooks/useNodeDefinitionList";
+import { generateId } from "../contexts/node-editor/reducer";
+import type { NodeId } from "../types/core";
 
 const DEFAULT_SHORTCUT_BINDING_MAP: Record<NodeEditorShortcutAction, ShortcutBinding[]> = (() => {
   const defaults = defaultInteractionSettings.keyboardShortcuts.actions;
@@ -204,6 +206,43 @@ export const useNodeEditorShortcuts = () => {
         }
       }
     }, [nodeEditorActions]),
+  );
+
+  // Group selected nodes (Ctrl/Cmd+G)
+  useConfigurableShortcut(
+    "group-selection",
+    DEFAULT_SHORTCUT_BINDING_MAP["group-selection"],
+    React.useCallback(() => {
+      const selected = actionStateRef.current.selectedNodeIds;
+      if (selected.length === 0) {
+        return;
+      }
+
+      const editorState = nodeEditorStateRef.current;
+      const nodesToGroup = selected.filter((nodeId) => Boolean(editorState.nodes[nodeId]));
+
+      if (nodesToGroup.length === 0) {
+        return;
+      }
+
+      const newGroupId = generateId();
+      nodeEditorActions.groupNodes(nodesToGroup, newGroupId);
+
+      const membershipUpdates = nodesToGroup.reduce<Record<NodeId, { parentId?: NodeId }>>((acc, nodeId) => {
+        const node = editorState.nodes[nodeId];
+        if (!node) {
+          return acc;
+        }
+        acc[nodeId] = { parentId: newGroupId };
+        return acc;
+      }, {});
+
+      if (Object.keys(membershipUpdates).length > 0) {
+        nodeEditorActions.updateGroupMembership(membershipUpdates);
+      }
+
+      actionActions.setInteractionSelection([newGroupId]);
+    }, [nodeEditorActions, actionActions]),
   );
 
   // Lock selected nodes (Cmd+2 / Ctrl+2)

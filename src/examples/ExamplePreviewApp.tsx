@@ -16,6 +16,7 @@ import {
   CanvasOnlyExample,
   WithToolbarExample,
 } from "./demos/ColumnLayoutExample";
+import { InspectorPaletteDnDExample } from "./demos/InspectorPaletteDnDExample";
 import { AdvancedLayoutExample } from "./demos/AdvancedLayoutExample";
 import { ResponsiveLayoutExample } from "./demos/ResponsiveLayoutExample";
 import { MobileDrawerExample } from "./demos/MobileDrawerExample";
@@ -136,6 +137,13 @@ const examples: ExampleEntry[] = [
     title: "Layout: With Toolbar",
     description: "Layout with custom toolbar and inspector.",
     component: WithToolbarExample,
+    category: "layout",
+  },
+  {
+    id: "layout-inspector-palette-dnd",
+    title: "Layout: Inspector Drag & Drop",
+    description: "Use the floating Node Library panel to drag templates directly onto the canvas.",
+    component: InspectorPaletteDnDExample,
     category: "layout",
   },
   {

@@ -102,6 +102,10 @@ export type I18nMessages = {
   inspectorTabProperties?: string;
   inspectorTabHistory?: string;
   inspectorTabSettings?: string;
+  inspectorNodeLibrary?: string;
+  inspectorNodeLibrarySearchPlaceholder?: string;
+  inspectorNodeLibraryEmptyState?: string;
+  inspectorNodeLibraryLimitReached?: string;
   inspectorActions?: string;
   inspectorInteractionHelpTitle?: string;
   inspectorInteractionHelpSectionClipboard?: string;

@@ -9,17 +9,20 @@ export type ResizeHandleProps = {
   direction: "horizontal" | "vertical";
   /** Callback when resize occurs */
   onResize?: (delta: number) => void;
-  /** Additional className */
+  /** Additional className (overrides default styles if provided) */
   className?: string;
 };
 
 /**
  * ResizeHandle - Draggable handle for resizing grid areas
  */
-export const ResizeHandle: React.FC<ResizeHandleProps> = ({ direction, onResize, className }) => {
+export const ResizeHandle: React.FC<ResizeHandleProps> = ({
+  direction,
+  onResize,
+  className = styles.resizeHandle,
+}) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const startPosRef = React.useRef<number>(0);
-
   const handlePointerDown = React.useCallback(
     (e: React.PointerEvent) => {
       e.preventDefault();
@@ -59,9 +62,10 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({ direction, onResize,
 
   return (
     <div
-      className={`${styles.resizeHandle} ${
-        direction === "horizontal" ? styles.horizontal : styles.vertical
-      } ${isDragging ? styles.dragging : ""} ${className || ""}`}
+      className={className}
+      data-resize-handle="true"
+      data-direction={direction}
+      data-is-dragging={isDragging ? "true" : undefined}
       onPointerDown={handlePointerDown}
     />
   );

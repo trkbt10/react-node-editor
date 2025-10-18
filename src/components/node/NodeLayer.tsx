@@ -43,7 +43,7 @@ import {
 } from "../../contexts/node-editor/utils/nodeDragHelpers";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
 import type { PointerType } from "../../types/interaction";
-import { isPointerShortcutEvent } from "../../utils/pointerShortcuts";
+import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
 
 const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
   ids: new Set<string>(),
@@ -195,11 +195,12 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
   }, [connectedPorts, actionActions]);
 
   // Event handlers
+  const matchesPointerAction = usePointerShortcutMatcher();
+
   const handleNodeContextMenu = React.useCallback(
     (e: React.MouseEvent, nodeId: string) => {
       const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
-      const pointerShortcuts = interactionSettings.pointerShortcuts;
-      if (!isPointerShortcutEvent(pointerShortcuts, "node-open-context-menu", nativeEvent)) {
+      if (!matchesPointerAction("node-open-context-menu", nativeEvent)) {
         return;
       }
 
@@ -231,15 +232,14 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
 
       defaultShow();
     },
-    [actionActions, utils, interactionSettings.contextMenu.handleRequest, interactionSettings.pointerShortcuts],
+    [actionActions, utils, interactionSettings.contextMenu.handleRequest, matchesPointerAction],
   );
 
   const handleNodePointerDown = React.useCallback(
     (e: React.PointerEvent, targetNodeId: string, isDragAllowed: boolean = true) => {
       const nativeEvent = e.nativeEvent;
-      const pointerShortcuts = interactionSettings.pointerShortcuts;
-      const matchesMultiSelect = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", nativeEvent);
-      const matchesSelect = isPointerShortcutEvent(pointerShortcuts, "node-select", nativeEvent) || matchesMultiSelect;
+      const matchesMultiSelect = matchesPointerAction("node-add-to-selection", nativeEvent);
+      const matchesSelect = matchesPointerAction("node-select", nativeEvent) || matchesMultiSelect;
 
       if (!matchesSelect && !matchesMultiSelect) {
         return;
@@ -315,7 +315,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
       nodeEditorState.nodes,
       groupManager,
       getNodeDef,
-      interactionSettings.pointerShortcuts,
+      matchesPointerAction,
       nodeDefinitions,
     ],
   );

@@ -214,6 +214,10 @@ const createPointerBindingFromEvent = (
   if (event.pointerType === "mouse" || event.pointerType === "pen" || event.pointerType === "touch") {
     binding.pointerTypes = [event.pointerType as PointerType];
   }
+  const clickCount = Math.max(event.detail || 0, 1);
+  if (clickCount > 1) {
+    binding.clickCount = clickCount;
+  }
   const modifiers = pointerModifiersFromEvent(event);
   if (modifiers) {
     binding.modifiers = modifiers;
@@ -252,6 +256,8 @@ type SectionView = {
   items: SectionItemView[];
 };
 
+const POINTER_DOUBLE_CLICK_CAPTURE_DELAY_MS = 300;
+
 export const InteractionHelpPanel: React.FC = () => {
   const interactionSettings = useInteractionSettings();
   const {
@@ -263,6 +269,9 @@ export const InteractionHelpPanel: React.FC = () => {
   const { t } = useI18n();
   const platform = React.useMemo(() => detectShortcutDisplayPlatform(), []);
   const [captureState, setCaptureState] = React.useState<CaptureState>(null);
+  const pendingPointerBindingRef = React.useRef<{ binding: PointerShortcutBinding; timeoutId: number | null } | null>(
+    null,
+  );
 
   const unassignedLabel = t("inspectorInteractionHelpUnassigned") || "Not assigned";
   const resetLabel = t("inspectorInteractionHelpReset") || "Reset";
@@ -340,33 +349,66 @@ export const InteractionHelpPanel: React.FC = () => {
       return;
     }
 
+    const clearPending = () => {
+      const pending = pendingPointerBindingRef.current;
+      if (pending && pending.timeoutId !== null) {
+        window.clearTimeout(pending.timeoutId);
+      }
+      pendingPointerBindingRef.current = null;
+    };
+
+    const finalizeBinding = (binding: PointerShortcutBinding) => {
+      clearPending();
+      setPointerShortcutBinding(captureState.action, binding);
+      setCaptureState(null);
+    };
+
+    const scheduleSingleBinding = (binding: PointerShortcutBinding) => {
+      clearPending();
+      const timeoutId = window.setTimeout(() => {
+        finalizeBinding(binding);
+      }, POINTER_DOUBLE_CLICK_CAPTURE_DELAY_MS);
+      pendingPointerBindingRef.current = { binding, timeoutId };
+    };
+
     const handlePointerDown = (event: PointerEvent) => {
       event.preventDefault();
       event.stopPropagation();
       const binding = createPointerBindingFromEvent(event, {
         requireEmptyTarget: captureState.action === "canvas-pan",
       });
-      setPointerShortcutBinding(captureState.action, binding);
-      setCaptureState(null);
+      const clickCount = Math.max(event.detail || 0, 1);
+      if (clickCount > 1) {
+        binding.clickCount = clickCount;
+        finalizeBinding(binding);
+        return;
+      }
+      scheduleSingleBinding(binding);
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
         event.stopPropagation();
+        clearPending();
         setCaptureState(null);
       }
     };
 
-    const timer = window.setTimeout(() => {
-      window.addEventListener("pointerdown", handlePointerDown, true);
-      window.addEventListener("keydown", handleKeyDown, true);
-    }, 0);
+    const handleWindowBlur = () => {
+      clearPending();
+      setCaptureState(null);
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown, true);
+    window.addEventListener("keydown", handleKeyDown, true);
+    window.addEventListener("blur", handleWindowBlur);
 
     return () => {
-      window.clearTimeout(timer);
+      clearPending();
       window.removeEventListener("pointerdown", handlePointerDown, true);
       window.removeEventListener("keydown", handleKeyDown, true);
+      window.removeEventListener("blur", handleWindowBlur);
     };
   }, [captureState, setPointerShortcutBinding]);
 

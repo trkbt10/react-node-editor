@@ -14,7 +14,7 @@ import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import styles from "./ConnectionLayer.module.css";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
 import type { PointerType } from "../../types/interaction";
-import { isPointerShortcutEvent } from "../../utils/pointerShortcuts";
+import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
 
 export type ConnectionLayerProps = {
   className?: string;
@@ -258,6 +258,7 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
   const { utils } = useNodeCanvas();
   const { connection: ConnectionComponent } = useRenderers();
   const interactionSettings = useInteractionSettings();
+  const matchesPointerAction = usePointerShortcutMatcher();
 
   // Runtime type guard for CorePort
   const isCorePort = (p: unknown): p is CorePort => {
@@ -291,10 +292,9 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
         return;
       }
 
-      const pointerShortcuts = interactionSettings.pointerShortcuts;
       const nativeEvent = e.nativeEvent;
-      const matchesMultiSelect = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", nativeEvent);
-      const matchesSelect = isPointerShortcutEvent(pointerShortcuts, "node-select", nativeEvent) || matchesMultiSelect;
+      const matchesMultiSelect = matchesPointerAction("node-add-to-selection", nativeEvent);
+      const matchesSelect = matchesPointerAction("node-select", nativeEvent) || matchesMultiSelect;
 
       if (!matchesSelect && !matchesMultiSelect) {
         return;
@@ -309,7 +309,7 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
       actionActions,
       fromPortPos,
       toPortPos,
-      interactionSettings.pointerShortcuts,
+      matchesPointerAction,
     ],
   );
 
@@ -330,8 +330,7 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
   const handleConnectionContextMenu = React.useCallback(
     (e: React.MouseEvent, connectionId: string) => {
       const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
-      const pointerShortcuts = interactionSettings.pointerShortcuts;
-      if (!isPointerShortcutEvent(pointerShortcuts, "node-open-context-menu", nativeEvent)) {
+      if (!matchesPointerAction("node-open-context-menu", nativeEvent)) {
         return;
       }
 
@@ -363,12 +362,7 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
 
       defaultShow();
     },
-    [
-      actionActions,
-      utils,
-      interactionSettings.contextMenu.handleRequest,
-      interactionSettings.pointerShortcuts,
-    ],
+    [actionActions, utils, interactionSettings.contextMenu.handleRequest, matchesPointerAction],
   );
   const fromNode = nodeEditorState.nodes[connection.fromNodeId];
   const toNode = nodeEditorState.nodes[connection.toNodeId];

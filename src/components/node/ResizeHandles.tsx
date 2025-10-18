@@ -21,8 +21,22 @@ const DEFAULT_HANDLES: ResizeHandleDirection[] = ["nw", "ne", "se", "sw"];
 // Size mirrors --node-editor-space-md to stay on the spacing scale.
 const HANDLE_SIZE = 12;
 const HALF_HANDLE_SIZE = HANDLE_SIZE / 2;
-// Rounded corners follow the global border radius token.
-const HANDLE_CORNER_RADIUS = "var(--node-editor-border-radius-xs)";
+// Rounded corners follow the global border radius token, resolved to a numeric value for SVG.
+const resolveHandleCornerRadius = (): number => {
+  if (typeof window === "undefined") {
+    return 0;
+  }
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue("--node-editor-border-radius-xs")
+    .trim();
+
+  if (!raw) {
+    return 0;
+  }
+
+  const parsed = Number.parseFloat(raw);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
 
 const HANDLE_CURSORS: Record<ResizeHandleDirection, React.CSSProperties["cursor"]> = {
   n: "n-resize",
@@ -67,6 +81,24 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({
   onResizeStart,
   handles = DEFAULT_HANDLES,
 }) => {
+  const [handleCornerRadius, setHandleCornerRadius] = React.useState<number>(() => resolveHandleCornerRadius());
+
+  React.useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const updateRadius = () => setHandleCornerRadius(resolveHandleCornerRadius());
+    updateRadius();
+
+    const observer = new MutationObserver(updateRadius);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["style", "class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
   const viewBoxWidth = Math.max(size.width, 0) + HANDLE_SIZE;
   const viewBoxHeight = Math.max(size.height, 0) + HANDLE_SIZE;
   const viewBoxMinX = -HALF_HANDLE_SIZE;
@@ -107,8 +139,8 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({
               y={yPosition}
               width={HANDLE_SIZE}
               height={HANDLE_SIZE}
-              rx={HANDLE_CORNER_RADIUS}
-              ry={HANDLE_CORNER_RADIUS}
+              rx={handleCornerRadius}
+              ry={handleCornerRadius}
               data-resize-handle={handle}
               data-is-resizing={activeHandle === handle}
               style={{ cursor }}

@@ -145,6 +145,10 @@ export type PointerShortcutBinding = {
    */
   button: number;
   /**
+   * Number of sequential clicks required to trigger the shortcut. Defaults to 1 when omitted.
+   */
+  clickCount?: number;
+  /**
    * Pointer types that can trigger this shortcut. When omitted, any type is accepted.
    */
   pointerTypes?: PointerType[];
@@ -167,6 +171,7 @@ export type NodeEditorShortcutAction =
   | "clear-selection"
   | "add-node"
   | "duplicate-selection"
+  | "group-selection"
   | "lock-selection"
   | "unlock-all"
   | "save"

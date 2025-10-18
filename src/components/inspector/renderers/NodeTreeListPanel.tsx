@@ -28,6 +28,7 @@ type NodeTreeItemProps = {
   onToggleLock?: (nodeId: NodeId) => void;
   onToggleExpand?: (nodeId: NodeId) => void;
   onDeleteNode?: (nodeId: NodeId) => void;
+  onUpdateTitle?: (nodeId: NodeId, title: string) => void;
   childNodes: Node[];
   dragState: DragState;
   onNodeDrop: (draggedNodeId: NodeId, targetNodeId: NodeId, position: "before" | "inside" | "after") => void;
@@ -43,6 +44,7 @@ const NodeTreeItem: React.FC<NodeTreeItemProps> = ({
   onToggleLock,
   onToggleExpand,
   onDeleteNode,
+  onUpdateTitle,
   childNodes,
   dragState,
   onNodeDrop,
@@ -54,6 +56,12 @@ const NodeTreeItem: React.FC<NodeTreeItemProps> = ({
   const isGroup = hasGroupBehavior(def);
   const hasChildren = isGroup && childNodes.length > 0;
   const isExpanded = isGroup && node.expanded !== false;
+
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editingTitle, setEditingTitle] = React.useState("");
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const nameRef = React.useRef<HTMLSpanElement>(null);
+  const isDraggingText = React.useRef(false);
 
   const isDragging = dragState.draggingNodeId === node.id;
   const isDragOver = dragState.dragOverNodeId === node.id;
@@ -92,7 +100,60 @@ const NodeTreeItem: React.FC<NodeTreeItemProps> = ({
     }
   };
 
+  const handleDoubleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!onUpdateTitle) {
+      return;
+    }
+    const currentTitle = node.data?.title && node.data.title.trim().length > 0 ? node.data.title : "";
+    setEditingTitle(currentTitle);
+    setIsEditing(true);
+  };
+
+  const handleNamePointerDown = () => {
+    // Track if user is trying to select text
+    isDraggingText.current = true;
+  };
+
+  const handleNamePointerUp = () => {
+    // Reset text dragging flag after a short delay
+    setTimeout(() => {
+      isDraggingText.current = false;
+    }, 100);
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditingTitle(e.target.value);
+  };
+
+  const handleTitleBlur = () => {
+    if (onUpdateTitle && editingTitle !== (node.data?.title || "")) {
+      onUpdateTitle(node.id, editingTitle);
+    }
+    setIsEditing(false);
+  };
+
+  const handleTitleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.currentTarget.blur();
+    } else if (e.key === "Escape") {
+      setIsEditing(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (isEditing && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [isEditing]);
+
   const handleDragStart = (e: React.DragEvent) => {
+    // Prevent drag if user is selecting text
+    if (isDraggingText.current) {
+      e.preventDefault();
+      return;
+    }
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("nodeId", node.id);
     onDragStateChange({ draggingNodeId: node.id });
@@ -203,9 +264,28 @@ const NodeTreeItem: React.FC<NodeTreeItemProps> = ({
 
         <span className={styles.nodeIcon}>{getNodeIcon(node.type, nodeDefinitions)}</span>
 
-        <span className={styles.nodeName}>
-          {node.data?.title && node.data.title.trim().length > 0 ? node.data.title : t("untitled")}
-        </span>
+        {isEditing ? (
+          <input
+            ref={inputRef}
+            type="text"
+            className={styles.nodeNameInput}
+            value={editingTitle}
+            onChange={handleTitleChange}
+            onBlur={handleTitleBlur}
+            onKeyDown={handleTitleKeyDown}
+            onClick={(e) => e.stopPropagation()}
+          />
+        ) : (
+          <span
+            ref={nameRef}
+            className={styles.nodeName}
+            onDoubleClick={handleDoubleClick}
+            onPointerDown={handleNamePointerDown}
+            onPointerUp={handleNamePointerUp}
+          >
+            {node.data?.title && node.data.title.trim().length > 0 ? node.data.title : t("untitled")}
+          </span>
+        )}
 
         <button
           className={styles.lockButton}
@@ -360,6 +440,13 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
     [actions],
   );
 
+  const handleUpdateTitle = React.useCallback(
+    (nodeId: NodeId, title: string) => {
+      actions.updateNode(nodeId, { data: { ...editorState.nodes[nodeId]?.data, title } });
+    },
+    [actions, editorState.nodes],
+  );
+
   return (
     <NodeTreeItem
       node={node}
@@ -370,6 +457,7 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
       onToggleLock={handleToggleLock}
       onToggleExpand={handleToggleExpand}
       onDeleteNode={handleDeleteNode}
+      onUpdateTitle={handleUpdateTitle}
       childNodes={childNodes}
       dragState={dragState}
       onNodeDrop={onNodeDrop}

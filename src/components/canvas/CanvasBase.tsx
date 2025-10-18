@@ -9,13 +9,28 @@ import { applyZoomDelta, clampZoomScale } from "../../utils/zoomUtils";
 import { SelectionOverlay } from "./SelectionOverlay";
 import styles from "./CanvasBase.module.css";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
-import type { CanvasPanActivator, ModifierKey, PointerType } from "../../types/interaction";
-import { isPointerShortcutEvent } from "../../utils/pointerShortcuts";
+import type { PointerType } from "../../types/interaction";
+import type { Position } from "../../types/core";
+import { NODE_DRAG_MIME } from "../../constants/dnd";
+import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
+import {
+  evaluateCanvasPointerIntent,
+  hasExceededCanvasDragThreshold,
+  normalizePointerType,
+  type CanvasPointerIntent,
+} from "../../utils/canvasPointerIntent";
+
+export type CanvasNodeDropEvent = {
+  nodeType: string;
+  canvasPosition: Position;
+  screenPosition: Position;
+};
 
 export type CanvasBaseProps = {
   children: React.ReactNode;
   className?: string;
   showGrid?: boolean;
+  onNodeDrop?: (event: CanvasNodeDropEvent) => void;
 };
 
 type PinchPointer = {
@@ -31,58 +46,26 @@ type PinchState = {
   center: { x: number; y: number };
 };
 
+type PrimaryPointerState =
+  | {
+      pointerId: number;
+      origin: { x: number; y: number };
+      intent: CanvasPointerIntent;
+      status: "pending" | "pan" | "range-select";
+    }
+  | null;
+
 const INTERACTIVE_TARGET_SELECTOR =
   '[data-node-id], [data-port-id], [data-connection-id], button, input, textarea, [role="button"]';
 
 const PINCH_SCALE_EPSILON = 1e-4;
 
 const pointerTypeFromEvent = (event: React.PointerEvent): PointerType => {
-  const type = event.pointerType;
-  if (type === "mouse" || type === "touch" || type === "pen") {
-    return type;
-  }
-  return "mouse";
+  return normalizePointerType(event.pointerType);
 };
 
 const isInteractiveElement = (target: Element | null): boolean => {
   return Boolean(target?.closest?.(INTERACTIVE_TARGET_SELECTOR));
-};
-
-const matchesPanActivator = (
-  event: React.PointerEvent,
-  activator: CanvasPanActivator,
-  pointerType: PointerType,
-  interactiveTarget: boolean,
-): boolean => {
-  if (!activator.pointerTypes.includes(pointerType)) {
-    return false;
-  }
-
-  if (activator.buttons && !activator.buttons.includes(event.button)) {
-    return false;
-  }
-
-  if (activator.requireEmptyTarget && interactiveTarget) {
-    return false;
-  }
-
-  if (activator.modifiers) {
-    const modifierKeys = Object.keys(activator.modifiers) as ModifierKey[];
-    for (const key of modifierKeys) {
-      const required = activator.modifiers[key];
-      if (required === undefined) {
-        continue;
-      }
-      if (required && !event[key]) {
-        return false;
-      }
-      if (!required && event[key]) {
-        return false;
-      }
-    }
-  }
-
-  return true;
 };
 
 const distanceBetween = (a: PinchPointer, b: PinchPointer): number => {
@@ -91,12 +74,17 @@ const distanceBetween = (a: PinchPointer, b: PinchPointer): number => {
   return Math.hypot(dx, dy);
 };
 
+const hasNodePayload = (event: React.DragEvent): boolean => {
+  const types = Array.from(event.dataTransfer?.types ?? []);
+  return types.includes(NODE_DRAG_MIME) || types.includes("text/plain");
+};
+
 /**
  * CanvasBase - The lowest layer component that handles pan, zoom, and drag operations
  * This component receives events and provides visual support with grid display
  * Does not trap events unless necessary for its own operations
  */
-export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) => {
+export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className, onNodeDrop }) => {
   const { state: canvasState, actions: canvasActions, canvasRef, utils, setContainerElement } = useNodeCanvas();
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: nodeEditorState } = useNodeEditor();
@@ -104,7 +92,9 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
   const rawGridPatternId = React.useId();
   const gridPatternId = React.useMemo(() => rawGridPatternId.replace(/[^a-zA-Z0-9_-]/g, "_"), [rawGridPatternId]);
   const [isBoxSelecting, setIsBoxSelecting] = React.useState(false);
+  const primaryPointerRef = React.useRef<PrimaryPointerState>(null);
   const interactionSettings = useInteractionSettings();
+  const matchesPointerAction = usePointerShortcutMatcher();
   const activePinchPointersRef = React.useRef<Map<number, PinchPointer>>(new Map());
   const pinchStateRef = React.useRef<PinchState | null>(null);
   const [isPinching, setIsPinching] = React.useState(false);
@@ -253,6 +243,62 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
 
   const gridPatternFill = React.useMemo(() => `url(#${gridPatternId})`, [gridPatternId]);
 
+  const handleDragEnter = React.useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      if (!onNodeDrop) {
+        return;
+      }
+      if (!hasNodePayload(event)) {
+        return;
+      }
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "copy";
+    },
+    [onNodeDrop],
+  );
+
+  const handleDragOver = React.useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      if (!onNodeDrop) {
+        return;
+      }
+      if (!hasNodePayload(event)) {
+        return;
+      }
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "copy";
+    },
+    [onNodeDrop],
+  );
+
+  const handleDrop = React.useCallback(
+    (event: React.DragEvent<HTMLDivElement>) => {
+      if (!onNodeDrop) {
+        return;
+      }
+      if (!hasNodePayload(event)) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const nodeType = event.dataTransfer.getData(NODE_DRAG_MIME) || event.dataTransfer.getData("text/plain");
+      if (!nodeType) {
+        return;
+      }
+
+      const screenPosition = { x: event.clientX, y: event.clientY };
+      const canvasPosition = utils.screenToCanvas(event.clientX, event.clientY);
+      onNodeDrop({
+        nodeType,
+        canvasPosition,
+        screenPosition,
+      });
+    },
+    [onNodeDrop, utils],
+  );
+
   // Handle mouse wheel for zoom (Figma style)
   const handleWheel = React.useCallback(
     (e: WheelEvent) => {
@@ -314,15 +360,43 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         return;
       }
 
-      const shouldPan =
-        canvasState.isSpacePanning ||
-        interactionSettings.canvasPanActivators.some((activator) =>
-          matchesPanActivator(e, activator, pointerType, interactiveTarget),
-        );
+      primaryPointerRef.current = null;
 
-      if (shouldPan) {
-        e.preventDefault();
-        canvasActions.startPan({ x: e.clientX, y: e.clientY });
+      const nativeEvent = e.nativeEvent;
+      const intent = evaluateCanvasPointerIntent({
+        event: nativeEvent,
+        pointerType,
+        interactiveTarget,
+        isSpacePanning: canvasState.isSpacePanning,
+        panActivators: interactionSettings.canvasPanActivators,
+        matchesPointerAction,
+      });
+
+      if (intent.canRangeSelect) {
+        const rect = containerRef.current?.getBoundingClientRect();
+        if (!rect) {
+          return;
+        }
+
+        const screenX = nativeEvent.clientX - rect.left;
+        const screenY = nativeEvent.clientY - rect.top;
+
+        setIsBoxSelecting(true);
+        actionActions.setSelectionBox({
+          start: { x: screenX, y: screenY },
+          end: { x: screenX, y: screenY },
+        });
+
+        if (!intent.additiveSelection) {
+          actionActions.clearSelection();
+        }
+
+        primaryPointerRef.current = {
+          pointerId: e.pointerId,
+          origin: { x: e.clientX, y: e.clientY },
+          intent,
+          status: "range-select",
+        };
 
         if (containerRef.current) {
           containerRef.current.setPointerCapture(e.pointerId);
@@ -334,42 +408,34 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         return;
       }
 
-      if (!interactiveTarget) {
-        const pointerShortcuts = interactionSettings.pointerShortcuts;
-        const nativeEvent = e.nativeEvent;
+      if (intent.canPan && !intent.canClearSelection) {
+        e.preventDefault();
+        canvasActions.startPan({ x: e.clientX, y: e.clientY });
 
-        const rangeSelection = isPointerShortcutEvent(pointerShortcuts, "canvas-range-select", nativeEvent);
-        if (rangeSelection) {
-          const additiveSelection = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", nativeEvent);
+        primaryPointerRef.current = {
+          pointerId: e.pointerId,
+          origin: { x: e.clientX, y: e.clientY },
+          intent,
+          status: "pan",
+        };
 
-          const rect = containerRef.current?.getBoundingClientRect();
-          if (!rect) {
-            return;
-          }
+        if (containerRef.current) {
+          containerRef.current.setPointerCapture(e.pointerId);
+        }
+        return;
+      }
 
-          const screenX = nativeEvent.clientX - rect.left;
-          const screenY = nativeEvent.clientY - rect.top;
-
-          setIsBoxSelecting(true);
-          actionActions.setSelectionBox({
-            start: { x: screenX, y: screenY },
-            end: { x: screenX, y: screenY },
-          });
-
-          if (!additiveSelection) {
-            actionActions.clearSelection();
-          }
-
-          if (containerRef.current) {
-            containerRef.current.setPointerCapture(e.pointerId);
-          }
-          return;
+      if (intent.canPan || intent.canClearSelection) {
+        if (intent.canPan) {
+          e.preventDefault();
         }
 
-        if (isPointerShortcutEvent(pointerShortcuts, "canvas-clear-selection", nativeEvent)) {
-          actionActions.clearSelection();
-          return;
-        }
+        primaryPointerRef.current = {
+          pointerId: e.pointerId,
+          origin: { x: e.clientX, y: e.clientY },
+          intent,
+          status: "pending",
+        };
       }
     },
     [
@@ -379,7 +445,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       isPinching,
       canvasState.isSpacePanning,
       interactionSettings.canvasPanActivators,
-      interactionSettings.pointerShortcuts,
+      matchesPointerAction,
       canvasActions,
       actionActions,
     ],
@@ -403,6 +469,36 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         e.preventDefault();
         updatePinchZoom();
         return;
+      }
+
+      const primaryPointer = primaryPointerRef.current;
+      if (primaryPointer && primaryPointer.pointerId === e.pointerId) {
+        if (primaryPointer.status === "pending") {
+          const currentPosition = { x: e.clientX, y: e.clientY };
+          if (primaryPointer.intent.canPan && hasExceededCanvasDragThreshold(primaryPointer.origin, currentPosition)) {
+            e.preventDefault();
+            canvasActions.startPan(primaryPointer.origin);
+            canvasActions.updatePan(currentPosition);
+            primaryPointerRef.current = {
+              ...primaryPointer,
+              status: "pan",
+            };
+            if (containerRef.current) {
+              containerRef.current.setPointerCapture(e.pointerId);
+            }
+            return;
+          }
+
+          if (
+            primaryPointer.intent.canClearSelection &&
+            hasExceededCanvasDragThreshold(primaryPointer.origin, currentPosition)
+          ) {
+            primaryPointerRef.current = null;
+          }
+        } else if (primaryPointer.status === "pan") {
+          canvasActions.updatePan({ x: e.clientX, y: e.clientY });
+          return;
+        }
       }
 
       if (canvasState.panState.isPanning) {
@@ -460,7 +556,26 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         }
       }
 
-      if (canvasState.panState.isPanning) {
+      const primaryPointer = primaryPointerRef.current;
+      if (primaryPointer && primaryPointer.pointerId === e.pointerId) {
+        if (primaryPointer.status === "pan") {
+          canvasActions.endPan();
+          primaryPointerRef.current = null;
+
+          if (containerRef.current) {
+            containerRef.current.releasePointerCapture(e.pointerId);
+          }
+          return;
+        }
+
+        if (primaryPointer.status === "pending" && primaryPointer.intent.canClearSelection) {
+          primaryPointerRef.current = null;
+          actionActions.clearSelection();
+          return;
+        }
+
+        primaryPointerRef.current = null;
+      } else if (canvasState.panState.isPanning) {
         canvasActions.endPan();
 
         if (containerRef.current) {
@@ -505,8 +620,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
         });
 
         if (selectedNodeIds.length > 0) {
-          const pointerShortcuts = interactionSettings.pointerShortcuts;
-          const additiveSelection = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", e.nativeEvent);
+          const additiveSelection = matchesPointerAction("node-add-to-selection", e.nativeEvent);
           if (additiveSelection) {
             const newSelection = [...new Set([...actionState.selectedNodeIds, ...selectedNodeIds])];
             actionActions.setInteractionSelection(newSelection);
@@ -532,7 +646,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       actionState.selectionBox,
       actionState.selectedNodeIds,
       nodeEditorState.nodes,
-      interactionSettings.pointerShortcuts,
+      matchesPointerAction,
       canvasActions,
       actionActions,
     ],
@@ -549,8 +663,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
   const handleContextMenu = React.useCallback(
     (e: React.MouseEvent) => {
       const nativeEvent = e.nativeEvent as MouseEvent & { pointerType?: string };
-      const pointerShortcuts = interactionSettings.pointerShortcuts;
-      if (!isPointerShortcutEvent(pointerShortcuts, "canvas-open-context-menu", nativeEvent)) {
+      if (!matchesPointerAction("canvas-open-context-menu", nativeEvent)) {
         return;
       }
 
@@ -582,7 +695,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
 
       defaultShow();
     },
-    [actionActions, utils, interactionSettings.contextMenu.handleRequest, interactionSettings.pointerShortcuts],
+    [actionActions, utils, interactionSettings.contextMenu.handleRequest, matchesPointerAction],
   );
 
   // Handle double click to open Node Search
@@ -676,6 +789,9 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className }) =
       onPointerCancel={handlePointerCancel}
       onContextMenu={handleContextMenu}
       onDoubleClick={handleDoubleClick}
+      onDragEnter={handleDragEnter}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
       role="application"
       aria-label="Node Editor Canvas"
       data-is-panning={canvasState.panState.isPanning}
@@ -707,4 +823,5 @@ CanvasBase.displayName = "CanvasBase";
  * Debug notes:
  * - Reviewed src/contexts/NodeCanvasContext.tsx to validate clamping behavior while reworking zoom logic.
  * - Reviewed src/components/layers/GridToolbox.tsx to keep toolbar zoom controls in sync with wheel and keyboard handling.
+ * - Reviewed src/contexts/InteractionSettingsContext.tsx and src/utils/pointerShortcuts.ts to confirm pan activator modifiers while addressing pan/range selection conflicts.
  */

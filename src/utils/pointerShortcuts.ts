@@ -10,7 +10,10 @@ import type {
   PointerType,
 } from "../types/interaction";
 
-type PointerLikeEvent = Pick<PointerEvent | MouseEvent, "button" | "ctrlKey" | "shiftKey" | "altKey" | "metaKey"> & {
+type PointerLikeEvent = Pick<
+  PointerEvent | MouseEvent,
+  "button" | "ctrlKey" | "shiftKey" | "altKey" | "metaKey" | "detail"
+> & {
   readonly pointerType?: string;
 };
 
@@ -74,6 +77,14 @@ export const matchesPointerShortcut = (
       if (!matchesModifier(event, key, expected)) {
         return false;
       }
+    }
+  }
+
+  const requiredClickCount = binding.clickCount ?? 1;
+  if (requiredClickCount > 1) {
+    const eventClickCount = event.detail ?? 1;
+    if (eventClickCount < requiredClickCount) {
+      return false;
     }
   }
 
@@ -151,8 +162,24 @@ const mouseButtonName = (button: number): string => {
 
 type PointerGesture = "click" | "drag" | "context-menu";
 
+const formatClickQualifier = (binding: PointerShortcutBinding): string | null => {
+  const count = binding.clickCount ?? 1;
+  if (count <= 1) {
+    return null;
+  }
+  if (count === 2) {
+    return "Double";
+  }
+  if (count === 3) {
+    return "Triple";
+  }
+  return `${count}×`;
+};
+
 const pointerActionLabel = (binding: PointerShortcutBinding, gesture: PointerGesture): string => {
   const pointerType = binding.pointerTypes && binding.pointerTypes.length === 1 ? binding.pointerTypes[0] : undefined;
+  const clickQualifier = formatClickQualifier(binding);
+  const qualifierSuffix = clickQualifier ? ` ${clickQualifier}` : "";
   if (pointerType === "pen") {
     if (gesture === "drag") {
       return "Pen Drag";
@@ -160,7 +187,7 @@ const pointerActionLabel = (binding: PointerShortcutBinding, gesture: PointerGes
     if (gesture === "context-menu") {
       return "Pen Context Menu";
     }
-    return "Pen Tap";
+    return `Pen${qualifierSuffix} Tap`.trim();
   }
   if (pointerType === "touch") {
     if (gesture === "drag") {
@@ -169,7 +196,7 @@ const pointerActionLabel = (binding: PointerShortcutBinding, gesture: PointerGes
     if (gesture === "context-menu") {
       return "Touch Context Menu";
     }
-    return "Tap";
+    return `${clickQualifier ? `${clickQualifier} ` : ""}Tap`.trim();
   }
   const prefix = mouseButtonName(binding.button);
   if (gesture === "drag") {
@@ -178,7 +205,7 @@ const pointerActionLabel = (binding: PointerShortcutBinding, gesture: PointerGes
   if (gesture === "context-menu") {
     return `${prefix} Context Menu`;
   }
-  return `${prefix} Click`;
+  return `${prefix}${qualifierSuffix} Click`.trim();
 };
 
 const modifierSegments = (binding: PointerShortcutBinding): string[] => {
@@ -240,32 +267,53 @@ const resolvePointerDisplayType = (binding: PointerShortcutBinding): PointerType
 };
 
 const pointerTokenFor = (binding: PointerShortcutBinding, pointerType: PointerType | undefined): string => {
+  let token: string;
   if (pointerType === "pen") {
-    return "Pen";
+    token = "Pen";
+  } else if (pointerType === "touch") {
+    token = "Touch";
+  } else if (binding.button === 1) {
+    token = "M";
+  } else if (binding.button === 2) {
+    token = "R";
+  } else if (binding.button !== undefined && binding.button > 2) {
+    token = `B${binding.button}`;
+  } else {
+    token = "L";
   }
-  if (pointerType === "touch") {
-    return "Touch";
+
+  const count = binding.clickCount ?? 1;
+  if (count > 1) {
+    if (count === 2) {
+      return `${token}×2`;
+    }
+    if (count === 3) {
+      return `${token}×3`;
+    }
+    return `${token}×${count}`;
   }
-  if (binding.button === 1) {
-    return "M";
-  }
-  if (binding.button === 2) {
-    return "R";
-  }
-  if (binding.button !== undefined && binding.button > 2) {
-    return `B${binding.button}`;
-  }
-  return "L";
+
+  return token;
 };
 
-const gestureLabelFor = (gesture: PointerGesture): string | null => {
+const gestureLabelFor = (gesture: PointerGesture, binding: PointerShortcutBinding): string | null => {
   if (gesture === "drag") {
     return "Drag";
   }
   if (gesture === "context-menu") {
     return "Context Menu";
   }
-  return null;
+  const qualifier = formatClickQualifier(binding);
+  if (!qualifier) {
+    return null;
+  }
+  if (qualifier === "Double") {
+    return "Double Click";
+  }
+  if (qualifier === "Triple") {
+    return "Triple Click";
+  }
+  return `${qualifier} Click`;
 };
 
 export const describePointerShortcutDisplay = (
@@ -278,7 +326,7 @@ export const describePointerShortcutDisplay = (
     modifiers: modifierSymbols(binding.modifiers),
     pointerToken: pointerTokenFor(binding, pointerType),
     pointerDisplayType: pointerType,
-    gestureLabel: gestureLabelFor(gesture),
+    gestureLabel: gestureLabelFor(gesture, binding),
     requireEmptyTarget: binding.requireEmptyTarget ?? false,
   };
 };

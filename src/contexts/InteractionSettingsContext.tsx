@@ -26,6 +26,7 @@ const DEFAULT_SHORTCUT_BINDINGS: Record<NodeEditorShortcutAction, ShortcutBindin
   "clear-selection": [{ key: "Escape" }],
   "add-node": [{ key: "n", ctrl: true }],
   "duplicate-selection": [{ key: "d", cmdOrCtrl: true }],
+  "group-selection": [{ key: "g", cmdOrCtrl: true }],
   "lock-selection": [{ key: "2", cmdOrCtrl: true }],
   "unlock-all": [{ key: "2", cmdOrCtrl: true, shift: true }],
   save: [{ key: "s", cmdOrCtrl: true }],
@@ -51,7 +52,7 @@ const DEFAULT_POINTER_BINDINGS: Record<NodeEditorPointerAction, PointerShortcutB
     modifiers: { shift: true },
   },
   "canvas-pan": {
-    button: 1,
+    button: 0,
     pointerTypes: ["mouse"],
     requireEmptyTarget: true,
   },
@@ -76,13 +77,16 @@ const DEFAULT_POINTER_BINDINGS: Record<NodeEditorPointerAction, PointerShortcutB
 
 const createDefaultKeyboardShortcuts = (): NodeEditorInteractionSettings["keyboardShortcuts"] => {
   const entries = Object.entries(DEFAULT_SHORTCUT_BINDINGS) as Array<[NodeEditorShortcutAction, ShortcutBinding[]]>;
-  const actions = entries.reduce<Record<NodeEditorShortcutAction, KeyboardShortcutActionBehavior>>((acc, [action, bindings]) => {
-    acc[action] = {
-      enabled: true,
-      bindings: bindings.map((binding) => ({ ...binding })),
-    };
-    return acc;
-  }, {} as Record<NodeEditorShortcutAction, KeyboardShortcutActionBehavior>);
+  const actions = entries.reduce<Record<NodeEditorShortcutAction, KeyboardShortcutActionBehavior>>(
+    (acc, [action, bindings]) => {
+      acc[action] = {
+        enabled: true,
+        bindings: bindings.map((binding) => ({ ...binding })),
+      };
+      return acc;
+    },
+    {} as Record<NodeEditorShortcutAction, KeyboardShortcutActionBehavior>,
+  );
   return {
     enabled: true,
     actions,
@@ -91,20 +95,25 @@ const createDefaultKeyboardShortcuts = (): NodeEditorInteractionSettings["keyboa
 
 const createDefaultPointerShortcuts = (): NodeEditorInteractionSettings["pointerShortcuts"] => {
   const entries = Object.entries(DEFAULT_POINTER_BINDINGS) as Array<[NodeEditorPointerAction, PointerShortcutBinding]>;
-  const actions = entries.reduce<Record<NodeEditorPointerAction, PointerShortcutActionBehavior>>((acc, [action, binding]) => {
-    acc[action] = {
-      enabled: true,
-      binding: { ...binding, pointerTypes: binding.pointerTypes ? [...binding.pointerTypes] : undefined },
-    };
-    return acc;
-  }, {} as Record<NodeEditorPointerAction, PointerShortcutActionBehavior>);
+  const actions = entries.reduce<Record<NodeEditorPointerAction, PointerShortcutActionBehavior>>(
+    (acc, [action, binding]) => {
+      acc[action] = {
+        enabled: true,
+        binding: { ...binding, pointerTypes: binding.pointerTypes ? [...binding.pointerTypes] : undefined },
+      };
+      return acc;
+    },
+    {} as Record<NodeEditorPointerAction, PointerShortcutActionBehavior>,
+  );
   return {
     enabled: true,
     actions,
   };
 };
 
-const pointerModifiersToConditions = (modifiers?: PointerShortcutBinding["modifiers"]): ModifierConditions | undefined => {
+const pointerModifiersToConditions = (
+  modifiers?: PointerShortcutBinding["modifiers"],
+): ModifierConditions | undefined => {
   if (!modifiers) {
     return undefined;
   }
@@ -135,9 +144,7 @@ const bindingToCanvasPanActivators = (binding: PointerShortcutBinding | null | u
     ];
   }
   const pointerTypes =
-    binding.pointerTypes && binding.pointerTypes.length > 0
-      ? [...binding.pointerTypes]
-      : (["mouse"] as PointerType[]);
+    binding.pointerTypes && binding.pointerTypes.length > 0 ? [...binding.pointerTypes] : (["mouse"] as PointerType[]);
   const buttons = binding.button !== undefined ? [binding.button] : undefined;
   return [
     {
@@ -344,7 +351,7 @@ const mergeKeyboardShortcuts = (
         enabled: baseBehavior.enabled ?? true,
         bindings: baseBehavior.bindings
           ? baseBehavior.bindings.map((binding) => ({ ...binding }))
-          : DEFAULT_SHORTCUT_BINDINGS[action]?.map((binding) => ({ ...binding })) ?? [],
+          : (DEFAULT_SHORTCUT_BINDINGS[action]?.map((binding) => ({ ...binding })) ?? []),
       };
     });
     return {

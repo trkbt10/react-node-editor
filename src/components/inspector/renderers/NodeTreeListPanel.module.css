@@ -109,6 +109,27 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: text;
+  user-select: text;
+}
+
+.nodeNameInput {
+  flex: 1;
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  color: var(--node-editor-label-color);
+  background: var(--node-editor-control-background);
+  border: var(--node-editor-border-width) solid var(--node-editor-accent-color);
+  border-radius: var(--node-editor-border-radius-xs);
+  padding: 2px var(--node-editor-inspector-space-xs);
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.nodeNameInput:focus {
+  border-color: var(--node-editor-accent-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--node-editor-accent-color) 20%, transparent);
 }
 
 .visibilityButton,

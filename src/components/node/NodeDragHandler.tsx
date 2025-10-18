@@ -9,8 +9,7 @@ import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { nodeHasGroupBehavior } from "../../types/behaviors";
-import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
-import { isPointerShortcutEvent } from "../../utils/pointerShortcuts";
+import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
 
 export type NodeDragHandlerProps = {
   nodeId: NodeId;
@@ -26,7 +25,7 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: canvasState } = useNodeCanvas();
   const nodeDefinitions = useNodeDefinitionList();
-  const interactionSettings = useInteractionSettings();
+  const matchesPointerAction = usePointerShortcutMatcher();
 
   const node = nodeEditorState.nodes[nodeId];
   const isDragging = actionState.dragState?.nodeIds.includes(nodeId) || false;
@@ -68,9 +67,8 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
 
   const handleDragStart = React.useCallback(
     (event: PointerEvent, data: ReturnType<typeof createDragData>) => {
-      const pointerShortcuts = interactionSettings.pointerShortcuts;
-      const matchesMultiSelect = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", event);
-      const matchesSelect = isPointerShortcutEvent(pointerShortcuts, "node-select", event) || matchesMultiSelect;
+      const matchesMultiSelect = matchesPointerAction("node-add-to-selection", event);
+      const matchesSelect = matchesPointerAction("node-select", event) || matchesMultiSelect;
       if (!matchesSelect && !matchesMultiSelect) {
         return;
       }
@@ -93,7 +91,7 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
         data.affectedChildNodes,
       );
     },
-    [nodeId, actionState.selectedNodeIds, actionActions, interactionSettings.pointerShortcuts],
+    [nodeId, actionState.selectedNodeIds, actionActions, matchesPointerAction],
   );
 
   const handleDragMove = React.useCallback(

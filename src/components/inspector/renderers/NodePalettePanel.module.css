@@ -1,0 +1,72 @@
+.paletteBody {
+  gap: var(--node-editor-space-lg);
+}
+
+.searchRow {
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  width: 100%;
+}
+
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-lg);
+}
+
+.categorySection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-md);
+}
+
+.categoryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--node-editor-secondary-label-color);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.categoryCount {
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--node-editor-tertiary-label-color);
+}
+
+.cardGrid {
+  display: grid;
+  gap: var(--node-editor-space-md);
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.emptyState {
+  padding: var(--node-editor-space-xl) var(--node-editor-space-lg);
+  text-align: center;
+  color: var(--node-editor-tertiary-label-color);
+  background: var(--node-editor-elevated-surface-color);
+  border-radius: var(--node-editor-card-border-radius);
+  border: var(--node-editor-input-border);
+  font-size: var(--node-editor-inspector-font-size-body);
+}
+
+.limitBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--node-editor-space-xxs, 4px);
+  padding: var(--node-editor-space-xxs, 4px) var(--node-editor-space-xs);
+  border-radius: var(--node-editor-control-border-radius);
+  background: var(--node-editor-table-header-background-color);
+  color: var(--node-editor-secondary-label-color);
+  font-size: var(--node-editor-inspector-font-size-meta);
+}
+
+.categoryHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-space-md);
+}

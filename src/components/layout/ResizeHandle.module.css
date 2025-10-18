@@ -6,22 +6,22 @@
 }
 
 .resizeHandle:hover,
-.resizeHandle.dragging {
+.resizeHandle[data-is-dragging="true"] {
   background-color: var(--node-editor-color-primary, #2196f3);
 }
 
-.resizeHandle.dragging {
+.resizeHandle[data-is-dragging="true"] {
   opacity: 0.8;
 }
 
-.vertical {
+.resizeHandle[data-direction="vertical"] {
   width: 4px;
   height: 100%;
   top: 0;
   cursor: col-resize;
 }
 
-.horizontal {
+.resizeHandle[data-direction="horizontal"] {
   width: 100%;
   height: 4px;
   left: 0;

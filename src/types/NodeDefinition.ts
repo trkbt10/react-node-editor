@@ -276,6 +276,8 @@ export type NodeDefinition<TData extends Record<string, unknown> = Record<string
   defaultData?: TData;
   /** Default size for new nodes */
   defaultSize?: { width: number; height: number };
+  /** Default resizable state for new nodes (defaults to true if not specified) */
+  defaultResizable?: boolean;
   /** Port definitions */
   ports?: PortDefinition[];
   /** Behaviors that this node exhibits (appearance/node/group). Defaults to ['node'] */

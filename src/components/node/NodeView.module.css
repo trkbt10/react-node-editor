@@ -124,7 +124,16 @@
 }
 
 .nodeView[data-plain-node="true"]::before {
-  display: none;
+  border-color: transparent;
+  transition: border-color var(--node-editor-transition-duration);
+}
+
+.nodeView[data-plain-node="true"]:hover::before {
+  border-color: var(--node-editor-divider-color, rgba(0, 0, 0, 0.12));
+}
+
+.nodeView[data-plain-node="true"][data-selected="true"]::before {
+  border-color: var(--node-editor-accent-color, #0066cc);
 }
 
 .nodeView[data-plain-node="true"][data-selected="true"],

@@ -417,7 +417,6 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
 
   // Separate regular layers and drawer layers
   const regularLayers = React.useMemo(() => visibleLayers.filter((layer) => !layer.drawer), [visibleLayers]);
-
   return (
     <>
       <div
@@ -438,55 +437,68 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
           </div>
         ))}
 
-      {/* Render resize handles for resizable columns */}
-      {resizableColumns.map(({ index }) => {
-        // Position handle at the left edge of the resizable column
-        // This is the boundary between column[index-1] and column[index]
-        const areaInColumn = config.areas.find((row) => row[index]);
-        if (!areaInColumn) {
-          return null;
-        }
+        {/* Render resize handles for resizable columns */}
+        {resizableColumns.map(({ index }) => {
+          // Position handle at the left edge of the resizable column
+          // This is the boundary between column[index-1] and column[index]
+          const areaInColumn = config.areas.find((row) => row[index]);
+          if (!areaInColumn) {
+            return null;
+          }
+          return (
+            <ResizeHandleRenderer
+              key={getResizeHandleKey("col", index)}
+              direction="col"
+              gridArea={areaInColumn[index]}
+              index={index}
+              onResize={handleResize}
+            />
+          );
+        })}
 
-        return (
-          <div
-            key={getResizeHandleKey("col", index)}
-            data-resizable="true"
-            style={{ gridArea: areaInColumn[index] }}
-            className={styles.gridLayer}
-          >
-            <div className={styles.resizeHandleVertical}>
-              <ResizeHandle direction="vertical" onResize={(delta) => handleResize("col", index, delta)} />
-            </div>
-          </div>
-        );
-      })}
-
-      {/* Render resize handles for resizable rows */}
-      {resizableRows.map(({ index }) => {
-        // Position handle at the top edge of the resizable row
-        // This is the boundary between row[index-1] and row[index]
-        const areaInRow = config.areas[index]?.[0];
-        if (!areaInRow) {
-          return null;
-        }
-
-        return (
-          <div
-            key={getResizeHandleKey("row", index)}
-            data-resizable="true"
-            style={{ gridArea: areaInRow }}
-            className={styles.gridLayer}
-          >
-            <div className={styles.resizeHandleHorizontal}>
-              <ResizeHandle direction="horizontal" onResize={(delta) => handleResize("row", index, delta)} />
-            </div>
-          </div>
-        );
-      })}
-    </div>
+        {/* Render resize handles for resizable rows */}
+        {resizableRows.map(({ index }) => {
+          // Position handle at the top edge of the resizable row
+          // This is the boundary between row[index-1] and row[index]
+          const areaInRow = config.areas[index]?.[0];
+          if (!areaInRow) {
+            return null;
+          }
+          return (
+            <ResizeHandleRenderer
+              key={getResizeHandleKey("row", index)}
+              direction="row"
+              gridArea={areaInRow}
+              index={index}
+              onResize={handleResize}
+            />
+          );
+        })}
+      </div>
 
       {/* Render drawer layers */}
       <DrawerLayers layers={visibleLayers} />
     </>
+  );
+};
+const ResizeHandleRenderer = (props: {
+  direction: "row" | "col";
+  gridArea: string;
+  index: number;
+  onResize: (direction: "row" | "col", index: number, delta: number) => void;
+}) => {
+  const onResize = React.useCallback(
+    (delta: number) => {
+      // Placeholder function for resize handling
+      props.onResize(props.direction, props.index, delta);
+    },
+    [props.onResize, props.direction, props.index],
+  );
+  return (
+    <div data-resizable="true" style={{ gridArea: props.gridArea }} className={styles.gridLayer}>
+      <div className={props.direction === "col" ? styles.resizeHandleVertical : styles.resizeHandleHorizontal}>
+        <ResizeHandle direction={props.direction === "col" ? "vertical" : "horizontal"} onResize={onResize} />
+      </div>
+    </div>
   );
 };

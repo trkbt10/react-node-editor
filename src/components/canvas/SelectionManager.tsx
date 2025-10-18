@@ -11,7 +11,13 @@ import { SpatialGrid } from "../../contexts/node-editor/utils/nodeLookupUtils";
 import styles from "./SelectionManager.module.css";
 import { SelectionOverlay } from "./SelectionOverlay";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
-import { isPointerShortcutEvent } from "../../utils/pointerShortcuts";
+import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
+import {
+  CANVAS_POINTER_DRAG_THRESHOLD,
+  evaluateCanvasPointerIntent,
+  hasExceededCanvasDragThreshold,
+  normalizePointerType,
+} from "../../utils/canvasPointerIntent";
 
 export type SelectionManagerProps = {
   children: React.ReactNode;
@@ -28,7 +34,10 @@ export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) 
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [isSelecting, setIsSelecting] = React.useState(false);
+  const [isClearPending, setIsClearPending] = React.useState(false);
+  const pendingClearSelectionRef = React.useRef<{ pointerId: number; start: Position } | null>(null);
   const startPosRef = React.useRef<Position | null>(null);
+  const matchesPointerAction = usePointerShortcutMatcher();
 
   // Spatial index for efficient node selection
   const spatialIndex = React.useMemo(() => {
@@ -80,12 +89,22 @@ export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) 
         return;
       }
 
-      const pointerShortcuts = interactionSettings.pointerShortcuts;
       const nativeEvent = e.nativeEvent;
+      pendingClearSelectionRef.current = null;
+      setIsClearPending(false);
 
-      const rangeSelection = isPointerShortcutEvent(pointerShortcuts, "canvas-range-select", nativeEvent);
-      if (rangeSelection) {
-        const additiveSelection = isPointerShortcutEvent(pointerShortcuts, "node-add-to-selection", nativeEvent);
+      const pointerType = normalizePointerType(nativeEvent.pointerType);
+      const intent = evaluateCanvasPointerIntent({
+        event: nativeEvent,
+        pointerType,
+        interactiveTarget: false,
+        isSpacePanning: canvasState.isSpacePanning,
+        panActivators: interactionSettings.canvasPanActivators,
+        matchesPointerAction,
+      });
+
+      if (intent.canRangeSelect) {
+        const additiveSelection = intent.additiveSelection;
 
         const canvasPos = clientToCanvas({ x: nativeEvent.clientX, y: nativeEvent.clientY });
         startPosRef.current = canvasPos;
@@ -99,11 +118,22 @@ export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) 
         return;
       }
 
-      if (isPointerShortcutEvent(pointerShortcuts, "canvas-clear-selection", nativeEvent)) {
-        actions.clearSelection();
+      if (intent.canClearSelection) {
+        pendingClearSelectionRef.current = {
+          pointerId: e.pointerId,
+          start: { x: nativeEvent.clientX, y: nativeEvent.clientY },
+        };
+        setIsClearPending(true);
       }
     },
-    [clientToCanvas, actions, interactionSettings.pointerShortcuts],
+    [
+      clientToCanvas,
+      actions,
+      canvasState.isSpacePanning,
+      interactionSettings.canvasPanActivators,
+      matchesPointerAction,
+      setIsClearPending,
+    ],
   );
 
   const handlePointerMove = React.useCallback(
@@ -155,6 +185,49 @@ export const SelectionManager: React.FC<SelectionManagerProps> = ({ children }) 
       document.removeEventListener("pointercancel", handlePointerUp);
     };
   }, [isSelecting, handlePointerMove, handlePointerUp]);
+
+  React.useEffect(() => {
+    if (!isClearPending) {
+      return;
+    }
+
+    const handlePointerMove = (event: PointerEvent) => {
+      const pending = pendingClearSelectionRef.current;
+      if (!pending || pending.pointerId !== event.pointerId) {
+        return;
+      }
+      if (
+        hasExceededCanvasDragThreshold(
+          pending.start,
+          { x: event.clientX, y: event.clientY },
+          CANVAS_POINTER_DRAG_THRESHOLD,
+        )
+      ) {
+        pendingClearSelectionRef.current = null;
+        setIsClearPending(false);
+      }
+    };
+
+    const handlePointerUp = (event: PointerEvent) => {
+      const pending = pendingClearSelectionRef.current;
+      if (!pending || pending.pointerId !== event.pointerId) {
+        return;
+      }
+      pendingClearSelectionRef.current = null;
+      setIsClearPending(false);
+      actions.clearSelection();
+    };
+
+    document.addEventListener("pointermove", handlePointerMove, true);
+    document.addEventListener("pointerup", handlePointerUp, true);
+    document.addEventListener("pointercancel", handlePointerUp, true);
+
+    return () => {
+      document.removeEventListener("pointermove", handlePointerMove, true);
+      document.removeEventListener("pointerup", handlePointerUp, true);
+      document.removeEventListener("pointercancel", handlePointerUp, true);
+    };
+  }, [isClearPending, actions]);
 
   // Render selection box overlay layer
   const renderSelectionBox = () => <SelectionOverlay />;

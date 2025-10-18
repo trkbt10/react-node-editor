@@ -31,6 +31,7 @@ import {
   countNodesByType,
   getDisabledNodeTypes,
 } from "./contexts/node-definitions/utils/nodeTypeLimits";
+import { buildNodeFromDefinition } from "./contexts/node-editor/utils/nodeFactory";
 
 export const NodeEditorContent: React.FC<{
   className?: string;
@@ -198,38 +199,13 @@ export const NodeEditorContent: React.FC<{
         canvasPosition = utils.screenToCanvas(position.x, position.y);
       }
 
-      // Create unique node ID
-      const nodeId = `${nodeType}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-
-      // Get node size
-      const nodeSize = nodeDefinition.defaultSize || { width: 150, height: 50 };
-
-      // Adjust position so node center is at click position
-      const centeredPosition = {
-        x: canvasPosition.x - nodeSize.width / 2,
-        y: canvasPosition.y - nodeSize.height / 2,
-      };
-
       // Enforce per-flow maximums if defined
       if (!canAddNodeType(nodeType, nodeDefinitions, nodeTypeCounts)) {
         return;
       }
 
       // Create new node with definition defaults
-      const newNode = {
-        id: nodeId,
-        type: nodeType,
-        position: centeredPosition,
-        size: nodeSize,
-        // Use definition defaults but force empty title per requirements
-        data: (() => {
-          const base: Record<string, unknown> = nodeDefinition.defaultData
-            ? { ...(nodeDefinition.defaultData as Record<string, unknown>) }
-            : {};
-          return { ...base, title: "" };
-        })(),
-        // Ports are no longer assigned here - they will be inferred from NodeDefinition
-      };
+      const newNode = buildNodeFromDefinition({ nodeDefinition, canvasPosition });
 
       // Add node to editor with the predetermined id
       actions.addNodeWithId(newNode);
@@ -247,7 +223,13 @@ export const NodeEditorContent: React.FC<{
           if (p.type === fromPort.type) {
             return false;
           }
-          const tempPort: CorePort = { id: p.id, type: p.type, label: p.label, nodeId, position: p.position };
+          const tempPort: CorePort = {
+            id: p.id,
+            type: p.type,
+            label: p.label,
+            nodeId: newNode.id,
+            position: p.position,
+          };
           return canConnectPorts(
             fromPort.type === "output" ? fromPort : tempPort,
             fromPort.type === "output" ? tempPort : fromPort,
@@ -261,13 +243,18 @@ export const NodeEditorContent: React.FC<{
             id: targetPortDef.id,
             type: targetPortDef.type,
             label: targetPortDef.label,
-            nodeId,
+            nodeId: newNode.id,
             position: targetPortDef.position,
           };
           const connection =
             fromPort.type === "output"
-              ? { fromNodeId: fromPort.nodeId, fromPortId: fromPort.id, toNodeId: nodeId, toPortId: tempPort.id }
-              : { fromNodeId: nodeId, fromPortId: tempPort.id, toNodeId: fromPort.nodeId, toPortId: fromPort.id };
+              ? { fromNodeId: fromPort.nodeId, fromPortId: fromPort.id, toNodeId: newNode.id, toPortId: tempPort.id }
+              : {
+                  fromNodeId: newNode.id,
+                  fromPortId: tempPort.id,
+                  toNodeId: fromPort.nodeId,
+                  toPortId: fromPort.id,
+                };
           actions.addConnection(connection);
         }
       }

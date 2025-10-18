@@ -5,9 +5,15 @@ import * as React from "react";
 import { Input } from "../elements/Input";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import type { Position } from "../../types/core";
-import { getNodeIcon } from "../../contexts/node-definitions/utils/iconUtils";
 import styles from "./NodeSearchMenu.module.css";
 import { ContextMenuOverlay } from "../layout/ContextMenuOverlay";
+import { NodeDefinitionCard } from "./node-library/NodeDefinitionCard";
+import {
+  flattenGroupedNodeDefinitions,
+  groupNodeDefinitions,
+  filterGroupedNodeDefinitions,
+  type NodeDefinitionCategory,
+} from "./node-library/nodeDefinitionCatalog";
 
 export type NodeSearchMenuProps = {
   position: Position;
@@ -17,11 +23,6 @@ export type NodeSearchMenuProps = {
   visible: boolean;
   /** Node types that should be shown disabled due to per-flow limits */
   disabledNodeTypes?: string[];
-};
-
-type NodeCategory = {
-  name: string;
-  nodes: NodeDefinition[];
 };
 
 /**
@@ -40,63 +41,29 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
   const searchInputRef = React.useRef<HTMLInputElement>(null);
 
-  // Group nodes by category
-  const categories = React.useMemo(() => {
-    const categoryMap = new Map<string, NodeDefinition[]>();
-
-    nodeDefinitions.forEach((def) => {
-      const category = def.category || "Other";
-      if (!categoryMap.has(category)) {
-        categoryMap.set(category, []);
-      }
-      categoryMap.get(category)!.push(def);
-    });
-
-    return Array.from(categoryMap.entries()).map(([name, nodes]) => ({
-      name,
-      nodes: nodes.sort((a, b) => a.displayName.localeCompare(b.displayName)),
-    }));
+  // Group node definitions for display reuse with inspector palette
+  const groupedDefinitions = React.useMemo<NodeDefinitionCategory[]>(() => {
+    return groupNodeDefinitions(nodeDefinitions);
   }, [nodeDefinitions]);
 
-  // Filter nodes based on search query
-  const filteredResults = React.useMemo(() => {
+  // Filter nodes based on search query and optional category selection
+  const filteredResults = React.useMemo<NodeDefinitionCategory[]>(() => {
     if (!searchQuery.trim()) {
-      return selectedCategory ? categories.filter((cat) => cat.name === selectedCategory) : categories;
+      return selectedCategory
+        ? groupedDefinitions.filter((category) => category.name === selectedCategory)
+        : groupedDefinitions;
     }
-
-    const query = searchQuery.toLowerCase();
-    const results: NodeCategory[] = [];
-
-    categories.forEach((category) => {
-      const matchingNodes = category.nodes.filter(
-        (node) =>
-          node.displayName.toLowerCase().includes(query) ||
-          node.description?.toLowerCase().includes(query) ||
-          node.type.toLowerCase().includes(query) ||
-          category.name.toLowerCase().includes(query),
-      );
-
-      if (matchingNodes.length > 0) {
-        results.push({
-          name: category.name,
-          nodes: matchingNodes,
-        });
-      }
-    });
-
-    return results;
-  }, [searchQuery, categories, selectedCategory]);
+    return filterGroupedNodeDefinitions(groupedDefinitions, searchQuery);
+  }, [groupedDefinitions, searchQuery, selectedCategory]);
 
   // Get all nodes in flat list for keyboard navigation
-  const allNodes = React.useMemo(() => {
-    const nodes: Array<{ category: string; node: NodeDefinition }> = [];
-    filteredResults.forEach((category) => {
-      category.nodes.forEach((node) => {
-        nodes.push({ category: category.name, node });
-      });
-    });
-    return nodes;
-  }, [filteredResults]);
+  const allNodes = React.useMemo(() => flattenGroupedNodeDefinitions(filteredResults), [filteredResults]);
+  const nodeIndexByType = React.useMemo(() => {
+    return allNodes.reduce<Map<string, number>>((map, entry, index) => {
+      map.set(entry.node.type, index);
+      return map;
+    }, new Map());
+  }, [allNodes]);
 
   // Focus search input when menu becomes visible
   React.useEffect(() => {
@@ -145,15 +112,15 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
         case "Tab": {
           e.preventDefault();
           // Cycle through categories
-          const currentCategoryIndex = categories.findIndex((cat) => cat.name === selectedCategory);
-          const nextIndex = (currentCategoryIndex + 1) % categories.length;
-          setSelectedCategory(categories[nextIndex]?.name || null);
+          const currentCategoryIndex = groupedDefinitions.findIndex((cat) => cat.name === selectedCategory);
+          const nextIndex = (currentCategoryIndex + 1) % groupedDefinitions.length;
+          setSelectedCategory(groupedDefinitions[nextIndex]?.name || null);
           setSelectedIndex(0);
           break;
         }
       }
     },
-    [allNodes, selectedIndex, onCreateNode, position, onClose, categories, selectedCategory, disabledSet],
+    [allNodes, selectedIndex, onCreateNode, position, onClose, groupedDefinitions, selectedCategory, disabledSet],
   );
 
   // Handle node selection
@@ -220,27 +187,26 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
 
                 <div className={styles.nodeList}>
                   {category.nodes.map((node) => {
-                    const globalIndex = allNodes.findIndex((item) => item.node.type === node.type);
+                    const globalIndex = nodeIndexByType.get(node.type) ?? -1;
                     const isSelected = globalIndex === selectedIndex;
                     const isDisabled = disabledSet.has(node.type);
 
                     return (
-                      <div
+                      <NodeDefinitionCard
                         key={node.type}
-                        className={styles.nodeItem}
+                        node={node}
+                        variant="list"
+                        isSelected={isSelected}
+                        disabled={isDisabled}
                         onClick={() => !isDisabled && handleNodeSelect(node.type)}
-                        onPointerEnter={() => setSelectedIndex(globalIndex)}
-                        aria-disabled={isDisabled}
-                        data-is-selected={isSelected}
-                        data-is-disabled={isDisabled}
-                      >
-                        <div className={styles.nodeIcon}>{getNodeIcon(node.type, nodeDefinitions)}</div>
-                        <div className={styles.nodeInfo}>
-                          <div className={styles.nodeName}>{node.displayName}</div>
-                          {node.description && <div className={styles.nodeDescription}>{node.description}</div>}
-                        </div>
-                        <div className={styles.nodeType}>{node.type}</div>
-                      </div>
+                        onPointerEnter={() => {
+                          if (globalIndex >= 0) {
+                            setSelectedIndex(globalIndex);
+                          }
+                        }}
+                        role="menuitem"
+                        tabIndex={-1}
+                      />
                     );
                   })}
                 </div>
@@ -262,3 +228,8 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
 };
 
 NodeSearchMenu.displayName = "NodeSearchMenu";
+
+/**
+ * Debug notes:
+ * - Reviewed src/components/inspector/renderers/NodePalettePanel.tsx to align shared grouping helpers and ensure search results stay consistent across inspector and context menu.
+ */
