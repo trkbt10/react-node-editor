@@ -25,7 +25,7 @@ export function LabelInspectorRenderer({
   const { t } = useI18n();
   const data: LabelNodeData = node.data || {};
 
-  const updateField = (key: "title" | "subtitle" | "caption") => (value: string) => {
+  const updateField = (key: "labelTitle" | "labelSubtitle" | "labelCaption") => (value: string) => {
     const next: LabelNodeData = { ...data, [key]: value };
     onUpdateNode({ data: next });
   };
@@ -39,8 +39,8 @@ export function LabelInspectorRenderer({
               id="label-title"
               name="labelTitle"
               placeholder={t("labelTitlePlaceholder") || "Title"}
-              value={data.title || ""}
-              onChange={(e) => updateField("title")(e.target.value)}
+              value={data.labelTitle || ""}
+              onChange={(e) => updateField("labelTitle")(e.target.value)}
             />
           </InspectorDefinitionItem>
           <InspectorDefinitionItem label="Subtitle">
@@ -48,8 +48,8 @@ export function LabelInspectorRenderer({
               id="label-subtitle"
               name="labelSubtitle"
               placeholder={t("labelSubtitlePlaceholder") || "Subtitle"}
-              value={data.subtitle || ""}
-              onChange={(e) => updateField("subtitle")(e.target.value)}
+              value={data.labelSubtitle || ""}
+              onChange={(e) => updateField("labelSubtitle")(e.target.value)}
             />
           </InspectorDefinitionItem>
           <InspectorDefinitionItem label="Caption">
@@ -57,8 +57,8 @@ export function LabelInspectorRenderer({
               id="label-caption"
               name="labelCaption"
               placeholder={t("labelCaptionPlaceholder") || "Caption"}
-              value={data.caption || ""}
-              onChange={(e) => updateField("caption")(e.target.value)}
+              value={data.labelCaption || ""}
+              onChange={(e) => updateField("labelCaption")(e.target.value)}
             />
           </InspectorDefinitionItem>
           <InspectorDefinitionItem label="Alignment">

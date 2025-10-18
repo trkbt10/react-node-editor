@@ -20,6 +20,7 @@ export const GroupNodeDefinition: NodeDefinition<GroupNodeData> = {
     title: "Group",
   },
   defaultSize: { width: 300, height: 200 },
+  ports: [],
   behaviors: ["node", { type: "group", autoGroup: true } as const],
   visualState: "info",
 };

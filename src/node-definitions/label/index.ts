@@ -17,12 +17,17 @@ export const LabelNodeDefinition: NodeDefinition<LabelNodeData> = {
   icon: "📝",
   category: "Structure",
   defaultData: {
-    title: "Title",
-    subtitle: "Subtitle",
-    caption: "",
+    title: "Label",
+    labelTitle: "Title",
+    labelSubtitle: "Subtitle",
+    labelCaption: "Caption",
+    align: "left",
+    wrap: "normal",
   },
   // Provide a compact default size; content may exceed if long
   defaultSize: { width: 220, height: 72 },
+  // Fix node size to ensure proper text alignment within the area
+  defaultResizable: false,
   // No ports for a pure label
   ports: [],
   behaviors: ["appearance"],

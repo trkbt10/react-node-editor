@@ -12,9 +12,9 @@ import styles from "./label.module.css";
  */
 export function LabelNodeRenderer({ node, onStartEdit }: NodeRenderProps<LabelNodeData>): React.ReactElement {
   const d = node.data;
-  const title = typeof d.title === "string" ? d.title : undefined;
-  const subtitle = typeof d.subtitle === "string" ? d.subtitle : undefined;
-  const caption = typeof d.caption === "string" ? d.caption : undefined;
+  const title = typeof d.labelTitle === "string" ? d.labelTitle : undefined;
+  const subtitle = typeof d.labelSubtitle === "string" ? d.labelSubtitle : undefined;
+  const caption = typeof d.labelCaption === "string" ? d.labelCaption : undefined;
   const align = d.align === "left" || d.align === "center" || d.align === "right" ? d.align : "center";
   const wrap = d.wrap === "nowrap" || d.wrap === "balance" ? d.wrap : "normal";
   const ellipsis = d.ellipsis === true;
