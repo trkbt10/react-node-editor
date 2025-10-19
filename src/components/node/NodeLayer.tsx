@@ -35,12 +35,8 @@ import {
   type ConnectablePortsResult,
 } from "../../contexts/node-ports/utils/connectablePortPlanner";
 import { findNearestConnectablePort } from "../../contexts/node-ports/utils/connectionCandidate";
-import {
-  getNodesToDrag,
-  collectInitialPositions,
-  calculateNewPositions,
-  handleGroupMovement,
-} from "../../contexts/node-editor/utils/nodeDragHelpers";
+import { getNodesToDrag, collectInitialPositions, calculateNewPositions, handleGroupMovement } from "../../contexts/node-editor/utils/nodeDragHelpers";
+import { addUniqueIds } from "../../utils/selectionUtils";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
 import type { PointerType } from "../../types/interaction";
 import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
@@ -254,13 +250,21 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
 
       const finalIsMultiSelect = matchesMultiSelect;
       const clickedNode = nodeEditorState.nodes[targetNodeId];
+      const wasSelected = actionState.selectedNodeIds.includes(targetNodeId);
+      const hadMultipleSelection = actionState.selectedNodeIds.length > 1;
 
-      if (!finalIsMultiSelect) {
+      if (finalIsMultiSelect) {
+        actionActions.selectEditingNode(targetNodeId, true);
+        actionActions.selectInteractionNode(targetNodeId, true);
+        if (wasSelected) {
+          return;
+        }
+      } else if (!wasSelected || !hadMultipleSelection) {
         actionActions.selectEditingNode(targetNodeId, false);
+        actionActions.selectInteractionNode(targetNodeId, false);
       }
 
       if (clickedNode?.locked) {
-        actionActions.selectInteractionNode(targetNodeId, finalIsMultiSelect);
         return;
       }
 
@@ -269,26 +273,29 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
       const isInteractive = nodeDefinition?.interactive || false;
 
       // For interactive nodes, check if dragging is allowed
-      if (isInteractive && !isDragAllowed && !actionState.selectedNodeIds.includes(targetNodeId)) {
-        // Just select the node without starting drag
-        actionActions.selectInteractionNode(targetNodeId, finalIsMultiSelect);
+      if (isInteractive && !isDragAllowed && !wasSelected) {
         return;
       }
+
+      const selectionForDrag = (() => {
+        if (finalIsMultiSelect) {
+          return addUniqueIds(actionState.selectedNodeIds, [targetNodeId]);
+        }
+        if (wasSelected && hadMultipleSelection) {
+          return actionState.selectedNodeIds;
+        }
+        return [targetNodeId];
+      })();
 
       // Determine nodes to drag using helper function
       const nodesToDrag = getNodesToDrag(
         targetNodeId,
         finalIsMultiSelect,
-        actionState.selectedNodeIds,
+        selectionForDrag,
         nodeEditorState.nodes,
         isInteractive,
         isDragAllowed,
       );
-
-      // Handle selection if not already selected
-      if (!actionState.selectedNodeIds.includes(targetNodeId)) {
-        actionActions.selectInteractionNode(targetNodeId, finalIsMultiSelect);
-      }
 
       if (nodesToDrag.length === 0) {
         return;
@@ -857,4 +864,4 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
 
 NodeLayer.displayName = "NodeLayer";
 
-// Reference note: Checked connectionCandidate.ts and PortInteractionHandler.tsx while updating drag handling.
+// Reference note: Reviewed connectionCandidate.ts, PortInteractionHandler.tsx, nodeDragHelpers.ts, and NodeDragHandler.tsx to coordinate selection toggling.

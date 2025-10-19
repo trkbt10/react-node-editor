@@ -143,6 +143,7 @@ export const useNodeEditorShortcuts = () => {
       console.log("Select All shortcut triggered");
       const allNodeIds = Object.keys(nodeEditorState.nodes);
       actionActions.setInteractionSelection(allNodeIds);
+      actionActions.setEditingSelection(allNodeIds);
     }, [nodeEditorState.nodes, actionActions]),
   );
 
@@ -242,6 +243,7 @@ export const useNodeEditorShortcuts = () => {
       }
 
       actionActions.setInteractionSelection([newGroupId]);
+      actionActions.setEditingSelection([newGroupId]);
     }, [nodeEditorActions, actionActions]),
   );
 
@@ -272,6 +274,7 @@ export const useNodeEditorShortcuts = () => {
   React.useEffect(() => {
     if (nodeEditorState.lastDuplicatedNodeIds && nodeEditorState.lastDuplicatedNodeIds.length > 0) {
       actionActions.setInteractionSelection(nodeEditorState.lastDuplicatedNodeIds);
+      actionActions.setEditingSelection(nodeEditorState.lastDuplicatedNodeIds);
 
       // Clear the lastDuplicatedNodeIds to avoid re-selection
       nodeEditorActions.setNodeData({
@@ -387,6 +390,7 @@ export const useNodeEditorShortcuts = () => {
       // Select pasted nodes
       const newIds = Array.from(result.idMap.values());
       actionActions.setInteractionSelection(newIds);
+      actionActions.setEditingSelection(newIds);
     }, [nodeEditorActions, actionActions]),
-  );
+);
 };

@@ -489,3 +489,13 @@ export const useEditorActionState = (): EditorActionStateContextValue => {
   }
   return context;
 };
+
+export const useActionStateActions = () => {
+  const { actions } = useEditorActionState();
+  return actions;
+};
+
+export const useActionState = () => {
+  const { state, actions } = useEditorActionState();
+  return { state, actions };
+};

@@ -10,6 +10,7 @@ import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { nodeHasGroupBehavior } from "../../types/behaviors";
 import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
+import { addUniqueIds } from "../../utils/selectionUtils";
 
 export type NodeDragHandlerProps = {
   nodeId: NodeId;
@@ -31,59 +32,45 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
   const isDragging = actionState.dragState?.nodeIds.includes(nodeId) || false;
 
   // Create drag data for the pointer drag hook
-  const createDragData = React.useCallback(() => {
-    const selectedNodes = actionState.selectedNodeIds.includes(nodeId) ? actionState.selectedNodeIds : [nodeId];
+  const createDragData = React.useCallback(
+    (selectedNodeIds: NodeId[]) => {
+      const effectiveSelection = selectedNodeIds.length > 0 ? selectedNodeIds : [nodeId];
 
-    // Collect all affected nodes (including children of groups)
-    const affectedChildNodes: Record<NodeId, NodeId[]> = {};
-    const allDraggedNodes = new Set<NodeId>(selectedNodes);
+      // Collect all affected nodes (including children of groups)
+      const affectedChildNodes: Record<NodeId, NodeId[]> = {};
+      const allDraggedNodes = new Set<NodeId>(effectiveSelection);
 
-    selectedNodes.forEach((draggedId) => {
-      const draggedNode = nodeEditorState.nodes[draggedId];
-      if (draggedNode && nodeHasGroupBehavior(draggedNode, nodeDefinitions)) {
-        const childIds = Object.values(nodeEditorState.nodes)
-          .filter((n) => n.parentId === draggedId)
-          .map((n) => n.id);
-        affectedChildNodes[draggedId] = childIds;
-        childIds.forEach((id) => allDraggedNodes.add(id));
-      }
-    });
+      effectiveSelection.forEach((draggedId) => {
+        const draggedNode = nodeEditorState.nodes[draggedId];
+        if (draggedNode && nodeHasGroupBehavior(draggedNode, nodeDefinitions)) {
+          const childIds = Object.values(nodeEditorState.nodes)
+            .filter((n) => n.parentId === draggedId)
+            .map((n) => n.id);
+          affectedChildNodes[draggedId] = childIds;
+          childIds.forEach((id) => allDraggedNodes.add(id));
+        }
+      });
 
-    // Store initial positions
-    const initialPositions: Record<NodeId, Position> = {};
-    allDraggedNodes.forEach((id) => {
-      const n = nodeEditorState.nodes[id];
-      if (n) {
-        initialPositions[id] = { ...n.position };
-      }
-    });
+      // Store initial positions
+      const initialPositions: Record<NodeId, Position> = {};
+      allDraggedNodes.forEach((id) => {
+        const n = nodeEditorState.nodes[id];
+        if (n) {
+          initialPositions[id] = { ...n.position };
+        }
+      });
 
-    return {
-      nodeIds: selectedNodes,
-      initialPositions,
-      affectedChildNodes,
-    };
-  }, [nodeId, nodeEditorState.nodes, actionState.selectedNodeIds, nodeDefinitions]);
+      return {
+        nodeIds: effectiveSelection,
+        initialPositions,
+        affectedChildNodes,
+      };
+    },
+    [nodeId, nodeEditorState.nodes, nodeDefinitions],
+  );
 
   const handleDragStart = React.useCallback(
     (event: PointerEvent, data: ReturnType<typeof createDragData>) => {
-      const matchesMultiSelect = matchesPointerAction("node-add-to-selection", event);
-      const matchesSelect = matchesPointerAction("node-select", event) || matchesMultiSelect;
-      if (!matchesSelect && !matchesMultiSelect) {
-        return;
-      }
-
-      const finalIsMultiSelect = matchesMultiSelect;
-
-      // Select node if not already selected
-      if (!actionState.selectedNodeIds.includes(nodeId)) {
-        if (!finalIsMultiSelect) {
-          actionActions.selectEditingNode(nodeId, false);
-        }
-        actionActions.selectInteractionNode(nodeId, finalIsMultiSelect);
-      }
-
-      // Start drag state
       actionActions.startNodeDrag(
         data.nodeIds,
         { x: event.clientX, y: event.clientY },
@@ -91,7 +78,7 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
         data.affectedChildNodes,
       );
     },
-    [nodeId, actionState.selectedNodeIds, actionActions, matchesPointerAction],
+    [actionActions],
   );
 
   const handleDragMove = React.useCallback(
@@ -171,10 +158,47 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
         return;
       }
 
+      const nativeEvent = e.nativeEvent;
+      const matchesMultiSelect = matchesPointerAction("node-add-to-selection", nativeEvent);
+      const matchesSelect = matchesPointerAction("node-select", nativeEvent) || matchesMultiSelect;
+
+      if (!matchesSelect && !matchesMultiSelect) {
+        return;
+      }
+
       e.stopPropagation();
-      startDrag(e, createDragData());
+
+      const wasSelected = actionState.selectedNodeIds.includes(nodeId);
+      const hadMultipleSelection = actionState.selectedNodeIds.length > 1;
+
+      if (matchesMultiSelect) {
+        actionActions.selectEditingNode(nodeId, true);
+        actionActions.selectInteractionNode(nodeId, true);
+        if (wasSelected) {
+          return;
+        }
+      } else if (!wasSelected || !hadMultipleSelection) {
+        actionActions.selectEditingNode(nodeId, false);
+        actionActions.selectInteractionNode(nodeId, false);
+      }
+
+      const selectionForDrag = matchesMultiSelect
+        ? addUniqueIds(actionState.selectedNodeIds, [nodeId])
+        : wasSelected && hadMultipleSelection
+          ? actionState.selectedNodeIds
+          : [nodeId];
+
+      startDrag(e, createDragData(selectionForDrag));
     },
-    [node?.locked, startDrag, createDragData],
+    [
+      node?.locked,
+      matchesPointerAction,
+      actionState.selectedNodeIds,
+      nodeId,
+      actionActions,
+      startDrag,
+      createDragData,
+    ],
   );
 
   return (
@@ -186,3 +210,5 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
     </>
   );
 };
+
+// Reference note: Reviewed NodeLayer.tsx and nodeDragHelpers.ts while adjusting multi-select deselection behavior.

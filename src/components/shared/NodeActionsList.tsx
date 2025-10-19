@@ -5,9 +5,8 @@ import * as React from "react";
 import styles from "./NodeActionsList.module.css";
 import { DuplicateIcon, CopyIcon, CutIcon, PasteIcon, DeleteIcon } from "../elements/icons";
 import { useI18n } from "../../i18n/context";
-import { useNodeEditorActions } from "../../hooks/useNodeEditorActions";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeEditor } from "../../contexts/node-editor/context";
+import { useNodeEditor, useNodeEditorActions } from "../../contexts/node-editor/context";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { canAddNodeType, countNodesByType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
 import {
@@ -114,6 +113,7 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
     // Select pasted nodes
     const newIds = Array.from(result.idMap.values());
     actionActions.setInteractionSelection(newIds);
+    actionActions.setEditingSelection(newIds);
     onAction?.();
   }, [editorActions, actionActions, onAction]);
 

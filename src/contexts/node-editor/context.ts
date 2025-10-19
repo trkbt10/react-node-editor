@@ -69,4 +69,14 @@ export const useNodeEditor = (): NodeEditorContextValue => {
   return context;
 };
 
+export const useNodeEditorActions = () => {
+  const { actions } = useNodeEditor();
+  return actions;
+};
+
+export const useNodeEditorState = () => {
+  const { state, actions } = useNodeEditor();
+  return { state, actions };
+};
+
 export type { NodeEditorData };

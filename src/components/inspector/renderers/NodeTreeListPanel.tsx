@@ -383,20 +383,14 @@ const ConnectedNodeTreeItem: React.FC<ConnectedNodeTreeItemProps> = ({
   const handleSelect = React.useCallback(
     (targetNodeId: NodeId, multiSelect: boolean) => {
       if (multiSelect) {
-        const editingSelected = actionState.editingSelectedNodeIds;
-        const interactionSelected = actionState.selectedNodeIds;
-        const isAlreadySelected = editingSelected.includes(targetNodeId);
-        const nextInteraction = isAlreadySelected
-          ? interactionSelected.filter((id) => id !== targetNodeId)
-          : [...new Set([...interactionSelected, targetNodeId])];
-        actionActions.setInteractionSelection(nextInteraction);
         actionActions.selectEditingNode(targetNodeId, true);
+        actionActions.selectInteractionNode(targetNodeId, true);
         return;
       }
       actionActions.setInteractionSelection([targetNodeId]);
       actionActions.setEditingSelection([targetNodeId]);
     },
-    [actionActions, actionState.editingSelectedNodeIds, actionState.selectedNodeIds],
+    [actionActions],
   );
 
   const handleToggleVisibility = React.useCallback(

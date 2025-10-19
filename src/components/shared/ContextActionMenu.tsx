@@ -7,16 +7,11 @@ import styles from "./ContextActionMenu.module.css";
 import alignmentStyles from "../controls/alignments/AlignmentControls.module.css";
 import { ALIGNMENT_ACTIONS, ALIGNMENT_GROUPS } from "../controls/alignments/constants";
 import { calculateAlignmentPositions } from "../controls/alignments/utils";
-import type {
-  AlignmentActionConfig,
-  AlignmentActionGroup,
-  AlignmentActionType,
-} from "../controls/alignments/types";
+import type { AlignmentActionConfig, AlignmentActionGroup, AlignmentActionType } from "../controls/alignments/types";
 import type { Position, Node } from "../../types/core";
-import { useNodeEditorActions } from "../../hooks/useNodeEditorActions";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useI18n } from "../../i18n/context";
-import { useNodeEditor } from "../../contexts/node-editor/context";
+import { useNodeEditor, useNodeEditorActions } from "../../contexts/node-editor/context";
 import { pasteNodesFromClipboard } from "../../contexts/node-editor/utils/nodeClipboardOperations";
 import { NodeActionsList } from "./NodeActionsList";
 import { ContextMenuOverlay } from "../layout/ContextMenuOverlay";
@@ -109,6 +104,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
 
     const newIds = Array.from(result.idMap.values());
     actionActions.setInteractionSelection(newIds);
+    actionActions.setEditingSelection(newIds);
     onClose();
   }, [editorActions, actionActions, onClose]);
 

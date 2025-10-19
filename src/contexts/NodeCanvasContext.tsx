@@ -254,6 +254,16 @@ export const useNodeCanvas = (): NodeCanvasContextValue => {
   return context;
 };
 
+export const useCanvasActions = () => {
+  const { actions } = useNodeCanvas();
+  return actions;
+};
+
+export const useCanvasState = () => {
+  const { state, actions } = useNodeCanvas();
+  return { state, actions };
+};
+
 /**
  * Debug notes:
  * - Reviewed src/components/canvas/CanvasBase.tsx to keep zoom dispatch behavior consistent with updated clamping.

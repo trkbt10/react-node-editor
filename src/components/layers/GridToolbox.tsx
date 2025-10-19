@@ -2,10 +2,9 @@
  * @file Grid toolbox component
  */
 import * as React from "react";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
+import { useNodeCanvas, useCanvasActions } from "../../contexts/NodeCanvasContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useCanvasActions } from "../../hooks/useCanvasActions";
 import { applyZoomDelta, clampZoomScale } from "../../utils/zoomUtils";
 import styles from "./GridToolbox.module.css";
 
