@@ -4,7 +4,7 @@
 import * as React from "react";
 
 import { NodeEditor } from "../../NodeEditor";
-import { enMessages } from "../../i18n/dictionaries/en";
+import { enMessages } from "../../i18n/en";
 import type { I18nDictionaries, I18nMessages, Locale } from "../../i18n/types";
 import type { NodeEditorData } from "../../types/core";
 import { StandardNodeDefinition } from "../../node-definitions/standard";
@@ -91,13 +91,13 @@ type LocaleWithDictionary = (typeof LOCALE_DICTIONARY_CODES)[number];
 type LocaleDictionaryLoader = () => Promise<I18nMessages>;
 
 const LOCALE_DICTIONARY_LOADERS: Record<LocaleWithDictionary, LocaleDictionaryLoader> = {
-  ja: async () => (await import("../../i18n/dictionaries/ja")).jaMessages,
-  zh: async () => (await import("../../i18n/dictionaries/zh")).zhMessages,
-  "zh-CN": async () => (await import("../../i18n/dictionaries/zh-CN")).zhCNMessages,
-  ko: async () => (await import("../../i18n/dictionaries/ko")).koMessages,
-  es: async () => (await import("../../i18n/dictionaries/es")).esMessages,
-  fr: async () => (await import("../../i18n/dictionaries/fr")).frMessages,
-  de: async () => (await import("../../i18n/dictionaries/de")).deMessages,
+  ja: async () => (await import("../../i18n/ja")).jaMessages,
+  zh: async () => (await import("../../i18n/zh")).zhMessages,
+  "zh-CN": async () => (await import("../../i18n/zh-cn")).zhCNMessages,
+  ko: async () => (await import("../../i18n/ko")).koMessages,
+  es: async () => (await import("../../i18n/es")).esMessages,
+  fr: async () => (await import("../../i18n/fr")).frMessages,
+  de: async () => (await import("../../i18n/de")).deMessages,
 } as const;
 
 const hasDictionaryLoader = (locale: Locale): locale is LocaleWithDictionary => {

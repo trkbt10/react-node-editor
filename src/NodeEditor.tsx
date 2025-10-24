@@ -16,7 +16,7 @@ import { NodeCanvasProvider } from "./contexts/NodeCanvasContext";
 import { NodeDefinitionProvider } from "./contexts/node-definitions/provider";
 import { RendererProvider } from "./contexts/RendererContext";
 import { I18nProvider } from "./i18n/context";
-import { enMessages } from "./i18n/dictionaries/en";
+import { enMessages } from "./i18n/en";
 import type { I18nMessages, I18nDictionaries, Locale } from "./i18n/types";
 import { NodeEditorContent } from "./NodeEditorContent";
 import type { SettingsManager } from "./settings/SettingsManager";

@@ -1,7 +1,7 @@
 /**
  * @file Japanese translation dictionary for the node editor
  */
-import type { I18nMessages } from "../types";
+import type { I18nMessages } from "./types";
 
 export const jaMessages: I18nMessages = {
   // General UI

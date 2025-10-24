@@ -1,7 +1,7 @@
 /**
  * @file English translation dictionary for the node editor
  */
-import type { I18nMessages } from "../types";
+import type { I18nMessages } from "./types";
 
 export const enMessages: I18nMessages = {
   // General UI
