@@ -1,6 +1,6 @@
 {
   "name": "react-wireflow",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -22,11 +22,22 @@
       "require": "./dist/index.cjs"
     },
     "./style.css": "./dist/style.css",
-    "./themes/*": {
-      "import": "./public/themes/*.css",
-      "require": "./public/themes/*.css",
-      "default": "./public/themes/*.css"
-    },
+    "./themes/adobe.css": "./public/themes/adobe.css",
+    "./themes/apple.css": "./public/themes/apple.css",
+    "./themes/figma.css": "./public/themes/figma.css",
+    "./themes/github-light.css": "./public/themes/github-light.css",
+    "./themes/github.css": "./public/themes/github.css",
+    "./themes/google.css": "./public/themes/google.css",
+    "./themes/minecraft.css": "./public/themes/minecraft.css",
+    "./themes/opal.css": "./public/themes/opal.css",
+    "./themes/stellar.css": "./public/themes/stellar.css",
+    "./themes/unity.css": "./public/themes/unity.css",
+    "./themes/vscode.css": "./public/themes/vscode.css",
+    "./themes/wargames.css": "./public/themes/wargames.css",
+    "./themes/window98.css": "./public/themes/window98.css",
+    "./themes/windows11.css": "./public/themes/windows11.css",
+    "./themes/windowsxp.css": "./public/themes/windowsxp.css",
+    "./themes/xcorp.css": "./public/themes/xcorp.css",
     "./i18n/en": {
       "types": "./dist/i18n/en.d.ts",
       "import": "./dist/i18n/en.js",
@@ -66,6 +77,11 @@
       "types": "./dist/i18n/de.d.ts",
       "import": "./dist/i18n/de.js",
       "require": "./dist/i18n/de.cjs"
+    },
+    "./inspector": {
+      "types": "./dist/inspector/index.d.ts",
+      "import": "./dist/inspector/index.js",
+      "require": "./dist/inspector/index.cjs"
     }
   },
   "scripts": {
@@ -74,6 +90,7 @@
     "build:examples": "vite build --config vite.config.examples.ts",
     "analyze": "vite build --mode analyze",
     "clean": "rimraf dist",
+    "generate:theme-exports": "bun run scripts/generate-theme-exports.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
