@@ -101,6 +101,7 @@ export default defineConfig(({ mode }) => {
           "i18n/fr": "src/i18n/fr.ts",
           "i18n/de": "src/i18n/de.ts",
           "i18n/types": "src/i18n/types.ts",
+          "inspector/index": "src/inspector/index.ts",
         },
         name: "NodeEditor",
         formats: ["es", "cjs"],
