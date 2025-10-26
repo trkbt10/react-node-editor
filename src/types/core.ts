@@ -83,6 +83,7 @@ export type Connection = {
   fromPortId: PortId;
   toNodeId: NodeId;
   toPortId: PortId;
+  data?: Record<string, unknown>;
 };
 
 // Editor data types

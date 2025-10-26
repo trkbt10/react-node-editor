@@ -23,6 +23,7 @@ export type CustomNodeRendererProps = {
   node: Node;
   isSelected: boolean;
   isDragging: boolean;
+  isResizing: boolean;
   isEditing: boolean;
   externalData: unknown;
   isLoadingExternalData: boolean;
@@ -246,20 +247,25 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   );
 
   // Custom renderer props
-  const customRenderProps = React.useMemo(
-    () => ({
-      node,
+  const customRenderProps = React.useMemo(() => {
+    // Create a node object with the current resize size if resizing
+    const nodeWithCurrentSize: Node = isResizing
+      ? { ...node, size }
+      : node;
+
+    return {
+      node: nodeWithCurrentSize,
       isSelected,
       isDragging,
+      isResizing,
       isEditing: isEditing(node.id, "title"),
       externalData: externalDataState.data,
       isLoadingExternalData: externalDataState.isLoading,
       externalDataError: externalDataState.error,
       onStartEdit: () => startEditing(node.id, "title", node.data.title || ""),
       onUpdateNode: handleUpdateNode,
-    }),
-    [node, isSelected, isDragging, externalDataState, startEditing, handleUpdateNode, isEditing],
-  );
+    };
+  }, [node, size, isSelected, isDragging, isResizing, externalDataState, startEditing, handleUpdateNode, isEditing]);
 
   // Calculate child dragging state
   const isChildDragging = React.useMemo(() => {

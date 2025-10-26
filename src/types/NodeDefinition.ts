@@ -39,6 +39,8 @@ export type NodeRenderProps<TData extends Record<string, unknown> = Record<strin
   isSelected: boolean;
   /** Whether the node is being dragged */
   isDragging: boolean;
+  /** Whether the node is being resized */
+  isResizing: boolean;
   /** Whether the node is being edited inline */
   isEditing: boolean;
   /** External data if loaded */

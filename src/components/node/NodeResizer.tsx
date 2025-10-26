@@ -33,9 +33,15 @@ export const useNodeResizerContext = (): Node | null => {
  * Props for the NodeResizer component
  */
 export type NodeResizerProps = {
-  /** Node object (preferred - takes precedence over size) */
+  /**
+   * Node object (optional - if not provided, will attempt to resolve from context)
+   * Takes precedence over size prop
+   */
   node?: Node;
-  /** Node size (width and height may be undefined) - deprecated in favor of node prop */
+  /**
+   * Node size (width and height may be undefined)
+   * Only used if node prop is not provided and no node is available in context
+   */
   size?: Size;
   /** Child render function that receives normalized size */
   children: (size: Required<Size>) => React.ReactNode;
@@ -47,6 +53,14 @@ export type NodeResizerProps = {
   className?: string;
   /** Optional style overrides */
   style?: React.CSSProperties;
+  /** Indicates whether the node is currently being resized */
+  isResizing?: boolean;
+  /**
+   * Callback fired when the node is being resized
+   * @param size - The current size during resize
+   * @param isResizing - Whether the resize is in progress
+   */
+  onResize?: (size: Required<Size>, isResizing: boolean) => void;
 };
 
 /**
@@ -74,46 +88,95 @@ export const normalizeNodeSize = (
  * Instead of writing `style={{width: node.size?.width, height: node.size?.height}}`
  * in every custom renderer, you can use this wrapper.
  *
- * @example Using with node prop (recommended)
+ * The node can be provided in three ways (priority order):
+ * 1. Via `node` prop (highest priority)
+ * 2. Via context from a parent NodeResizer
+ * 3. Via `size` prop (fallback for backward compatibility)
+ *
+ * @example Method 1: Explicit node prop (recommended when node is available)
  * ```tsx
- * <NodeResizer node={node}>
- *   {({width, height}) => (
- *     <div style={{width, height}}>
- *       {/* Your custom node content *\/}
- *     </div>
- *   )}
- * </NodeResizer>
+ * const MyNodeRenderer = ({ node }: NodeRenderProps) => (
+ *   <NodeResizer node={node}>
+ *     {({width, height}) => (
+ *       <div style={{width, height}}>
+ *         {node.data.title}
+ *       </div>
+ *     )}
+ *   </NodeResizer>
+ * );
  * ```
  *
- * @example Using with size prop (backward compatible)
+ * @example Method 2: Implicit resolution from context (cleanest API)
+ * ```tsx
+ * const MyNodeRenderer = ({ node }: NodeRenderProps) => (
+ *   <NodeResizer node={node}>
+ *     {() => <MyNodeContent />}
+ *   </NodeResizer>
+ * );
+ *
+ * const MyNodeContent = () => {
+ *   // NodeResizer inside can access node from parent context automatically
+ *   return (
+ *     <NodeResizer>
+ *       {({width, height}) => (
+ *         <div style={{width, height}}>Content</div>
+ *       )}
+ *     </NodeResizer>
+ *   );
+ * };
+ * ```
+ *
+ * @example Method 3: Using size prop (backward compatible)
  * ```tsx
  * <NodeResizer size={node.size}>
  *   {({width, height}) => (
- *     <div style={{width, height}}>
- *       {/* Your custom node content *\/}
- *     </div>
+ *     <div style={{width, height}}>Content</div>
  *   )}
  * </NodeResizer>
  * ```
  *
- * @example Using context for nested components
+ * @example Using context hook for deep nesting
  * ```tsx
- * <NodeResizer node={node}>
- *   {({width, height}) => (
- *     <CustomComponent />  // Can use useNodeResizerContext() inside
- *   )}
- * </NodeResizer>
+ * const DeepNestedComponent = () => {
+ *   const node = useNodeResizerContext();
+ *   return <div>{node?.data.title}</div>;
+ * };
+ * ```
+ *
+ * @example Listening to resize events
+ * ```tsx
+ * const MyNodeRenderer = ({ node, isResizing }: NodeRenderProps) => {
+ *   const handleResize = (size: Required<Size>, resizing: boolean) => {
+ *     console.log('Current size:', size, 'Is resizing:', resizing);
+ *   };
+ *
+ *   return (
+ *     <NodeResizer node={node} isResizing={isResizing} onResize={handleResize}>
+ *       {({width, height}) => (
+ *         <div style={{width, height}}>Content</div>
+ *       )}
+ *     </NodeResizer>
+ *   );
+ * };
  * ```
  */
 export const NodeResizer: React.FC<NodeResizerProps> = ({
-  node,
+  node: nodeProp,
   size,
   children,
   defaultWidth = DEFAULT_NODE_WIDTH,
   defaultHeight = DEFAULT_NODE_HEIGHT,
   className,
   style,
+  isResizing = false,
+  onResize,
 }) => {
+  // Try to get node from context if not provided as prop
+  const contextNode = useNodeResizerContext();
+
+  // Determine which node to use: prop > context > null
+  const node = nodeProp ?? contextNode;
+
   // Determine the size to use: node.size takes precedence over size prop
   const effectiveSize = React.useMemo(() => {
     if (node) {
@@ -127,6 +190,17 @@ export const NodeResizer: React.FC<NodeResizerProps> = ({
     [effectiveSize, defaultWidth, defaultHeight],
   );
 
+  // Notify parent of resize changes
+  const onResizeCallback = React.useEffectEvent((currentSize: Required<Size>, resizing: boolean) => {
+    if (onResize) {
+      onResize(currentSize, resizing);
+    }
+  });
+
+  React.useEffect(() => {
+    onResizeCallback(normalizedSize, isResizing);
+  }, [normalizedSize.width, normalizedSize.height, isResizing, onResizeCallback]);
+
   const mergedStyle = React.useMemo(
     () => ({
       width: normalizedSize.width,
@@ -137,8 +211,8 @@ export const NodeResizer: React.FC<NodeResizerProps> = ({
   );
 
   const contextValue = React.useMemo<NodeResizerContextValue>(
-    () => (node ? { node } : null),
-    [node],
+    () => (nodeProp ? { node: nodeProp } : null),
+    [nodeProp],
   );
 
   const content = (
@@ -147,7 +221,8 @@ export const NodeResizer: React.FC<NodeResizerProps> = ({
     </div>
   );
 
-  // Only provide context if node is available
+  // Only provide NEW context if node was provided as prop
+  // This allows nesting: outer NodeResizer can provide context to inner ones
   if (contextValue) {
     return <NodeResizerContext.Provider value={contextValue}>{content}</NodeResizerContext.Provider>;
   }

@@ -18,7 +18,7 @@ export function StandardNodeRenderer({
 }: NodeRenderProps): React.ReactElement {
   const { t } = useI18n();
   return (
-    <NodeResizer size={node.size} className={styles.standardNodeRenderer}>
+    <NodeResizer node={node} className={styles.standardNodeRenderer}>
       {() => (
         <div
           data-is-selected={isSelected}
