@@ -30,6 +30,7 @@ import { OpalThemeExample } from "./demos/opal-theme/OpalThemeExample";
 import { UnityThemeExample } from "./demos/unity-theme/UnityThemeExample";
 import { AdobeThemeExample } from "./demos/adobe-theme/AdobeThemeExample";
 import { FigmaThemeExample } from "./demos/figma-theme/FigmaThemeExample";
+import { TradingAnalyticsDashboard } from "./demos/trading-analytics/TradingAnalyticsDashboard";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -41,6 +42,13 @@ type ExampleEntry = {
 };
 
 const examples: ExampleEntry[] = [
+  {
+    id: "trading-analytics-dashboard",
+    title: "Trading Analytics Dashboard",
+    description: "Financial analytics dashboard showing trading strategies, execution metrics, and portfolio performance.",
+    component: TradingAnalyticsDashboard,
+    category: "advanced",
+  },
   {
     id: "threejs-integration",
     title: "Three.js Integration",

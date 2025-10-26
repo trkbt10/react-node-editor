@@ -64,7 +64,7 @@ const TaskNodeRenderer = ({
   const initialLoading = externalData === undefined && isLoadingExternalData;
 
   return (
-    <NodeResizer size={node.size} className={classes.taskNode} defaultWidth={220} defaultHeight={120}>
+    <NodeResizer node={node} className={classes.taskNode} defaultWidth={220} defaultHeight={120}>
       {() => (
         <div
           data-selected={isSelected ? "true" : undefined}

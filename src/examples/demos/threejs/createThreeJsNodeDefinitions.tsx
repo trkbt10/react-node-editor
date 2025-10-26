@@ -21,6 +21,7 @@ import {
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import classes from "./ThreeJsNodes.module.css";
 import { calculateBezierPath, getOppositePortPosition } from "../../../components/connection/utils/connectionUtils";
+import { NodeResizer } from "../../../components/node/NodeResizer";
 
 type ColorControlData = {
   title: string;
@@ -615,7 +616,7 @@ const MaterialControlInspector = ({ node, onUpdateNode }: InspectorRenderProps<M
   );
 };
 
-const ThreeSceneNodeRenderer = ({ node }: NodeRenderProps<ThreePreviewData>) => {
+const ThreeSceneNodeRenderer = ({ node, isResizing }: NodeRenderProps<ThreePreviewData>) => {
   const { state } = useNodeEditor();
 
   const resolveInputValue = React.useCallback(
@@ -693,25 +694,41 @@ const ThreeSceneNodeRenderer = ({ node }: NodeRenderProps<ThreePreviewData>) => 
   }, [materialConfigValue.mode]);
 
   return (
-    <div
-      className={classes.threeScene}
-      style={{
-        width: node.size?.width,
-        height: node.size?.height,
-      }}
-    >
-      <div className={classes.threeOverlay} style={{ background: overlayBackground }}>
-        <span>Three.js Preview</span>
-        <span>Color: {color.toUpperCase()}</span>
-        <span>Scale: {scale.toFixed(2)}×</span>
-        <span>Material: {MATERIAL_MODE_LABELS[materialConfigValue.mode]}</span>
-        <span>Wireframe: {wireframeEnabled ? "ON" : "OFF"}</span>
-        <span>Glow: {materialConfigValue.emissiveIntensity.toFixed(2)}×</span>
-      </div>
-      <div className={classes.threeCanvasHost}>
-        <ThreeSceneCanvas color={color} scale={scale} wireframe={wireframeEnabled} materialConfig={materialConfigValue} />
-      </div>
-    </div>
+    <NodeResizer node={node} isResizing={isResizing}>
+      {({ width, height }) => (
+        <div
+          className={classes.threeScene}
+          style={{
+            width,
+            height,
+          }}
+        >
+          <div className={classes.threeOverlay} style={{ background: overlayBackground }}>
+            <span>Three.js Preview</span>
+            <span>Color: {color.toUpperCase()}</span>
+            <span>Scale: {scale.toFixed(2)}×</span>
+            <span>Material: {MATERIAL_MODE_LABELS[materialConfigValue.mode]}</span>
+            <span>Wireframe: {wireframeEnabled ? "ON" : "OFF"}</span>
+            <span>Glow: {materialConfigValue.emissiveIntensity.toFixed(2)}×</span>
+            {isResizing && (
+              <span style={{ color: "#22d3ee", fontWeight: "bold" }}>
+                Resizing: {width}×{height}
+              </span>
+            )}
+          </div>
+          <div className={classes.threeCanvasHost} style={{ width, height }}>
+            <ThreeSceneCanvas
+              color={color}
+              scale={scale}
+              wireframe={wireframeEnabled}
+              materialConfig={materialConfigValue}
+              width={width}
+              height={height}
+            />
+          </div>
+        </div>
+      )}
+    </NodeResizer>
   );
 };
 

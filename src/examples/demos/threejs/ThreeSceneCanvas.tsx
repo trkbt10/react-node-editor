@@ -29,6 +29,8 @@ export type ThreeSceneCanvasProps = {
   scale: number;
   wireframe: boolean;
   materialConfig?: MaterialConfig;
+  width?: number;
+  height?: number;
 };
 
 type SceneRefs = {
@@ -147,7 +149,14 @@ const animateMaterial = (material: MeshPhysicalMaterial, elapsedMs: number) => {
   material.transmission = baseTransmission;
 };
 
-export const ThreeSceneCanvas: React.FC<ThreeSceneCanvasProps> = ({ color, scale, wireframe, materialConfig }) => {
+export const ThreeSceneCanvas: React.FC<ThreeSceneCanvasProps> = ({
+  color,
+  scale,
+  wireframe,
+  materialConfig,
+  width,
+  height,
+}) => {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const animationFrameRef = React.useRef<number | null>(null);
   const sceneRef = React.useRef<SceneRefs | null>(null);
@@ -279,6 +288,20 @@ export const ThreeSceneCanvas: React.FC<ThreeSceneCanvasProps> = ({ color, scale
 
     applyMaterialConfig(sceneRef.current.material, materialConfig ?? DEFAULT_MATERIAL_CONFIG);
   }, [materialConfig]);
+
+  React.useEffect(() => {
+    if (!sceneRef.current || !containerRef.current) {
+      return;
+    }
+
+    const effectiveWidth = width ?? containerRef.current.clientWidth;
+    const effectiveHeight = height ?? (containerRef.current.clientHeight || 1);
+
+    const { renderer: activeRenderer, camera: activeCamera } = sceneRef.current;
+    activeRenderer.setSize(effectiveWidth, effectiveHeight);
+    activeCamera.aspect = effectiveWidth / effectiveHeight;
+    activeCamera.updateProjectionMatrix();
+  }, [width, height]);
 
   React.useEffect(() => {
     if (!sceneRef.current) {
