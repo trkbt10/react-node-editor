@@ -1,5 +1,8 @@
+/**
+ * @file Script to automatically generate theme exports in package.json
+ */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join, basename } from "node:path";
+import { basename } from "node:path";
 
 const THEMES_DIR = "public/themes";
 const PACKAGE_JSON_PATH = "package.json";
