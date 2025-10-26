@@ -32,9 +32,13 @@ const withNodeDefinitions = (children: React.ReactNode): React.ReactElement => (
 
 const UncontrolledHarness: FC = () => {
   const { state, actions } = useNodeEditor();
+  const hasRunRef = useRef(false);
 
   useEffect(() => {
-    actions.updateNode("n1", { position: { x: 10, y: 20 } });
+    if (!hasRunRef.current) {
+      hasRunRef.current = true;
+      actions.updateNode("n1", { position: { x: 10, y: 20 } });
+    }
   }, [actions]);
 
   return (
@@ -47,9 +51,15 @@ const UncontrolledHarness: FC = () => {
 
 const ControlledHarness: FC = () => {
   const { actions, state } = useNodeEditor();
+  const hasRunRef = useRef(false);
+
   useEffect(() => {
-    actions.updateNode("n1", { position: { x: 99, y: 77 } });
+    if (!hasRunRef.current) {
+      hasRunRef.current = true;
+      actions.updateNode("n1", { position: { x: 99, y: 77 } });
+    }
   }, [actions]);
+
   return (
     <div>
       <div data-testid="pos-x">{state.nodes.n1?.position.x}</div>
