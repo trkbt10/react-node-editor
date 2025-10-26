@@ -3,8 +3,8 @@
  */
 import * as React from "react";
 import { render, screen } from "@testing-library/react";
-import { NodeResizer, normalizeNodeSize } from "./NodeResizer";
-import type { Size } from "../../types/core";
+import { NodeResizer, normalizeNodeSize, useNodeResizerContext } from "./NodeResizer";
+import type { Size, Node } from "../../types/core";
 
 describe("normalizeNodeSize", () => {
   it("should use provided width and height", () => {
@@ -191,5 +191,137 @@ describe("NodeResizer", () => {
     );
 
     expect(screen.getByTestId("content").textContent).toBe("300x150");
+  });
+
+  it("should render with node prop", () => {
+    const node: Node = {
+      id: "test-node",
+      type: "standard",
+      position: { x: 0, y: 0 },
+      size: { width: 300, height: 150 },
+      data: { title: "Test" },
+    };
+
+    render(
+      <NodeResizer node={node}>
+        {({ width, height }) => (
+          <div data-testid="content">
+            {width}x{height}
+          </div>
+        )}
+      </NodeResizer>,
+    );
+
+    const content = screen.getByTestId("content");
+    expect(content.textContent).toBe("300x150");
+  });
+
+  it("should prefer node prop over size prop", () => {
+    const node: Node = {
+      id: "test-node",
+      type: "standard",
+      position: { x: 0, y: 0 },
+      size: { width: 300, height: 150 },
+      data: { title: "Test" },
+    };
+
+    render(
+      <NodeResizer node={node} size={{ width: 200, height: 100 }}>
+        {({ width, height }) => (
+          <div data-testid="content">
+            {width}x{height}
+          </div>
+        )}
+      </NodeResizer>,
+    );
+
+    const content = screen.getByTestId("content");
+    expect(content.textContent).toBe("300x150");
+  });
+
+  it("should handle node without size", () => {
+    const node: Node = {
+      id: "test-node",
+      type: "standard",
+      position: { x: 0, y: 0 },
+      data: { title: "Test" },
+    };
+
+    render(
+      <NodeResizer node={node}>
+        {({ width, height }) => (
+          <div data-testid="content">
+            {width}x{height}
+          </div>
+        )}
+      </NodeResizer>,
+    );
+
+    const content = screen.getByTestId("content");
+    expect(content.textContent).toBe("150x50");
+  });
+
+  it("should provide node via context when node prop is given", () => {
+    const node: Node = {
+      id: "test-node",
+      type: "standard",
+      position: { x: 100, y: 200 },
+      size: { width: 300, height: 150 },
+      data: { title: "Test Node" },
+    };
+
+    const ChildComponent = () => {
+      const contextNode = useNodeResizerContext();
+      return (
+        <div data-testid="context-node">
+          {contextNode ? `${contextNode.id}:${contextNode.data.title}` : "no-context"}
+        </div>
+      );
+    };
+
+    render(
+      <NodeResizer node={node}>
+        {() => <ChildComponent />}
+      </NodeResizer>,
+    );
+
+    const contextContent = screen.getByTestId("context-node");
+    expect(contextContent.textContent).toBe("test-node:Test Node");
+  });
+
+  it("should not provide context when only size prop is given", () => {
+    const ChildComponent = () => {
+      const contextNode = useNodeResizerContext();
+      return (
+        <div data-testid="context-node">
+          {contextNode ? `${contextNode.id}` : "no-context"}
+        </div>
+      );
+    };
+
+    render(
+      <NodeResizer size={{ width: 200, height: 100 }}>
+        {() => <ChildComponent />}
+      </NodeResizer>,
+    );
+
+    const contextContent = screen.getByTestId("context-node");
+    expect(contextContent.textContent).toBe("no-context");
+  });
+
+  it("should return null when useNodeResizerContext is used outside NodeResizer", () => {
+    const ChildComponent = () => {
+      const contextNode = useNodeResizerContext();
+      return (
+        <div data-testid="context-node">
+          {contextNode ? `${contextNode.id}` : "no-context"}
+        </div>
+      );
+    };
+
+    render(<ChildComponent />);
+
+    const contextContent = screen.getByTestId("context-node");
+    expect(contextContent.textContent).toBe("no-context");
   });
 });

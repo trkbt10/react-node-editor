@@ -3,7 +3,7 @@
  * This component standardizes size handling for custom node implementations.
  */
 import * as React from "react";
-import type { Size } from "../../types/core";
+import type { Size, Node } from "../../types/core";
 
 /**
  * Default size constants
@@ -12,10 +12,30 @@ const DEFAULT_NODE_WIDTH = 150;
 const DEFAULT_NODE_HEIGHT = 50;
 
 /**
+ * Context for NodeResizer to provide node data
+ */
+type NodeResizerContextValue = {
+  node: Node;
+} | null;
+
+const NodeResizerContext = React.createContext<NodeResizerContextValue>(null);
+
+/**
+ * Hook to access the node from NodeResizerContext
+ * @returns The node from context, or null if not in a NodeResizerContext
+ */
+export const useNodeResizerContext = (): Node | null => {
+  const context = React.useContext(NodeResizerContext);
+  return context?.node ?? null;
+};
+
+/**
  * Props for the NodeResizer component
  */
 export type NodeResizerProps = {
-  /** Node size (width and height may be undefined) */
+  /** Node object (preferred - takes precedence over size) */
+  node?: Node;
+  /** Node size (width and height may be undefined) - deprecated in favor of node prop */
   size?: Size;
   /** Child render function that receives normalized size */
   children: (size: Required<Size>) => React.ReactNode;
@@ -52,9 +72,20 @@ export const normalizeNodeSize = (
  *
  * This component standardizes size handling for custom node renderers.
  * Instead of writing `style={{width: node.size?.width, height: node.size?.height}}`
- * in every custom renderer, you can use this wrapper:
+ * in every custom renderer, you can use this wrapper.
  *
- * @example
+ * @example Using with node prop (recommended)
+ * ```tsx
+ * <NodeResizer node={node}>
+ *   {({width, height}) => (
+ *     <div style={{width, height}}>
+ *       {/* Your custom node content *\/}
+ *     </div>
+ *   )}
+ * </NodeResizer>
+ * ```
+ *
+ * @example Using with size prop (backward compatible)
  * ```tsx
  * <NodeResizer size={node.size}>
  *   {({width, height}) => (
@@ -64,8 +95,18 @@ export const normalizeNodeSize = (
  *   )}
  * </NodeResizer>
  * ```
+ *
+ * @example Using context for nested components
+ * ```tsx
+ * <NodeResizer node={node}>
+ *   {({width, height}) => (
+ *     <CustomComponent />  // Can use useNodeResizerContext() inside
+ *   )}
+ * </NodeResizer>
+ * ```
  */
 export const NodeResizer: React.FC<NodeResizerProps> = ({
+  node,
   size,
   children,
   defaultWidth = DEFAULT_NODE_WIDTH,
@@ -73,9 +114,17 @@ export const NodeResizer: React.FC<NodeResizerProps> = ({
   className,
   style,
 }) => {
+  // Determine the size to use: node.size takes precedence over size prop
+  const effectiveSize = React.useMemo(() => {
+    if (node) {
+      return node.size;
+    }
+    return size;
+  }, [node, size]);
+
   const normalizedSize = React.useMemo(
-    () => normalizeNodeSize(size, defaultWidth, defaultHeight),
-    [size, defaultWidth, defaultHeight],
+    () => normalizeNodeSize(effectiveSize, defaultWidth, defaultHeight),
+    [effectiveSize, defaultWidth, defaultHeight],
   );
 
   const mergedStyle = React.useMemo(
@@ -87,11 +136,23 @@ export const NodeResizer: React.FC<NodeResizerProps> = ({
     [normalizedSize.width, normalizedSize.height, style],
   );
 
-  return (
+  const contextValue = React.useMemo<NodeResizerContextValue>(
+    () => (node ? { node } : null),
+    [node],
+  );
+
+  const content = (
     <div className={className} style={mergedStyle}>
       {children(normalizedSize)}
     </div>
   );
+
+  // Only provide context if node is available
+  if (contextValue) {
+    return <NodeResizerContext.Provider value={contextValue}>{content}</NodeResizerContext.Provider>;
+  }
+
+  return content;
 };
 
 NodeResizer.displayName = "NodeResizer";
