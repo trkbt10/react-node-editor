@@ -18,7 +18,11 @@ export type KeyboardShortcut = {
   cmdOrCtrl?: boolean;
 };
 
-export type ShortcutHandler = (e: KeyboardEvent) => void;
+/**
+ * Handler function for keyboard shortcuts
+ * @returns false to allow default browser behavior, true or void to prevent default
+ */
+export type ShortcutHandler = (e: KeyboardEvent) => void | boolean;
 
 export type KeyboardShortcutState = {
   shortcuts: Map<string, ShortcutHandler>;
@@ -170,9 +174,12 @@ export const KeyboardShortcutProvider: React.FC<KeyboardShortcutProviderProps> =
         };
 
         if (matchesShortcut(event, shortcut)) {
-          event.preventDefault();
-          event.stopPropagation();
-          handler(event);
+          const result = handler(event);
+          // Only prevent default if handler didn't explicitly return false
+          if (result !== false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
           break; // Handle only the first matching shortcut
         }
       }

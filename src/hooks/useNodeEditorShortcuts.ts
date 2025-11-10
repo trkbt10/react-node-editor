@@ -341,10 +341,15 @@ export const useNodeEditorShortcuts = () => {
     DEFAULT_SHORTCUT_BINDING_MAP.copy,
     React.useCallback(() => {
       const selected = actionStateRef.current.selectedNodeIds;
+      // If no nodes selected, allow default browser copy behavior
+      if (selected.length === 0) {
+        return false;
+      }
       const clipboardData = copyNodesToClipboard(selected, nodeEditorStateRef.current);
       if (clipboardData) {
         console.log("Copied nodes:", clipboardData.nodes.length, "connections:", clipboardData.connections.length);
       }
+      return true;
     }, []),
   );
 
@@ -354,8 +359,9 @@ export const useNodeEditorShortcuts = () => {
     DEFAULT_SHORTCUT_BINDING_MAP.cut,
     React.useCallback(() => {
       const selected = actionStateRef.current.selectedNodeIds;
+      // If no nodes selected, allow default browser cut behavior
       if (selected.length === 0) {
-        return;
+        return false;
       }
 
       // Copy first
@@ -364,6 +370,7 @@ export const useNodeEditorShortcuts = () => {
       // Delete nodes
       selected.forEach((nodeId) => nodeEditorActions.deleteNode(nodeId));
       actionActions.clearSelection();
+      return true;
     }, [nodeEditorActions, actionActions]),
   );
 
