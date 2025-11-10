@@ -12,24 +12,6 @@ const DEFAULT_NODE_WIDTH = 150;
 const DEFAULT_NODE_HEIGHT = 50;
 
 /**
- * Context for NodeResizer to provide node data
- */
-type NodeResizerContextValue = {
-  node: Node;
-} | null;
-
-const NodeResizerContext = React.createContext<NodeResizerContextValue>(null);
-
-/**
- * Hook to access the node from NodeResizerContext
- * @returns The node from context, or null if not in a NodeResizerContext
- */
-export const useNodeResizerContext = (): Node | null => {
-  const context = React.useContext(NodeResizerContext);
-  return context?.node ?? null;
-};
-
-/**
  * Props for the NodeResizer component
  */
 export type NodeResizerProps = {
@@ -37,7 +19,7 @@ export type NodeResizerProps = {
    * Node object (optional - if not provided, will attempt to resolve from context)
    * Takes precedence over size prop
    */
-  node?: Node;
+  node: Node;
   /**
    * Node size (width and height may be undefined)
    * Only used if node prop is not provided and no node is available in context
@@ -161,7 +143,7 @@ export const normalizeNodeSize = (
  * ```
  */
 export const NodeResizer: React.FC<NodeResizerProps> = ({
-  node: nodeProp,
+  node,
   size,
   children,
   defaultWidth = DEFAULT_NODE_WIDTH,
@@ -171,12 +153,6 @@ export const NodeResizer: React.FC<NodeResizerProps> = ({
   isResizing = false,
   onResize,
 }) => {
-  // Try to get node from context if not provided as prop
-  const contextNode = useNodeResizerContext();
-
-  // Determine which node to use: prop > context > null
-  const node = nodeProp ?? contextNode;
-
   // Determine the size to use: node.size takes precedence over size prop
   const effectiveSize = React.useMemo(() => {
     if (node) {
@@ -199,7 +175,7 @@ export const NodeResizer: React.FC<NodeResizerProps> = ({
 
   React.useEffect(() => {
     onResizeCallback(normalizedSize, isResizing);
-  }, [normalizedSize.width, normalizedSize.height, isResizing, onResizeCallback]);
+  }, [normalizedSize.width, normalizedSize.height, isResizing]);
 
   const mergedStyle = React.useMemo(
     () => ({
@@ -210,24 +186,11 @@ export const NodeResizer: React.FC<NodeResizerProps> = ({
     [normalizedSize.width, normalizedSize.height, style],
   );
 
-  const contextValue = React.useMemo<NodeResizerContextValue>(
-    () => (nodeProp ? { node: nodeProp } : null),
-    [nodeProp],
-  );
-
-  const content = (
+  return (
     <div className={className} style={mergedStyle}>
       {children(normalizedSize)}
     </div>
   );
-
-  // Only provide NEW context if node was provided as prop
-  // This allows nesting: outer NodeResizer can provide context to inner ones
-  if (contextValue) {
-    return <NodeResizerContext.Provider value={contextValue}>{content}</NodeResizerContext.Provider>;
-  }
-
-  return content;
 };
 
 NodeResizer.displayName = "NodeResizer";

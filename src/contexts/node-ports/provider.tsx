@@ -32,7 +32,6 @@ export const PortPositionProvider: React.FC<PortPositionProviderProps> = ({
   children,
 }) => {
   const effectiveConfig = config ?? DEFAULT_PORT_POSITION_CONFIG;
-
   const value = React.useMemo<PortPositionContextValue>(() => {
     const calculateNodePortPositions = (node: PortPositionNode): NodePortPositions => {
       if (behavior?.computeNode) {

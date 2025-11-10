@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useNodeEditor } from "../contexts/node-editor/context";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
+import { useNodeCanvas } from "../contexts/NodeCanvasContext";
 import type { Position, ResizeHandle, Size } from "../types/core";
 
 export type UseNodeResizeOptions = {
@@ -43,6 +44,7 @@ export type UseNodeResizeResult = {
 export const useNodeResize = (options: UseNodeResizeOptions = {}): UseNodeResizeResult => {
   const { actions: nodeEditorActions } = useNodeEditor();
   const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: canvasState } = useNodeCanvas();
 
   const { minWidth = 100, minHeight = 40, snapToGrid = false, gridSize = 20 } = options;
 
@@ -129,8 +131,8 @@ export const useNodeResize = (options: UseNodeResizeOptions = {}): UseNodeResize
     const { startPosition, startSize, handle, startNodePosition } = actionState.resizeState;
 
     const handlePointerMove = (e: PointerEvent) => {
-      const deltaX = e.clientX - startPosition.x;
-      const deltaY = e.clientY - startPosition.y;
+      const deltaX = (e.clientX - startPosition.x) / canvasState.viewport.scale;
+      const deltaY = (e.clientY - startPosition.y) / canvasState.viewport.scale;
 
       const { size, position } = calculateResize(handle, startSize, startNodePosition, deltaX, deltaY);
       actionActions.updateNodeResize(size, position);
@@ -165,7 +167,7 @@ export const useNodeResize = (options: UseNodeResizeOptions = {}): UseNodeResize
       window.removeEventListener("pointerup", handlePointerUp);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [actionState.resizeState, calculateResize, actionActions, nodeEditorActions]);
+  }, [actionState.resizeState, calculateResize, actionActions, nodeEditorActions, canvasState.viewport.scale]);
 
   const startResize = React.useCallback(
     (

@@ -1,0 +1,62 @@
+.nodeTreeList {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+.nodeCount {
+  font-size: var(--node-editor-inspector-font-size-meta);
+  line-height: var(--node-editor-inspector-line-height-meta);
+  font-weight: var(--node-editor-inspector-font-weight-medium);
+  color: var(--node-editor-secondary-label-color);
+}
+
+.nodeTreeListBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.treeContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--node-editor-inspector-space-xs) 0;
+  box-sizing: border-box;
+}
+
+.emptyState {
+  padding: var(--node-editor-inspector-space-xl) var(--node-editor-inspector-space-lg);
+  text-align: center;
+  color: var(--node-editor-tertiary-label-color);
+  font-size: var(--node-editor-inspector-font-size-body);
+  line-height: var(--node-editor-inspector-line-height-body);
+  box-sizing: border-box;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .nodeTreeList {
+    background: var(--node-editor-control-background);
+  }
+
+  .header {
+    background: var(--node-editor-control-background);
+    border-bottom-color: var(--node-editor-separator-color);
+  }
+
+  .title {
+    color: var(--node-editor-label-color);
+  }
+
+  .nodeCount {
+    color: var(--node-editor-secondary-label-color);
+  }
+
+  .emptyState {
+    color: var(--node-editor-tertiary-label-color);
+  }
+}

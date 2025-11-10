@@ -12,9 +12,8 @@ import { usePortPositions } from "../contexts/node-ports/context";
 export function useDynamicPortPosition(nodeId: string, portId: string): PortPosition | undefined {
   const { state, getNodePorts } = useNodeEditor();
   const { calculateNodePortPositions } = usePortPositions();
-
+  const node = React.useMemo(() => state.nodes[nodeId], [state.nodes, nodeId]);
   return React.useMemo(() => {
-    const node = state.nodes[nodeId];
     if (!node) {
       return undefined;
     }
@@ -27,16 +26,7 @@ export function useDynamicPortPosition(nodeId: string, portId: string): PortPosi
 
     const positions = calculateNodePortPositions(nodeWithPorts);
     return positions.get(portId);
-  }, [
-    state.nodes[nodeId]?.position.x,
-    state.nodes[nodeId]?.position.y,
-    state.nodes[nodeId]?.size?.width,
-    state.nodes[nodeId]?.size?.height,
-    nodeId,
-    portId,
-    getNodePorts,
-    calculateNodePortPositions,
-  ]);
+  }, [node, nodeId, portId, getNodePorts, calculateNodePortPositions]);
 }
 
 /**

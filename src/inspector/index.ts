@@ -29,7 +29,7 @@ export { HistoryPanel } from "../components/inspector/renderers/HistoryPanel";
 export { InspectorPropertiesTab } from "../components/inspector/renderers/InspectorPropertiesTab";
 export { InteractionHelpPanel } from "../components/inspector/renderers/InteractionHelpPanel";
 export { NodePalettePanel } from "../components/inspector/renderers/NodePalettePanel";
-export { NodeTreeListPanel } from "../components/inspector/renderers/NodeTreeListPanel";
+export { NodeTreeListPanel } from "../components/inspector/renderers/NodeTreeListPanel/NodeTreeListPanel";
 
 // Inspector part components (form controls and UI elements)
 export { InspectorSection } from "../components/inspector/parts/InspectorSection";

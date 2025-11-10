@@ -15,37 +15,38 @@ export type UseDocumentPointerEventsOptions = {
  * even when the pointer moves outside the original element
  */
 export function useDocumentPointerEvents(enabled: boolean, handlers: UseDocumentPointerEventsOptions) {
+  // Wrap handlers with useEffectEvent to avoid re-registering listeners on handler changes
+  // useEffectEvent creates stable function references that always call the latest handlers
+  const handleMove = React.useEffectEvent((e: PointerEvent) => {
+    handlers.onMove?.(e);
+  });
+
+  const handleUp = React.useEffectEvent((e: PointerEvent) => {
+    handlers.onUp?.(e);
+  });
+
+  const handleCancel = React.useEffectEvent((e: PointerEvent) => {
+    handlers.onCancel?.(e);
+  });
+
   React.useEffect(() => {
     if (!enabled) {
       return;
     }
 
-    const { onMove, onUp, onCancel } = handlers;
-
-    // Add event listeners
-    if (onMove) {
-      document.addEventListener("pointermove", onMove, { passive: false });
-    }
-    if (onUp) {
-      document.addEventListener("pointerup", onUp);
-    }
-    if (onCancel) {
-      document.addEventListener("pointercancel", onCancel);
-    }
+    // Add event listeners with stable event handlers
+    // Always register all listeners - useEffectEvent handles undefined handlers internally
+    document.addEventListener("pointermove", handleMove, { passive: false });
+    document.addEventListener("pointerup", handleUp);
+    document.addEventListener("pointercancel", handleCancel);
 
     // Cleanup function
     return () => {
-      if (onMove) {
-        document.removeEventListener("pointermove", onMove);
-      }
-      if (onUp) {
-        document.removeEventListener("pointerup", onUp);
-      }
-      if (onCancel) {
-        document.removeEventListener("pointercancel", onCancel);
-      }
+      document.removeEventListener("pointermove", handleMove);
+      document.removeEventListener("pointerup", handleUp);
+      document.removeEventListener("pointercancel", handleCancel);
     };
-  }, [enabled, handlers.onMove, handlers.onUp, handlers.onCancel]);
+  }, [enabled]);
 }
 
 /**
@@ -72,6 +73,8 @@ export function usePointerCapture(elementRef: React.RefObject<HTMLElement>, enab
   }, [elementRef, enabled, pointerId]);
 }
 
+const DEFAULT_PREVENT_EVENTS = ["pointerdown", "pointermove", "pointerup"];
+
 /**
  * Hook for preventing default pointer events during operations
  * Useful for preventing text selection, context menus, etc. during drag operations
@@ -79,8 +82,11 @@ export function usePointerCapture(elementRef: React.RefObject<HTMLElement>, enab
 export function usePreventPointerDefaults(
   elementRef: React.RefObject<HTMLElement>,
   enabled: boolean,
-  events: string[] = ["pointerdown", "pointermove", "pointerup"],
+  events: string[] = DEFAULT_PREVENT_EVENTS,
 ) {
+  // Serialize events array to stable string key
+  const eventsKey = events.join(",");
+
   React.useEffect(() => {
     const element = elementRef.current;
     if (!enabled || !element) {
@@ -91,18 +97,21 @@ export function usePreventPointerDefaults(
       e.preventDefault();
     };
 
+    // Parse eventsKey back to array to avoid stale closure over events array
+    const eventTypes = eventsKey.split(",");
+
     // Add listeners
-    events.forEach((eventType) => {
+    eventTypes.forEach((eventType) => {
       element.addEventListener(eventType, preventDefault, { passive: false });
     });
 
     // Cleanup
     return () => {
-      events.forEach((eventType) => {
+      eventTypes.forEach((eventType) => {
         element.removeEventListener(eventType, preventDefault);
       });
     };
-  }, [elementRef, enabled, events]);
+  }, [elementRef, enabled, eventsKey]);
 }
 
 /**

@@ -102,18 +102,13 @@ export const useNodeEditorShortcuts = () => {
   const nodeDefinitions = useNodeDefinitionList();
 
   // Keep latest states/definitions in refs to avoid re-registering shortcuts
+  // Update during render to ensure handlers always have access to current values
   const actionStateRef = React.useRef(actionState);
   const nodeEditorStateRef = React.useRef(nodeEditorState);
   const nodeDefinitionsRef = React.useRef(nodeDefinitions);
-  React.useEffect(() => {
-    actionStateRef.current = actionState;
-  }, [actionState]);
-  React.useEffect(() => {
-    nodeEditorStateRef.current = nodeEditorState;
-  }, [nodeEditorState]);
-  React.useEffect(() => {
-    nodeDefinitionsRef.current = nodeDefinitions;
-  }, [nodeDefinitions]);
+  actionStateRef.current = actionState;
+  nodeEditorStateRef.current = nodeEditorState;
+  nodeDefinitionsRef.current = nodeDefinitions;
 
   // Delete selected nodes (Delete/Backspace)
   useConfigurableShortcut(

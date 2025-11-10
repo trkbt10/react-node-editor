@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { NodeTreeListPanel } from "./renderers/NodeTreeListPanel";
+import { NodeTreeListPanel } from "./renderers/NodeTreeListPanel/NodeTreeListPanel";
 import { HistoryPanel } from "./renderers/HistoryPanel";
 import { InspectorPropertiesTab } from "./renderers/InspectorPropertiesTab";
 import { TabNav } from "../layout/TabNav";

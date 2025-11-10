@@ -75,139 +75,125 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     [port],
   );
 
-  const resolveConnectionPoint = React.useCallback(
-    (nodeId: string, portId: string) => {
-      const stored = getPortPosition(nodeId, portId);
-      if (stored) {
-        return stored.connectionPoint;
-      }
-      const node = nodeEditorState.nodes[nodeId];
-      if (!node) {
-        return null;
-      }
-      const ports = getNodePorts(nodeId);
-      const targetPort = ports.find((candidate) => candidate.id === portId);
-      if (!targetPort) {
-        return null;
-      }
-      const computed = computePortPosition({ ...node, ports }, targetPort);
-      return computed.connectionPoint;
-    },
-    [getPortPosition, nodeEditorState.nodes, getNodePorts, computePortPosition],
-  );
+  const resolveConnectionPoint = React.useEffectEvent((nodeId: string, portId: string) => {
+    const stored = getPortPosition(nodeId, portId);
+    if (stored) {
+      return stored.connectionPoint;
+    }
+    const node = nodeEditorState.nodes[nodeId];
+    if (!node) {
+      return null;
+    }
+    const ports = getNodePorts(nodeId);
+    const targetPort = ports.find((candidate) => candidate.id === portId);
+    if (!targetPort) {
+      return null;
+    }
+    const computed = computePortPosition({ ...node, ports }, targetPort);
+    return computed.connectionPoint;
+  });
 
-  const resolveCandidatePort = React.useCallback(
-    (canvasPosition: Position) => {
-      if (!actionState.connectionDragState) {
-        return null;
-      }
-      return findNearestConnectablePort({
-        pointerCanvasPosition: canvasPosition,
-        connectablePorts: actionState.connectablePorts,
-        nodes: nodeEditorState.nodes,
-        getNodePorts,
-        getConnectionPoint: resolveConnectionPoint,
-        excludePort: {
-          nodeId: actionState.connectionDragState.fromPort.nodeId,
-          portId: actionState.connectionDragState.fromPort.id,
-        },
-      });
-    },
-    [
-      actionState.connectionDragState,
-      actionState.connectablePorts,
-      nodeEditorState.nodes,
+  const resolveCandidatePort = React.useEffectEvent((canvasPosition: Position) => {
+    if (!actionState.connectionDragState) {
+      return null;
+    }
+    return findNearestConnectablePort({
+      pointerCanvasPosition: canvasPosition,
+      connectablePorts: actionState.connectablePorts,
+      nodes: nodeEditorState.nodes,
       getNodePorts,
-      resolveConnectionPoint,
-    ],
-  );
+      getConnectionPoint: resolveConnectionPoint,
+      excludePort: {
+        nodeId: actionState.connectionDragState.fromPort.nodeId,
+        portId: actionState.connectionDragState.fromPort.id,
+      },
+    });
+  });
 
   // Handle connection drag
+  const handleConnectionDragStartImpl = React.useEffectEvent((_event: PointerEvent, _portElement: HTMLElement) => {
+    // Calculate connectable ports using resolved ports and NodeDefinitions
+    const connectablePorts = computeConnectablePortIds({
+      fallbackPort: actionPort,
+      nodes: nodeEditorState.nodes,
+      connections: nodeEditorState.connections,
+      getNodePorts,
+      getNodeDefinition: (type: string) => registry.get(type),
+    });
+
+    // Start connection drag and update connectable ports
+    actionActions.startConnectionDrag(actionPort);
+    actionActions.updateConnectablePorts(connectablePorts);
+  });
+
   const handleConnectionDragStart = React.useCallback(
-    (_event: PointerEvent, _portElement: HTMLElement) => {
-      // Calculate connectable ports using resolved ports and NodeDefinitions
-      const connectablePorts = computeConnectablePortIds({
-        fallbackPort: actionPort,
+    (event: PointerEvent, portElement: HTMLElement) => {
+      handleConnectionDragStartImpl(event, portElement);
+    },
+    [],
+  );
+
+  const handleConnectionDragMoveImpl = React.useEffectEvent((event: PointerEvent, _delta: Position) => {
+    const canvasPos = utils.screenToCanvas(event.clientX, event.clientY);
+    const candidate = resolveCandidatePort(canvasPos);
+    actionActions.updateConnectionDrag(canvasPos, candidate);
+  });
+
+  const handleConnectionDragMove = React.useCallback(
+    (event: PointerEvent, delta: Position) => {
+      handleConnectionDragMoveImpl(event, delta);
+    },
+    [],
+  );
+
+  const handleConnectionDragEndImpl = React.useEffectEvent((_event: PointerEvent, _delta: Position) => {
+    if (!actionState.connectionDragState) {
+      return;
+    }
+
+    const { fromPort, candidatePort } = actionState.connectionDragState;
+
+    if (candidatePort && fromPort.id !== candidatePort.id) {
+      const plan = planConnectionChange({
+        fromPort,
+        toPort: candidatePort,
         nodes: nodeEditorState.nodes,
         connections: nodeEditorState.connections,
-        getNodePorts,
         getNodeDefinition: (type: string) => registry.get(type),
       });
 
-      // Start connection drag and update connectable ports
-      actionActions.startConnectionDrag(actionPort);
-      actionActions.updateConnectablePorts(connectablePorts);
-    },
-    [
-      actionPort,
-      actionActions,
-      nodeEditorState.nodes,
-      nodeEditorState.connections,
-      registry,
-      getNodePorts,
-    ],
-  );
+      switch (plan.behavior) {
+        case ConnectionSwitchBehavior.Replace:
+          if (plan.connection) {
+            plan.connectionIdsToReplace.forEach((connectionId) => {
+              actions.deleteConnection(connectionId);
+            });
+            actions.addConnection(plan.connection);
+          }
+          break;
 
-  const handleConnectionDragMove = React.useCallback(
-    (event: PointerEvent, _delta: Position) => {
-      const canvasPos = utils.screenToCanvas(event.clientX, event.clientY);
-      const candidate = resolveCandidatePort(canvasPos);
-      actionActions.updateConnectionDrag(canvasPos, candidate);
-    },
-    [utils, actionActions, resolveCandidatePort],
-  );
+        case ConnectionSwitchBehavior.Append:
+          if (plan.connection) {
+            actions.addConnection(plan.connection);
+          }
+          break;
+
+        case ConnectionSwitchBehavior.Ignore:
+        default:
+          break;
+      }
+    }
+
+    // Clear drag state and connectable ports
+    actionActions.endConnectionDrag();
+    actionActions.updateConnectablePorts(createEmptyConnectablePorts());
+  });
 
   const handleConnectionDragEnd = React.useCallback(
-    (_event: PointerEvent, _delta: Position) => {
-      if (!actionState.connectionDragState) {
-        return;
-      }
-
-      const { fromPort, candidatePort } = actionState.connectionDragState;
-
-      if (candidatePort && fromPort.id !== candidatePort.id) {
-        const plan = planConnectionChange({
-          fromPort,
-          toPort: candidatePort,
-          nodes: nodeEditorState.nodes,
-          connections: nodeEditorState.connections,
-          getNodeDefinition: (type: string) => registry.get(type),
-        });
-
-        switch (plan.behavior) {
-          case ConnectionSwitchBehavior.Replace:
-            if (plan.connection) {
-              plan.connectionIdsToReplace.forEach((connectionId) => {
-                actions.deleteConnection(connectionId);
-              });
-              actions.addConnection(plan.connection);
-            }
-            break;
-
-          case ConnectionSwitchBehavior.Append:
-            if (plan.connection) {
-              actions.addConnection(plan.connection);
-            }
-            break;
-
-          case ConnectionSwitchBehavior.Ignore:
-          default:
-            break;
-        }
-      }
-
-      // Clear drag state and connectable ports
-      actionActions.endConnectionDrag();
-      actionActions.updateConnectablePorts(createEmptyConnectablePorts());
+    (event: PointerEvent, delta: Position) => {
+      handleConnectionDragEndImpl(event, delta);
     },
-    [
-      actionState.connectionDragState,
-      actions,
-      actionActions,
-      nodeEditorState.nodes,
-      nodeEditorState.connections,
-      registry,
-    ],
+    [],
   );
 
   const { startDrag } = usePointerDrag({
@@ -227,28 +213,36 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     [startDrag],
   );
 
-  const handlePointerEnter = React.useCallback(
-    (_event: React.PointerEvent) => {
-      actionActions.setHoveredPort(actionPort);
+  const handlePointerEnterImpl = React.useEffectEvent((_event: React.PointerEvent) => {
+    actionActions.setHoveredPort(actionPort);
 
-      // Update candidate port if we're dragging a connection and this port is connectable
-      if (actionState.connectionDragState && actionState.connectionDragState.fromPort.id !== port.id && isConnectable) {
-        actionActions.updateConnectionDrag(actionState.connectionDragState.toPosition, actionPort);
-      }
+    // Update candidate port if we're dragging a connection and this port is connectable
+    if (actionState.connectionDragState && actionState.connectionDragState.fromPort.id !== port.id && isConnectable) {
+      actionActions.updateConnectionDrag(actionState.connectionDragState.toPosition, actionPort);
+    }
+  });
+
+  const handlePointerEnter = React.useCallback(
+    (event: React.PointerEvent) => {
+      handlePointerEnterImpl(event);
     },
-    [actionPort, port, actionState.connectionDragState, isConnectable, actionActions],
+    [],
   );
 
-  const handlePointerLeave = React.useCallback(
-    (_event: React.PointerEvent) => {
-      actionActions.setHoveredPort(null);
+  const handlePointerLeaveImpl = React.useEffectEvent((_event: React.PointerEvent) => {
+    actionActions.setHoveredPort(null);
 
-      // Clear candidate port if we're dragging
-      if (actionState.connectionDragState?.candidatePort?.id === port.id) {
-        actionActions.updateConnectionDrag(actionState.connectionDragState.toPosition, null);
-      }
+    // Clear candidate port if we're dragging
+    if (actionState.connectionDragState?.candidatePort?.id === port.id) {
+      actionActions.updateConnectionDrag(actionState.connectionDragState.toPosition, null);
+    }
+  });
+
+  const handlePointerLeave = React.useCallback(
+    (event: React.PointerEvent) => {
+      handlePointerLeaveImpl(event);
     },
-    [port.id, actionState.connectionDragState, actionActions],
+    [],
   );
 
   return (

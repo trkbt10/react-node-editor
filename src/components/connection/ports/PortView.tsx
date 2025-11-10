@@ -44,9 +44,9 @@ export const PortView: React.FC<PortViewProps> = ({
 }) => {
   // Get dynamic port position
   const portPosition = useDynamicPortPosition(port.nodeId, port.id);
-
-  const getPortPosition = (): React.CSSProperties => {
-    if (!portPosition) {
+  const renderPosition = portPosition?.renderPosition;
+  const portPositionStyle: React.CSSProperties = React.useMemo(() => {
+    if (!renderPosition) {
       // Fallback position if not found
       return {
         left: 0,
@@ -54,59 +54,39 @@ export const PortView: React.FC<PortViewProps> = ({
         position: "absolute",
       };
     }
-
-    const { renderPosition } = portPosition;
     return {
       left: renderPosition.x,
       top: renderPosition.y,
       transform: renderPosition.transform,
       position: "absolute",
     };
-  };
+  }, [renderPosition]);
 
-  const handlePointerDown = React.useCallback(
-    (e: React.PointerEvent) => {
-      e.stopPropagation();
-      onPointerDown?.(e, port);
-    },
-    [onPointerDown, port],
-  );
+  const handlePointerDown = React.useEffectEvent((e: React.PointerEvent) => {
+    e.stopPropagation();
+    onPointerDown?.(e, port);
+  });
 
-  const handlePointerUp = React.useCallback(
-    (e: React.PointerEvent) => {
-      e.stopPropagation();
-      onPointerUp?.(e, port);
-    },
-    [onPointerUp, port],
-  );
+  const handlePointerUp = React.useEffectEvent((e: React.PointerEvent) => {
+    e.stopPropagation();
+    onPointerUp?.(e, port);
+  });
 
-  const handlePointerEnter = React.useCallback(
-    (e: React.PointerEvent) => {
-      onPointerEnter?.(e, port);
-    },
-    [onPointerEnter, port],
-  );
+  const handlePointerEnter = React.useEffectEvent((e: React.PointerEvent) => {
+    onPointerEnter?.(e, port);
+  });
 
-  const handlePointerMove = React.useCallback(
-    (e: React.PointerEvent) => {
-      onPointerMove?.(e, port);
-    },
-    [onPointerMove, port],
-  );
+  const handlePointerMove = React.useEffectEvent((e: React.PointerEvent) => {
+    onPointerMove?.(e, port);
+  });
 
-  const handlePointerLeave = React.useCallback(
-    (e: React.PointerEvent) => {
-      onPointerLeave?.(e, port);
-    },
-    [onPointerLeave, port],
-  );
+  const handlePointerLeave = React.useEffectEvent((e: React.PointerEvent) => {
+    onPointerLeave?.(e, port);
+  });
 
-  const handlePointerCancel = React.useCallback(
-    (e: React.PointerEvent) => {
-      onPointerCancel?.(e, port);
-    },
-    [onPointerCancel, port],
-  );
+  const handlePointerCancel = React.useEffectEvent((e: React.PointerEvent) => {
+    onPointerCancel?.(e, port);
+  });
 
   // Get node editor state for custom renderer context
   const { state } = useNodeEditor();
@@ -121,7 +101,7 @@ export const PortView: React.FC<PortViewProps> = ({
     () => (
       <div
         className={styles.port}
-        style={getPortPosition()}
+        style={portPositionStyle}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerEnter={handlePointerEnter}
@@ -147,21 +127,7 @@ export const PortView: React.FC<PortViewProps> = ({
         )}
       </div>
     ),
-    [
-      port,
-      isConnecting,
-      isConnectable,
-      isCandidate,
-      isHovered,
-      isConnected,
-      getPortPosition,
-      handlePointerDown,
-      handlePointerUp,
-      handlePointerEnter,
-      handlePointerMove,
-      handlePointerLeave,
-      handlePointerCancel,
-    ],
+    [port, isConnecting, isConnectable, isCandidate, isHovered, isConnected, portPositionStyle],
   );
 
   // Check if there's a custom renderer

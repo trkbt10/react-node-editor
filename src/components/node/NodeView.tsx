@@ -235,13 +235,10 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
         height: node.size?.height || 50,
       };
 
-      startResize(
-        node.id,
-        handle,
-        { x: e.clientX, y: e.clientY },
-        currentSize,
-        { x: node.position.x, y: node.position.y },
-      );
+      startResize(node.id, handle, { x: e.clientX, y: e.clientY }, currentSize, {
+        x: node.position.x,
+        y: node.position.y,
+      });
     },
     [node.id, node.size, node.locked, startResize, node.position.x, node.position.y],
   );
@@ -249,9 +246,7 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   // Custom renderer props
   const customRenderProps = React.useMemo(() => {
     // Create a node object with the current resize size if resizing
-    const nodeWithCurrentSize: Node = isResizing
-      ? { ...node, size }
-      : node;
+    const nodeWithCurrentSize: Node = isResizing ? { ...node, size } : node;
 
     return {
       node: nodeWithCurrentSize,
@@ -418,7 +413,6 @@ const areEqual = (prevProps: NodeViewProps, nextProps: NodeViewProps): boolean =
   ) {
     return false;
   }
-
   // Check drag offset changes
   if (prevProps.dragOffset?.x !== nextProps.dragOffset?.x || prevProps.dragOffset?.y !== nextProps.dragOffset?.y) {
     return false;
@@ -431,7 +425,6 @@ const areEqual = (prevProps: NodeViewProps, nextProps: NodeViewProps): boolean =
   ) {
     return false;
   }
-
   // Props are equal, skip re-render
   return true;
 };
