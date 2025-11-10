@@ -15,13 +15,15 @@ import { NodeCanvas } from "../../components/canvas/NodeCanvas";
 import styles from "./custom-layout-demo.module.css";
 
 // Simple custom panel components
-const CustomSidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+const CustomSidebar = React.memo<{ children?: React.ReactNode }>(({ children }) => {
   return <div className={styles.sidebar}>{children}</div>;
-};
+});
+CustomSidebar.displayName = "CustomSidebar";
 
-const CustomInspector: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+const CustomInspector = React.memo<{ children?: React.ReactNode }>(({ children }) => {
   return <div className={styles.inspector}>{children}</div>;
-};
+});
+CustomInspector.displayName = "CustomInspector";
 
 // Define some sample node types
 const sampleNodeDefinitions = [
@@ -119,6 +121,19 @@ const initialData: Partial<NodeEditorData> = {
 export const CustomLayoutDemo: React.FC = () => {
   const [data, setData] = React.useState<NodeEditorData | undefined>();
 
+  const nodeCount = React.useMemo(() => (data ? Object.keys(data.nodes).length : 0), [data]);
+  const connectionCount = React.useMemo(() => (data ? Object.keys(data.connections).length : 0), [data]);
+
+  const nodeListItems = React.useMemo(
+    () =>
+      sampleNodeDefinitions.map((def) => (
+        <div key={def.type} className={styles.nodeItem}>
+          {def.displayName}
+        </div>
+      )),
+    [],
+  );
+
   return (
     <div className={styles.container}>
       {/* Header */}
@@ -141,10 +156,10 @@ export const CustomLayoutDemo: React.FC = () => {
         {/* NodeEditorCore wraps everything with necessary providers */}
         <NodeEditorCore
           initialData={initialData}
-          data={data}
           onDataChange={setData}
           nodeDefinitions={sampleNodeDefinitions}
           includeDefaultDefinitions={false}
+          autoSaveEnabled={false}
         >
           {/* Left sidebar */}
           <CustomSidebar>
@@ -152,13 +167,7 @@ export const CustomLayoutDemo: React.FC = () => {
             <p className={styles.sidebarDescription}>
               Right-click on the canvas to add nodes from this custom palette
             </p>
-            <div className={styles.nodeList}>
-              {sampleNodeDefinitions.map((def) => (
-                <div key={def.type} className={styles.nodeItem}>
-                  {def.displayName}
-                </div>
-              ))}
-            </div>
+            <div className={styles.nodeList}>{nodeListItems}</div>
           </CustomSidebar>
 
           {/* Canvas area with NodeEditorCanvas */}
@@ -177,11 +186,11 @@ export const CustomLayoutDemo: React.FC = () => {
             <div className={styles.statsGrid}>
               <div className={styles.statItem}>
                 <span className={styles.statLabel}>Nodes</span>
-                <span className={styles.statValue}>{data ? Object.keys(data.nodes).length : 0}</span>
+                <span className={styles.statValue}>{nodeCount}</span>
               </div>
               <div className={styles.statItem}>
                 <span className={styles.statLabel}>Connections</span>
-                <span className={styles.statValue}>{data ? Object.keys(data.connections).length : 0}</span>
+                <span className={styles.statValue}>{connectionCount}</span>
               </div>
             </div>
           </CustomInspector>
