@@ -4,7 +4,7 @@
 import { render } from "@testing-library/react";
 import { type FC } from "react";
 import { ExternalDataProvider, useExternalDataRef } from "./ExternalDataContext";
-import type { ExternalDataReference } from "../types/NodeDefinition";
+import type { ExternalDataReference } from "../../types/NodeDefinition";
 
 const Harness: FC = () => {
   const ref = useExternalDataRef("node-1");

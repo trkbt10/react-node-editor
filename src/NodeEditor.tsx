@@ -6,7 +6,7 @@ import { ConnectionView as DefaultConnectionView } from "./components/connection
 import { PortView as DefaultPortView } from "./components/connection/ports/PortView";
 import { NodeView as DefaultNodeView } from "./components/node/NodeView";
 import { EditorActionStateProvider } from "./contexts/EditorActionStateContext";
-import { ExternalDataProvider } from "./contexts/ExternalDataContext";
+import { ExternalDataProvider } from "./contexts/external-data/ExternalDataContext";
 import { HistoryProvider } from "./contexts/HistoryContext";
 import { InlineEditingProvider } from "./contexts/InlineEditingContext";
 import { KeyboardShortcutProvider } from "./contexts/KeyboardShortcutContext";

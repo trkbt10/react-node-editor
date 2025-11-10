@@ -6,8 +6,8 @@ import type { Node, Position, Port, ResizeHandle as NodeResizeHandle } from "../
 import { useInlineEditing } from "../../contexts/InlineEditingContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useNodeDefinition } from "../../contexts/node-definitions/hooks/useNodeDefinition";
-import { useExternalDataRef } from "../../contexts/ExternalDataContext";
-import { useExternalData } from "../../hooks/useExternalData";
+import { useExternalDataRef } from "../../contexts/external-data/ExternalDataContext";
+import { useExternalData } from "../../contexts/external-data/useExternalData";
 import styles from "./NodeView.module.css";
 import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
 import { ResizeHandles } from "./ResizeHandles";
@@ -18,6 +18,7 @@ import { hasAppearanceBehavior, hasGroupBehavior } from "../../types/behaviors";
 import { getReadableTextColor, applyOpacity } from "../../utils/colorUtils";
 import { NodeBodyRenderer } from "./NodeBodyRenderer";
 import { NodePortsRenderer } from "./NodePortsRenderer";
+import { compareExternalDataStates } from "../../contexts/external-data/useExternalData";
 
 export type CustomNodeRendererProps = {
   node: Node;
@@ -55,6 +56,9 @@ export type NodeViewProps = {
   onUpdateNode?: (updates: Partial<Node>) => void;
 };
 
+// Temporary debug flag for context changes
+const DEBUG_NODEVIEW_CONTEXT_CHANGES = false;
+
 // Optimized NodeView component with CSS transform for dragging
 const NodeViewComponent: React.FC<NodeViewProps> = ({
   node,
@@ -87,6 +91,60 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   const nodeDefinition = useNodeDefinition(node.type);
   const externalDataRef = useExternalDataRef(node.id);
   const externalDataState = useExternalData(node, externalDataRef);
+
+  // Debug: Log component render
+  if (DEBUG_NODEVIEW_CONTEXT_CHANGES) {
+    console.log(`[NodeView:${node.id}] NodeViewComponent is rendering`);
+  }
+
+  // Debug: Track context changes
+  const prevActionStateRef = React.useRef(actionState);
+  const prevEditingStateRef = React.useRef(editingState);
+  const prevNodeDefinitionRef = React.useRef(nodeDefinition);
+  const prevExternalDataStateRef = React.useRef(externalDataState);
+
+  React.useEffect(() => {
+    if (DEBUG_NODEVIEW_CONTEXT_CHANGES) {
+      if (prevActionStateRef.current !== actionState) {
+        console.log(`[NodeView:${node.id}] Context changed: actionState`, {
+          prevDragState: prevActionStateRef.current?.dragState,
+          nextDragState: actionState?.dragState,
+          prevConnectionDragState: prevActionStateRef.current?.connectionDragState,
+          nextConnectionDragState: actionState?.connectionDragState,
+          prevSelectionBox: prevActionStateRef.current?.selectionBox,
+          nextSelectionBox: actionState?.selectionBox,
+        });
+        prevActionStateRef.current = actionState;
+      }
+      if (prevEditingStateRef.current !== editingState) {
+        console.log(`[NodeView:${node.id}] Context changed: editingState`, {
+          prev: prevEditingStateRef.current,
+          next: editingState,
+        });
+        prevEditingStateRef.current = editingState;
+      }
+      if (prevNodeDefinitionRef.current !== nodeDefinition) {
+        console.log(`[NodeView:${node.id}] Context changed: nodeDefinition`, {
+          prev: prevNodeDefinitionRef.current,
+          next: nodeDefinition,
+        });
+        prevNodeDefinitionRef.current = nodeDefinition;
+      }
+      if (prevExternalDataStateRef.current !== externalDataState) {
+        const comparison = compareExternalDataStates(prevExternalDataStateRef.current, externalDataState);
+        console.log(`[NodeView:${node.id}] Context changed: externalDataState`, {
+          ...comparison,
+          prev: {
+            data: prevExternalDataStateRef.current?.data,
+            isLoading: prevExternalDataStateRef.current?.isLoading,
+            error: prevExternalDataStateRef.current?.error,
+          },
+          next: { data: externalDataState?.data, isLoading: externalDataState?.isLoading, error: externalDataState?.error },
+        });
+        prevExternalDataStateRef.current = externalDataState;
+      }
+    }
+  });
 
   // Reference to the DOM element for direct transform updates
   const nodeRef = React.useRef<HTMLDivElement>(null);
@@ -243,7 +301,19 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
     [node.id, node.size, node.locked, startResize, node.position.x, node.position.y],
   );
 
-  // Custom renderer props
+  // Extract port connection state for memoization
+  const connectingPortId = React.useMemo(
+    () => actionState.connectionDragState?.fromPort.id,
+    [actionState.connectionDragState?.fromPort.id],
+  );
+
+  const candidatePortId = React.useMemo(
+    () => actionState.connectionDragState?.candidatePort?.id,
+    [actionState.connectionDragState?.candidatePort?.id],
+  );
+
+  // Custom renderer props - memoized with granular dependencies
+  const isEditingTitle = isEditing(node.id, "title");
   const customRenderProps = React.useMemo(() => {
     // Create a node object with the current resize size if resizing
     const nodeWithCurrentSize: Node = isResizing ? { ...node, size } : node;
@@ -253,14 +323,26 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
       isSelected,
       isDragging,
       isResizing,
-      isEditing: isEditing(node.id, "title"),
+      isEditing: isEditingTitle,
       externalData: externalDataState.data,
       isLoadingExternalData: externalDataState.isLoading,
       externalDataError: externalDataState.error,
       onStartEdit: () => startEditing(node.id, "title", node.data.title || ""),
       onUpdateNode: handleUpdateNode,
     };
-  }, [node, size, isSelected, isDragging, isResizing, externalDataState, startEditing, handleUpdateNode, isEditing]);
+  }, [
+    node,
+    size,
+    isSelected,
+    isDragging,
+    isResizing,
+    isEditingTitle,
+    externalDataState.data,
+    externalDataState.isLoading,
+    externalDataState.error,
+    startEditing,
+    handleUpdateNode,
+  ]);
 
   // Calculate child dragging state
   const isChildDragging = React.useMemo(() => {
@@ -357,7 +439,7 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
         isSelected={isSelected}
         nodeDefinition={nodeDefinition}
         customRenderProps={customRenderProps}
-        isEditing={isEditing(node.id, "title")}
+        isEditing={isEditingTitle}
         editingValue={editingState.currentValue}
         isGroup={isGroup}
         groupChildrenCount={groupChildren.length}
@@ -379,6 +461,8 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
         hoveredPort={hoveredPort}
         connectedPorts={connectedPorts}
         connectablePorts={connectablePorts}
+        connectingPortId={connectingPortId}
+        candidatePortId={candidatePortId}
       />
 
       {/* Render resize handles when selected and not locked */}
@@ -389,43 +473,99 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   );
 };
 
+// Temporary debug flag - set to true to enable detailed re-render logging
+const DEBUG_NODEVIEW_RERENDERS = false;
+
 // Custom comparison function for memo
 const areEqual = (prevProps: NodeViewProps, nextProps: NodeViewProps): boolean => {
+  const nodeId = prevProps.node.id;
+  const debugLog = (reason: string, details?: Record<string, unknown>) => {
+    if (DEBUG_NODEVIEW_RERENDERS) {
+      console.log(`[NodeView:${nodeId}] Re-rendering because:`, reason, details || "");
+    }
+  };
+
   // Always re-render if basic properties change
-  if (
-    prevProps.node.id !== nextProps.node.id ||
-    prevProps.isSelected !== nextProps.isSelected ||
-    prevProps.isDragging !== nextProps.isDragging ||
-    prevProps.isResizing !== nextProps.isResizing ||
-    prevProps.connectablePorts !== nextProps.connectablePorts
-  ) {
+  if (prevProps.node.id !== nextProps.node.id) {
+    debugLog("node.id changed", { prev: prevProps.node.id, next: nextProps.node.id });
+    return false;
+  }
+  if (prevProps.isSelected !== nextProps.isSelected) {
+    debugLog("isSelected changed", { prev: prevProps.isSelected, next: nextProps.isSelected });
+    return false;
+  }
+  if (prevProps.isDragging !== nextProps.isDragging) {
+    debugLog("isDragging changed", { prev: prevProps.isDragging, next: nextProps.isDragging });
+    return false;
+  }
+  if (prevProps.isResizing !== nextProps.isResizing) {
+    debugLog("isResizing changed", { prev: prevProps.isResizing, next: nextProps.isResizing });
+    return false;
+  }
+  if (prevProps.connectablePorts !== nextProps.connectablePorts) {
+    debugLog("connectablePorts reference changed", {
+      prev: prevProps.connectablePorts,
+      next: nextProps.connectablePorts,
+    });
     return false;
   }
 
   // Check node data changes
-  if (
-    prevProps.node.position.x !== nextProps.node.position.x ||
-    prevProps.node.position.y !== nextProps.node.position.y ||
-    prevProps.node.size?.width !== nextProps.node.size?.width ||
-    prevProps.node.size?.height !== nextProps.node.size?.height ||
-    prevProps.node.locked !== nextProps.node.locked ||
-    prevProps.node.data !== nextProps.node.data
-  ) {
+  if (prevProps.node.position.x !== nextProps.node.position.x) {
+    debugLog("node.position.x changed", { prev: prevProps.node.position.x, next: nextProps.node.position.x });
     return false;
   }
+  if (prevProps.node.position.y !== nextProps.node.position.y) {
+    debugLog("node.position.y changed", { prev: prevProps.node.position.y, next: nextProps.node.position.y });
+    return false;
+  }
+  if (prevProps.node.size?.width !== nextProps.node.size?.width) {
+    debugLog("node.size.width changed", { prev: prevProps.node.size?.width, next: nextProps.node.size?.width });
+    return false;
+  }
+  if (prevProps.node.size?.height !== nextProps.node.size?.height) {
+    debugLog("node.size.height changed", { prev: prevProps.node.size?.height, next: nextProps.node.size?.height });
+    return false;
+  }
+  if (prevProps.node.locked !== nextProps.node.locked) {
+    debugLog("node.locked changed", { prev: prevProps.node.locked, next: nextProps.node.locked });
+    return false;
+  }
+  if (prevProps.node.data !== nextProps.node.data) {
+    debugLog("node.data reference changed", {
+      prev: prevProps.node.data,
+      next: nextProps.node.data,
+    });
+    return false;
+  }
+
   // Check drag offset changes
-  if (prevProps.dragOffset?.x !== nextProps.dragOffset?.x || prevProps.dragOffset?.y !== nextProps.dragOffset?.y) {
+  if (prevProps.dragOffset?.x !== nextProps.dragOffset?.x) {
+    debugLog("dragOffset.x changed", { prev: prevProps.dragOffset?.x, next: nextProps.dragOffset?.x });
+    return false;
+  }
+  if (prevProps.dragOffset?.y !== nextProps.dragOffset?.y) {
+    debugLog("dragOffset.y changed", { prev: prevProps.dragOffset?.y, next: nextProps.dragOffset?.y });
     return false;
   }
 
   // Check port-related changes
-  if (
-    prevProps.connectingPort?.id !== nextProps.connectingPort?.id ||
-    prevProps.hoveredPort?.id !== nextProps.hoveredPort?.id
-  ) {
+  if (prevProps.connectingPort?.id !== nextProps.connectingPort?.id) {
+    debugLog("connectingPort.id changed", {
+      prev: prevProps.connectingPort?.id,
+      next: nextProps.connectingPort?.id,
+    });
     return false;
   }
+  if (prevProps.hoveredPort?.id !== nextProps.hoveredPort?.id) {
+    debugLog("hoveredPort.id changed", { prev: prevProps.hoveredPort?.id, next: nextProps.hoveredPort?.id });
+    return false;
+  }
+
   // Props are equal, skip re-render
+  if (DEBUG_NODEVIEW_RERENDERS) {
+    console.log(`[NodeView:${nodeId}] Skipped re-render (props are equal)`);
+  }
   return true;
 };
 

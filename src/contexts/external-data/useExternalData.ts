@@ -2,9 +2,9 @@
  * @file Hook for managing external data loading and updates for nodes
  */
 import * as React from "react";
-import type { Node } from "../types/core";
-import type { ExternalDataReference } from "../types/NodeDefinition";
-import { useNodeDefinition } from "../contexts/node-definitions/hooks/useNodeDefinition";
+import type { Node } from "../../types/core";
+import type { ExternalDataReference } from "../../types/NodeDefinition";
+import { useNodeDefinition } from "../node-definitions/hooks/useNodeDefinition";
 
 /**
  * External data state
@@ -16,15 +16,71 @@ export type ExternalDataState = {
 };
 
 /**
+ * External data state with actions
+ */
+export type ExternalDataStateWithActions = ExternalDataState & {
+  refresh: () => void;
+  update: (data: unknown) => Promise<void>;
+};
+
+/**
+ * Comparison result for external data state changes
+ */
+export type ExternalDataStateComparison = {
+  objectChanged: boolean;
+  dataChanged: boolean;
+  isLoadingChanged: boolean;
+  errorChanged: boolean;
+  refreshChanged: boolean;
+  updateChanged: boolean;
+};
+
+/**
+ * Compare two external data states and return detailed comparison
+ */
+export function compareExternalDataStates(
+  prev: ExternalDataStateWithActions | null | undefined,
+  next: ExternalDataStateWithActions | null | undefined,
+): ExternalDataStateComparison {
+  return {
+    objectChanged: prev !== next,
+    dataChanged: prev?.data !== next?.data,
+    isLoadingChanged: prev?.isLoading !== next?.isLoading,
+    errorChanged: prev?.error !== next?.error,
+    refreshChanged: prev?.refresh !== next?.refresh,
+    updateChanged: prev?.update !== next?.update,
+  };
+}
+
+/**
+ * Check if external data states are equal (shallow comparison of values)
+ */
+export function areExternalDataStatesEqual(
+  prev: ExternalDataStateWithActions | null | undefined,
+  next: ExternalDataStateWithActions | null | undefined,
+): boolean {
+  if (prev === next) {
+    return true;
+  }
+  if (!prev || !next) {
+    return false;
+  }
+  return (
+    prev.data === next.data &&
+    prev.isLoading === next.isLoading &&
+    prev.error === next.error &&
+    prev.refresh === next.refresh &&
+    prev.update === next.update
+  );
+}
+
+/**
  * Hook for managing external data for a node
  */
 export function useExternalData(
   node: Node | null,
   externalRef?: ExternalDataReference,
-): ExternalDataState & {
-  refresh: () => void;
-  update: (data: unknown) => Promise<void>;
-} {
+): ExternalDataStateWithActions {
   const definition = useNodeDefinition(node?.type || "");
   const [state, setState] = React.useState<ExternalDataState>({
     data: undefined,
@@ -82,11 +138,14 @@ export function useExternalData(
     [node, externalRef, definition],
   );
 
-  return {
-    ...state,
-    refresh: loadData,
-    update,
-  };
+  return React.useMemo(
+    () => ({
+      ...state,
+      refresh: loadData,
+      update,
+    }),
+    [state, loadData, update],
+  );
 }
 
 /**

@@ -7,7 +7,6 @@ import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/con
 import { isPortConnectable } from "../../contexts/node-ports/utils/portConnectability";
 import { PortView } from "../connection/ports/PortView";
 import { useOptionalRenderers } from "../../contexts/RendererContext";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import styles from "./NodePortsRenderer.module.css";
 
 export type NodePortsRendererProps = {
@@ -21,12 +20,14 @@ export type NodePortsRendererProps = {
   hoveredPort?: Port;
   connectedPorts?: Set<string>;
   connectablePorts?: ConnectablePortsResult;
+  connectingPortId?: string;
+  candidatePortId?: string;
 };
 
 /**
  * Renders ports for a node
  */
-export const NodePortsRenderer: React.FC<NodePortsRendererProps> = ({
+const NodePortsRendererComponent: React.FC<NodePortsRendererProps> = ({
   ports,
   onPortPointerDown,
   onPortPointerUp,
@@ -37,10 +38,11 @@ export const NodePortsRenderer: React.FC<NodePortsRendererProps> = ({
   hoveredPort,
   connectedPorts,
   connectablePorts,
+  connectingPortId,
+  candidatePortId,
 }) => {
   const renderers = useOptionalRenderers();
   const PortComponent = renderers?.port ?? PortView;
-  const { state: actionState } = useEditorActionState();
 
   if (!ports || ports.length === 0) {
     return null;
@@ -60,9 +62,9 @@ export const NodePortsRenderer: React.FC<NodePortsRendererProps> = ({
             onPointerMove={onPortPointerMove}
             onPointerLeave={onPortPointerLeave}
             onPointerCancel={onPortPointerCancel}
-            isConnecting={actionState.connectionDragState?.fromPort.id === port.id}
+            isConnecting={connectingPortId === port.id}
             isConnectable={connectable}
-            isCandidate={actionState.connectionDragState?.candidatePort?.id === port.id}
+            isCandidate={candidatePortId === port.id}
             isHovered={hoveredPort?.id === port.id}
             isConnected={connectedPorts?.has(port.id)}
           />
@@ -71,3 +73,64 @@ export const NodePortsRenderer: React.FC<NodePortsRendererProps> = ({
     </div>
   );
 };
+
+// Temporary debug flag - set to true to enable detailed re-render logging
+const DEBUG_NODEPORTSRENDERER_RERENDERS = false;
+
+// Memoized version with custom comparison
+export const NodePortsRenderer = React.memo(NodePortsRendererComponent, (prevProps, nextProps) => {
+  // Get nodeId for debugging (from first port if available)
+  const nodeId = prevProps.ports?.[0]?.nodeId || nextProps.ports?.[0]?.nodeId || "unknown";
+  const debugLog = (reason: string, details?: Record<string, unknown>) => {
+    if (DEBUG_NODEPORTSRENDERER_RERENDERS) {
+      console.log(`[NodePortsRenderer:${nodeId}] Re-rendering because:`, reason, details || "");
+    }
+  };
+
+  // Check if ports array changed (by reference or length)
+  if (prevProps.ports !== nextProps.ports) {
+    debugLog("ports reference changed", {
+      prevLength: prevProps.ports.length,
+      nextLength: nextProps.ports.length,
+    });
+    return false;
+  }
+  if (prevProps.ports.length !== nextProps.ports.length) {
+    debugLog("ports.length changed", { prev: prevProps.ports.length, next: nextProps.ports.length });
+    return false;
+  }
+
+  // Check if port-related state changed
+  if (prevProps.hoveredPort?.id !== nextProps.hoveredPort?.id) {
+    debugLog("hoveredPort.id changed", { prev: prevProps.hoveredPort?.id, next: nextProps.hoveredPort?.id });
+    return false;
+  }
+  if (prevProps.connectingPortId !== nextProps.connectingPortId) {
+    debugLog("connectingPortId changed", { prev: prevProps.connectingPortId, next: nextProps.connectingPortId });
+    return false;
+  }
+  if (prevProps.candidatePortId !== nextProps.candidatePortId) {
+    debugLog("candidatePortId changed", { prev: prevProps.candidatePortId, next: nextProps.candidatePortId });
+    return false;
+  }
+  if (prevProps.connectedPorts !== nextProps.connectedPorts) {
+    debugLog("connectedPorts reference changed", {
+      prevSize: prevProps.connectedPorts?.size,
+      nextSize: nextProps.connectedPorts?.size,
+    });
+    return false;
+  }
+  if (prevProps.connectablePorts !== nextProps.connectablePorts) {
+    debugLog("connectablePorts reference changed", {
+      prev: prevProps.connectablePorts,
+      next: nextProps.connectablePorts,
+    });
+    return false;
+  }
+
+  // Event handlers are assumed to be stable (useCallback)
+  if (DEBUG_NODEPORTSRENDERER_RERENDERS) {
+    console.log(`[NodePortsRenderer:${nodeId}] Skipped re-render (props are equal)`);
+  }
+  return true;
+});

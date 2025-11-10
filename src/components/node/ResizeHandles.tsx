@@ -26,9 +26,7 @@ const resolveHandleCornerRadius = (): number => {
   if (typeof window === "undefined") {
     return 0;
   }
-  const raw = getComputedStyle(document.documentElement)
-    .getPropertyValue("--node-editor-border-radius-xs")
-    .trim();
+  const raw = getComputedStyle(document.documentElement).getPropertyValue("--node-editor-border-radius-xs").trim();
 
   if (!raw) {
     return 0;
@@ -71,16 +69,27 @@ const computeHandlePosition = (handle: ResizeHandleDirection, size: Size): Posit
   };
 };
 
+// Temporary debug flag - set to true to enable detailed re-render logging
+const DEBUG_RESIZEHANDLES_RERENDERS = false;
+
 /**
  * Renders SVG-based resize handles overlay.
  * Uses pointer-event passthrough for the base while handles remain interactive.
  */
-export const ResizeHandles: React.FC<ResizeHandlesProps> = ({
+const ResizeHandlesComponent: React.FC<ResizeHandlesProps> = ({
   size,
   activeHandle,
   onResizeStart,
   handles = DEFAULT_HANDLES,
 }) => {
+  // Debug: Log component render
+  if (DEBUG_RESIZEHANDLES_RERENDERS) {
+    console.log(`[ResizeHandles] Component is rendering`, {
+      size,
+      activeHandle,
+      handlesLength: handles?.length,
+    });
+  }
   const [handleCornerRadius, setHandleCornerRadius] = React.useState<number>(() => resolveHandleCornerRadius());
 
   React.useEffect(() => {
@@ -152,5 +161,72 @@ export const ResizeHandles: React.FC<ResizeHandlesProps> = ({
     </div>
   );
 };
+
+// Custom comparison function for memo
+const areEqual = (prevProps: ResizeHandlesProps, nextProps: ResizeHandlesProps): boolean => {
+  const debugLog = (reason: string, details?: Record<string, unknown>) => {
+    if (DEBUG_RESIZEHANDLES_RERENDERS) {
+      console.log(`[ResizeHandles] Re-rendering because:`, reason, details || "");
+    }
+  };
+
+  // Check size changes
+  if (prevProps.size.width !== nextProps.size.width) {
+    debugLog("size.width changed", { prev: prevProps.size.width, next: nextProps.size.width });
+    return false;
+  }
+  if (prevProps.size.height !== nextProps.size.height) {
+    debugLog("size.height changed", { prev: prevProps.size.height, next: nextProps.size.height });
+    return false;
+  }
+
+  // Check activeHandle changes
+  if (prevProps.activeHandle !== nextProps.activeHandle) {
+    debugLog("activeHandle changed", { prev: prevProps.activeHandle, next: nextProps.activeHandle });
+    return false;
+  }
+
+  // Check handles array (by reference or length)
+  if (prevProps.handles !== nextProps.handles) {
+    if (!prevProps.handles && !nextProps.handles) {
+      // Both undefined, equal
+    } else if (!prevProps.handles || !nextProps.handles) {
+      debugLog("handles array changed (one is undefined)", {
+        prev: prevProps.handles,
+        next: nextProps.handles,
+      });
+      return false;
+    } else if (prevProps.handles.length !== nextProps.handles.length) {
+      debugLog("handles.length changed", {
+        prev: prevProps.handles.length,
+        next: nextProps.handles.length,
+      });
+      return false;
+    } else {
+      // Check each handle
+      for (let i = 0; i < prevProps.handles.length; i++) {
+        if (prevProps.handles[i] !== nextProps.handles[i]) {
+          debugLog("handles array content changed", {
+            index: i,
+            prev: prevProps.handles[i],
+            next: nextProps.handles[i],
+          });
+          return false;
+        }
+      }
+    }
+  }
+
+  // onResizeStart is assumed to be stable (useCallback)
+
+  // Props are equal, skip re-render
+  if (DEBUG_RESIZEHANDLES_RERENDERS) {
+    console.log(`[ResizeHandles] Skipped re-render (props are equal)`);
+  }
+  return true;
+};
+
+// Export memoized component
+export const ResizeHandles = React.memo(ResizeHandlesComponent, areEqual);
 
 ResizeHandles.displayName = "ResizeHandles";
