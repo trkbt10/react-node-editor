@@ -92,6 +92,7 @@ export default defineConfig(({ mode }) => {
       lib: {
         entry: {
           index: "src/index.ts",
+          core: "src/core.ts",
           "i18n/en": "src/i18n/en.ts",
           "i18n/ja": "src/i18n/ja.ts",
           "i18n/zh": "src/i18n/zh.ts",

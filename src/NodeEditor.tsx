@@ -2,21 +2,8 @@
  * @file NodeEditor component
  */
 import * as React from "react";
-import { ConnectionView as DefaultConnectionView } from "./components/connection/ConnectionView";
-import { PortView as DefaultPortView } from "./components/connection/ports/PortView";
-import { NodeView as DefaultNodeView } from "./components/node/NodeView";
-import { EditorActionStateProvider } from "./contexts/EditorActionStateContext";
-import { ExternalDataProvider } from "./contexts/external-data/ExternalDataContext";
-import { HistoryProvider } from "./contexts/HistoryContext";
-import { InlineEditingProvider } from "./contexts/InlineEditingContext";
-import { KeyboardShortcutProvider } from "./contexts/KeyboardShortcutContext";
-import { NodeEditorProvider } from "./contexts/node-editor/provider";
+import { NodeEditorCore } from "./NodeEditorCore";
 import type { NodeEditorData } from "./types/core";
-import { NodeCanvasProvider } from "./contexts/NodeCanvasContext";
-import { NodeDefinitionProvider } from "./contexts/node-definitions/provider";
-import { RendererProvider } from "./contexts/RendererContext";
-import { I18nProvider } from "./i18n/context";
-import { enMessages } from "./i18n/en";
 import type { I18nMessages, I18nDictionaries, Locale } from "./i18n/types";
 import { NodeEditorContent } from "./NodeEditorContent";
 import type { SettingsManager } from "./settings/SettingsManager";
@@ -24,7 +11,6 @@ import type { ExternalDataReference, NodeDefinition } from "./types/NodeDefiniti
 import type { GridLayoutConfig, LayerDefinition } from "./types/panels";
 import { type PortPositionBehavior } from "./types/portPosition";
 import type { NodeEditorRendererOverrides } from "./types/renderers";
-import { InteractionSettingsProvider } from "./contexts/InteractionSettingsContext";
 import type { NodeEditorInteractionSettingsPatch } from "./types/interaction";
 
 export type NodeEditorProps = {
@@ -96,67 +82,36 @@ export function NodeEditor({
   portPositionBehavior,
   interactionSettings,
 }: NodeEditorProps) {
-  const mergedRenderers = React.useMemo(
-    () => ({
-      node: renderers?.node ?? DefaultNodeView,
-      port: renderers?.port ?? DefaultPortView,
-      connection: renderers?.connection ?? DefaultConnectionView,
-    }),
-    [renderers],
-  );
-
-  const dictionaries = React.useMemo<I18nDictionaries>(() => {
-    return {
-      en: enMessages,
-      ...(localeDictionaries ?? {}),
-    };
-  }, [localeDictionaries]);
-
   return (
-    <I18nProvider
-      dictionaries={dictionaries}
-      initialLocale={locale}
+    <NodeEditorCore
+      initialData={initialData}
+      data={data}
+      onDataChange={onDataChange}
+      onSave={onSave}
+      onLoad={onLoad}
+      nodeDefinitions={nodeDefinitions}
+      includeDefaultDefinitions={includeDefaultDefinitions}
+      externalDataRefs={externalDataRefs}
+      settingsManager={settingsManager}
+      locale={locale}
       fallbackLocale={fallbackLocale}
       messagesOverride={messagesOverride}
+      localeDictionaries={localeDictionaries}
+      autoSaveEnabled={autoSaveEnabled}
+      autoSaveInterval={autoSaveInterval}
+      historyMaxEntries={historyMaxEntries}
+      renderers={renderers}
+      interactionSettings={interactionSettings}
     >
-      <RendererProvider renderers={mergedRenderers}>
-        <NodeDefinitionProvider nodeDefinitions={nodeDefinitions} includeDefaults={includeDefaultDefinitions}>
-          <ExternalDataProvider refs={externalDataRefs}>
-            <NodeEditorProvider
-              initialState={initialData}
-              controlledData={data}
-              onDataChange={onDataChange}
-              onSave={onSave}
-              onLoad={onLoad}
-              settingsManager={settingsManager}
-              autoSaveEnabled={autoSaveEnabled}
-              autoSaveInterval={autoSaveInterval}
-            >
-              <EditorActionStateProvider>
-                <NodeCanvasProvider>
-                  <HistoryProvider maxEntries={historyMaxEntries}>
-                    <InlineEditingProvider>
-                      <KeyboardShortcutProvider>
-                        <InteractionSettingsProvider value={interactionSettings}>
-                          <NodeEditorContent
-                            className={className}
-                            settingsManager={settingsManager}
-                            autoSaveEnabled={autoSaveEnabled}
-                            autoSaveInterval={autoSaveInterval}
-                            gridConfig={gridConfig}
-                            gridLayers={gridLayers}
-                            portPositionBehavior={portPositionBehavior}
-                          />
-                        </InteractionSettingsProvider>
-                      </KeyboardShortcutProvider>
-                    </InlineEditingProvider>
-                  </HistoryProvider>
-                </NodeCanvasProvider>
-              </EditorActionStateProvider>
-            </NodeEditorProvider>
-          </ExternalDataProvider>
-        </NodeDefinitionProvider>
-      </RendererProvider>
-    </I18nProvider>
+      <NodeEditorContent
+        className={className}
+        settingsManager={settingsManager}
+        autoSaveEnabled={autoSaveEnabled}
+        autoSaveInterval={autoSaveInterval}
+        gridConfig={gridConfig}
+        gridLayers={gridLayers}
+        portPositionBehavior={portPositionBehavior}
+      />
+    </NodeEditorCore>
   );
 }

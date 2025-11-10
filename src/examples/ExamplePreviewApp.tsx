@@ -31,6 +31,7 @@ import { UnityThemeExample } from "./demos/unity-theme/UnityThemeExample";
 import { AdobeThemeExample } from "./demos/adobe-theme/AdobeThemeExample";
 import { FigmaThemeExample } from "./demos/figma-theme/FigmaThemeExample";
 import { TradingAnalyticsDashboard } from "./demos/trading-analytics/TradingAnalyticsDashboard";
+import { CustomLayoutDemo } from "./demos/custom-layout-demo";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -118,6 +119,13 @@ const examples: ExampleEntry[] = [
     description: "Render bezier connectors with live handle overlays and animated accents.",
     component: CustomConnectorExample,
     category: "custom",
+  },
+  {
+    id: "layout-custom-core",
+    title: "Layout: Custom Core (Flexbox)",
+    description: "Custom layout using NodeEditorCore and NodeEditorCanvas without GridLayout dependency.",
+    component: CustomLayoutDemo,
+    category: "layout",
   },
   {
     id: "layout-default",

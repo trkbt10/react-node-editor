@@ -82,6 +82,11 @@
       "types": "./dist/inspector/index.d.ts",
       "import": "./dist/inspector/index.js",
       "require": "./dist/inspector/index.cjs"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js",
+      "require": "./dist/core.cjs"
     }
   },
   "scripts": {
