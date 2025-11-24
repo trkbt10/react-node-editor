@@ -7,12 +7,30 @@
  */
 import * as React from "react";
 import { NodeEditor } from "../../../NodeEditor";
-import type { NodeDefinition, PortConnectionContext, PortInstanceContext } from "../../../types/NodeDefinition";
+import type {
+  ConnectionRenderContext,
+  NodeDefinition,
+  PortConnectionContext,
+  PortInstanceContext,
+  PortRenderContext,
+} from "../../../types/NodeDefinition";
 import type { NodeEditorData, PortPlacement, PortPosition } from "../../../types/core";
 import { ExampleLayout } from "../parts/ExampleLayout";
 import { ExampleHeader } from "../parts/ExampleHeader";
 import { ExampleWrapper } from "../parts/ExampleWrapper";
 import styles from "./DynamicPortPlaygroundExample.module.css";
+import { InspectorSection } from "../../../components/inspector/parts/InspectorSection";
+import { InspectorSectionTitle } from "../../../components/inspector/parts/InspectorSectionTitle";
+import { InspectorField } from "../../../components/inspector/parts/InspectorField";
+import { InspectorInput } from "../../../components/inspector/parts/InspectorInput";
+import { SwitchInput } from "../../../components/elements/SwitchInput";
+import {
+  calculateBezierControlPoints,
+  calculateBezierPath,
+  cubicBezierPoint,
+  getOppositePortPosition,
+} from "../../../components/connection/utils/connectionUtils";
+import { normalizePortDataTypes } from "../../../utils/portDataTypeUtils";
 
 type PortGroupConfig = {
   label: string;
@@ -37,6 +55,13 @@ type PlaygroundConfig = {
   };
 };
 
+type PortStyleVars = {
+  "--port-accent": string;
+  "--port-glow": string;
+  "--port-surface": string;
+  "--port-text": string;
+};
+
 const clampCount = (value: number): number => {
   if (Number.isNaN(value)) {
     return 0;
@@ -58,6 +83,123 @@ const placementFromConfig = (config: PortGroupConfig): PortPlacement => ({
   segmentSpan: config.span,
   align: config.align,
 });
+
+type DataTypeTokens = {
+  accent: string;
+  glow: string;
+  surface: string;
+  surfaceMuted?: string;
+  text: string;
+};
+
+const DATA_TYPE_TOKENS: Record<string, DataTypeTokens> = {
+  text: {
+    accent: "#2563eb",
+    glow: "rgba(37, 99, 235, 0.28)",
+    surface: "rgba(37, 99, 235, 0.12)",
+    surfaceMuted: "rgba(37, 99, 235, 0.08)",
+    text: "#0f172a",
+  },
+  html: {
+    accent: "#7c3aed",
+    glow: "rgba(124, 58, 237, 0.32)",
+    surface: "rgba(124, 58, 237, 0.14)",
+    surfaceMuted: "rgba(124, 58, 237, 0.08)",
+    text: "#0f172a",
+  },
+  markdown: {
+    accent: "#0ea5e9",
+    glow: "rgba(14, 165, 233, 0.28)",
+    surface: "rgba(14, 165, 233, 0.12)",
+    surfaceMuted: "rgba(14, 165, 233, 0.08)",
+    text: "#0f172a",
+  },
+  image: {
+    accent: "#22c55e",
+    glow: "rgba(34, 197, 94, 0.28)",
+    surface: "rgba(34, 197, 94, 0.12)",
+    surfaceMuted: "rgba(34, 197, 94, 0.08)",
+    text: "#0f172a",
+  },
+  audio: {
+    accent: "#f97316",
+    glow: "rgba(249, 115, 22, 0.3)",
+    surface: "rgba(249, 115, 22, 0.12)",
+    surfaceMuted: "rgba(249, 115, 22, 0.08)",
+    text: "#0f172a",
+  },
+  video: {
+    accent: "#a855f7",
+    glow: "rgba(168, 85, 247, 0.3)",
+    surface: "rgba(168, 85, 247, 0.12)",
+    surfaceMuted: "rgba(168, 85, 247, 0.08)",
+    text: "#0f172a",
+  },
+  data: {
+    accent: "#0d9488",
+    glow: "rgba(13, 148, 136, 0.28)",
+    surface: "rgba(13, 148, 136, 0.12)",
+    surfaceMuted: "rgba(13, 148, 136, 0.08)",
+    text: "#0f172a",
+  },
+};
+
+const DEFAULT_DATA_TYPE_TOKEN: DataTypeTokens = {
+  accent: "var(--node-editor-accent-color, #2563eb)",
+  glow: "rgba(37, 99, 235, 0.26)",
+  surface: "rgba(37, 99, 235, 0.08)",
+  surfaceMuted: "rgba(37, 99, 235, 0.06)",
+  text: "var(--node-editor-label-color, #0f172a)",
+};
+
+const resolveDataTypeTokens = (types: string[], tone: "primary" | "secondary"): DataTypeTokens => {
+  const key = types[0]?.toLowerCase() ?? "";
+  const baseTokens = DATA_TYPE_TOKENS[key] ?? DEFAULT_DATA_TYPE_TOKEN;
+  if (tone === "secondary") {
+    return {
+      accent: baseTokens.accent,
+      glow: baseTokens.glow,
+      surface: baseTokens.surfaceMuted ?? baseTokens.surface,
+      text: baseTokens.text,
+    };
+  }
+  return baseTokens;
+};
+
+const formatDataTypeLabel = (types: string[]): string => {
+  if (types.length === 0) {
+    return "any";
+  }
+  if (types.length <= 2) {
+    return types.join(" | ");
+  }
+  return `${types[0]} +${types.length - 1}`;
+};
+
+const formatSegmentLabel = (segment?: string): string => {
+  if (!segment) {
+    return "default";
+  }
+  return segment;
+};
+
+const buildSegmentSummary = (fromSegment?: string, toSegment?: string): string | null => {
+  if (!fromSegment && !toSegment) {
+    return null;
+  }
+  const fromLabel = formatSegmentLabel(fromSegment);
+  const toLabel = formatSegmentLabel(toSegment);
+  if (fromLabel === toLabel) {
+    return `segment ${fromLabel}`;
+  }
+  return `segment ${fromLabel} → ${toLabel}`;
+};
+
+const calculateBadgeWidth = (primaryLabel: string, secondaryLabel?: string | null): number => {
+  const longestLength = Math.max(primaryLabel.length, secondaryLabel?.length ?? 0);
+  const approximateWidth = Math.round(longestLength * 6.2 + 16);
+  return Math.max(120, Math.min(240, approximateWidth));
+};
 
 const defaultConfig: PlaygroundConfig = {
   requireSegmentMatch: true,
@@ -209,6 +351,177 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
     setData(buildInitialData(defaultConfig));
   }, []);
 
+  const resolvePortState = (
+    context: PortRenderContext,
+  ): "candidate" | "connectable" | "connecting" | "hovered" | "connected" | "idle" => {
+    if (context.isCandidate) {
+      return "candidate";
+    }
+    if (context.isConnectable) {
+      return "connectable";
+    }
+    if (context.isConnecting) {
+      return "connecting";
+    }
+    if (context.isHovered) {
+      return "hovered";
+    }
+    if (context.isConnected) {
+      return "connected";
+    }
+    return "idle";
+  };
+
+  const createPortRenderer =
+    (role: string, tone: "primary" | "secondary") =>
+    (context: PortRenderContext, defaultRender: () => React.ReactElement) => {
+      const position = context.position;
+      if (!position) {
+        return defaultRender();
+      }
+
+      const portState = resolvePortState(context);
+      const portTypes = normalizePortDataTypes(context.port.dataType);
+      const dataTokens = resolveDataTypeTokens(portTypes, tone);
+      const typeLabel = formatDataTypeLabel(portTypes);
+      const portStyle: React.CSSProperties & PortStyleVars = {
+        left: position.x,
+        top: position.y,
+        transform: position.transform || "translate(-50%, -50%)",
+        "--port-accent": dataTokens.accent,
+        "--port-glow": dataTokens.glow,
+        "--port-surface": dataTokens.surface,
+        "--port-text": dataTokens.text,
+      };
+
+      return (
+        <div
+          className={styles.portAnchor}
+          style={portStyle}
+          data-port-type={context.port.type}
+          data-port-position={context.port.position}
+          data-port-state={portState}
+          title={`${role} (${typeLabel})`}
+          onPointerDown={context.handlers.onPointerDown}
+          onPointerUp={context.handlers.onPointerUp}
+          onPointerEnter={context.handlers.onPointerEnter}
+          onPointerMove={context.handlers.onPointerMove}
+          onPointerLeave={context.handlers.onPointerLeave}
+          onPointerCancel={context.handlers.onPointerCancel}
+        >
+          <div className={styles.portHandle} aria-hidden />
+          <div className={styles.portInfo}>
+            <span className={styles.portRole}>{role}</span>
+            <span className={styles.portTypeBadge} aria-label="Accepted data types">
+              {typeLabel}
+            </span>
+          </div>
+        </div>
+      );
+    };
+
+  const renderConnectionDetails = (
+    context: ConnectionRenderContext,
+    defaultRender: () => React.ReactElement,
+  ): React.ReactElement => {
+    const defaultElement = defaultRender();
+    const toPortPosition = context.toPort?.position ?? getOppositePortPosition(context.fromPort.position);
+    const pathData = calculateBezierPath(context.fromPosition, context.toPosition, context.fromPort.position, toPortPosition);
+    const { cp1, cp2 } = calculateBezierControlPoints(
+      context.fromPosition,
+      context.toPosition,
+      context.fromPort.position,
+      toPortPosition,
+    );
+    const midpoint = cubicBezierPoint(context.fromPosition, cp1, cp2, context.toPosition, 0.5);
+
+    const fromTypes = normalizePortDataTypes(context.fromPort.dataType);
+    const toTypes = normalizePortDataTypes(context.toPort?.dataType ?? context.fromPort.dataType);
+    const primaryLabel = `${formatDataTypeLabel(fromTypes)} → ${formatDataTypeLabel(toTypes)}`;
+    const segmentLabel = buildSegmentSummary(context.fromPort.placement?.segment, context.toPort?.placement?.segment);
+    const badgeWidth = calculateBadgeWidth(primaryLabel, segmentLabel);
+    const badgeHeight = segmentLabel ? 34 : 22;
+    const dataTokens = resolveDataTypeTokens(fromTypes, "primary");
+    const strokeWidth = context.isSelected ? 3.2 : context.isHovered ? 2.8 : 2.2;
+    const haloWidth = strokeWidth + 6;
+    const dashArray = context.phase === "connecting" ? "8 6" : undefined;
+
+    return (
+      <>
+        {defaultElement}
+        <g className={styles.connectionOverlay} pointerEvents="none">
+          <path
+            className={styles.connectionHalo}
+            d={pathData}
+            stroke={dataTokens.glow}
+            strokeWidth={haloWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeOpacity={0.22 + (context.isAdjacentToSelectedNode ? 0.08 : 0)}
+          />
+          <path
+            className={styles.connectionLine}
+            d={pathData}
+            stroke={dataTokens.accent}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeDasharray={dashArray}
+            opacity={0.95}
+          />
+          <g className={styles.connectionBadge} transform={`translate(${midpoint.x}, ${midpoint.y})`}>
+            <rect
+              x={-badgeWidth / 2}
+              y={-(badgeHeight / 2)}
+              width={badgeWidth}
+              height={badgeHeight}
+              rx={8}
+              fill={dataTokens.surface}
+              stroke={dataTokens.accent}
+              strokeWidth={1}
+              opacity={0.95}
+            />
+            <text
+              className={styles.connectionBadgeText}
+              x={0}
+              y={segmentLabel ? -2 : 1}
+              textAnchor="middle"
+              dominantBaseline="middle"
+            >
+              {primaryLabel}
+            </text>
+            {segmentLabel ? (
+              <text className={styles.connectionBadgeSubtext} x={0} y={12} textAnchor="middle" dominantBaseline="middle">
+                {segmentLabel}
+              </text>
+            ) : null}
+          </g>
+        </g>
+      </>
+    );
+  };
+
+  const renderCountInspector = (
+    label: string,
+    key: "mainCount" | "optionalCount",
+    nodeData: Record<string, unknown>,
+    onUpdateNode: (updates: Partial<NodeEditorData["nodes"][number]>) => void,
+  ) => (
+    <InspectorField>
+      <InspectorInput
+        aria-label={label}
+        type="number"
+        min={0}
+        max={12}
+        value={Number(nodeData[key] ?? 0)}
+        onChange={(event) => {
+          const next = clampCount(Number(event.target.value));
+          onUpdateNode({ data: { ...nodeData, [key]: next } });
+        }}
+      />
+    </InspectorField>
+  );
+
   const nodeDefinitions = React.useMemo<NodeDefinition[]>(() => {
     const sharedCanConnect = config.requireSegmentMatch;
     return [
@@ -217,18 +530,54 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
         displayName: "Dynamic Source",
         defaultSize: { width: 220, height: 200 },
         ports: [
-          makePortGroupDefinition("main-output", "output", config.source.main, sharedCanConnect, "mainCount"),
-          makePortGroupDefinition("optional-output", "output", config.source.optional, sharedCanConnect, "optionalCount"),
+          {
+            ...makePortGroupDefinition("main-output", "output", config.source.main, sharedCanConnect, "mainCount"),
+            renderPort: createPortRenderer(config.source.main.label, "primary"),
+            renderConnection: renderConnectionDetails,
+          },
+          {
+            ...makePortGroupDefinition("optional-output", "output", config.source.optional, sharedCanConnect, "optionalCount"),
+            renderPort: createPortRenderer(config.source.optional.label, "secondary"),
+            renderConnection: renderConnectionDetails,
+          },
         ],
+        renderInspector: ({ node, onUpdateNode }) => {
+          const nodeData = node.data || {};
+          return (
+            <InspectorSection>
+              <InspectorSectionTitle>Source Ports</InspectorSectionTitle>
+              {renderCountInspector("Primary outputs", "mainCount", nodeData, onUpdateNode)}
+              {renderCountInspector("Aux outputs", "optionalCount", nodeData, onUpdateNode)}
+            </InspectorSection>
+          );
+        },
       },
       {
         type: "dynamic-target",
         displayName: "Dynamic Target",
         defaultSize: { width: 220, height: 200 },
         ports: [
-          makePortGroupDefinition("main-input", "input", config.target.main, sharedCanConnect, "mainCount"),
-          makePortGroupDefinition("optional-input", "input", config.target.optional, sharedCanConnect, "optionalCount"),
+          {
+            ...makePortGroupDefinition("main-input", "input", config.target.main, sharedCanConnect, "mainCount"),
+            renderPort: createPortRenderer(config.target.main.label, "primary"),
+            renderConnection: renderConnectionDetails,
+          },
+          {
+            ...makePortGroupDefinition("optional-input", "input", config.target.optional, sharedCanConnect, "optionalCount"),
+            renderPort: createPortRenderer(config.target.optional.label, "secondary"),
+            renderConnection: renderConnectionDetails,
+          },
         ],
+        renderInspector: ({ node, onUpdateNode }) => {
+          const nodeData = node.data || {};
+          return (
+            <InspectorSection>
+              <InspectorSectionTitle>Target Ports</InspectorSectionTitle>
+              {renderCountInspector("Primary inputs", "mainCount", nodeData, onUpdateNode)}
+              {renderCountInspector("Aux inputs", "optionalCount", nodeData, onUpdateNode)}
+            </InspectorSection>
+          );
+        },
       },
     ];
   }, [config]);
@@ -239,35 +588,24 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
     groupKey: "main" | "optional",
     group: PortGroupConfig,
   ) => (
-    <div className={styles.controlGroup}>
-      <div className={styles.labelRow}>
-        <span className={styles.label}>{title}</span>
-        <span className={styles.hint}>Comma-separated data types</span>
-      </div>
-      <input
-        className={styles.input}
-        value={group.dataTypes}
-        onChange={(event) => updateGroup(nodeKey, groupKey, { dataTypes: event.target.value })}
-      />
-      <div className={styles.field}>
-        <div className={styles.labelRow}>
-          <span className={styles.label}>Port count</span>
-          <span className={styles.hint}>0-12</span>
-        </div>
-        <input
+    <InspectorSection>
+      <InspectorSectionTitle>{title}</InspectorSectionTitle>
+      <InspectorField label="Data types (comma separated)">
+        <InspectorInput
+          value={group.dataTypes}
+          onChange={(event) => updateGroup(nodeKey, groupKey, { dataTypes: event.target.value })}
+        />
+      </InspectorField>
+      <InspectorField label="Port count">
+        <InspectorInput
           type="number"
-          className={styles.number}
           min={0}
           max={12}
           value={group.count}
           onChange={(event) => updateCount(nodeKey, groupKey, Number(event.target.value))}
         />
-      </div>
-      <div className={styles.field}>
-        <div className={styles.labelRow}>
-          <span className={styles.label}>Side</span>
-          <span className={styles.hint}>Edge placement</span>
-        </div>
+      </InspectorField>
+      <InspectorField label="Side">
         <select
           className={styles.select}
           value={group.side}
@@ -278,73 +616,105 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
           <option value="top">Top</option>
           <option value="bottom">Bottom</option>
         </select>
-      </div>
-      <div className={styles.field}>
-        <div className={styles.labelRow}>
-          <span className={styles.label}>Segment key</span>
-          <span className={styles.hint}>Groups ports on the same side</span>
-        </div>
-        <input
-          className={styles.input}
+      </InspectorField>
+      <InspectorField label="Segment key">
+        <InspectorInput
           value={group.segment}
           onChange={(event) => updateGroup(nodeKey, groupKey, { segment: event.target.value })}
         />
-      </div>
-      <div className={styles.field}>
-        <div className={styles.labelRow}>
-          <span className={styles.label}>Segment order</span>
-          <span className={styles.hint}>Lower comes first</span>
-        </div>
-        <input
+      </InspectorField>
+      <InspectorField label="Segment order">
+        <InspectorInput
           type="number"
-          className={styles.number}
           value={group.order}
           onChange={(event) => updateGroup(nodeKey, groupKey, { order: Number(event.target.value) })}
         />
-      </div>
-      <div className={styles.field}>
-        <div className={styles.labelRow}>
-          <span className={styles.label}>Segment span</span>
-          <span className={styles.hint}>Relative height</span>
-        </div>
-        <input
+      </InspectorField>
+      <InspectorField label="Segment span">
+        <InspectorInput
           type="number"
-          className={styles.number}
           min={0.1}
           max={4}
           step={0.1}
           value={group.span}
           onChange={(event) => updateGroup(nodeKey, groupKey, { span: Number(event.target.value) })}
         />
-      </div>
-      <div className={styles.field}>
-        <div className={styles.labelRow}>
-          <span className={styles.label}>Align within segment</span>
-          <span className={styles.hint}>0 = start, 1 = end</span>
-        </div>
-        <input
+      </InspectorField>
+      <InspectorField label="Align within segment (0–1)">
+        <InspectorInput
           type="range"
-          className={styles.range}
           min={0}
           max={1}
           step={0.05}
           value={group.align}
           onChange={(event) => updateGroup(nodeKey, groupKey, { align: Number(event.target.value) })}
         />
-      </div>
-      <div className={styles.field}>
-        <div className={styles.labelRow}>
-          <span className={styles.label}>Label</span>
-          <span className={styles.hint}>Shown beside each port</span>
-        </div>
-        <input
-          className={styles.input}
+      </InspectorField>
+      <InspectorField label="Label">
+        <InspectorInput
           value={group.label}
           onChange={(event) => updateGroup(nodeKey, groupKey, { label: event.target.value })}
         />
-      </div>
-    </div>
+      </InspectorField>
+      {renderGroupSummary(group)}
+    </InspectorSection>
   );
+
+  const renderGroupSummary = (group: PortGroupConfig) => {
+    const types = parseDataTypes(group.dataTypes);
+    return (
+      <div className={styles.summaryCard} aria-label="Port definition summary">
+        <div className={styles.summaryRow}>
+          <span className={styles.badgeLabel}>Side</span>
+          <span className={styles.badgePrimary}>{group.side}</span>
+          <span className={styles.badgeLabel}>Segment</span>
+          <span className={styles.badgeNeutral}>{group.segment || "default"}</span>
+        </div>
+        <div className={styles.summaryRow}>
+          <span className={styles.badgeLabel}>Count</span>
+          <span className={styles.badgeInfo}>{group.count}</span>
+          <span className={styles.badgeLabel}>Align</span>
+          <span className={styles.badgeInfo}>{group.align.toFixed(2)}</span>
+        </div>
+        <div className={styles.summaryRow}>
+          <span className={styles.badgeLabel}>Data types</span>
+          <div className={styles.typeChips}>
+            {types.length === 0 ? <span className={styles.badgeMuted}>any</span> : null}
+            {types.map((type) => (
+              <span key={type} className={styles.typeChip}>
+                {type}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderLegend = () => {
+    const entries: Array<{ title: string; group: PortGroupConfig }> = [
+      { title: "Source - Primary Outputs", group: config.source.main },
+      { title: "Source - Aux Outputs", group: config.source.optional },
+      { title: "Target - Primary Inputs", group: config.target.main },
+      { title: "Target - Aux Inputs", group: config.target.optional },
+    ];
+    return (
+      <div className={styles.legend}>
+        <h4 className={styles.legendTitle}>Port Roles</h4>
+        <div className={styles.legendGrid}>
+          {entries.map((entry) => (
+            <div key={entry.title} className={styles.legendCard}>
+              <div className={styles.legendHeader}>
+                <span className={styles.legendDot} aria-hidden />
+                <span className={styles.legendLabel}>{entry.title}</span>
+              </div>
+              {renderGroupSummary(entry.group)}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <ExampleLayout
@@ -362,17 +732,15 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
               <span className={styles.controlTitle}>Port Definition Controls</span>
               <span className={styles.pill}>Live</span>
             </div>
-            <div className={styles.toggleRow}>
-              <input
-                id="segment-match-toggle"
-                type="checkbox"
-                checked={config.requireSegmentMatch}
-                onChange={(event) => setConfig((prev) => ({ ...prev, requireSegmentMatch: event.target.checked }))}
-              />
-              <label className={styles.toggleLabel} htmlFor="segment-match-toggle">
-                Only allow connections when segment keys match (uses canConnect)
-              </label>
-            </div>
+            <InspectorSection>
+              <InspectorField label="Segment match gate">
+                <SwitchInput
+                  checked={config.requireSegmentMatch}
+                  onChange={(checked) => setConfig((prev) => ({ ...prev, requireSegmentMatch: checked }))}
+                  label="Only allow connections when segment keys match (canConnect)"
+                />
+              </InspectorField>
+            </InspectorSection>
 
             <div className={styles.controlHeader}>
               <span className={styles.controlTitle}>Source Outputs</span>
@@ -394,6 +762,7 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
             <div className={styles.editorSurface}>
               <NodeEditor data={data} onDataChange={setData} nodeDefinitions={nodeDefinitions} />
             </div>
+            {renderLegend()}
           </div>
         </div>
       </ExampleWrapper>

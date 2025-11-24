@@ -41,6 +41,52 @@ function App() {
 }
 ```
 
+## Custom ports and connections
+
+Declare `renderPort` per port definition to override the visual while keeping editor interactions. The second argument renders the default dot, which you can keep for accessibility hitboxes or replace entirely. Always forward `context.handlers` and honor `context.position` (x, y, transform) for correct anchoring.
+
+```tsx
+const CustomPorts = createNodeDefinition({
+  type: "custom-ports",
+  displayName: "Custom Ports",
+  ports: [
+    {
+      id: "emit",
+      type: "output",
+      label: "Emit",
+      position: "right",
+      dataType: ["text", "html"],
+      renderPort: (context, defaultRender) => {
+        if (!context.position) return defaultRender();
+        const { x, y, transform } = context.position;
+        return (
+          <div
+            style={{ position: "absolute", left: x, top: y, transform: transform ?? "translate(-50%, -50%)" }}
+            onPointerDown={context.handlers.onPointerDown}
+            onPointerUp={context.handlers.onPointerUp}
+            onPointerEnter={context.handlers.onPointerEnter}
+            onPointerMove={context.handlers.onPointerMove}
+            onPointerLeave={context.handlers.onPointerLeave}
+            onPointerCancel={context.handlers.onPointerCancel}
+            data-state={context.isConnectable ? "ready" : context.isHovered ? "hovered" : "idle"}
+          >
+            <span className="port-dot" />
+            <span className="port-label">{context.port.label}</span>
+          </div>
+        );
+      },
+      renderConnection: (context, defaultRender) => {
+        // Example: decorate connected lines; fall back to default during previews
+        if (!context.connection) return defaultRender();
+        return defaultRender();
+      },
+    },
+  ],
+});
+```
+
+`PortRenderContext` includes `port`, `node`, `allNodes`, `allConnections`, booleans (`isConnecting`, `isConnectable`, `isCandidate`, `isHovered`, `isConnected`), optional `position`, and pointer handlers you must preserve. `ConnectionRenderContext` provides `phase`, `fromPort`, `toPort`, their positions, selection/hover flags, and handlers for pointer/cxtmenu; use it to add badges or halos while keeping hit-testing intact. For dynamic ports, set `instances`, `createPortId`, and `createPortLabel` on the port definition (see `src/examples/demos/custom-port` for a complete playground).
+
 ## Panels
 
 Use `defaultEditorGridLayers` for built-in panels (canvas, inspector, statusbar):

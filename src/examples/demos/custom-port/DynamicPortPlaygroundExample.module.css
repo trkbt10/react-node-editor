@@ -9,11 +9,11 @@
 }
 
 .controls {
-  background: var(--surface-1, #0f172a);
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
-  border-radius: 12px;
+  background: var(--node-editor-surface-primary, #fff);
+  border: var(--node-editor-card-border, 1px solid rgba(15, 23, 42, 0.12));
+  border-radius: var(--node-editor-card-border-radius, 12px);
   padding: 16px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--node-editor-shadow-lg, 0 8px 28px rgba(0, 0, 0, 0.25));
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -29,81 +29,28 @@
 }
 
 .controlTitle {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text-strong, #e2e8f0);
+  font: var(--node-editor-title-font);
+  color: var(--node-editor-label-color);
 }
 
-.controlGroup {
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.08));
-  border-radius: 10px;
-  padding: 12px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.labelRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-subtle, #cbd5e1);
-}
-
-.hint {
-  font-size: 11px;
-  color: var(--text-muted, #94a3b8);
-}
-
-.input,
-.select,
-.number {
+.select {
   width: 100%;
-  border-radius: 8px;
-  border: 1px solid var(--border-strong, rgba(255, 255, 255, 0.12));
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-strong, #e2e8f0);
+  border-radius: var(--node-editor-control-border-radius, 8px);
+  border: var(--node-editor-input-border, 1px solid rgba(15, 23, 42, 0.12));
+  background: var(--node-editor-surface-primary);
+  color: var(--node-editor-input-text-color);
   padding: 8px 10px;
-  font-size: 12px;
-}
-
-.number {
-  appearance: none;
-  -moz-appearance: textfield;
+  font-size: var(--node-editor-inspector-font-size-body);
 }
 
 .range {
   width: 100%;
 }
 
-.toggleRow {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.toggleLabel {
-  font-size: 12px;
-  color: var(--text-subtle, #cbd5e1);
-}
-
 .editorPanel {
-  border: 1px solid var(--border-strong, rgba(255, 255, 255, 0.12));
-  border-radius: 12px;
-  background: var(--surface-1, #0b1222);
+  border: var(--node-editor-card-border, 1px solid rgba(15, 23, 42, 0.12));
+  border-radius: var(--node-editor-card-border-radius, 12px);
+  background: var(--node-editor-surface-primary);
   min-height: 600px;
   height: 100%;
   overflow: hidden;
@@ -119,11 +66,341 @@
 .pill {
   padding: 4px 8px;
   border-radius: 999px;
-  background: rgba(34, 197, 94, 0.14);
-  color: #34d399;
+  background: var(--node-editor-accent-color, #2563eb);
+  color: var(--node-editor-control-text-color-primary, #ffffff);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.02em;
+}
+
+.summaryCard {
+  margin-top: 8px;
+  padding: 10px;
+  border: var(--node-editor-card-border, 1px solid rgba(15, 23, 42, 0.12));
+  border-radius: 10px;
+  background: var(--node-editor-surface-secondary, rgba(0, 0, 0, 0.02));
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--node-editor-text-color);
+}
+
+.summaryRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.badgeLabel {
+  color: var(--node-editor-secondary-label-color);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badgePrimary {
+  background: color-mix(in srgb, var(--node-editor-accent-color) 18%, transparent);
+  color: var(--node-editor-accent-color);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 700;
+}
+
+.badgeNeutral {
+  background: color-mix(in srgb, var(--node-editor-warning-color) 16%, transparent);
+  color: var(--node-editor-warning-color);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 700;
+}
+
+.badgeInfo {
+  background: color-mix(in srgb, var(--node-editor-success-color) 18%, transparent);
+  color: var(--node-editor-success-color);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 700;
+}
+
+.badgeMuted {
+  background: color-mix(in srgb, var(--node-editor-secondary-label-color) 18%, transparent);
+  color: var(--node-editor-secondary-label-color);
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 600;
+}
+
+.typeChips {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.typeChip {
+  padding: 4px 8px;
+  background: color-mix(in srgb, var(--node-editor-color-primary) 16%, transparent);
+  color: var(--node-editor-color-primary);
+  border-radius: 8px;
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 700;
+}
+
+.legend {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--node-editor-surface-secondary);
+  border-top: var(--node-editor-card-border, 1px solid rgba(15, 23, 42, 0.12));
+}
+
+.legendTitle {
+  margin: 0 0 8px 0;
+  font: var(--node-editor-subtitle-font);
+  color: var(--node-editor-label-color);
+}
+
+.legendGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 8px;
+}
+
+.legendCard {
+  border: var(--node-editor-card-border, 1px solid rgba(15, 23, 42, 0.12));
+  border-radius: 10px;
+  background: var(--node-editor-surface-primary);
+  padding: 8px;
+  box-shadow: var(--node-editor-shadow-sm);
+}
+
+.legendHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.legendDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--node-editor-accent-color);
+}
+
+.legendLabel {
+  font-size: var(--node-editor-inspector-font-size-body);
+  color: var(--node-editor-text-color);
+  font-weight: 600;
+}
+
+.portAnchor {
+  position: absolute;
+  transform-origin: top left;
+  width: 12px;
+  height: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  pointer-events: auto;
+  touch-action: none;
+  z-index: 2;
+  color: var(--port-text, var(--node-editor-label-color));
+}
+
+.portAnchor[data-port-position="left"] {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.portAnchor[data-port-position="right"] {
+  flex-direction: row;
+}
+
+.portAnchor[data-port-position="top"] {
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.portAnchor[data-port-position="bottom"] {
+  flex-direction: column;
+  align-items: center;
+}
+
+.portHandle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--port-accent, var(--node-editor-node-port-output-color, #0099ff));
+  background: var(--node-editor-surface-primary, #ffffff);
+  box-shadow: 0 0 0 3px var(--port-glow, color-mix(in srgb, var(--port-accent, #0099ff) 10%, transparent));
+  position: relative;
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    border-color 0.12s ease;
+  cursor: crosshair;
+}
+
+.portHandle::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--port-accent, var(--node-editor-node-port-output-color, #0099ff));
+  opacity: 0.8;
+  transition: opacity 0.12s ease;
+}
+
+.portAnchor[data-port-state="hovered"] .portHandle,
+.portAnchor[data-port-state="connectable"] .portHandle,
+.portAnchor[data-port-state="candidate"] .portHandle,
+.portAnchor[data-port-state="connecting"] .portHandle {
+  transform: translate(-50%, -50%) scale(1.04);
+  box-shadow: 0 0 0 5px var(--port-glow, color-mix(in srgb, var(--port-accent, #0099ff) 18%, transparent));
+}
+
+.portAnchor[data-port-state="candidate"] .portHandle {
+  box-shadow: 0 0 0 6px var(--port-glow, color-mix(in srgb, var(--port-accent, #0099ff) 24%, transparent));
+  transform: translate(-50%, -50%) scale(1.04);
+}
+
+.portAnchor[data-port-state="idle"] .portHandle::after {
+  opacity: 0.65;
+}
+
+.portInfo {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: var(--port-surface, var(--node-editor-surface-primary));
+  border: 1px solid color-mix(in srgb, var(--port-accent, #0099ff) 35%, rgba(15, 23, 42, 0.12));
+  box-shadow: var(--node-editor-shadow-sm);
+  color: var(--port-text, var(--node-editor-label-color));
+  font-size: var(--node-editor-inspector-font-size-meta);
+  font-weight: 700;
+  line-height: 1.1;
+  opacity: 0;
+  transform: translate(0, -50%) scale(0.94);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease,
+    visibility 0.12s ease;
+}
+
+.portAnchor[data-port-position="left"] .portInfo {
+  left: auto;
+  right: 14px;
+  text-align: right;
+}
+
+.portAnchor[data-port-position="top"] .portInfo {
+  left: 50%;
+  top: auto;
+  bottom: 14px;
+  transform: translate(-50%, 0) scale(0.94);
+}
+
+.portAnchor[data-port-position="bottom"] .portInfo {
+  left: 50%;
+  top: 14px;
+  transform: translate(-50%, 0) scale(0.94);
+}
+
+.portRole {
+  white-space: nowrap;
+}
+
+.portTypeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--port-accent, #0099ff) 16%, transparent);
+  color: var(--port-text, var(--node-editor-label-color));
+  font-size: var(--node-editor-inspector-font-size-meta);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  opacity: 0.7;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+}
+
+.portAnchor[data-port-state="idle"] .portTypeBadge {
+  opacity: 0.4;
+  transform: translateY(2px);
+}
+
+.portAnchor[data-port-state="hovered"] .portInfo,
+.portAnchor[data-port-state="connectable"] .portTypeBadge,
+.portAnchor[data-port-state="candidate"] .portTypeBadge,
+.portAnchor[data-port-state="connecting"] .portTypeBadge,
+.portAnchor[data-port-state="connected"] .portTypeBadge,
+.portAnchor[data-port-state="hovered"] .portTypeBadge,
+.portAnchor[data-port-state="connectable"] .portInfo,
+.portAnchor[data-port-state="candidate"] .portInfo,
+.portAnchor[data-port-state="connecting"] .portInfo,
+.portAnchor[data-port-state="connected"] .portInfo {
+  opacity: 1;
+  transform: translate(0, -50%) scale(1);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.connectionOverlay {
+  mix-blend-mode: normal;
+}
+
+.connectionHalo {
+  fill: none;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.08));
+}
+
+.connectionLine {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.connectionBadge {
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.12));
+}
+
+.connectionBadgeText {
+  fill: var(--node-editor-label-color, #0f172a);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  paint-order: stroke fill;
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: 2px;
+}
+
+.connectionBadgeSubtext {
+  fill: var(--node-editor-secondary-label-color, #475569);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  paint-order: stroke fill;
+  stroke: rgba(255, 255, 255, 0.65);
+  stroke-width: 1.5px;
 }
 
 @media (max-width: 960px) {
