@@ -25,24 +25,8 @@ import styles from "./ConnectionView.module.css";
 type XYPosition = { x: number; y: number };
 const DIRECTION_MARKER_RADIUS = 2;
 
-const computeConnectionPoint = (
-  basePosition: XYPosition | undefined,
-  nodePosition: XYPosition,
-  overridePosition?: XYPosition,
-): XYPosition => {
-  if (!basePosition) {
-    return { x: nodePosition.x, y: nodePosition.y };
-  }
-
-  if (!overridePosition) {
-    return basePosition;
-  }
-
-  return {
-    x: basePosition.x + (overridePosition.x - nodePosition.x),
-    y: basePosition.y + (overridePosition.y - nodePosition.y),
-  };
-};
+const resolvePosition = (basePosition: XYPosition | undefined, nodePosition: XYPosition, overridePosition?: XYPosition) =>
+  basePosition ?? overridePosition ?? nodePosition;
 
 export type ConnectionViewProps = {
   connection: Connection;
@@ -83,25 +67,41 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
   isAdjacentToSelectedNode = false,
   fromNodePosition,
   toNodePosition,
+  fromNodeSize,
+  toNodeSize,
   onPointerDown,
   onPointerEnter,
   onPointerLeave,
   onContextMenu,
 }) => {
   // Get dynamic port positions
-  const baseFromPosition = useDynamicConnectionPoint(fromNode.id, fromPort.id);
-  const baseToPosition = useDynamicConnectionPoint(toNode.id, toPort.id);
+  const baseFromPosition = useDynamicConnectionPoint(fromNode.id, fromPort.id, {
+    positionOverride: fromNodePosition ?? undefined,
+    sizeOverride: fromNodeSize ?? undefined,
+    applyInteractionPreview: false,
+  });
+  const baseToPosition = useDynamicConnectionPoint(toNode.id, toPort.id, {
+    positionOverride: toNodePosition ?? undefined,
+    sizeOverride: toNodeSize ?? undefined,
+    applyInteractionPreview: false,
+  });
 
   // Calculate port positions (use override positions for drag preview)
-  const fromPosition = React.useMemo(
-    () => computeConnectionPoint(baseFromPosition, fromNode.position, fromNodePosition),
-    [baseFromPosition, fromNode.position.x, fromNode.position.y, fromNodePosition?.x, fromNodePosition?.y],
-  );
+  const fromPosition = React.useMemo(() => resolvePosition(baseFromPosition, fromNode.position, fromNodePosition), [
+    baseFromPosition,
+    fromNode.position.x,
+    fromNode.position.y,
+    fromNodePosition?.x,
+    fromNodePosition?.y,
+  ]);
 
-  const toPosition = React.useMemo(
-    () => computeConnectionPoint(baseToPosition, toNode.position, toNodePosition),
-    [baseToPosition, toNode.position.x, toNode.position.y, toNodePosition?.x, toNodePosition?.y],
-  );
+  const toPosition = React.useMemo(() => resolvePosition(baseToPosition, toNode.position, toNodePosition), [
+    baseToPosition,
+    toNode.position.x,
+    toNode.position.y,
+    toNodePosition?.x,
+    toNodePosition?.y,
+  ]);
 
   const adjacency: ConnectionAdjacency = isAdjacentToSelectedNode ? "adjacent" : "self";
   const interactionPhase = React.useMemo<ConnectionInteractionPhase>(
