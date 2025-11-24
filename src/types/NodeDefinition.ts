@@ -270,6 +270,13 @@ export type NodeDefinition<TData extends Record<string, unknown> = Record<string
   /** Category for grouping in UI */
   category?: string;
   /**
+   * Optional priority hint for the node's category when rendered in palettes/menus.
+   * Lower numbers appear first. When multiple nodes share a category, the lowest
+   * value among them determines the category position. Categories without a
+   * priority fall back to alphabetical ordering after the prioritized groups.
+   */
+  priority?: number;
+  /**
    * Maximum number of nodes of this type allowed within a single flow/editor.
    * If undefined, no limit is enforced.
    */
