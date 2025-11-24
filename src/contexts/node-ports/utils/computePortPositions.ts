@@ -1,7 +1,7 @@
 /**
  * @file Port position computation utilities
  */
-import type { Node, Port, Position, Size } from "../../../types/core";
+import type { Node, Port, Position, Size, PortPlacement } from "../../../types/core";
 import type {
   PortPosition,
   NodePortPositions,
@@ -11,21 +11,69 @@ import type {
 import { DEFAULT_PORT_POSITION_CONFIG } from "../../../types/portPosition";
 import { getNodeSize, getNodeBoundingBox } from "../../../utils/boundingBoxUtils";
 
+type PortSegmentGroup = {
+  key: string;
+  order: number;
+  span: number;
+  ports: Port[];
+  placement: PortPlacement;
+};
+
+const DEFAULT_PLACEMENT: PortPlacement = { side: "right" };
+
+const getPlacementForPort = (port: Port): PortPlacement => {
+  if (port.placement) {
+    return port.placement;
+  }
+  return port.position ? { side: port.position } : DEFAULT_PLACEMENT;
+};
+
 /**
- * Group ports by their position (left, right, top, bottom)
+ * Group ports by side and by their segment within that side
  */
-function groupPortsByPosition(ports: Port[]): Map<string, Port[]> {
-  const grouped = new Map<string, Port[]>();
+function groupPortsByPosition(ports: Port[]): Map<string, PortSegmentGroup[]> {
+  const grouped = new Map<string, Map<string, PortSegmentGroup>>();
 
   for (const port of ports) {
-    const position = port.position || "right";
-    if (!grouped.has(position)) {
-      grouped.set(position, []);
+    const placement = getPlacementForPort(port);
+    const side = placement.side || "right";
+    const segmentKey = placement.segment ?? "default";
+    if (!grouped.has(side)) {
+      grouped.set(side, new Map<string, PortSegmentGroup>());
     }
-    grouped.get(position)!.push(port);
+    const sideGroups = grouped.get(side)!;
+    if (!sideGroups.has(segmentKey)) {
+      sideGroups.set(segmentKey, {
+        key: segmentKey,
+        order: placement.segmentOrder ?? 0,
+        span: placement.segmentSpan ?? 1,
+        ports: [],
+        placement,
+      });
+    }
+    const segment = sideGroups.get(segmentKey)!;
+    // Prefer explicit order/span hints when present on any port within the segment
+    if (placement.segmentOrder !== undefined) {
+      segment.order = placement.segmentOrder;
+    }
+    if (placement.segmentSpan !== undefined) {
+      segment.span = placement.segmentSpan;
+    }
+    segment.ports.push(port);
   }
 
-  return grouped;
+  const orderedBySide = new Map<string, PortSegmentGroup[]>();
+  grouped.forEach((segments, side) => {
+    const orderedSegments = Array.from(segments.values()).sort((a, b) => {
+      if (a.order === b.order) {
+        return a.key.localeCompare(b.key);
+      }
+      return a.order - b.order;
+    });
+    orderedBySide.set(side, orderedSegments);
+  });
+
+  return orderedBySide;
 }
 
 /**
@@ -52,20 +100,65 @@ function calculatePortRelativeOffset(portIndex: number, totalPorts: number, conf
   return Math.max(0.1, Math.min(0.9, relativePosition));
 }
 
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+const computeSegmentOffsets = (ports: Port[], config: PortPositionConfig): number[] => {
+  if (ports.length === 0) {
+    return [];
+  }
+  if (ports.length === 1) {
+    const align = ports[0].placement?.align;
+    return [align !== undefined ? clamp(align, 0, 1) : 0.5];
+  }
+
+  const defaultOffsets = ports.map((_, index) => calculatePortRelativeOffset(index, ports.length, config));
+  const desiredOffsets = ports.map((port, index) =>
+    port.placement?.align !== undefined ? clamp(port.placement.align, 0, 1) : defaultOffsets[index],
+  );
+
+  const orderedIndices = desiredOffsets
+    .map((value, index) => ({ value, index }))
+    .sort((a, b) => (a.value === b.value ? a.index - b.index : a.value - b.value));
+
+  const minBound = 0.05;
+  const maxBound = 0.95;
+  const minGap = Math.min(0.14, 0.4 / Math.max(1, ports.length - 1));
+  const adjusted: number[] = new Array(ports.length);
+
+  let current = minBound;
+  orderedIndices.forEach(({ value, index }) => {
+    const clampedDesired = clamp(value, minBound, maxBound);
+    const offset = Math.max(clampedDesired, current);
+    adjusted[index] = offset;
+    current = offset + minGap;
+  });
+
+  const lastOffset = Math.max(...adjusted);
+  if (lastOffset > maxBound) {
+    const overflow = lastOffset - maxBound;
+    const denom = ports.length > 1 ? ports.length - 1 : 1;
+    adjusted.forEach((offset, i) => {
+      const factor = i / denom;
+      adjusted[i] = clamp(offset - overflow * factor, minBound, maxBound);
+    });
+  }
+
+  return adjusted;
+};
+
 /**
  * Calculate the render position for a port (relative to node)
  */
 function calculatePortRenderPosition(
   port: Port,
-  portIndex: number,
-  totalPortsOnSide: number,
+  relativeOffset: number,
   nodeSize: Size,
   config: PortPositionConfig,
 ): Position & { transform?: string } {
-  const relativeOffset = calculatePortRelativeOffset(portIndex, totalPortsOnSide, config);
   const halfPortSize = config.visualSize / 2;
+  const side = port.placement?.side ?? port.position;
 
-  switch (port.position) {
+  switch (side) {
     case "left":
       return {
         x: -halfPortSize,
@@ -105,16 +198,15 @@ function calculatePortRenderPosition(
  */
 function calculatePortConnectionPoint(
   port: Port,
-  portIndex: number,
-  totalPortsOnSide: number,
+  relativeOffset: number,
   node: Node,
   config: PortPositionConfig,
 ): Position {
   const nodeSize = getNodeSize(node);
   const { left, top } = getNodeBoundingBox(node);
-  const relativeOffset = calculatePortRelativeOffset(portIndex, totalPortsOnSide, config);
+  const side = port.placement?.side ?? port.position;
 
-  switch (port.position) {
+  switch (side) {
     case "left":
       return {
         x: left - config.connectionMargin,
@@ -167,17 +259,35 @@ export function computeNodePortPositions(
   const portsByPosition = groupPortsByPosition(effectivePorts);
 
   // Calculate positions for each port
-  for (const [_position, portsOnSide] of portsByPosition) {
-    portsOnSide.forEach((port, index) => {
-      const renderPosition = calculatePortRenderPosition(port, index, portsOnSide.length, nodeSize, config);
+  for (const [_position, segments] of portsByPosition) {
+    const totalSpan = segments.reduce((sum, segment) => {
+      const span = segment.span && segment.span > 0 ? segment.span : 1;
+      return sum + span;
+    }, 0);
+    let cursor = 0;
 
-      const connectionPoint = calculatePortConnectionPoint(port, index, portsOnSide.length, node, config);
+    segments.forEach((segment) => {
+      const span = segment.span && segment.span > 0 ? segment.span : 1;
+      const segmentLength = totalSpan > 0 ? span / totalSpan : 0;
+      const segmentStart = cursor;
+      const segmentEnd = segmentStart + segmentLength;
+      const segmentRange = segmentEnd - segmentStart;
 
-      positions.set(port.id, {
-        portId: port.id,
-        renderPosition,
-        connectionPoint,
+      const offsetsWithinSegment = computeSegmentOffsets(segment.ports, config);
+
+      segment.ports.forEach((port, index) => {
+        const relativeOffset = segmentStart + segmentRange * offsetsWithinSegment[index];
+        const renderPosition = calculatePortRenderPosition(port, relativeOffset, nodeSize, config);
+        const connectionPoint = calculatePortConnectionPoint(port, relativeOffset, node, config);
+
+        positions.set(port.id, {
+          portId: port.id,
+          renderPosition,
+          connectionPoint,
+        });
       });
+
+      cursor = segmentEnd;
     });
   }
 

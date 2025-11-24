@@ -19,6 +19,7 @@ import {
   type ConnectablePortsResult,
 } from "../../../contexts/node-ports/utils/connectablePortPlanner";
 import { findNearestConnectablePort } from "../../../contexts/node-ports/utils/connectionCandidate";
+import { createValidatedConnection } from "../../../contexts/node-ports/utils/connectionOperations";
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
 
 const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
@@ -63,14 +64,18 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
   const actionPort = React.useMemo<Port>(
     () => ({
       id: port.id,
+      definitionId: port.definitionId,
       nodeId: port.nodeId,
       type: port.type,
       label: port.label,
       position: port.position,
+      placement: port.placement,
       dataType: port.dataType,
       maxConnections: port.maxConnections,
       allowedNodeTypes: port.allowedNodeTypes,
       allowedPortTypes: port.allowedPortTypes,
+      instanceIndex: port.instanceIndex,
+      instanceTotal: port.instanceTotal,
     }),
     [port],
   );
@@ -152,11 +157,22 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     }
 
     const { fromPort, candidatePort } = actionState.connectionDragState;
+    const resolveCurrentPort = (port: Port | null): Port | null => {
+      if (!port) {
+        return null;
+      }
+      const ports = getNodePorts(port.nodeId);
+      const current = ports.find((candidate) => candidate.id === port.id);
+      return current ?? port;
+    };
 
-    if (candidatePort && fromPort.id !== candidatePort.id) {
+    const resolvedFromPort = resolveCurrentPort(fromPort);
+    const resolvedCandidate = resolveCurrentPort(candidatePort);
+
+    if (resolvedFromPort && resolvedCandidate && resolvedFromPort.id !== resolvedCandidate.id) {
       const plan = planConnectionChange({
-        fromPort,
-        toPort: candidatePort,
+        fromPort: resolvedFromPort,
+        toPort: resolvedCandidate,
         nodes: nodeEditorState.nodes,
         connections: nodeEditorState.connections,
         getNodeDefinition: (type: string) => registry.get(type),
@@ -181,6 +197,19 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
         case ConnectionSwitchBehavior.Ignore:
         default:
           break;
+      }
+
+      if (!plan.connection && resolvedFromPort && resolvedCandidate) {
+        const fallback = createValidatedConnection(
+          resolvedFromPort,
+          resolvedCandidate,
+          nodeEditorState.nodes,
+          nodeEditorState.connections,
+          (type: string) => registry.get(type),
+        );
+        if (fallback) {
+          actions.addConnection(fallback);
+        }
       }
     }
 

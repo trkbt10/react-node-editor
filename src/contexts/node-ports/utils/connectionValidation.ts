@@ -1,8 +1,13 @@
 /**
  * @file Connection validation helpers for node port compatibility checks.
  */
-import type { Port, Connection } from "../../../types/core";
-import type { NodeDefinition } from "../../../types/NodeDefinition";
+import type { Node, Port, Connection, NodeId } from "../../../types/core";
+import type { NodeDefinition, PortConnectionContext } from "../../../types/NodeDefinition";
+import { arePortDataTypesCompatible, mergePortDataTypes } from "../../../utils/portDataTypeUtils";
+
+export type ConnectionValidationOptions = {
+  nodes?: Record<NodeId, Node>;
+};
 
 /**
  * Check if two ports can be connected
@@ -13,6 +18,7 @@ export const canConnectPorts = (
   fromNodeDef?: NodeDefinition,
   toNodeDef?: NodeDefinition,
   connections?: Record<string, Connection>,
+  options?: ConnectionValidationOptions,
 ): boolean => {
   // Helper to normalize max: number | "unlimited" | undefined -> number | undefined
   const normalizeMax = (value: number | "unlimited" | undefined, defaultValue: number): number | undefined => {
@@ -60,6 +66,9 @@ export const canConnectPorts = (
     }
   }
 
+  const fromPortDef = getPortDefinition(fromPort, fromNodeDef);
+  const toPortDef = getPortDefinition(toPort, toNodeDef);
+
   // Check custom validation functions (both must allow)
   if (fromNodeDef?.validateConnection) {
     if (!fromNodeDef.validateConnection(fromPort, toPort)) {
@@ -73,13 +82,33 @@ export const canConnectPorts = (
   }
 
   // Check data type compatibility if specified
-  const fromPortDef = fromNodeDef?.ports?.find((p) => p.id === fromPort.id);
-  const toPortDef = toNodeDef?.ports?.find((p) => p.id === toPort.id);
+  const fromTypes = mergePortDataTypes(
+    fromPort.dataType,
+    mergePortDataTypes(fromPortDef?.dataType, fromPortDef?.dataTypes),
+  );
+  const toTypes = mergePortDataTypes(
+    toPort.dataType,
+    mergePortDataTypes(toPortDef?.dataType, toPortDef?.dataTypes),
+  );
+  if (!arePortDataTypesCompatible(fromTypes, toTypes)) {
+    return false;
+  }
 
-  if (fromPortDef?.dataType && toPortDef?.dataType) {
-    if (fromPortDef.dataType !== toPortDef.dataType) {
-      return false;
-    }
+  const portContext: PortConnectionContext = {
+    fromPort,
+    toPort,
+    fromNode: options?.nodes?.[fromPort.nodeId],
+    toNode: options?.nodes?.[toPort.nodeId],
+    fromDefinition: fromNodeDef,
+    toDefinition: toNodeDef,
+    allConnections: connections,
+  };
+
+  if (fromPortDef?.canConnect && !fromPortDef.canConnect(portContext)) {
+    return false;
+  }
+  if (toPortDef?.canConnect && !toPortDef.canConnect(portContext)) {
+    return false;
   }
 
   // Check max connections limit (default for all ports is 1; "unlimited" removes the limit)
@@ -114,6 +143,23 @@ export const getPortDefinition = (port: Port, nodeDefinition?: NodeDefinition) =
   if (!nodeDefinition?.ports) {
     return undefined;
   }
-  const portDefId = port.id.split("-").pop(); // Extract port def id from full port id
-  return nodeDefinition.ports.find((p) => p.id === portDefId);
+  const candidateIds = new Set<string>();
+  if (port.definitionId) {
+    candidateIds.add(port.definitionId);
+  }
+  candidateIds.add(port.id);
+
+  const numericSuffixMatch = port.id.match(/^(.*?)-\d+$/);
+  if (numericSuffixMatch?.[1]) {
+    candidateIds.add(numericSuffixMatch[1]);
+  }
+
+  for (const candidate of candidateIds) {
+    const match = nodeDefinition.ports.find((p) => p.id === candidate);
+    if (match) {
+      return match;
+    }
+  }
+
+  return undefined;
 };

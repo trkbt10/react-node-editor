@@ -33,6 +33,7 @@ import { FigmaThemeExample } from "./demos/figma-theme/FigmaThemeExample";
 import { TradingAnalyticsDashboard } from "./demos/trading-analytics/TradingAnalyticsDashboard";
 import { DataBindingModesExample } from "./demos/DataBindingModesExample";
 import { CustomLayoutDemo } from "./demos/custom-layout-demo";
+import { DynamicPortPlaygroundExample } from "./demos/custom-port/DynamicPortPlaygroundExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -119,6 +120,13 @@ const examples: ExampleEntry[] = [
     title: "Custom Port Renderer",
     description: "Customize port and connection appearance with custom renderers.",
     component: CustomPortRendererExample,
+    category: "custom",
+  },
+  {
+    id: "dynamic-port-playground",
+    title: "Dynamic Port Playground",
+    description: "Experiment with segmented port placement, multi-type validation, and dynamic port counts.",
+    component: DynamicPortPlaygroundExample,
     category: "custom",
   },
   {

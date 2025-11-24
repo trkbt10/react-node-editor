@@ -242,10 +242,12 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
           }
           const tempPort: CorePort = {
             id: p.id,
+            definitionId: p.id,
             type: p.type,
             label: p.label,
             nodeId: newNode.id,
-            position: p.position,
+            position: typeof p.position === "string" ? p.position : p.position.side,
+            placement: typeof p.position === "string" ? undefined : p.position,
           };
           return canConnectPorts(
             fromPort.type === "output" ? fromPort : tempPort,
@@ -253,15 +255,18 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
             fromDef,
             toDef,
             editorState.connections,
+            { nodes: editorState.nodes },
           );
         });
         if (targetPortDef) {
           const tempPort: CorePort = {
             id: targetPortDef.id,
+            definitionId: targetPortDef.id,
             type: targetPortDef.type,
             label: targetPortDef.label,
             nodeId: newNode.id,
-            position: targetPortDef.position,
+            position: typeof targetPortDef.position === "string" ? targetPortDef.position : targetPortDef.position.side,
+            placement: typeof targetPortDef.position === "string" ? undefined : targetPortDef.position,
           };
           const connection =
             fromPort.type === "output"

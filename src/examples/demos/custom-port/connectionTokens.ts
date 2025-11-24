@@ -2,6 +2,7 @@
  * @file Connection styling tokens and helpers for the custom port example.
  */
 import type { ConnectionRenderContext } from "../../../types/NodeDefinition";
+import { primaryPortDataType } from "../../../utils/portDataTypeUtils";
 
 export type ConnectionVariant = "default" | "data" | "image" | "audio" | "video";
 
@@ -88,11 +89,13 @@ export const CONNECTION_VARIANT_TOKENS: Record<ConnectionVariant, ConnectionVari
 };
 
 export const resolveConnectionVariant = (context: ConnectionRenderContext): ConnectionVariant => {
-  if (isConnectionVariant(context.fromPort.dataType)) {
-    return context.fromPort.dataType;
+  const fromType = primaryPortDataType(context.fromPort.dataType);
+  if (isConnectionVariant(fromType)) {
+    return fromType;
   }
-  if (context.toPort && isConnectionVariant(context.toPort.dataType)) {
-    return context.toPort.dataType;
+  const toType = primaryPortDataType(context.toPort?.dataType);
+  if (isConnectionVariant(toType)) {
+    return toType;
   }
   return "default";
 };

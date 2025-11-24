@@ -8,6 +8,7 @@ import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { useNodeDefinition } from "../../../contexts/node-definitions/hooks/useNodeDefinition";
 import type { PortRenderContext } from "../../../types/NodeDefinition";
 import styles from "./PortView.module.css";
+import { getPortDefinition } from "../../../contexts/node-ports/utils/connectionValidation";
 
 export type PortViewProps = {
   port: Port;
@@ -94,7 +95,7 @@ export const PortView: React.FC<PortViewProps> = ({
 
   // Get node definition to check for custom port renderer
   const nodeDefinition = useNodeDefinition(node?.type);
-  const portDefinition = nodeDefinition?.ports?.find((p) => p.id === port.id);
+  const portDefinition = nodeDefinition ? getPortDefinition(port, nodeDefinition) : undefined;
 
   // Default render function
   const defaultRender = React.useCallback(

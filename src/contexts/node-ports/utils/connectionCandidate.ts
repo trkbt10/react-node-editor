@@ -22,14 +22,18 @@ type CandidateWithDistance = {
 
 const clonePort = (port: Port): Port => ({
   id: port.id,
+  definitionId: port.definitionId,
   nodeId: port.nodeId,
   type: port.type,
   label: port.label,
   position: port.position,
+  placement: port.placement,
   dataType: port.dataType,
   maxConnections: port.maxConnections,
   allowedNodeTypes: port.allowedNodeTypes,
   allowedPortTypes: port.allowedPortTypes,
+  instanceIndex: port.instanceIndex,
+  instanceTotal: port.instanceTotal,
 });
 
 const toDescriptorTuples = (connectablePorts: ConnectablePortsResult): Array<{ nodeId: NodeId; portId: PortId }> => {

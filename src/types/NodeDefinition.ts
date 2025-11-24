@@ -2,7 +2,7 @@
  * @file Core node definition types including render props, constraints, and external data handling
  */
 import React, { type ReactNode, type ReactElement } from "react";
-import type { Node, NodeId, Port, Connection, ConnectionId, NodeData } from "./core";
+import type { Node, NodeId, Port, Connection, ConnectionId, NodeData, PortPlacement } from "./core";
 import type { NodeBehavior } from "./behaviors";
 
 /**
@@ -115,6 +115,37 @@ export type PortRenderContext = {
   };
 };
 
+export type PortInstanceContext = {
+  /** Node that owns the port instances */
+  node: Node;
+};
+
+export type PortInstanceFactoryContext = PortInstanceContext & {
+  /** Base port definition used for generation */
+  definition: PortDefinition;
+  /** Zero-based instance index */
+  index: number;
+  /** Total instances generated from the definition */
+  total: number;
+};
+
+export type PortConnectionContext = {
+  /** Source port for the attempted connection */
+  fromPort: Port;
+  /** Target port for the attempted connection */
+  toPort: Port;
+  /** Node containing the source port (when available) */
+  fromNode?: Node;
+  /** Node containing the target port (when available) */
+  toNode?: Node;
+  /** Node definition for the source side (when available) */
+  fromDefinition?: NodeDefinition;
+  /** Node definition for the target side (when available) */
+  toDefinition?: NodeDefinition;
+  /** Existing connections in the editor */
+  allConnections?: Record<ConnectionId, Connection>;
+};
+
 /**
  * Context provided to connection render functions
  */
@@ -164,14 +195,42 @@ export type PortDefinition = {
   type: "input" | "output";
   /** Display label */
   label: string;
-  /** Position on the node */
-  position: "left" | "right" | "top" | "bottom";
-  /** Optional data type for validation */
-  dataType?: string;
+  /**
+   * Position on the node.
+   * Supports segmented layouts by specifying { side, segment?, segmentOrder?, segmentSpan?, align? }.
+   */
+  position: PortPlacement | "left" | "right" | "top" | "bottom";
+  /**
+   * Optional data type(s) for validation. Arrays allow declaring multiple compatible types.
+   * For backwards compatibility, both dataType and dataTypes are supported and merged.
+   */
+  dataType?: string | string[];
+  /** Additional aliases for the port's acceptable data types */
+  dataTypes?: string[];
   /** Whether this port is required */
   required?: boolean;
-  /** Maximum number of connections (default: 1 for input, unlimited for output) */
+  /** Maximum number of connections (default: 1 for all ports unless set to "unlimited") */
   maxConnections?: number | "unlimited";
+  /**
+   * Optional predicate to determine whether a connection involving this port is allowed.
+   * Executed for both ends of the connection; all predicates must pass.
+   */
+  canConnect?: (context: PortConnectionContext) => boolean;
+  /**
+   * Number of port instances generated from this definition.
+   * Provide a function to derive the count from node state for dynamic ports.
+   */
+  instances?: number | ((context: PortInstanceContext) => number);
+  /**
+   * Custom id generator for each port instance.
+   * When undefined and instances > 1, ids default to `${id}-${index + 1}`.
+   */
+  createPortId?: (context: PortInstanceFactoryContext) => string;
+  /**
+   * Custom label generator for each port instance.
+   * When undefined and instances > 1, labels default to `${label} ${index + 1}`.
+   */
+  createPortLabel?: (context: PortInstanceFactoryContext) => string;
 
   /**
    * Custom port renderer (complete control over port appearance)

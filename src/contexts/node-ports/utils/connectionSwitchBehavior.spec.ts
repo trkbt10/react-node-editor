@@ -4,6 +4,7 @@
 import type { Connection, Node, Port } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { planConnectionChange, ConnectionSwitchBehavior } from "./connectionSwitchBehavior";
+import { getNodePorts } from "./portResolution";
 
 const makeNode = (id: string, type: string): Node => ({
   id,
@@ -161,5 +162,60 @@ describe("planConnectionChange", () => {
     expect(plan.behavior).toBe(ConnectionSwitchBehavior.Replace);
     expect(plan.connection).toBeNull();
     expect(plan.connectionIdsToReplace).toEqual([]);
+  });
+
+  it("creates a connection for segmented multi-type dynamic ports", () => {
+    const nodes: Record<string, Node> = {
+      source: makeNode("source", "dynamic-source"),
+      target: makeNode("target", "dynamic-target"),
+    };
+
+    const definitions: Record<string, NodeDefinition> = {
+      "dynamic-source": {
+        type: "dynamic-source",
+        displayName: "Dynamic Source",
+        ports: [
+          {
+            id: "out",
+            type: "output",
+            label: "Out",
+            position: { side: "right", segment: "main" },
+            dataTypes: ["text", "html"],
+            instances: () => 2,
+          },
+        ],
+      },
+      "dynamic-target": {
+        type: "dynamic-target",
+        displayName: "Dynamic Target",
+        ports: [
+          {
+            id: "in",
+            type: "input",
+            label: "In",
+            position: { side: "left", segment: "main" },
+            dataTypes: ["text", "markdown"],
+            instances: () => 2,
+          },
+        ],
+      },
+    };
+
+    const getDefinition = (type: string) => definitions[type];
+    const sourcePorts = getNodePorts(nodes.source, definitions["dynamic-source"]);
+    const targetPorts = getNodePorts(nodes.target, definitions["dynamic-target"]);
+    const fromPort = sourcePorts[0];
+    const toPort = targetPorts[1];
+
+    const plan = planConnectionChange({
+      fromPort,
+      toPort,
+      nodes,
+      connections: {},
+      getNodeDefinition: getDefinition,
+    });
+
+    expect(plan.behavior).toBe(ConnectionSwitchBehavior.Append);
+    expect(plan.connection).not.toBeNull();
   });
 });

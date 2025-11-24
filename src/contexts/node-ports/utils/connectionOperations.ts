@@ -55,7 +55,7 @@ export function createValidatedConnection(
   const fromDef = fromNode ? getNodeDefinition(fromNode.type) : undefined;
   const toDef = toNode ? getNodeDefinition(toNode.type) : undefined;
 
-  if (!canConnectPorts(src, dst, fromDef, toDef, connections)) {
+  if (!canConnectPorts(src, dst, fromDef, toDef, connections, { nodes })) {
     return null;
   }
 

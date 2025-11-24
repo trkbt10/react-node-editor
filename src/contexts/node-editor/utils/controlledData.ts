@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import type { Connection, Node, NodeEditorData, Port } from "../../../types/core";
+import { arePortDataTypesEqual } from "../../../utils/portDataTypeUtils";
 
 const arePositionsEqual = (prev: Node["position"], next: Node["position"]): boolean => {
   return prev.x === next.x && prev.y === next.y;
@@ -66,6 +67,22 @@ const areRecordValuesShallowEqual = (prev: Record<string, unknown>, next: Record
   });
 };
 
+const arePlacementsEqual = (prev?: Port["placement"], next?: Port["placement"]): boolean => {
+  if (!prev && !next) {
+    return true;
+  }
+  if (!prev || !next) {
+    return false;
+  }
+  return (
+    prev.side === next.side &&
+    prev.segment === next.segment &&
+    prev.segmentOrder === next.segmentOrder &&
+    prev.segmentSpan === next.segmentSpan &&
+    prev.align === next.align
+  );
+};
+
 const arePortsEqual = (prev?: Port[], next?: Port[]): boolean => {
   if (!prev && !next) {
     return true;
@@ -80,14 +97,18 @@ const arePortsEqual = (prev?: Port[], next?: Port[]): boolean => {
     const other = next[index];
     return (
       port.id === other.id &&
+      port.definitionId === other.definitionId &&
       port.type === other.type &&
       port.label === other.label &&
       port.nodeId === other.nodeId &&
       port.position === other.position &&
-      port.dataType === other.dataType &&
+      arePlacementsEqual(port.placement, other.placement) &&
+      arePortDataTypesEqual(port.dataType, other.dataType) &&
       port.maxConnections === other.maxConnections &&
       areStringArraysEqual(port.allowedNodeTypes, other.allowedNodeTypes) &&
-      areStringArraysEqual(port.allowedPortTypes, other.allowedPortTypes)
+      areStringArraysEqual(port.allowedPortTypes, other.allowedPortTypes) &&
+      port.instanceIndex === other.instanceIndex &&
+      port.instanceTotal === other.instanceTotal
     );
   });
 };

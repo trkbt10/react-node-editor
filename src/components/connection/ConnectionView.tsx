@@ -21,6 +21,7 @@ import {
 } from "./connectionAppearance";
 import { createMarkerGeometry, placeMarkerGeometry } from "./markerShapes";
 import styles from "./ConnectionView.module.css";
+import { getPortDefinition } from "../../contexts/node-ports/utils/connectionValidation";
 
 type XYPosition = { x: number; y: number };
 const DIRECTION_MARKER_RADIUS = 2;
@@ -187,8 +188,8 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
   const toNodeDefinition = useNodeDefinition(toNode.type);
 
   // Find port definitions
-  const fromPortDefinition = fromNodeDefinition?.ports?.find((p) => p.id === fromPort.id);
-  const toPortDefinition = toNodeDefinition?.ports?.find((p) => p.id === toPort.id);
+  const fromPortDefinition = fromNodeDefinition ? getPortDefinition(fromPort, fromNodeDefinition) : undefined;
+  const toPortDefinition = toNodeDefinition ? getPortDefinition(toPort, toNodeDefinition) : undefined;
 
   // Prefer fromPort's renderer, fallback to toPort's renderer
   const customRenderer = fromPortDefinition?.renderConnection || toPortDefinition?.renderConnection;

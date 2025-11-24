@@ -30,16 +30,41 @@ export type Bounds = {
 export type PortType = "input" | "output";
 export type PortPosition = "left" | "right" | "top" | "bottom";
 
+/**
+ * Detailed placement hint for a port on a node edge.
+ * Ports sharing the same segment are clustered together within that slice of the edge.
+ */
+export type PortPlacement = {
+  /** Which edge the port belongs to */
+  side: PortPosition;
+  /** Optional segment identifier to split a side into multiple regions */
+  segment?: string;
+  /** Ordering used when stacking multiple segments on the same side (lowest first) */
+  segmentOrder?: number;
+  /** Relative space allocation for the segment when multiple segments exist (defaults to 1) */
+  segmentSpan?: number;
+  /** Preferred offset within the segment (0-1). Falls back to even spacing when undefined. */
+  align?: number;
+};
+
 export type Port = {
   id: PortId;
+  /** Identifier of the port definition this instance was created from */
+  definitionId?: string;
   type: PortType;
   label: string;
   nodeId: NodeId;
   position: PortPosition;
-  dataType?: string;
+  /** Optional placement details for segmented layouts */
+  placement?: PortPlacement;
+  dataType?: string | string[];
   maxConnections?: number | "unlimited";
   allowedNodeTypes?: string[];
   allowedPortTypes?: string[];
+  /** Index of the port instance when generated from a multi-port definition */
+  instanceIndex?: number;
+  /** Total instances generated from the same definition */
+  instanceTotal?: number;
 };
 
 // Node types

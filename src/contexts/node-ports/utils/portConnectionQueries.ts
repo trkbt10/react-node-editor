@@ -69,5 +69,5 @@ export function isValidReconnection(
   const fromDef = fromNode ? getNodeDefinition(fromNode.type) : undefined;
   const toDef = toNode ? getNodeDefinition(toNode.type) : undefined;
 
-  return canConnectPorts(fromPort, toPort, fromDef, toDef, connections);
+  return canConnectPorts(fromPort, toPort, fromDef, toDef, connections, { nodes });
 }

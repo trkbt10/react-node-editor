@@ -248,4 +248,84 @@ describe("getNodePorts", () => {
     expect(ports).toHaveLength(1);
     expect(ports[0].id).toBe("input");
   });
+
+  it("should expand multiple instances from a single definition", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 0, y: 0 },
+      data: {},
+    };
+
+    const definition: NodeDefinition = {
+      type: "test",
+      displayName: "Test Node",
+      ports: [
+        { id: "input", type: "input", label: "Input", position: "left", instances: 2 },
+        { id: "output", type: "output", label: "Output", position: "right" },
+      ],
+    };
+
+    const ports = getNodePorts(node, definition);
+
+    expect(ports).toHaveLength(3);
+    expect(ports.map((port) => port.id)).toEqual(["input-1", "input-2", "output"]);
+    expect(ports.filter((port) => port.definitionId === "input")).toHaveLength(2);
+    expect(ports[0].instanceIndex).toBe(0);
+    expect(ports[0].instanceTotal).toBe(2);
+  });
+
+  it("should derive instance count and placement from definition metadata", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 0, y: 0 },
+      data: { count: 3 },
+    };
+
+    const definition: NodeDefinition = {
+      type: "test",
+      displayName: "Test Node",
+      ports: [
+        {
+          id: "option",
+          type: "output",
+          label: "Option",
+          position: { side: "right", segment: "secondary", segmentOrder: 1, segmentSpan: 2 },
+          instances: ({ node: contextNode }) => Number(contextNode.data.count ?? 0),
+          createPortId: ({ index }) => `option-${index + 1}`,
+          createPortLabel: ({ index }) => `Option ${index + 1}`,
+        },
+      ],
+    };
+
+    const ports = getNodePorts(node, definition);
+
+    expect(ports).toHaveLength(3);
+    expect(ports.map((port) => port.id)).toEqual(["option-1", "option-2", "option-3"]);
+    expect(ports[0].label).toBe("Option 1");
+    expect(ports[0].placement?.segment).toBe("secondary");
+    expect(ports[0].placement?.segmentSpan).toBe(2);
+    expect(ports[0].position).toBe("right");
+  });
+
+  it("should honor overrides that target a definition id for generated ports", () => {
+    const node: Node & { portOverrides?: unknown } = {
+      id: "node-1",
+      type: "test",
+      position: { x: 0, y: 0 },
+      data: {},
+      portOverrides: [{ portId: "input", disabled: true }],
+    };
+
+    const definition: NodeDefinition = {
+      type: "test",
+      displayName: "Test Node",
+      ports: [{ id: "input", type: "input", label: "Input", position: "left", instances: 2 }],
+    };
+
+    const ports = getNodePorts(node, definition);
+
+    expect(ports).toHaveLength(0);
+  });
 });

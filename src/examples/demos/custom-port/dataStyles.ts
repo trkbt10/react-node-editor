@@ -2,6 +2,7 @@
  * @file Shared data type styling helpers for the custom port example.
  */
 import type { Connection, Port } from "../../../types/core";
+import { primaryPortDataType } from "../../../utils/portDataTypeUtils";
 
 export type DataTypeStyle = {
   primary: string;
@@ -51,7 +52,8 @@ const DATA_TYPE_STYLES: Record<string, DataTypeStyle> = {
 };
 
 export const getStyleForDataType = (dataType?: Port["dataType"]): DataTypeStyle => {
-  return DATA_TYPE_STYLES[dataType ?? ""] ?? DEFAULT_DATA_STYLE;
+  const key = primaryPortDataType(dataType) ?? "";
+  return DATA_TYPE_STYLES[key] ?? DEFAULT_DATA_STYLE;
 };
 
 export const countConnectionsForPort = (allConnections: Record<string, Connection>, portId: Port["id"]): number => {

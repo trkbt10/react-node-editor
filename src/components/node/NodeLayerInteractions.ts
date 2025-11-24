@@ -116,7 +116,7 @@ const useConnectionPortResolvers = () => {
 
 const useConnectionOperations = () => {
   const { state: actionState, actions: actionActions } = useEditorActionState();
-  const { state: nodeEditorState, actions: nodeEditorActions } = useNodeEditor();
+  const { state: nodeEditorState, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
   const { registry } = useNodeDefinitions();
 
   const completeDisconnectDrag = React.useCallback(
@@ -160,10 +160,16 @@ const useConnectionOperations = () => {
       if (!drag) {
         return false;
       }
-      const fromPort = drag.fromPort;
+      const resolveCurrentPort = (port: Port): Port => {
+        const current = getNodePorts(port.nodeId).find((candidate) => candidate.id === port.id);
+        return current ?? port;
+      };
+
+      const fromPort = resolveCurrentPort(drag.fromPort);
+      const toPort = resolveCurrentPort(targetPort);
       const plan = planConnectionChange({
         fromPort,
-        toPort: targetPort,
+        toPort,
         nodes: nodeEditorState.nodes,
         connections: nodeEditorState.connections,
         getNodeDefinition: (type: string) => registry.get(type),
@@ -189,9 +195,30 @@ const useConnectionOperations = () => {
         default:
           break;
       }
+
+      const fallbackConnection = createValidatedConnection(
+        fromPort,
+        toPort,
+        nodeEditorState.nodes,
+        nodeEditorState.connections,
+        (type: string) => registry.get(type),
+      );
+
+      if (fallbackConnection) {
+        nodeEditorActions.addConnection(fallbackConnection);
+        return true;
+      }
+
       return false;
     },
-    [actionState.connectionDragState, nodeEditorState.nodes, nodeEditorState.connections, registry, nodeEditorActions],
+    [
+      actionState.connectionDragState,
+      nodeEditorState.nodes,
+      nodeEditorState.connections,
+      registry,
+      nodeEditorActions,
+      getNodePorts,
+    ],
   );
 
   const endConnectionDrag = React.useCallback(() => {
@@ -584,13 +611,22 @@ export const useNodeLayerConnections = () => {
             if (p.type === fromPort.type) {
               return false;
             }
-            const tempPort: Port = { id: p.id, type: p.type, label: p.label, nodeId: "new", position: p.position };
+            const tempPort: Port = {
+              id: p.id,
+              definitionId: p.id,
+              type: p.type,
+              label: p.label,
+              nodeId: "new",
+              position: typeof p.position === "string" ? p.position : p.position.side,
+              placement: typeof p.position === "string" ? undefined : p.position,
+            };
             return canConnectPorts(
               fromPort.type === "output" ? fromPort : tempPort,
               fromPort.type === "output" ? tempPort : fromPort,
               fromDef,
               def,
               nodeEditorState.connections,
+              { nodes: nodeEditorState.nodes },
             );
           });
           if (ok) {

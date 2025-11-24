@@ -15,6 +15,7 @@ import styles from "./ConnectionLayer.module.css";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
 import type { PointerType } from "../../types/interaction";
 import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
+import { getPortDefinition } from "../../contexts/node-ports/utils/connectionValidation";
 
 export type ConnectionLayerProps = {
   className?: string;
@@ -74,7 +75,8 @@ const DragConnection = React.memo(() => {
     (primaryPort: CorePort | undefined, primaryNode: EditorNode | undefined, fallbackPort?: CorePort, fallbackNode?: EditorNode) => {
       if (primaryPort && primaryNode) {
         const primaryDefinition = registry.get(primaryNode.type);
-        const primaryPortDefinition = primaryDefinition?.ports?.find((definition) => definition.id === primaryPort.id);
+        const primaryPortDefinition =
+          primaryDefinition && primaryPort ? getPortDefinition(primaryPort, primaryDefinition) : undefined;
         if (primaryPortDefinition?.renderConnection) {
           return primaryPortDefinition.renderConnection;
         }
@@ -82,7 +84,8 @@ const DragConnection = React.memo(() => {
 
       if (fallbackPort && fallbackNode) {
         const fallbackDefinition = registry.get(fallbackNode.type);
-        const fallbackPortDefinition = fallbackDefinition?.ports?.find((definition) => definition.id === fallbackPort.id);
+        const fallbackPortDefinition =
+          fallbackDefinition && fallbackPort ? getPortDefinition(fallbackPort, fallbackDefinition) : undefined;
         if (fallbackPortDefinition?.renderConnection) {
           return fallbackPortDefinition.renderConnection;
         }

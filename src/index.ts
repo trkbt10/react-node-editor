@@ -28,6 +28,9 @@ export type {
   NodeDefinition,
   NodeRenderProps,
   PortDefinition,
+  PortConnectionContext,
+  PortInstanceContext,
+  PortInstanceFactoryContext,
   PortRenderContext,
 } from "./types/NodeDefinition";
 
@@ -46,7 +49,7 @@ export type {
 } from "./types/behaviors";
 
 // Core graph types used by custom definitions
-export type { Connection, ConnectionId, Node, NodeId, Port, PortId } from "./types/core";
+export type { Connection, ConnectionId, Node, NodeId, Port, PortId, PortPlacement } from "./types/core";
 
 // Port positioning customization
 export type {

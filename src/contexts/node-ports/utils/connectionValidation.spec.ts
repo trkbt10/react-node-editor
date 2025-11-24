@@ -91,4 +91,155 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
     const targetPort: Port = { id: "color", nodeId: "target-node", type: "input", label: "Color", position: "left" };
     expect(canConnectPorts(sourcePort, targetPort, reg.get("ColorSource"), reg.get("ColorTarget"), {})).toBe(true);
   });
+
+  it("checks compatibility across multiple declared data types", () => {
+    const defA = baseNodeDef("Producer", [
+      { id: "out", type: "output", label: "out", position: "right", dataTypes: ["text", "html"] },
+    ]);
+    const defB = baseNodeDef("Consumer", [
+      { id: "in", type: "input", label: "in", position: "left", dataTypes: ["markdown", "text"] },
+    ]);
+    const defC = baseNodeDef("JsonConsumer", [
+      { id: "in", type: "input", label: "in", position: "left", dataTypes: ["json"] },
+    ]);
+    const reg = mkRegistry([defA, defB, defC]);
+
+    const output: Port = { id: "out", nodeId: "producer", type: "output", label: "out", position: "right" };
+    const input: Port = { id: "in", nodeId: "consumer", type: "input", label: "in", position: "left" };
+
+    expect(canConnectPorts(output, input, reg.get("Producer"), reg.get("Consumer"), {})).toBe(true);
+    expect(canConnectPorts(output, input, reg.get("Producer"), reg.get("JsonConsumer"), {})).toBe(false);
+  });
+
+  it("respects port-level canConnect predicates", () => {
+    const defA = baseNodeDef("Gate", [
+      {
+        id: "out",
+        type: "output",
+        label: "out",
+        position: "right",
+        canConnect: ({ allConnections }) => Object.keys(allConnections ?? {}).length === 0,
+      },
+    ]);
+    const defB = baseNodeDef("Sink", [{ id: "in", type: "input", label: "in", position: "left" }]);
+    const reg = mkRegistry([defA, defB]);
+
+    const outPort: Port = { id: "out", nodeId: "gate", type: "output", label: "out", position: "right" };
+    const inPort: Port = { id: "in", nodeId: "sink", type: "input", label: "in", position: "left" };
+
+    const firstAllowed = canConnectPorts(outPort, inPort, reg.get("Gate"), reg.get("Sink"), {});
+    expect(firstAllowed).toBe(true);
+
+    const existing: Record<string, Connection> = {
+      c1: { id: "c1", fromNodeId: "gate", fromPortId: "out", toNodeId: "sink", toPortId: "in" },
+    };
+    const blocked = canConnectPorts(outPort, inPort, reg.get("Gate"), reg.get("Sink"), existing);
+    expect(blocked).toBe(false);
+  });
+
+  it("honors dataTypes arrays and segment-aware canConnect hooks for dynamic ports", () => {
+    const dynamicSource: NodeDefinition = {
+      type: "dynamic-source",
+      displayName: "Dynamic Source",
+      ports: [
+        {
+          id: "main-output",
+          type: "output",
+          label: "Main",
+          position: { side: "right", segment: "main" },
+          dataTypes: ["text", "html"],
+          instances: () => 1,
+          canConnect: ({ fromPort, toPort }) =>
+            fromPort.placement?.segment !== undefined && toPort?.placement?.segment === fromPort.placement.segment,
+        },
+      ],
+    };
+    const dynamicTarget: NodeDefinition = {
+      type: "dynamic-target",
+      displayName: "Dynamic Target",
+      ports: [
+        {
+          id: "main-input",
+          type: "input",
+          label: "Main In",
+          position: { side: "left", segment: "main" },
+          dataTypes: ["markdown", "text"],
+          instances: () => 1,
+          canConnect: ({ fromPort, toPort }) =>
+            toPort?.placement?.segment !== undefined && fromPort.placement?.segment === toPort.placement.segment,
+        },
+      ],
+    };
+
+    const reg = mkRegistry([dynamicSource, dynamicTarget]);
+
+    const fromPort: Port = {
+      id: "main-output-1",
+      definitionId: "main-output",
+      nodeId: "source",
+      type: "output",
+      label: "Main",
+      position: "right",
+      placement: { side: "right", segment: "main" },
+      dataType: ["text", "html"],
+    };
+
+    const toPort: Port = {
+      id: "main-input-1",
+      definitionId: "main-input",
+      nodeId: "target",
+      type: "input",
+      label: "Main In",
+      position: "left",
+      placement: { side: "left", segment: "main" },
+      dataType: ["markdown", "text"],
+    };
+
+    const nodes = {
+      source: { id: "source", type: "dynamic-source", position: { x: 0, y: 0 }, data: {} },
+      target: { id: "target", type: "dynamic-target", position: { x: 0, y: 0 }, data: {} },
+    };
+
+    expect(canConnectPorts(fromPort, toPort, reg.get("dynamic-source"), reg.get("dynamic-target"), {}, { nodes })).toBe(
+      true,
+    );
+
+    const incompatibleTarget: NodeDefinition = {
+      type: "dynamic-target-json",
+      displayName: "Dynamic Target (JSON)",
+      ports: [
+        {
+          id: "main-input",
+          type: "input",
+          label: "Main In",
+          position: { side: "left", segment: "main" },
+          dataTypes: ["json"],
+          instances: () => 1,
+          canConnect: ({ fromPort, toPort }) =>
+            toPort?.placement?.segment !== undefined && fromPort.placement?.segment === toPort.placement.segment,
+        },
+      ],
+    };
+    const regNoOverlap = mkRegistry([dynamicSource, incompatibleTarget]);
+
+    const blockedByDataTypes = canConnectPorts(
+      fromPort,
+      { ...toPort, dataType: ["json"] },
+      regNoOverlap.get("dynamic-source"),
+      regNoOverlap.get("dynamic-target-json"),
+      {},
+      { nodes },
+    );
+    expect(blockedByDataTypes).toBe(false);
+
+    const blockedBySegment = canConnectPorts(
+      fromPort,
+      { ...toPort, placement: { side: "left", segment: "aux" } },
+      reg.get("dynamic-source"),
+      reg.get("dynamic-target"),
+      {},
+      { nodes },
+    );
+    expect(blockedBySegment).toBe(false);
+  });
 });

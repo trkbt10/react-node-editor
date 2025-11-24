@@ -32,7 +32,7 @@ export function getConnectablePortIds(
       if (p.nodeId === fromPort.nodeId && p.id === fromPort.id) {
         return;
       }
-      if (canConnectPorts(fromPort, p, fromDef, toDef, connections)) {
+      if (canConnectPorts(fromPort, p, fromDef, toDef, connections, { nodes })) {
         result.add(`${n.id}:${p.id}`);
       }
     });

@@ -1,8 +1,14 @@
 /**
  * @file Port resolution utilities with default port inference
  */
-import type { Node, Port } from "../../../types/core";
-import type { NodeDefinition, PortDefinition } from "../../../types/NodeDefinition";
+import type { Node, Port, PortPlacement } from "../../../types/core";
+import type {
+  NodeDefinition,
+  PortDefinition,
+  PortInstanceContext,
+  PortInstanceFactoryContext,
+} from "../../../types/NodeDefinition";
+import { mergePortDataTypes, toPortDataTypeValue } from "../../../utils/portDataTypeUtils";
 
 /**
  * Port override configuration for node-specific customizations
@@ -18,6 +24,77 @@ export type PortOverride = {
   allowedPortTypes?: string[];
   /** Disable this port */
   disabled?: boolean;
+};
+
+const normalizePlacement = (position?: PortDefinition["position"] | PortPlacement): PortPlacement => {
+  if (!position) {
+    return { side: "right" };
+  }
+  if (typeof position === "string") {
+    return { side: position };
+  }
+  return {
+    side: position.side,
+    segment: position.segment,
+    segmentOrder: position.segmentOrder,
+    segmentSpan: position.segmentSpan,
+    align: position.align,
+  };
+};
+
+const resolveInstanceCount = (definition: PortDefinition, context: PortInstanceContext): number => {
+  const raw = typeof definition.instances === "function" ? definition.instances(context) : definition.instances;
+  if (raw === undefined) {
+    return 1;
+  }
+  const count = Math.floor(raw);
+  if (Number.isNaN(count) || count < 0) {
+    return 0;
+  }
+  return count;
+};
+
+const createPortInstances = (definition: PortDefinition, node: Node): Port[] => {
+  const instanceContext: PortInstanceContext = { node };
+  const total = resolveInstanceCount(definition, instanceContext);
+  if (total === 0) {
+    return [];
+  }
+
+  const placement = normalizePlacement(definition.position);
+  const mergedDataTypes = mergePortDataTypes(definition.dataType, definition.dataTypes);
+  const resolvedDataType = toPortDataTypeValue(mergedDataTypes);
+
+  return Array.from({ length: total }, (_unused, index) => {
+    const factoryContext: PortInstanceFactoryContext = {
+      node,
+      definition,
+      index,
+      total,
+    };
+    const id =
+      definition.createPortId?.(factoryContext) ??
+      (total > 1 ? `${definition.id}-${index + 1}` : definition.id);
+    const label =
+      definition.createPortLabel?.(factoryContext) ??
+      (total > 1 ? `${definition.label} ${index + 1}` : definition.label);
+
+    const port: Port = {
+      id,
+      definitionId: definition.id,
+      type: definition.type,
+      label,
+      nodeId: node.id,
+      position: placement.side,
+      placement,
+      dataType: resolvedDataType,
+      maxConnections: definition.maxConnections,
+      instanceIndex: index,
+      instanceTotal: total,
+    };
+
+    return port;
+  });
 };
 
 /**
@@ -85,39 +162,32 @@ export function getNodePorts(node: Node, definition: NodeDefinition): Port[] {
   const basePorts = definition.ports || inferDefaultPortDefinitions(node);
   const nodeWithOverrides = node as NodeWithPortOverrides;
 
-  return basePorts
-    .map((portDef) => {
-      const port: Port = {
-        id: portDef.id,
-        type: portDef.type,
-        label: portDef.label,
-        nodeId: node.id,
-        position: portDef.position,
-        dataType: portDef.dataType,
-        maxConnections: portDef.maxConnections,
-      };
+  const resolvedPorts: Port[] = [];
 
-      // Apply any node-specific overrides
-      const override = nodeWithOverrides.portOverrides?.find((o) => o.portId === portDef.id);
+  basePorts.forEach((portDef) => {
+    const portsFromDefinition = createPortInstances(portDef, node);
+    portsFromDefinition.forEach((port) => {
+      const override = nodeWithOverrides.portOverrides?.find(
+        (candidate) => candidate.portId === port.id || candidate.portId === port.definitionId,
+      );
 
-      if (override) {
-        // Skip disabled ports
-        if (override.disabled) {
-          return null;
-        }
-
-        if (override.maxConnections !== undefined) {
-          port.maxConnections = override.maxConnections;
-        }
-        if (override.allowedNodeTypes) {
-          port.allowedNodeTypes = override.allowedNodeTypes;
-        }
-        if (override.allowedPortTypes) {
-          port.allowedPortTypes = override.allowedPortTypes;
-        }
+      if (override?.disabled) {
+        return;
       }
 
-      return port;
-    })
-    .filter((port): port is Port => port !== null);
+      if (override?.maxConnections !== undefined) {
+        port.maxConnections = override.maxConnections;
+      }
+      if (override?.allowedNodeTypes) {
+        port.allowedNodeTypes = override.allowedNodeTypes;
+      }
+      if (override?.allowedPortTypes) {
+        port.allowedPortTypes = override.allowedPortTypes;
+      }
+
+      resolvedPorts.push(port);
+    });
+  });
+
+  return resolvedPorts;
 }
