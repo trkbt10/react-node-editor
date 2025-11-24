@@ -44,6 +44,11 @@ export type NodeEditorContextValue = {
    */
   getNodePorts: (nodeId: NodeId) => Port[];
   /**
+   * Returns the latest node reference from the current state (not memoized to render).
+   * Useful for event handlers that need fresh data before React commits a render.
+   */
+  getNodeById: (nodeId: NodeId) => Node | undefined;
+  /**
    * O(1) lookup map for ports. Key format: "nodeId:portId".
    * Recomputed when nodes/definitions change. Do not mutate.
    * Use this for frequent single-port lookups (connections, hit tests, drags).

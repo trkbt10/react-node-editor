@@ -2,7 +2,16 @@
  * @file Tests for NodeEditor context - validates node and connection CRUD operations
  */
 import { render, screen, act } from "@testing-library/react";
-import { useEffect, useRef, useState, type FC } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  memo,
+  type Dispatch,
+  type FC,
+  type MutableRefObject,
+  type SetStateAction,
+} from "react";
 import { NodeEditorProvider } from "./provider";
 import { useNodeEditor } from "./context";
 import { nodeEditorActions } from "./actions";
@@ -64,6 +73,122 @@ const ControlledHarness: FC = () => {
     <div>
       <div data-testid="pos-x">{state.nodes.n1?.position.x}</div>
       <div data-testid="pos-y">{state.nodes.n1?.position.y}</div>
+    </div>
+  );
+};
+
+type ControlledStabilityHarnessProps = {
+  onReady: (controls: ControlledStabilityControls) => void;
+};
+
+type ControlledStabilityControls = {
+  setData: Dispatch<SetStateAction<NodeEditorData>>;
+  getRenderCount: () => number;
+  getStateRef: () => NodeEditorData | null;
+};
+
+const ControlledStabilityConsumer: FC<{
+  renderCountRef: MutableRefObject<number>;
+  stateRef: MutableRefObject<NodeEditorData | null>;
+}> = memo(({ renderCountRef, stateRef }) => {
+  const { state } = useNodeEditor();
+  renderCountRef.current += 1;
+  stateRef.current = state;
+  return null;
+});
+
+const ControlledStabilityHarness: FC<ControlledStabilityHarnessProps> = ({ onReady }) => {
+  const [data, setData] = useState<NodeEditorData>(makeBasicData());
+  const renderCountRef = useRef(0);
+  const stateRef = useRef<NodeEditorData | null>(null);
+
+  useEffect(() => {
+    onReady({
+      setData,
+      getRenderCount: () => renderCountRef.current,
+      getStateRef: () => stateRef.current,
+    });
+  }, [onReady, setData]);
+
+  return withNodeDefinitions(
+    <NodeEditorProvider controlledData={data} onDataChange={() => {}}>
+      <ControlledStabilityConsumer renderCountRef={renderCountRef} stateRef={stateRef} />
+    </NodeEditorProvider>,
+  );
+};
+
+const ControlledSequentialUpdateHarness: FC = () => {
+  const [data, setData] = useState<NodeEditorData>(makeBasicData());
+  const [callCount, setCallCount] = useState(0);
+
+  return withNodeDefinitions(
+    <NodeEditorProvider
+      controlledData={data}
+      onDataChange={(next) => {
+        setCallCount((count) => count + 1);
+        setData(next);
+      }}
+    >
+      <ControlledSequentialUpdater />
+      <div data-testid="call-count">{String(callCount)}</div>
+      <div data-testid="temp-exists">{String(Boolean(data.nodes.temp))}</div>
+      <div data-testid="temp-pos">
+        {data.nodes.temp ? `${data.nodes.temp.position.x},${data.nodes.temp.position.y}` : "none"}
+      </div>
+    </NodeEditorProvider>,
+  );
+};
+
+const ControlledSequentialUpdater: FC = () => {
+  const { actions } = useNodeEditor();
+  const hasRunRef = useRef(false);
+
+  useEffect(() => {
+    if (hasRunRef.current) {
+      return;
+    }
+    hasRunRef.current = true;
+    actions.addNodeWithId({
+      id: "temp",
+      type: "standard",
+      position: { x: 0, y: 0 },
+      data: { title: "Temp" },
+    });
+    actions.moveNode("temp", { x: 5, y: 7 });
+  }, [actions]);
+
+  return null;
+};
+
+const ControlledPreferenceProbe: FC<{ label: string }> = ({ label }) => {
+  const { state } = useNodeEditor();
+  return (
+    <div data-testid={`controlled-probe-${label}`}>
+      {Object.values(state.nodes)
+        .map((node) => node.data.title || node.id)
+        .join(",")}
+    </div>
+  );
+};
+
+const ControlledNoParentUpdateHarness: FC = () => {
+  const { actions, state } = useNodeEditor();
+  const hasRunRef = useRef(false);
+
+  useEffect(() => {
+    if (hasRunRef.current) {
+      return;
+    }
+    hasRunRef.current = true;
+    actions.moveNode("n1", { x: 10, y: 20 });
+    actions.updateNode("n1", { size: { width: 300, height: 120 } });
+  }, [actions]);
+
+  const node = state.nodes.n1;
+  return (
+    <div>
+      <div data-testid="no-parent-pos">{node ? `${node.position.x},${node.position.y}` : "none"}</div>
+      <div data-testid="no-parent-size">{node?.size?.width ?? "none"}</div>
     </div>
   );
 };
@@ -194,14 +319,129 @@ describe("NodeEditorProvider - uncontrolled vs controlled updates", () => {
         ),
       );
     });
-    expect(screen.getByTestId("pos-x").textContent).toBe("0");
-    expect(screen.getByTestId("pos-y").textContent).toBe("0");
+    expect(screen.getByTestId("pos-x").textContent).toBe("99");
+    expect(screen.getByTestId("pos-y").textContent).toBe("77");
     expect(onChangeCalls.length).toBeGreaterThan(0);
     const lastCallArg = onChangeCalls.at(-1);
     if (!lastCallArg) {
       throw new Error("Expected onDataChange to be called at least once");
     }
     expect(lastCallArg.nodes.n1.position).toEqual({ x: 99, y: 77 });
+  });
+
+  it("treats presence of controlledData like React value prop even when initialState is provided", async () => {
+    const controlled = makeBasicData();
+    const initial: NodeEditorData = {
+      nodes: {
+        n1: { id: "n1", type: "standard", position: { x: 50, y: 50 }, data: { title: "Initial Should Ignore" } },
+      },
+      connections: {},
+    };
+
+    const { rerender } = render(
+      withNodeDefinitions(
+        <NodeEditorProvider initialState={initial} controlledData={controlled}>
+          <ControlledPreferenceProbe label="first" />
+        </NodeEditorProvider>,
+      ),
+    );
+
+    expect(screen.getByTestId("controlled-probe-first").textContent).toContain("Node 1");
+    expect(screen.getByTestId("controlled-probe-first").textContent).not.toContain("Initial Should Ignore");
+
+    const updatedInitial: NodeEditorData = {
+      nodes: {
+        n1: { id: "n1", type: "standard", position: { x: 75, y: 75 }, data: { title: "Updated Initial" } },
+      },
+      connections: {},
+    };
+
+    rerender(
+      withNodeDefinitions(
+        <NodeEditorProvider initialState={updatedInitial} controlledData={controlled}>
+          <ControlledPreferenceProbe label="second" />
+        </NodeEditorProvider>,
+      ),
+    );
+
+    expect(screen.getByTestId("controlled-probe-second").textContent).toContain("Node 1");
+    expect(screen.getByTestId("controlled-probe-second").textContent).not.toContain("Updated Initial");
+  });
+});
+
+describe("controlled data stability", () => {
+  it("reuses previous state reference when controlled data is structurally unchanged", async () => {
+    const controlsRef = { current: null as ControlledStabilityControls | null };
+
+    await act(async () => {
+      render(<ControlledStabilityHarness onReady={(controls) => (controlsRef.current = controls)} />);
+    });
+
+    const controls = controlsRef.current;
+    if (!controls) {
+      throw new Error("Expected stability harness to provide controls");
+    }
+
+    const initialState = controls.getStateRef();
+    if (!initialState) {
+      throw new Error("Expected initial state to be available");
+    }
+
+    expect(controls.getRenderCount()).toBe(1);
+
+    await act(async () => {
+      controls.setData((current) => ({
+        nodes: { ...current.nodes },
+        connections: { ...current.connections },
+      }));
+    });
+
+    expect(controls.getRenderCount()).toBe(1);
+    expect(controls.getStateRef()).toBe(initialState);
+
+    await act(async () => {
+      controls.setData({
+        nodes: {
+          ...initialState.nodes,
+          n1: { ...initialState.nodes.n1, position: { x: 42, y: 24 } },
+        },
+        connections: initialState.connections,
+      });
+    });
+
+    expect(controls.getRenderCount()).toBe(2);
+    const updatedState = controls.getStateRef();
+    if (!updatedState) {
+      throw new Error("Expected updated state to be available");
+    }
+    expect(updatedState.nodes.n1.position).toEqual({ x: 42, y: 24 });
+  });
+});
+
+describe("controlled rapid updates", () => {
+  it("does not roll back when multiple controlled actions occur before parent re-renders", async () => {
+    await act(async () => {
+      render(<ControlledSequentialUpdateHarness />);
+    });
+
+    expect(screen.getByTestId("call-count").textContent).toBe("2");
+    expect(screen.getByTestId("temp-exists").textContent).toBe("true");
+    expect(screen.getByTestId("temp-pos").textContent).toBe("5,7");
+  });
+
+  it("keeps latest state even when parent does not immediately reapply controlled data", async () => {
+    await act(async () => {
+      render(
+        withNodeDefinitions(
+          <NodeEditorProvider controlledData={makeBasicData()} onDataChange={() => {}}>
+            <ControlledNoParentUpdateHarness />
+          </NodeEditorProvider>,
+        ),
+      );
+    });
+
+    expect(screen.getByTestId("no-parent-pos").textContent).toBe("10,20");
+    expect(screen.getByTestId("no-parent-size").textContent).toBe("300");
   });
 });
 

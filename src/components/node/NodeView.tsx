@@ -77,7 +77,7 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   connectedPorts,
   connectablePorts,
 }) => {
-  const { actions: nodeEditorActions, getNodePorts } = useNodeEditor();
+  const { actions: nodeEditorActions, getNodePorts, getNodeById } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
   const { isEditing, startEditing, updateValue, confirmEdit, cancelEdit, state: editingState } = useInlineEditing();
   const {
@@ -288,17 +288,18 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
         return;
       }
 
+      const liveNode = getNodeById(node.id) || node;
       const currentSize = {
-        width: node.size?.width || 150,
-        height: node.size?.height || 50,
+        width: liveNode.size?.width || 150,
+        height: liveNode.size?.height || 50,
       };
 
       startResize(node.id, handle, { x: e.clientX, y: e.clientY }, currentSize, {
-        x: node.position.x,
-        y: node.position.y,
+        x: liveNode.position.x,
+        y: liveNode.position.y,
       });
     },
-    [node.id, node.size, node.locked, startResize, node.position.x, node.position.y],
+    [node.id, node.locked, startResize, getNodeById],
   );
 
   // Extract port connection state for memoization

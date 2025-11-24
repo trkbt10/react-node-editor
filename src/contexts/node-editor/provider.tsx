@@ -16,6 +16,7 @@ import { nodeEditorReducer, defaultNodeEditorData } from "./reducer";
 import { NodeEditorContext } from "./context";
 import { snapToGrid } from "./utils/gridSnap";
 import { findContainingGroup, getGroupChildren, isNodeInsideGroup } from "./utils/groupOperations";
+import { useStabilizedControlledData, areNodeEditorDataEqual } from "./utils/controlledData";
 
 export type NodeEditorProviderProps = {
   children: React.ReactNode;
@@ -44,6 +45,8 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
 }) => {
   const { registry } = React.useContext(NodeDefinitionContext);
   const portResolver = React.useMemo(() => createCachedPortResolver(), []);
+  const pendingControlledStateRef = React.useRef<NodeEditorData | null>(null);
+  const [controlledRenderTick, setControlledRenderTick] = React.useState(0);
 
   const initialData: NodeEditorData = React.useMemo(() => {
     return {
@@ -51,6 +54,8 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
       connections: initialState?.connections || defaultNodeEditorData.connections,
     };
   }, [initialState]);
+
+  const stabilizedControlledData = useStabilizedControlledData(controlledData);
 
   const nodeDefinitions = React.useMemo(() => registry.getAll(), [registry]);
 
@@ -60,7 +65,9 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
   );
 
   const [internalState, internalDispatch] = React.useReducer(reducerWithDefinitions, initialData);
-  const state = controlledData || internalState;
+  const baseState = stabilizedControlledData || internalState;
+  const isControlled = Boolean(stabilizedControlledData);
+  const state = isControlled ? pendingControlledStateRef.current || baseState : internalState;
   // Keep latest state and IO handlers in refs to avoid unstable callbacks/effects
   const stateRef = React.useRef(state);
   stateRef.current = state;
@@ -76,18 +83,34 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
   // Stable dispatch that doesn't recreate per state change to reduce re-renders
   const dispatch: React.Dispatch<NodeEditorAction> = React.useCallback(
     (action: NodeEditorAction) => {
-      if (controlledData) {
+      if (isControlled) {
         const newState = nodeEditorReducer(stateRef.current, action, nodeDefinitionsRef.current);
+        pendingControlledStateRef.current = newState;
+        stateRef.current = newState;
+        setControlledRenderTick((tick) => tick + 1);
         onDataChangeRef.current?.(newState);
         return;
       }
       // Uncontrolled: dispatch internally and notify external listener with computed next state
       const nextState = nodeEditorReducer(stateRef.current, action, nodeDefinitionsRef.current);
+      stateRef.current = nextState;
       internalDispatch(action);
       onDataChangeRef.current?.(nextState);
     },
-    [controlledData],
+    [isControlled],
   );
+
+  React.useEffect(() => {
+    if (!isControlled) {
+      pendingControlledStateRef.current = null;
+      return;
+    }
+    if (pendingControlledStateRef.current && stabilizedControlledData) {
+      if (areNodeEditorDataEqual(pendingControlledStateRef.current, stabilizedControlledData)) {
+        pendingControlledStateRef.current = null;
+      }
+    }
+  }, [isControlled, stabilizedControlledData, controlledRenderTick]);
 
   const boundActions = React.useMemo(() => bindActionCreators(nodeEditorActions, dispatch), [dispatch]);
 
@@ -131,7 +154,7 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
   // Notification for onDataChange is handled inside dispatch (both modes)
   // Additionally, fire a single initial notification in uncontrolled mode
   React.useEffect(() => {
-    if (controlledData) {
+    if (isControlled) {
       return;
     }
     onDataChangeRef.current?.(stateRef.current);
@@ -188,6 +211,13 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
     return portResolver.createPortLookupMap(state.nodes, (type: string) => registry.get(type));
   }, [state.nodes, registry, portResolver]);
 
+  const getNodeById = React.useCallback(
+    (nodeId: NodeId) => {
+      return stateRef.current.nodes[nodeId];
+    },
+    [],
+  );
+
   React.useEffect(() => {
     portResolver.clearCache();
   }, [state.nodes, portResolver]);
@@ -226,6 +256,7 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
       isSaving,
       handleSave,
       getNodePorts,
+      getNodeById,
       portLookupMap,
       settings,
       settingsManager,
@@ -240,6 +271,7 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
       isSaving,
       handleSave,
       getNodePorts,
+      getNodeById,
       portLookupMap,
       settings,
       settingsManager,

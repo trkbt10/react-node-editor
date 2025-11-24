@@ -31,6 +31,7 @@ import { UnityThemeExample } from "./demos/unity-theme/UnityThemeExample";
 import { AdobeThemeExample } from "./demos/adobe-theme/AdobeThemeExample";
 import { FigmaThemeExample } from "./demos/figma-theme/FigmaThemeExample";
 import { TradingAnalyticsDashboard } from "./demos/trading-analytics/TradingAnalyticsDashboard";
+import { DataBindingModesExample } from "./demos/DataBindingModesExample";
 import { CustomLayoutDemo } from "./demos/custom-layout-demo";
 import classes from "./ExamplePreviewApp.module.css";
 
@@ -39,7 +40,7 @@ type ExampleEntry = {
   title: string;
   description: string;
   component: React.ComponentType;
-  category: "basic" | "advanced" | "custom" | "layout" | "design";
+  category: "basic" | "advanced" | "custom" | "layout" | "design" | "data";
 };
 
 const examples: ExampleEntry[] = [
@@ -84,6 +85,13 @@ const examples: ExampleEntry[] = [
     description: "Demonstrates strongly-typed node definitions with custom renderers.",
     component: TypedNodesExample,
     category: "basic",
+  },
+  {
+    id: "data-binding-modes",
+    title: "Data Binding Modes",
+    description: "Side-by-side uncontrolled vs controlled NodeEditor usage, mirroring React input semantics.",
+    component: DataBindingModesExample,
+    category: "data",
   },
   {
     id: "constrained-nodes",
@@ -300,6 +308,7 @@ export function ExamplePreviewApp(): React.ReactElement {
       layout: [],
       design: [],
       custom: [],
+      data: [],
     };
 
     for (const example of examples) {
@@ -315,6 +324,7 @@ export function ExamplePreviewApp(): React.ReactElement {
     layout: "Layout Examples",
     design: "Design Examples",
     custom: "Custom Renderer Examples",
+    data: "Data Binding Examples",
   };
 
   return (
