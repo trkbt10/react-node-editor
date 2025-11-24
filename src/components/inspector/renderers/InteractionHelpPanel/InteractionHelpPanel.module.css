@@ -1,0 +1,7 @@
+/* InteractionHelpPanel styles */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-lg, 16px);
+}

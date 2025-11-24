@@ -27,7 +27,7 @@ export { GeneralSettingsPanel } from "../components/inspector/renderers/GeneralS
 export { GridSettingsPanel } from "../components/inspector/renderers/GridSettingsPanel";
 export { HistoryPanel } from "../components/inspector/renderers/HistoryPanel";
 export { InspectorPropertiesTab } from "../components/inspector/renderers/InspectorPropertiesTab";
-export { InteractionHelpPanel } from "../components/inspector/renderers/InteractionHelpPanel";
+export { InteractionHelpPanel } from "../components/inspector/renderers/InteractionHelpPanel/InteractionHelpPanel";
 export { NodePalettePanel } from "../components/inspector/renderers/NodePalettePanel";
 export { NodeTreeListPanel } from "../components/inspector/renderers/NodeTreeListPanel/NodeTreeListPanel";
 

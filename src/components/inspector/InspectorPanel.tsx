@@ -13,7 +13,7 @@ import { useI18n } from "../../i18n/context";
 import { GeneralSettingsPanel } from "./renderers/GeneralSettingsPanel";
 import { GridSettingsPanel } from "./renderers/GridSettingsPanel";
 import { PropertySection } from "./parts/PropertySection";
-import { InteractionHelpPanel } from "./renderers/InteractionHelpPanel";
+import { InteractionHelpPanel } from "./renderers/InteractionHelpPanel/InteractionHelpPanel";
 
 export type InspectorPanelTabConfig = {
   id: string;

@@ -5,28 +5,30 @@ import * as React from "react";
 import {
   useInteractionSettings,
   useInteractionSettingsUpdate,
-} from "../../../contexts/InteractionSettingsContext";
-import { useI18n } from "../../../i18n/context";
-import type { I18nKey } from "../../../i18n/types";
+} from "../../../../contexts/InteractionSettingsContext";
+import { useI18n } from "../../../../i18n/context";
+import type { I18nKey } from "../../../../i18n/types";
 import type {
   NodeEditorPointerAction,
   NodeEditorShortcutAction,
   PointerShortcutBinding,
   PointerType,
   ShortcutBinding,
-} from "../../../types/interaction";
+} from "../../../../types/interaction";
 import {
   detectShortcutDisplayPlatform,
   getShortcutLabelForAction,
-} from "../../../utils/shortcutDisplay";
+} from "../../../../utils/shortcutDisplay";
 import {
   describePointerShortcutDisplay,
   getPointerShortcutLabelForAction,
   pointerShortcutBindingFor,
-  type PointerShortcutDisplay,
-} from "../../../utils/pointerShortcuts";
-import { InspectorShortcutButton } from "../parts/InspectorShortcutButton";
-import { InspectorShortcutBindingValue } from "../parts/InspectorShortcutBindingValue";
+} from "../../../../utils/pointerShortcuts";
+import {
+  InteractionHelpSection,
+  type SectionView,
+} from "./InteractionHelpSection";
+import type { SectionItemView } from "./InteractionHelpItem";
 import styles from "./InteractionHelpPanel.module.css";
 
 type PointerGesture = "click" | "drag" | "context-menu";
@@ -233,29 +235,6 @@ type CaptureState =
   | { type: "pointer"; action: NodeEditorPointerAction }
   | null;
 
-type SectionItemView =
-  | {
-      key: string;
-      type: "keyboard";
-      action: NodeEditorShortcutAction;
-      label: string;
-      bindingLabel: string | null;
-    }
-  | {
-      key: string;
-      type: "pointer";
-      action: NodeEditorPointerAction;
-      label: string;
-      bindingDisplay: PointerShortcutDisplay | null;
-      gesture: PointerGesture;
-    };
-
-type SectionView = {
-  id: string;
-  title: string;
-  items: SectionItemView[];
-};
-
 const POINTER_DOUBLE_CLICK_CAPTURE_DELAY_MS = 300;
 
 export const InteractionHelpPanel: React.FC = () => {
@@ -412,122 +391,58 @@ export const InteractionHelpPanel: React.FC = () => {
     };
   }, [captureState, setPointerShortcutBinding]);
 
+  const handleSelectItem = React.useCallback((item: SectionItemView) => {
+    if (item.type === "keyboard") {
+      setCaptureState({ type: "keyboard", action: item.action });
+    } else {
+      setCaptureState({ type: "pointer", action: item.action });
+    }
+  }, []);
+
+  const handleResetItem = React.useCallback(
+    (item: SectionItemView) => {
+      if (item.type === "keyboard") {
+        resetKeyboardShortcut(item.action);
+      } else {
+        resetPointerShortcut(item.action);
+      }
+      setCaptureState(null);
+    },
+    [resetKeyboardShortcut, resetPointerShortcut],
+  );
+
+  const createResetSectionHandler = React.useCallback(
+    (section: SectionView) => () => {
+      section.items.forEach((item) => {
+        if (item.type === "keyboard") {
+          resetKeyboardShortcut(item.action);
+          return;
+        }
+        resetPointerShortcut(item.action);
+      });
+      setCaptureState(null);
+    },
+    [resetKeyboardShortcut, resetPointerShortcut],
+  );
+
   return (
     <div className={styles.panel}>
       {sections.map((section) => (
-        <div key={section.id} className={styles.section}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionTitle}>{section.title}</div>
-            <InspectorShortcutButton
-              onClick={() => {
-                section.items.forEach((item) => {
-                  if (item.type === "keyboard") {
-                    resetKeyboardShortcut(item.action);
-                    return;
-                  }
-                  resetPointerShortcut(item.action);
-                });
-                setCaptureState(null);
-              }}
-            >
-              {resetLabel}
-            </InspectorShortcutButton>
-          </div>
-          <ul className={styles.shortcutList}>
-            {section.items.map((item) => {
-              const isCapturing =
-                captureState !== null &&
-                captureState.type === item.type &&
-                captureState.action === item.action;
-              const hasBinding =
-                item.type === "keyboard"
-                  ? Boolean(item.bindingLabel)
-                  : item.bindingDisplay !== null;
-              const prompt = item.type === "keyboard" ? keyboardPrompt : pointerPrompt;
-
-              const handleSelect = () => {
-                if (isCapturing) {
-                  setCaptureState(null);
-                  return;
-                }
-                if (item.type === "keyboard") {
-                  setCaptureState({ type: "keyboard", action: item.action });
-                } else {
-                  setCaptureState({ type: "pointer", action: item.action });
-                }
-              };
-
-              const handleReset = () => {
-                if (item.type === "keyboard") {
-                  resetKeyboardShortcut(item.action);
-                } else {
-                  resetPointerShortcut(item.action);
-                }
-                setCaptureState(null);
-              };
-
-              return (
-                <li key={item.key} className={styles.shortcutItem} data-active={isCapturing ? "true" : "false"}>
-                  <span className={styles.shortcutLabel}>{item.label}</span>
-                  <div className={styles.bindingFieldContainer}>
-                    <button
-                      type="button"
-                      className={styles.bindingField}
-                      data-state={isCapturing ? "active" : "idle"}
-                      data-empty={hasBinding ? "false" : "true"}
-                      onClick={handleSelect}
-                    >
-                      {item.type === "keyboard" ? (
-                        <InspectorShortcutBindingValue
-                          type="keyboard"
-                          className={styles.bindingValue}
-                          isCapturing={isCapturing}
-                          prompt={prompt}
-                          unassignedLabel={unassignedLabel}
-                          label={item.bindingLabel}
-                        />
-                      ) : (
-                        <InspectorShortcutBindingValue
-                          type="pointer"
-                          className={styles.bindingValue}
-                          isCapturing={isCapturing}
-                          prompt={prompt}
-                          unassignedLabel={unassignedLabel}
-                          descriptor={item.bindingDisplay}
-                        />
-                      )}
-                    </button>
-                    {isCapturing ? (
-                      <button
-                        type="button"
-                        className={styles.bindingResetButton}
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleReset();
-                        }}
-                        aria-label={resetLabel}
-                        title={resetLabel}
-                      >
-                        ×
-                      </button>
-                    ) : null}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+        <InteractionHelpSection
+          key={section.id}
+          section={section}
+          captureState={captureState}
+          keyboardPrompt={keyboardPrompt}
+          pointerPrompt={pointerPrompt}
+          unassignedLabel={unassignedLabel}
+          resetLabel={resetLabel}
+          onResetSection={createResetSectionHandler(section)}
+          onSelectItem={handleSelectItem}
+          onResetItem={handleResetItem}
+        />
       ))}
     </div>
   );
 };
 
 InteractionHelpPanel.displayName = "InteractionHelpPanel";
-
-/*
-debug-notes:
-- Reviewed pointer shortcut formatting utilities to ensure inspector editing renders consistent labels.
-- Consulted InteractionSettingsContext to confirm inline resets should restore default shortcut assignments.
-- Revisited pointer shortcut utilities to derive compact binding notation.
-- Added binding value component to centralize compact pointer display formatting.
-*/
