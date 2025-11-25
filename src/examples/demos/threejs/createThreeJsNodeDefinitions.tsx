@@ -20,7 +20,8 @@ import {
 } from "./materialConfig";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import classes from "./ThreeJsNodes.module.css";
-import { calculateBezierPath, getOppositePortPosition } from "../../../components/connection/utils/connectionUtils";
+import { calculateConnectionPath } from "../../../core/connection/path";
+import { getOppositePortPosition } from "../../../core/port/position";
 import { NodeResizer } from "../../../components/node/NodeResizer";
 
 type ColorControlData = {
@@ -155,7 +156,7 @@ const ColorConnectionRenderer = (context: ConnectionRenderContext, defaultRender
   const nodeColor = (fromNode.data as ColorControlData).color || "#60a5fa";
 
   const targetPortPosition = toPort?.position ?? getOppositePortPosition(fromPort.position);
-  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, targetPortPosition);
+  const pathData = calculateConnectionPath(fromPosition, toPosition, fromPort.position, targetPortPosition);
   const connectionId = connection?.id ?? `preview-${context.phase}-${fromPort.id}-${toPort?.id ?? "floating"}`;
 
   // Render default connection for interaction, then overlay custom colored visuals
@@ -238,7 +239,7 @@ const ScaleConnectionRenderer = (context: ConnectionRenderContext, defaultRender
 const WireframeConnectionRenderer = (context: ConnectionRenderContext, defaultRender: () => React.ReactElement) => {
   const { fromPosition, toPosition, fromPort, toPort, connection } = context;
   const toPortPosition = toPort?.position ?? getOppositePortPosition(fromPort.position);
-  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, toPortPosition);
+  const pathData = calculateConnectionPath(fromPosition, toPosition, fromPort.position, toPortPosition);
   const connectionId = connection?.id ?? `preview-${context.phase}-${fromPort.id}-${toPort?.id ?? "floating"}`;
 
   return (
@@ -272,7 +273,7 @@ const WireframeConnectionRenderer = (context: ConnectionRenderContext, defaultRe
 const MaterialConnectionRenderer = (context: ConnectionRenderContext, defaultRender: () => React.ReactElement) => {
   const { fromPosition, toPosition, fromPort, toPort, connection, fromNode } = context;
   const toPortPosition = toPort?.position ?? getOppositePortPosition(fromPort.position);
-  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, toPortPosition);
+  const pathData = calculateConnectionPath(fromPosition, toPosition, fromPort.position, toPortPosition);
   const materialData = fromNode.data as MaterialControlData;
   const connectionId = connection?.id ?? `preview-${context.phase}-${fromPort.id}-${toPort?.id ?? "floating"}`;
   const gradientId = `material-gradient-${connectionId}`;

@@ -3,12 +3,9 @@
  */
 import * as React from "react";
 import type { ConnectionRenderContext } from "../../../types/NodeDefinition";
-import {
-  calculateBezierControlPoints,
-  calculateBezierPath,
-  cubicBezierPoint,
-  getOppositePortPosition,
-} from "../../../components/connection/utils/connectionUtils";
+import { calculateConnectionControlPoints, calculateConnectionPath } from "../../../core/connection/path";
+import { cubicBezierPoint } from "../../../core/geometry/curve";
+import { getOppositePortPosition } from "../../../core/port/position";
 import styles from "./CustomConnectorExample.module.css";
 
 type VisualPhase = "idle" | "hovered" | "active";
@@ -193,7 +190,7 @@ export const bezierConnectionRenderer = (
 
   const targetPortPosition = toPort?.position ?? getOppositePortPosition(fromPort.position);
   const { cp1, cp2 } = React.useMemo(
-    () => calculateBezierControlPoints(fromPosition, toPosition, fromPort.position, targetPortPosition),
+    () => calculateConnectionControlPoints(fromPosition, toPosition, fromPort.position, targetPortPosition),
     [
       fromPosition.x,
       fromPosition.y,
@@ -206,7 +203,7 @@ export const bezierConnectionRenderer = (
 
   const pathData = React.useMemo(
     () =>
-      calculateBezierPath(
+      calculateConnectionPath(
         fromPosition,
         toPosition,
         fromPort.position,

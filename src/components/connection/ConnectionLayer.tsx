@@ -5,7 +5,8 @@ import * as React from "react";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { calculateBezierPath, getOppositePortPosition } from "./utils/connectionUtils";
+import { calculateConnectionPath } from "../../core/connection/path";
+import { getOppositePortPosition } from "../../core/port/position";
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
 import type { Connection, Node as EditorNode, Port as CorePort, Position } from "../../types/core";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
@@ -137,7 +138,7 @@ const DragConnection = React.memo(() => {
     const toPosition = candidatePort && dragCandidatePos ? dragCandidatePos : dragState.toPosition;
     const renderer = resolveRenderConnection(fromPortEntry, fromNode, candidatePort, candidateNode);
 
-    const pathData = calculateBezierPath(
+    const pathData = calculateConnectionPath(
       dragFromPos,
       toPosition,
       fromPortEntry.position,
@@ -226,7 +227,7 @@ const DragConnection = React.memo(() => {
 
     const renderer = resolveRenderConnection(originalFromPort, fromNode, targetPort, targetNode);
 
-    const pathData = calculateBezierPath(
+    const pathData = calculateConnectionPath(
       fromPosition,
       toPosition,
       originalFromPort.position,

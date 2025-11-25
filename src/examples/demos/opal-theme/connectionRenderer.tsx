@@ -3,10 +3,8 @@
  */
 import * as React from "react";
 import type { ConnectionRenderContext } from "../../../types/NodeDefinition";
-import {
-  calculateBezierPath,
-  getOppositePortPosition,
-} from "../../../components/connection/utils/connectionUtils";
+import { calculateConnectionPath } from "../../../core/connection/path";
+import { getOppositePortPosition } from "../../../core/port/position";
 import styles from "./OpalThemeExample.module.css";
 
 
@@ -25,7 +23,7 @@ export const opalConnectionRenderer = (
 
   const pathData = React.useMemo(
     () =>
-      calculateBezierPath(
+      calculateConnectionPath(
         fromPosition,
         toPosition,
         fromPort.position,

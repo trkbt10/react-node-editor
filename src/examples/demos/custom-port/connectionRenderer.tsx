@@ -4,13 +4,9 @@
 import * as React from "react";
 import type { Position } from "../../../types/core";
 import type { ConnectionRenderContext } from "../../../types/NodeDefinition";
-import {
-  calculateBezierPath,
-  calculateBezierControlPoints,
-  cubicBezierPoint,
-  cubicBezierTangent,
-  getOppositePortPosition,
-} from "../../../components/connection/utils/connectionUtils";
+import { calculateConnectionControlPoints, calculateConnectionPath } from "../../../core/connection/path";
+import { cubicBezierPoint, cubicBezierTangent } from "../../../core/geometry/curve";
+import { getOppositePortPosition } from "../../../core/port/position";
 import { getStyleForDataType } from "./dataStyles";
 import { CONNECTION_VARIANT_TOKENS, type ConnectionVariant, resolveConnectionVariant } from "./connectionTokens";
 import styles from "./CustomPortRendererExample.module.css";
@@ -161,7 +157,7 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
     const tokens = CONNECTION_VARIANT_TOKENS[resolvedVariant];
 
     const pathData = React.useMemo(() => {
-      return calculateBezierPath(
+      return calculateConnectionPath(
         context.fromPosition,
         context.toPosition,
         context.fromPort.position,
@@ -177,7 +173,7 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
     ]);
 
     const { cp1, cp2 } = React.useMemo(() => {
-      return calculateBezierControlPoints(
+      return calculateConnectionControlPoints(
         context.fromPosition,
         context.toPosition,
         context.fromPort.position,

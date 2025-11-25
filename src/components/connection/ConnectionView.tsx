@@ -3,12 +3,8 @@
  */
 import * as React from "react";
 import type { Connection, Node, Port } from "../../types/core";
-import {
-  calculateBezierPath,
-  calculateBezierControlPoints,
-  cubicBezierPoint,
-  cubicBezierTangent,
-} from "./utils/connectionUtils";
+import { calculateConnectionPath, calculateConnectionControlPoints } from "../../core/connection/path";
+import { cubicBezierPoint, cubicBezierTangent } from "../../core/geometry/curve";
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
 import { useNodeDefinition } from "../../contexts/node-definitions/hooks/useNodeDefinition";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
@@ -123,12 +119,12 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
 
   // Calculate bezier path (recalculate when positions change)
   const pathData = React.useMemo(
-    () => calculateBezierPath(fromPosition, toPosition, fromPort.position, toPort.position),
+    () => calculateConnectionPath(fromPosition, toPosition, fromPort.position, toPort.position),
     [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPort.position, toPort.position],
   );
   // Compute mid-point and angle along the bezier at t=0.5
   const midAndAngle = React.useMemo(() => {
-    const { cp1, cp2 } = calculateBezierControlPoints(fromPosition, toPosition, fromPort.position, toPort.position);
+    const { cp1, cp2 } = calculateConnectionControlPoints(fromPosition, toPosition, fromPort.position, toPort.position);
     const t = 0.5;
     const pt = cubicBezierPoint(fromPosition, cp1, cp2, toPosition, t);
     const tan = cubicBezierTangent(fromPosition, cp1, cp2, toPosition, t);

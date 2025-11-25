@@ -24,12 +24,9 @@ import { InspectorSectionTitle } from "../../../components/inspector/parts/Inspe
 import { InspectorField } from "../../../components/inspector/parts/InspectorField";
 import { InspectorInput } from "../../../components/inspector/parts/InspectorInput";
 import { SwitchInput } from "../../../components/elements/SwitchInput";
-import {
-  calculateBezierControlPoints,
-  calculateBezierPath,
-  cubicBezierPoint,
-  getOppositePortPosition,
-} from "../../../components/connection/utils/connectionUtils";
+import { calculateConnectionControlPoints, calculateConnectionPath } from "../../../core/connection/path";
+import { cubicBezierPoint } from "../../../core/geometry/curve";
+import { getOppositePortPosition } from "../../../core/port/position";
 import { normalizePortDataTypes } from "../../../utils/portDataTypeUtils";
 
 type PortGroupConfig = {
@@ -426,8 +423,8 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
   ): React.ReactElement => {
     const defaultElement = defaultRender();
     const toPortPosition = context.toPort?.position ?? getOppositePortPosition(context.fromPort.position);
-    const pathData = calculateBezierPath(context.fromPosition, context.toPosition, context.fromPort.position, toPortPosition);
-    const { cp1, cp2 } = calculateBezierControlPoints(
+    const pathData = calculateConnectionPath(context.fromPosition, context.toPosition, context.fromPort.position, toPortPosition);
+    const { cp1, cp2 } = calculateConnectionControlPoints(
       context.fromPosition,
       context.toPosition,
       context.fromPort.position,

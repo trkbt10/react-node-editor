@@ -3,11 +3,8 @@
  */
 import * as React from "react";
 import type { ConnectionRenderContext, PortRenderContext } from "../../../types/NodeDefinition";
-import {
-  calculateBezierPath,
-  calculateBezierControlPoints,
-  cubicBezierPoint,
-} from "../../../components/connection/utils/connectionUtils";
+import { calculateConnectionControlPoints, calculateConnectionPath } from "../../../core/connection/path";
+import { cubicBezierPoint } from "../../../core/geometry/curve";
 
 /**
  * Custom connection renderer with dotted curved lines and correlation coefficient badges
@@ -32,10 +29,10 @@ export const renderTradingConnection = (
   }
 
   // Calculate bezier path for curved connection
-  const pathData = calculateBezierPath(fromPosition, toPosition, fromPort.position, toPort.position);
+  const pathData = calculateConnectionPath(fromPosition, toPosition, fromPort.position, toPort.position);
 
   // Calculate midpoint for badge placement
-  const { cp1, cp2 } = calculateBezierControlPoints(fromPosition, toPosition, fromPort.position, toPort.position);
+  const { cp1, cp2 } = calculateConnectionControlPoints(fromPosition, toPosition, fromPort.position, toPort.position);
   const midPoint = cubicBezierPoint(fromPosition, cp1, cp2, toPosition, 0.5);
 
   // Determine colors based on correlation coefficient - matching reference image
