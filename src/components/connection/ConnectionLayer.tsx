@@ -16,6 +16,9 @@ import { useInteractionSettings } from "../../contexts/InteractionSettingsContex
 import type { PointerType } from "../../types/interaction";
 import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
 import { getPortDefinition } from "../../contexts/node-ports/utils/connectionValidation";
+import { getPreviewPosition } from "../../core/geometry/position";
+import { getNodeDragOffset } from "../../core/node/dragState";
+import { getNodeResizeSize } from "../../core/node/resizeState";
 
 export type ConnectionLayerProps = {
   className?: string;
@@ -26,12 +29,36 @@ export type ConnectionLayerProps = {
  */
 export const ConnectionLayer: React.FC<ConnectionLayerProps> = ({ className }) => {
   const { state: nodeEditorState } = useNodeEditor();
+  const { state: actionState } = useEditorActionState();
+
+  const { dragState, resizeState, selectedConnectionIds, hoveredConnectionId, selectedNodeIds } = actionState;
 
   return (
     <svg className={className ? `${styles.root} ${className}` : styles.root} data-connection-layer="root">
       {/* Render all connections */}
       {Object.values(nodeEditorState.connections).map((connection) => {
-        return <ConnectionRenderer key={connection.id} connection={connection} />;
+        const fromDragOffset = getNodeDragOffset(dragState, connection.fromNodeId);
+        const toDragOffset = getNodeDragOffset(dragState, connection.toNodeId);
+        const fromResizeSize = getNodeResizeSize(resizeState, connection.fromNodeId);
+        const toResizeSize = getNodeResizeSize(resizeState, connection.toNodeId);
+        const isSelected = selectedConnectionIds.includes(connection.id);
+        const isHovered = hoveredConnectionId === connection.id;
+        const isAdjacentToSelectedNode =
+          selectedNodeIds.includes(connection.fromNodeId) || selectedNodeIds.includes(connection.toNodeId);
+
+        return (
+          <ConnectionRenderer
+            key={connection.id}
+            connection={connection}
+            fromDragOffset={fromDragOffset}
+            toDragOffset={toDragOffset}
+            fromResizeSize={fromResizeSize}
+            toResizeSize={toResizeSize}
+            isSelected={isSelected}
+            isHovered={isHovered}
+            isAdjacentToSelectedNode={isAdjacentToSelectedNode}
+          />
+        );
       })}
 
       {/* Render drag connection */}
@@ -255,9 +282,30 @@ type RendererInvokerProps = {
 const ConnectionRendererInvoker: React.FC<RendererInvokerProps> = ({ renderer, context, defaultRender }) => {
   return renderer(context, defaultRender);
 };
-const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
+
+type ConnectionRendererProps = {
+  connection: Connection;
+  fromDragOffset: Position | null;
+  toDragOffset: Position | null;
+  fromResizeSize: { width: number; height: number } | null;
+  toResizeSize: { width: number; height: number } | null;
+  isSelected: boolean;
+  isHovered: boolean;
+  isAdjacentToSelectedNode: boolean;
+};
+
+const ConnectionRendererComponent = ({
+  connection,
+  fromDragOffset,
+  toDragOffset,
+  fromResizeSize,
+  toResizeSize,
+  isSelected,
+  isHovered,
+  isAdjacentToSelectedNode,
+}: ConnectionRendererProps) => {
   const { state: nodeEditorState, portLookupMap } = useNodeEditor();
-  const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
   const { connection: ConnectionComponent } = useRenderers();
   const interactionSettings = useInteractionSettings();
@@ -399,46 +447,10 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
     return null;
   }
 
-  // Get preview position and size for nodes during drag or resize
-  const getNodePreviewData = (node: EditorNode, nodeId: string) => {
-    let previewPosition = null;
-    let previewSize = null;
+  // Calculate preview positions using shared utility
+  const fromPreviewPosition = getPreviewPosition(fromNode.position, fromDragOffset);
+  const toPreviewPosition = getPreviewPosition(toNode.position, toDragOffset);
 
-    // Check for drag state
-    if (actionState.dragState) {
-      const { nodeIds, offset, affectedChildNodes } = actionState.dragState;
-
-      // Check if this node is directly being dragged
-      if (nodeIds.includes(nodeId)) {
-        previewPosition = {
-          x: node.position.x + offset.x,
-          y: node.position.y + offset.y,
-        };
-      } else {
-        // Check if this node is a child of a dragging group
-        const isChildOfDraggingGroup = Object.entries(affectedChildNodes).some(([_groupId, childIds]) =>
-          childIds.includes(nodeId),
-        );
-
-        if (isChildOfDraggingGroup) {
-          previewPosition = {
-            x: node.position.x + offset.x,
-            y: node.position.y + offset.y,
-          };
-        }
-      }
-    }
-
-    // Check for resize state
-    if (actionState.resizeState && actionState.resizeState.nodeId === nodeId) {
-      previewSize = actionState.resizeState.currentSize;
-    }
-
-    return { previewPosition, previewSize };
-  };
-
-  const fromNodeData = getNodePreviewData(fromNode, connection.fromNodeId);
-  const toNodeData = getNodePreviewData(toNode, connection.toNodeId);
   return (
     <ConnectionComponent
       key={connection.id}
@@ -447,16 +459,13 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
       toNode={toNode}
       fromPort={fromPort}
       toPort={toPort}
-      isAdjacentToSelectedNode={
-        actionState.selectedNodeIds.includes(connection.fromNodeId) ||
-        actionState.selectedNodeIds.includes(connection.toNodeId)
-      }
-      fromNodePosition={fromNodeData.previewPosition || undefined}
-      toNodePosition={toNodeData.previewPosition || undefined}
-      fromNodeSize={fromNodeData.previewSize || undefined}
-      toNodeSize={toNodeData.previewSize || undefined}
-      isSelected={actionState.selectedConnectionIds.includes(connection.id)}
-      isHovered={actionState.hoveredConnectionId === connection.id}
+      isAdjacentToSelectedNode={isAdjacentToSelectedNode}
+      fromNodePosition={fromPreviewPosition || undefined}
+      toNodePosition={toPreviewPosition || undefined}
+      fromNodeSize={fromResizeSize || undefined}
+      toNodeSize={toResizeSize || undefined}
+      isSelected={isSelected}
+      isHovered={isHovered}
       onPointerDown={handleConnectionPointerDown}
       onPointerEnter={handleConnectionPointerEnter}
       onPointerLeave={handleConnectionPointerLeave}
@@ -464,3 +473,35 @@ const ConnectionRenderer = ({ connection }: { connection: Connection }) => {
     />
   );
 };
+
+// Memoize ConnectionRenderer to prevent unnecessary re-renders
+// Only re-renders when props actually change (drag offset, selection state, etc.)
+const ConnectionRenderer = React.memo(ConnectionRendererComponent, (prevProps, nextProps) => {
+  // Connection reference check
+  if (prevProps.connection !== nextProps.connection) {return false;}
+
+  // Selection and hover state
+  if (prevProps.isSelected !== nextProps.isSelected) {return false;}
+  if (prevProps.isHovered !== nextProps.isHovered) {return false;}
+  if (prevProps.isAdjacentToSelectedNode !== nextProps.isAdjacentToSelectedNode) {return false;}
+
+  // Drag offset comparison (check both x and y)
+  const prevFromOffset = prevProps.fromDragOffset;
+  const nextFromOffset = nextProps.fromDragOffset;
+  if (prevFromOffset?.x !== nextFromOffset?.x || prevFromOffset?.y !== nextFromOffset?.y) {return false;}
+
+  const prevToOffset = prevProps.toDragOffset;
+  const nextToOffset = nextProps.toDragOffset;
+  if (prevToOffset?.x !== nextToOffset?.x || prevToOffset?.y !== nextToOffset?.y) {return false;}
+
+  // Resize size comparison
+  const prevFromResize = prevProps.fromResizeSize;
+  const nextFromResize = nextProps.fromResizeSize;
+  if (prevFromResize?.width !== nextFromResize?.width || prevFromResize?.height !== nextFromResize?.height) {return false;}
+
+  const prevToResize = prevProps.toResizeSize;
+  const nextToResize = nextProps.toResizeSize;
+  if (prevToResize?.width !== nextToResize?.width || prevToResize?.height !== nextToResize?.height) {return false;}
+
+  return true;
+});

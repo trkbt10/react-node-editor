@@ -11,7 +11,6 @@ import { useExternalData } from "../../contexts/external-data/useExternalData";
 import styles from "./NodeView.module.css";
 import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
 import { ResizeHandles } from "./ResizeHandles";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeResize } from "../../hooks/useNodeResize";
 import { useGroupManagement } from "../../hooks/useGroupManagement";
 import { hasAppearanceBehavior, hasGroupBehavior } from "../../types/behaviors";
@@ -51,6 +50,8 @@ export type NodeViewProps = {
   hoveredPort?: Port;
   connectedPorts?: Set<string>;
   connectablePorts?: ConnectablePortsResult;
+  /** ID of the candidate port for connection (passed from parent to avoid context dependency) */
+  candidatePortId?: string;
   nodeRenderer?: (props: CustomNodeRendererProps) => React.ReactNode;
   externalData?: unknown;
   onUpdateNode?: (updates: Partial<Node>) => void;
@@ -73,12 +74,13 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   onPortPointerMove,
   onPortPointerLeave,
   onPortPointerCancel,
+  connectingPort,
   hoveredPort,
   connectedPorts,
   connectablePorts,
+  candidatePortId,
 }) => {
   const { actions: nodeEditorActions, getNodePorts, getNodeById } = useNodeEditor();
-  const { state: actionState } = useEditorActionState();
   const { isEditing, startEditing, updateValue, confirmEdit, cancelEdit, state: editingState } = useInlineEditing();
   const {
     startResize,
@@ -97,25 +99,13 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
     console.log(`[NodeView:${node.id}] NodeViewComponent is rendering`);
   }
 
-  // Debug: Track context changes
-  const prevActionStateRef = React.useRef(actionState);
+  // Debug: Track context changes (excluding actionState which is no longer used for performance)
   const prevEditingStateRef = React.useRef(editingState);
   const prevNodeDefinitionRef = React.useRef(nodeDefinition);
   const prevExternalDataStateRef = React.useRef(externalDataState);
 
   React.useEffect(() => {
     if (DEBUG_NODEVIEW_CONTEXT_CHANGES) {
-      if (prevActionStateRef.current !== actionState) {
-        console.log(`[NodeView:${node.id}] Context changed: actionState`, {
-          prevDragState: prevActionStateRef.current?.dragState,
-          nextDragState: actionState?.dragState,
-          prevConnectionDragState: prevActionStateRef.current?.connectionDragState,
-          nextConnectionDragState: actionState?.connectionDragState,
-          prevSelectionBox: prevActionStateRef.current?.selectionBox,
-          nextSelectionBox: actionState?.selectionBox,
-        });
-        prevActionStateRef.current = actionState;
-      }
       if (prevEditingStateRef.current !== editingState) {
         console.log(`[NodeView:${node.id}] Context changed: editingState`, {
           prev: prevEditingStateRef.current,
@@ -169,6 +159,8 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   );
 
   // Apply drag transform via CSS for performance
+  // Note: dragOffset prop is already calculated by NodeLayer to include both
+  // direct drag and child drag scenarios, so we don't need to access actionState.dragState here
   React.useLayoutEffect(() => {
     if (!nodeRef.current) {
       return;
@@ -185,28 +177,15 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
       }
     }
 
-    // Apply drag offset if dragging
-    if (!isResizing) {
-      if (isDragging && dragOffset) {
-        transformX += dragOffset.x;
-        transformY += dragOffset.y;
-      } else if (actionState.dragState) {
-        // Check if this is a child being dragged
-        const { affectedChildNodes, offset } = actionState.dragState;
-        const isChildOfDraggingGroup = Object.entries(affectedChildNodes).some(([_groupId, childIds]) =>
-          childIds.includes(node.id),
-        );
-
-        if (isChildOfDraggingGroup) {
-          transformX += offset.x;
-          transformY += offset.y;
-        }
-      }
+    // Apply drag offset if provided (covers both direct drag and child drag)
+    if (!isResizing && dragOffset) {
+      transformX += dragOffset.x;
+      transformY += dragOffset.y;
     }
 
     // Apply transform directly to DOM for performance
     nodeRef.current.style.transform = `translate(${transformX}px, ${transformY}px)`;
-  }, [basePosition, isDragging, dragOffset, actionState.dragState, node.id, isResizing, getCurrentPosition]);
+  }, [basePosition, dragOffset, node.id, isResizing, getCurrentPosition]);
 
   // Calculate actual size including resize state
   const size = React.useMemo(() => {
@@ -302,16 +281,8 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
     [node.id, node.locked, startResize, getNodeById],
   );
 
-  // Extract port connection state for memoization
-  const connectingPortId = React.useMemo(
-    () => actionState.connectionDragState?.fromPort.id,
-    [actionState.connectionDragState?.fromPort.id],
-  );
-
-  const candidatePortId = React.useMemo(
-    () => actionState.connectionDragState?.candidatePort?.id,
-    [actionState.connectionDragState?.candidatePort?.id],
-  );
+  // Port connection state is now passed as props to avoid context dependency
+  const connectingPortId = connectingPort?.id;
 
   // Custom renderer props - memoized with granular dependencies
   const isEditingTitle = isEditing(node.id, "title");
@@ -346,13 +317,8 @@ const NodeViewComponent: React.FC<NodeViewProps> = ({
   ]);
 
   // Calculate child dragging state
-  const isChildDragging = React.useMemo(() => {
-    if (!actionState.dragState) {
-      return false;
-    }
-    const { affectedChildNodes } = actionState.dragState;
-    return Object.entries(affectedChildNodes).some(([_groupId, childIds]) => childIds.includes(node.id));
-  }, [actionState.dragState, node.id]);
+  // If dragOffset is provided but isDragging is false, this node is being dragged as a child
+  const isChildDragging = !isDragging && dragOffset !== undefined;
 
   // Get ports for this node
   const ports = React.useMemo(() => getNodePorts(node.id) || [], [getNodePorts, node.id]);
@@ -560,6 +526,10 @@ const areEqual = (prevProps: NodeViewProps, nextProps: NodeViewProps): boolean =
   }
   if (prevProps.hoveredPort?.id !== nextProps.hoveredPort?.id) {
     debugLog("hoveredPort.id changed", { prev: prevProps.hoveredPort?.id, next: nextProps.hoveredPort?.id });
+    return false;
+  }
+  if (prevProps.candidatePortId !== nextProps.candidatePortId) {
+    debugLog("candidatePortId changed", { prev: prevProps.candidatePortId, next: nextProps.candidatePortId });
     return false;
   }
 

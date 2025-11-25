@@ -14,6 +14,7 @@ import { useRenderers } from "../../contexts/RendererContext";
 import { hasGroupBehavior } from "../../types/behaviors";
 import { useNodeLayerDrag, useNodeLayerConnections, useNodeLayerPorts } from "./NodeLayerInteractions";
 import { useNodeSelectionInteractions } from "./hooks/useNodeSelectionInteractions";
+import { isNodeDirectlyDragged, getNodeDragOffset } from "../../core/node/dragState";
 
 export type NodeLayerProps = {
   doubleClickToEdit?: boolean;
@@ -97,49 +98,57 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
 
   useNodeLayerConnections();
 
+  const { dragState, selectedNodeIds, connectionDragState, hoveredPort, connectablePorts } = actionState;
+
   return (
     <div className={styles.nodeLayer} data-node-layer>
-      {sortedNodes.map((node) => (
-        <NodeComponent
-          key={node.id}
-          node={node}
-          isSelected={actionState.selectedNodeIds.includes(node.id)}
-          isDragging={actionState.dragState?.nodeIds.includes(node.id) ?? false}
-          dragOffset={actionState.dragState?.nodeIds.includes(node.id) ? actionState.dragState.offset : undefined}
-          onPointerDown={handleNodePointerDown}
-          onContextMenu={handleNodeContextMenu}
-          onPortPointerDown={handlePortPointerDown}
-          onPortPointerUp={handlePortPointerUp}
-          onPortPointerEnter={handlePortPointerEnter}
-          onPortPointerMove={handlePortPointerMove}
-          onPortPointerLeave={handlePortPointerLeave}
-          onPortPointerCancel={handlePortPointerCancel}
-          connectablePorts={actionState.connectablePorts}
-          connectingPort={
-            actionState.connectionDragState?.fromPort
-              ? {
-                  id: actionState.connectionDragState.fromPort.id,
-                  type: actionState.connectionDragState.fromPort.type,
-                  label: actionState.connectionDragState.fromPort.label,
-                  nodeId: actionState.connectionDragState.fromPort.nodeId,
-                  position: actionState.connectionDragState.fromPort.position,
-                }
-              : undefined
-          }
-          hoveredPort={
-            actionState.hoveredPort
-              ? {
-                  id: actionState.hoveredPort.id,
-                  type: actionState.hoveredPort.type,
-                  label: actionState.hoveredPort.label,
-                  nodeId: actionState.hoveredPort.nodeId,
-                  position: actionState.hoveredPort.position,
-                }
-              : undefined
-          }
-          connectedPorts={connectedPorts}
-        />
-      ))}
+      {sortedNodes.map((node) => {
+        const isDirectlyDragging = isNodeDirectlyDragged(dragState, node.id);
+        const dragOffset = getNodeDragOffset(dragState, node.id) ?? undefined;
+
+        return (
+          <NodeComponent
+            key={node.id}
+            node={node}
+            isSelected={selectedNodeIds.includes(node.id)}
+            isDragging={isDirectlyDragging}
+            dragOffset={dragOffset}
+            onPointerDown={handleNodePointerDown}
+            onContextMenu={handleNodeContextMenu}
+            onPortPointerDown={handlePortPointerDown}
+            onPortPointerUp={handlePortPointerUp}
+            onPortPointerEnter={handlePortPointerEnter}
+            onPortPointerMove={handlePortPointerMove}
+            onPortPointerLeave={handlePortPointerLeave}
+            onPortPointerCancel={handlePortPointerCancel}
+            connectablePorts={connectablePorts}
+            connectingPort={
+              connectionDragState?.fromPort
+                ? {
+                    id: connectionDragState.fromPort.id,
+                    type: connectionDragState.fromPort.type,
+                    label: connectionDragState.fromPort.label,
+                    nodeId: connectionDragState.fromPort.nodeId,
+                    position: connectionDragState.fromPort.position,
+                  }
+                : undefined
+            }
+            hoveredPort={
+              hoveredPort
+                ? {
+                    id: hoveredPort.id,
+                    type: hoveredPort.type,
+                    label: hoveredPort.label,
+                    nodeId: hoveredPort.nodeId,
+                    position: hoveredPort.position,
+                  }
+                : undefined
+            }
+            connectedPorts={connectedPorts}
+            candidatePortId={connectionDragState?.candidatePort?.id}
+          />
+        );
+      })}
     </div>
   );
 };
