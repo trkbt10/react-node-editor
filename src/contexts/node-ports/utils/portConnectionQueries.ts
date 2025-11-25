@@ -3,7 +3,7 @@
  */
 import type { Port, Node, Connection } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { canConnectPorts } from "./connectionValidation";
+import { canConnectPorts } from "../../../core/connection/validation";
 
 /**
  * Check if a port has any connections

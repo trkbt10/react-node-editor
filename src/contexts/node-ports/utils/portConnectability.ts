@@ -4,7 +4,7 @@
 import type { Port, Node, Connection } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import type { ConnectablePortsResult } from "./connectablePortPlanner";
-import { canConnectPorts } from "./connectionValidation";
+import { canConnectPorts } from "../../../core/connection/validation";
 
 /**
  * Compute connectable port IDs for a given source port.

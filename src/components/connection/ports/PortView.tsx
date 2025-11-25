@@ -8,7 +8,7 @@ import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { useNodeDefinition } from "../../../contexts/node-definitions/hooks/useNodeDefinition";
 import type { PortRenderContext } from "../../../types/NodeDefinition";
 import styles from "./PortView.module.css";
-import { getPortDefinition } from "../../../contexts/node-ports/utils/connectionValidation";
+import { getPortDefinition } from "../../../core/connection/validation";
 
 export type PortViewProps = {
   port: Port;

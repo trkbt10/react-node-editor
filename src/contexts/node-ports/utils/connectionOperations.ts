@@ -3,7 +3,7 @@
  */
 import type { Port, Node, Connection } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { canConnectPorts } from "./connectionValidation";
+import { canConnectPorts } from "../../../core/connection/validation";
 
 /**
  * Create a connection object based on port types

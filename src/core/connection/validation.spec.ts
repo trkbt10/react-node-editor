@@ -1,11 +1,11 @@
 /**
  * @file Unit tests for connection validation utilities.
  */
-import { canConnectPorts } from "./connectionValidation";
-import type { Connection, Port } from "../../../types/core";
-import type { NodeDefinition } from "../../../types/NodeDefinition";
-import type { NodeDefinitionRegistry } from "../../../types/NodeDefinitionRegistry";
-import { createNodeDefinitionRegistry } from "../../../types/NodeDefinitionRegistry";
+import { canConnectPorts } from "./validation";
+import type { Connection, Port } from "../../types/core";
+import type { NodeDefinition } from "../../types/NodeDefinition";
+import type { NodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
+import { createNodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
 
 describe("canConnectPorts - maxConnections default/unlimited", () => {
   const mkRegistry = (defs: NodeDefinition[]): NodeDefinitionRegistry => {

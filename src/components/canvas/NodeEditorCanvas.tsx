@@ -26,7 +26,7 @@ import {
   type PortPositionNode,
 } from "../../types/portPosition";
 import { computeAllPortPositions, computeNodePortPositions } from "../../contexts/node-ports/utils/computePortPositions";
-import { canConnectPorts } from "../../contexts/node-ports/utils/connectionValidation";
+import { canConnectPorts } from "../../core/connection/validation";
 import {
   canAddNodeType,
   countNodesByType,

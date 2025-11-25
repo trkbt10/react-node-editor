@@ -7,7 +7,7 @@ import { getNodePorts } from "./portResolution";
 import { computeConnectablePortIds } from "./connectablePortPlanner";
 import { planConnectionChange, ConnectionSwitchBehavior } from "./connectionSwitchBehavior";
 import { createThreeJsNodeDefinitions } from "../../../examples/demos/threejs/createThreeJsNodeDefinitions";
-import { canConnectPorts } from "./connectionValidation";
+import { canConnectPorts } from "../../../core/connection/validation";
 
 const registerThreeJsDefinitions = () => {
   const registry = createNodeDefinitionRegistry();

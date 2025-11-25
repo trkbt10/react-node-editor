@@ -16,7 +16,7 @@ import styles from "./ConnectionLayer.module.css";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
 import type { PointerType } from "../../types/interaction";
 import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
-import { getPortDefinition } from "../../contexts/node-ports/utils/connectionValidation";
+import { getPortDefinition } from "../../core/connection/validation";
 import { getPreviewPosition } from "../../core/geometry/position";
 import { getNodeDragOffset } from "../../core/node/dragState";
 import { getNodeResizeSize } from "../../core/node/resizeState";

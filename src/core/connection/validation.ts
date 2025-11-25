@@ -1,12 +1,41 @@
 /**
  * @file Connection validation helpers for node port compatibility checks.
+ * Pure domain functions for validating connections between ports.
  */
-import type { Node, Port, Connection, NodeId } from "../../../types/core";
-import type { NodeDefinition, PortConnectionContext } from "../../../types/NodeDefinition";
-import { arePortDataTypesCompatible, mergePortDataTypes } from "../../../utils/portDataTypeUtils";
+import type { Node, Port, Connection, NodeId } from "../../types/core";
+import type { NodeDefinition, PortConnectionContext } from "../../types/NodeDefinition";
+import { arePortDataTypesCompatible, mergePortDataTypes } from "../../utils/portDataTypeUtils";
 
 export type ConnectionValidationOptions = {
   nodes?: Record<NodeId, Node>;
+};
+
+/**
+ * Get port definition from node definition
+ */
+export const getPortDefinition = (port: Port, nodeDefinition?: NodeDefinition) => {
+  if (!nodeDefinition?.ports) {
+    return undefined;
+  }
+  const candidateIds = new Set<string>();
+  if (port.definitionId) {
+    candidateIds.add(port.definitionId);
+  }
+  candidateIds.add(port.id);
+
+  const numericSuffixMatch = port.id.match(/^(.*?)-\d+$/);
+  if (numericSuffixMatch?.[1]) {
+    candidateIds.add(numericSuffixMatch[1]);
+  }
+
+  for (const candidate of candidateIds) {
+    const match = nodeDefinition.ports.find((p) => p.id === candidate);
+    if (match) {
+      return match;
+    }
+  }
+
+  return undefined;
 };
 
 /**
@@ -134,32 +163,4 @@ export const canConnectPorts = (
   }
 
   return true;
-};
-
-/**
- * Get port definition from node definition
- */
-export const getPortDefinition = (port: Port, nodeDefinition?: NodeDefinition) => {
-  if (!nodeDefinition?.ports) {
-    return undefined;
-  }
-  const candidateIds = new Set<string>();
-  if (port.definitionId) {
-    candidateIds.add(port.definitionId);
-  }
-  candidateIds.add(port.id);
-
-  const numericSuffixMatch = port.id.match(/^(.*?)-\d+$/);
-  if (numericSuffixMatch?.[1]) {
-    candidateIds.add(numericSuffixMatch[1]);
-  }
-
-  for (const candidate of candidateIds) {
-    const match = nodeDefinition.ports.find((p) => p.id === candidate);
-    if (match) {
-      return match;
-    }
-  }
-
-  return undefined;
 };

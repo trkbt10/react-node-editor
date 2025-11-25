@@ -17,7 +17,7 @@ import {
 } from "./connectionAppearance";
 import { createMarkerGeometry, placeMarkerGeometry } from "./markerShapes";
 import styles from "./ConnectionView.module.css";
-import { getPortDefinition } from "../../contexts/node-ports/utils/connectionValidation";
+import { getPortDefinition } from "../../core/connection/validation";
 
 type XYPosition = { x: number; y: number };
 const DIRECTION_MARKER_RADIUS = 2;

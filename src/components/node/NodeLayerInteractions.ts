@@ -14,7 +14,7 @@ import {
 } from "../../contexts/node-ports/utils/connectablePortPlanner";
 import { getPortConnections, getOtherPortInfo, isValidReconnection } from "../../contexts/node-ports/utils/portConnectionQueries";
 import { createValidatedConnection } from "../../contexts/node-ports/utils/connectionOperations";
-import { canConnectPorts } from "../../contexts/node-ports/utils/connectionValidation";
+import { canConnectPorts } from "../../core/connection/validation";
 import {
   planConnectionChange,
   ConnectionSwitchBehavior,
