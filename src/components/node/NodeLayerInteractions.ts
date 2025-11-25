@@ -12,7 +12,8 @@ import {
   computeConnectablePortIds,
   type ConnectablePortsResult,
 } from "../../contexts/node-ports/utils/connectablePortPlanner";
-import { getPortConnections, getOtherPortInfo, isValidReconnection } from "../../contexts/node-ports/utils/portConnectionQueries";
+import { getOtherPortInfo, isValidReconnection } from "../../contexts/node-ports/utils/portConnectionQueries";
+import { getPortConnections } from "../../core/port/queries";
 import { createValidatedConnection } from "../../contexts/node-ports/utils/connectionOperations";
 import { canConnectPorts } from "../../core/connection/validation";
 import {

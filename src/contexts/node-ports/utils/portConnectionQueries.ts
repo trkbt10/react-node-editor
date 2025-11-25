@@ -1,20 +1,10 @@
 /**
  * @file Query utilities for inspecting port connections and validating reconnections
+ * Contains functions that require context callbacks (getNodePorts, getNodeDefinition)
  */
 import type { Port, Node, Connection } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { canConnectPorts } from "../../../core/connection/validation";
-
-/**
- * Check if a port has any connections
- */
-export function getPortConnections(port: Port, connections: Record<string, Connection>): Connection[] {
-  return Object.values(connections).filter(
-    (conn) =>
-      (conn.fromPortId === port.id && conn.fromNodeId === port.nodeId) ||
-      (conn.toPortId === port.id && conn.toNodeId === port.nodeId),
-  );
-}
 
 /**
  * Get the other port information for a connection
