@@ -16,7 +16,6 @@ import styles from "./ConnectionLayer.module.css";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
 import type { PointerType } from "../../types/interaction";
 import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
-import { getPortDefinition } from "../../core/connection/validation";
 import { getPreviewPosition } from "../../core/geometry/position";
 import { hasPositionChanged, hasSizeChanged } from "../../core/geometry/comparators";
 import { getNodeDragOffset } from "../../core/node/dragState";
@@ -73,7 +72,7 @@ ConnectionLayer.displayName = "ConnectionLayer";
 const DragConnection = React.memo(() => {
   const { state: actionState } = useEditorActionState();
   const { state: nodeEditorState, portLookupMap } = useNodeEditor();
-  const { registry } = useNodeDefinitions();
+  const { getPortDefinition } = useNodeDefinitions();
 
   const dragFromNodeId = actionState.connectionDragState?.fromPort.nodeId ?? "";
   const dragFromPortId = actionState.connectionDragState?.fromPort.id ?? "";
@@ -103,18 +102,14 @@ const DragConnection = React.memo(() => {
   const resolveRenderConnection = React.useCallback(
     (primaryPort: CorePort | undefined, primaryNode: EditorNode | undefined, fallbackPort?: CorePort, fallbackNode?: EditorNode) => {
       if (primaryPort && primaryNode) {
-        const primaryDefinition = registry.get(primaryNode.type);
-        const primaryPortDefinition =
-          primaryDefinition && primaryPort ? getPortDefinition(primaryPort, primaryDefinition) : undefined;
+        const primaryPortDefinition = getPortDefinition(primaryPort, primaryNode.type);
         if (primaryPortDefinition?.renderConnection) {
           return primaryPortDefinition.renderConnection;
         }
       }
 
       if (fallbackPort && fallbackNode) {
-        const fallbackDefinition = registry.get(fallbackNode.type);
-        const fallbackPortDefinition =
-          fallbackDefinition && fallbackPort ? getPortDefinition(fallbackPort, fallbackDefinition) : undefined;
+        const fallbackPortDefinition = getPortDefinition(fallbackPort, fallbackNode.type);
         if (fallbackPortDefinition?.renderConnection) {
           return fallbackPortDefinition.renderConnection;
         }
@@ -122,7 +117,7 @@ const DragConnection = React.memo(() => {
 
       return null;
     },
-    [registry],
+    [getPortDefinition],
   );
 
   if (actionState.connectionDragState && dragFromPos) {

@@ -3,11 +3,11 @@
  */
 import * as React from "react";
 import type { Connection, Node, Port } from "../../types/core";
-import { calculateConnectionPath, calculateConnectionControlPoints, calculateConnectionMidpoint } from "../../core/connection/path";
+import { calculateConnectionPath, calculateConnectionMidpoint } from "../../core/connection/path";
 import { hasAnyPositionChanged, hasAnySizeChanged } from "../../core/geometry/comparators";
 import { hasPortPositionChanged } from "../../core/port/comparators";
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
-import { useNodeDefinition } from "../../contexts/node-definitions/hooks/useNodeDefinition";
+import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
 import {
   CONNECTION_APPEARANCES,
@@ -18,13 +18,15 @@ import {
 } from "./connectionAppearance";
 import { createMarkerGeometry, placeMarkerGeometry } from "./markerShapes";
 import styles from "./ConnectionView.module.css";
-import { getPortDefinition } from "../../core/connection/validation";
 
 type XYPosition = { x: number; y: number };
 const DIRECTION_MARKER_RADIUS = 2;
 
-const resolvePosition = (basePosition: XYPosition | undefined, nodePosition: XYPosition, overridePosition?: XYPosition) =>
-  basePosition ?? overridePosition ?? nodePosition;
+const resolvePosition = (
+  basePosition: XYPosition | undefined,
+  nodePosition: XYPosition,
+  overridePosition?: XYPosition,
+) => basePosition ?? overridePosition ?? nodePosition;
 
 export type ConnectionViewProps = {
   connection: Connection;
@@ -85,21 +87,15 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
   });
 
   // Calculate port positions (use override positions for drag preview)
-  const fromPosition = React.useMemo(() => resolvePosition(baseFromPosition, fromNode.position, fromNodePosition), [
-    baseFromPosition,
-    fromNode.position.x,
-    fromNode.position.y,
-    fromNodePosition?.x,
-    fromNodePosition?.y,
-  ]);
+  const fromPosition = React.useMemo(
+    () => resolvePosition(baseFromPosition, fromNode.position, fromNodePosition),
+    [baseFromPosition, fromNode.position.x, fromNode.position.y, fromNodePosition?.x, fromNodePosition?.y],
+  );
 
-  const toPosition = React.useMemo(() => resolvePosition(baseToPosition, toNode.position, toNodePosition), [
-    baseToPosition,
-    toNode.position.x,
-    toNode.position.y,
-    toNodePosition?.x,
-    toNodePosition?.y,
-  ]);
+  const toPosition = React.useMemo(
+    () => resolvePosition(baseToPosition, toNode.position, toNodePosition),
+    [baseToPosition, toNode.position.x, toNode.position.y, toNodePosition?.x, toNodePosition?.y],
+  );
 
   const adjacency: ConnectionAdjacency = isAdjacentToSelectedNode ? "adjacent" : "self";
   const interactionPhase = React.useMemo<ConnectionInteractionPhase>(
@@ -176,13 +172,10 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
     [connection.id, onContextMenu],
   );
 
-  // Get node definitions to check for custom connection renderer
-  const fromNodeDefinition = useNodeDefinition(fromNode.type);
-  const toNodeDefinition = useNodeDefinition(toNode.type);
-
-  // Find port definitions
-  const fromPortDefinition = fromNodeDefinition ? getPortDefinition(fromPort, fromNodeDefinition) : undefined;
-  const toPortDefinition = toNodeDefinition ? getPortDefinition(toPort, toNodeDefinition) : undefined;
+  // Get port definitions to check for custom connection renderer
+  const { getPortDefinition } = useNodeDefinitions();
+  const fromPortDefinition = getPortDefinition(fromPort, fromNode.type);
+  const toPortDefinition = getPortDefinition(toPort, toNode.type);
 
   // Prefer fromPort's renderer, fallback to toPort's renderer
   const customRenderer = fromPortDefinition?.renderConnection || toPortDefinition?.renderConnection;
@@ -212,12 +205,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
 
         {/* Flow stripes when hovered or selected (render after base so they appear on top) */}
         {visualAppearance.stripes.map((stripe) => (
-          <path
-            key={stripe.id}
-            d={pathData}
-            style={stripe.style}
-            data-testid="connection-flow-stripe"
-          />
+          <path key={stripe.id} d={pathData} style={stripe.style} data-testid="connection-flow-stripe" />
         ))}
 
         {/* Direction marker at mid-point */}
@@ -237,10 +225,7 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
             markerUnits={arrowMarker.markerUnits}
             orient={arrowMarker.orient}
           >
-            <path
-              d={arrowMarker.path}
-              style={visualAppearance.arrowHead.style}
-            />
+            <path d={arrowMarker.path} style={visualAppearance.arrowHead.style} />
           </marker>
         </defs>
 

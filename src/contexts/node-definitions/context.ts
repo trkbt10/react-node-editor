@@ -3,11 +3,16 @@
  */
 import * as React from "react";
 import type { NodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
+import type { PortDefinitionResolver } from "../../core/port/definition";
 
 /**
  * Context value for node definitions
  */
-export type NodeDefinitionContextValue = { registry: NodeDefinitionRegistry };
+export type NodeDefinitionContextValue = {
+  registry: NodeDefinitionRegistry;
+  /** Resolve port definition from port instance and node type */
+  getPortDefinition: PortDefinitionResolver;
+};
 
 /**
  * Node definition context

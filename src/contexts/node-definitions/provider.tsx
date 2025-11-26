@@ -6,6 +6,7 @@ import * as React from "react";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import { createNodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
 import { defaultNodeDefinitions } from "../../node-definitions";
+import { createPortDefinitionResolver } from "../../core/port/definition";
 import { NodeDefinitionContext, type NodeDefinitionContextValue } from "./context";
 
 /**
@@ -45,7 +46,15 @@ export function NodeDefinitionProvider({
     return reg;
   }, [nodeDefinitions, includeDefaults]);
 
-  const contextValue: NodeDefinitionContextValue = { registry };
+  const getPortDefinition = React.useMemo(
+    () => createPortDefinitionResolver((nodeType) => registry.get(nodeType)),
+    [registry],
+  );
+
+  const contextValue: NodeDefinitionContextValue = React.useMemo(
+    () => ({ registry, getPortDefinition }),
+    [registry, getPortDefinition],
+  );
 
   return <NodeDefinitionContext.Provider value={contextValue}>{children}</NodeDefinitionContext.Provider>;
 }

@@ -4,7 +4,7 @@
 import type { Connection, Node, NodeId, Port } from "../../../types/core";
 import type { NodeDefinition, PortDefinition } from "../../../types/NodeDefinition";
 import { createValidatedConnection } from "./connectionOperations";
-import { getPortDefinition } from "../../../core/connection/validation";
+import { getPortDefinition } from "../../../core/port/definition";
 
 const DEFAULT_MAX_CONNECTIONS = 1;
 

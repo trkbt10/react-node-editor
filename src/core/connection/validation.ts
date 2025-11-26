@@ -5,37 +5,78 @@
 import type { Node, Port, Connection, NodeId } from "../../types/core";
 import type { NodeDefinition, PortConnectionContext } from "../../types/NodeDefinition";
 import { arePortDataTypesCompatible, mergePortDataTypes } from "../../utils/portDataTypeUtils";
+import { getPortDefinition } from "../port/definition";
+
+// Re-export for backwards compatibility
+export { getPortDefinition } from "../port/definition";
 
 export type ConnectionValidationOptions = {
   nodes?: Record<NodeId, Node>;
 };
 
 /**
- * Get port definition from node definition
+ * Normalize maxConnections value to a number or undefined (unlimited)
  */
-export const getPortDefinition = (port: Port, nodeDefinition?: NodeDefinition) => {
-  if (!nodeDefinition?.ports) {
+const normalizeMaxConnections = (value: number | "unlimited" | undefined, defaultValue: number): number | undefined => {
+  if (value === "unlimited") {
     return undefined;
   }
-  const candidateIds = new Set<string>();
-  if (port.definitionId) {
-    candidateIds.add(port.definitionId);
+  if (typeof value === "number") {
+    return value;
   }
-  candidateIds.add(port.id);
+  return defaultValue;
+};
 
-  const numericSuffixMatch = port.id.match(/^(.*?)-\d+$/);
-  if (numericSuffixMatch?.[1]) {
-    candidateIds.add(numericSuffixMatch[1]);
+/**
+ * Check if a connection between two ports already exists
+ */
+const connectionExists = (
+  fromPort: Port,
+  toPort: Port,
+  connections: Record<string, Connection>,
+): boolean => {
+  return Object.values(connections).some(
+    (conn) =>
+      (conn.fromNodeId === fromPort.nodeId &&
+        conn.fromPortId === fromPort.id &&
+        conn.toNodeId === toPort.nodeId &&
+        conn.toPortId === toPort.id) ||
+      (conn.fromNodeId === toPort.nodeId &&
+        conn.fromPortId === toPort.id &&
+        conn.toNodeId === fromPort.nodeId &&
+        conn.toPortId === fromPort.id),
+  );
+};
+
+/**
+ * Count connections for a specific port
+ */
+const countPortConnections = (
+  port: Port,
+  connections: Record<string, Connection>,
+  direction: "from" | "to",
+): number => {
+  const nodeKey = direction === "from" ? "fromNodeId" : "toNodeId";
+  const portKey = direction === "from" ? "fromPortId" : "toPortId";
+  return Object.values(connections).filter(
+    (conn) => conn[nodeKey] === port.nodeId && conn[portKey] === port.id,
+  ).length;
+};
+
+/**
+ * Check if port exceeds max connections limit
+ */
+const exceedsMaxConnections = (
+  port: Port,
+  connections: Record<string, Connection>,
+  maxConnections: number | "unlimited" | undefined,
+  direction: "from" | "to",
+): boolean => {
+  const max = normalizeMaxConnections(maxConnections, 1);
+  if (max === undefined) {
+    return false;
   }
-
-  for (const candidate of candidateIds) {
-    const match = nodeDefinition.ports.find((p) => p.id === candidate);
-    if (match) {
-      return match;
-    }
-  }
-
-  return undefined;
+  return countPortConnections(port, connections, direction) >= max;
 };
 
 /**
@@ -49,68 +90,33 @@ export const canConnectPorts = (
   connections?: Record<string, Connection>,
   options?: ConnectionValidationOptions,
 ): boolean => {
-  // Helper to normalize max: number | "unlimited" | undefined -> number | undefined
-  const normalizeMax = (value: number | "unlimited" | undefined, defaultValue: number): number | undefined => {
-    if (value === "unlimited") {
-      return undefined;
-    } // no limit
-    if (typeof value === "number") {
-      return value;
-    }
-    return defaultValue;
-  };
-
-  // Basic connection rules
-  if (fromPort.type === toPort.type) {
+  // Basic connection rules: same type or same node cannot connect
+  if (fromPort.type === toPort.type || fromPort.nodeId === toPort.nodeId) {
     return false;
-  } // Same type cannot connect
-  if (fromPort.nodeId === toPort.nodeId) {
-    return false;
-  } // Same node cannot connect
-  // Same-node connections are already blocked above; allow identical port ids on different nodes
+  }
 
   // Ensure proper input/output pairing
-  if (fromPort.type === "output" && toPort.type !== "input") {
-    return false;
-  }
-  if (fromPort.type === "input" && toPort.type !== "output") {
+  const validPairing =
+    (fromPort.type === "output" && toPort.type === "input") ||
+    (fromPort.type === "input" && toPort.type === "output");
+  if (!validPairing) {
     return false;
   }
 
-  // Check if identical connection already exists (match both node and port ids)
-  if (connections) {
-    const exists = Object.values(connections).some(
-      (conn) =>
-        (conn.fromNodeId === fromPort.nodeId &&
-          conn.fromPortId === fromPort.id &&
-          conn.toNodeId === toPort.nodeId &&
-          conn.toPortId === toPort.id) ||
-        (conn.fromNodeId === toPort.nodeId &&
-          conn.fromPortId === toPort.id &&
-          conn.toNodeId === fromPort.nodeId &&
-          conn.toPortId === fromPort.id),
-    );
-    if (exists) {
-      return false;
-    }
+  // Check if identical connection already exists
+  if (connections && connectionExists(fromPort, toPort, connections)) {
+    return false;
   }
-
-  const fromPortDef = getPortDefinition(fromPort, fromNodeDef);
-  const toPortDef = getPortDefinition(toPort, toNodeDef);
 
   // Check custom validation functions (both must allow)
-  if (fromNodeDef?.validateConnection) {
-    if (!fromNodeDef.validateConnection(fromPort, toPort)) {
-      return false;
-    }
-  }
-  if (toNodeDef?.validateConnection) {
-    if (!toNodeDef.validateConnection(fromPort, toPort)) {
-      return false;
-    }
+  const nodeDefValidators = [fromNodeDef, toNodeDef].filter(Boolean) as NodeDefinition[];
+  if (nodeDefValidators.some((def) => def.validateConnection && !def.validateConnection(fromPort, toPort))) {
+    return false;
   }
 
-  // Check data type compatibility if specified
+  // Check data type compatibility
+  const fromPortDef = getPortDefinition(fromPort, fromNodeDef);
+  const toPortDef = getPortDefinition(toPort, toNodeDef);
   const fromTypes = mergePortDataTypes(
     fromPort.dataType,
     mergePortDataTypes(fromPortDef?.dataType, fromPortDef?.dataTypes),
@@ -123,6 +129,7 @@ export const canConnectPorts = (
     return false;
   }
 
+  // Check port-level canConnect predicates
   const portContext: PortConnectionContext = {
     fromPort,
     toPort,
@@ -132,33 +139,18 @@ export const canConnectPorts = (
     toDefinition: toNodeDef,
     allConnections: connections,
   };
-
-  if (fromPortDef?.canConnect && !fromPortDef.canConnect(portContext)) {
-    return false;
-  }
-  if (toPortDef?.canConnect && !toPortDef.canConnect(portContext)) {
+  const portDefs = [fromPortDef, toPortDef].filter(Boolean);
+  if (portDefs.some((def) => def?.canConnect && !def.canConnect(portContext))) {
     return false;
   }
 
-  // Check max connections limit (default for all ports is 1; "unlimited" removes the limit)
+  // Check max connections limit
   if (connections) {
-    const toMax = normalizeMax(toPortDef?.maxConnections, 1);
-    if (toMax !== undefined) {
-      const toPortConnections = Object.values(connections).filter(
-        (conn) => conn.toNodeId === toPort.nodeId && conn.toPortId === toPort.id,
-      );
-      if (toPortConnections.length >= toMax) {
-        return false;
-      }
+    if (exceedsMaxConnections(toPort, connections, toPortDef?.maxConnections, "to")) {
+      return false;
     }
-    const fromMax = normalizeMax(fromPortDef?.maxConnections, 1);
-    if (fromMax !== undefined) {
-      const fromPortConnections = Object.values(connections).filter(
-        (conn) => conn.fromNodeId === fromPort.nodeId && conn.fromPortId === fromPort.id,
-      );
-      if (fromPortConnections.length >= fromMax) {
-        return false;
-      }
+    if (exceedsMaxConnections(fromPort, connections, fromPortDef?.maxConnections, "from")) {
+      return false;
     }
   }
 

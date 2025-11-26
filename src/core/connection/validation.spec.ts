@@ -7,19 +7,156 @@ import type { NodeDefinition } from "../../types/NodeDefinition";
 import type { NodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
 import { createNodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
 
-describe("canConnectPorts - maxConnections default/unlimited", () => {
-  const mkRegistry = (defs: NodeDefinition[]): NodeDefinitionRegistry => {
-    const reg = createNodeDefinitionRegistry();
-    defs.forEach((d) => reg.register(d));
-    return reg;
-  };
+const mkRegistry = (defs: NodeDefinition[]): NodeDefinitionRegistry => {
+  const reg = createNodeDefinitionRegistry();
+  defs.forEach((d) => reg.register(d));
+  return reg;
+};
 
-  const baseNodeDef = (type: string, ports?: NodeDefinition["ports"]): NodeDefinition => ({
-    type,
-    displayName: type,
-    ports,
+const baseNodeDef = (type: string, ports?: NodeDefinition["ports"]): NodeDefinition => ({
+  type,
+  displayName: type,
+  ports,
+});
+
+describe("canConnectPorts - basic rules", () => {
+  it("rejects same port type (output to output)", () => {
+    const port1: Port = { id: "out1", nodeId: "a", type: "output", label: "out1", position: "right" };
+    const port2: Port = { id: "out2", nodeId: "b", type: "output", label: "out2", position: "right" };
+    expect(canConnectPorts(port1, port2)).toBe(false);
   });
 
+  it("rejects same port type (input to input)", () => {
+    const port1: Port = { id: "in1", nodeId: "a", type: "input", label: "in1", position: "left" };
+    const port2: Port = { id: "in2", nodeId: "b", type: "input", label: "in2", position: "left" };
+    expect(canConnectPorts(port1, port2)).toBe(false);
+  });
+
+  it("rejects same node connection", () => {
+    const outPort: Port = { id: "out", nodeId: "same-node", type: "output", label: "out", position: "right" };
+    const inPort: Port = { id: "in", nodeId: "same-node", type: "input", label: "in", position: "left" };
+    expect(canConnectPorts(outPort, inPort)).toBe(false);
+  });
+
+  it("allows output to input connection", () => {
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
+    const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left" };
+    expect(canConnectPorts(outPort, inPort)).toBe(true);
+  });
+
+  it("allows input to output connection (reversed)", () => {
+    const inPort: Port = { id: "in", nodeId: "a", type: "input", label: "in", position: "left" };
+    const outPort: Port = { id: "out", nodeId: "b", type: "output", label: "out", position: "right" };
+    expect(canConnectPorts(inPort, outPort)).toBe(true);
+  });
+});
+
+describe("canConnectPorts - duplicate connection detection", () => {
+  it("rejects identical connection (same direction)", () => {
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
+    const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left" };
+    const existing: Record<string, Connection> = {
+      c1: { id: "c1", fromNodeId: "a", fromPortId: "out", toNodeId: "b", toPortId: "in" },
+    };
+    expect(canConnectPorts(outPort, inPort, undefined, undefined, existing)).toBe(false);
+  });
+
+  it("rejects identical connection (reversed direction)", () => {
+    const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left" };
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
+    const existing: Record<string, Connection> = {
+      c1: { id: "c1", fromNodeId: "a", fromPortId: "out", toNodeId: "b", toPortId: "in" },
+    };
+    expect(canConnectPorts(inPort, outPort, undefined, undefined, existing)).toBe(false);
+  });
+
+  it("allows connection to different port on same node", () => {
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
+    const inPort1: Port = { id: "in1", nodeId: "b", type: "input", label: "in1", position: "left" };
+    const inPort2: Port = { id: "in2", nodeId: "b", type: "input", label: "in2", position: "left" };
+    const existing: Record<string, Connection> = {
+      c1: { id: "c1", fromNodeId: "a", fromPortId: "out", toNodeId: "b", toPortId: "in1" },
+    };
+    const defA = baseNodeDef("A", [
+      { id: "out", type: "output", label: "out", position: "right", maxConnections: "unlimited" },
+    ]);
+    const defB = baseNodeDef("B", [
+      { id: "in1", type: "input", label: "in1", position: "left" },
+      { id: "in2", type: "input", label: "in2", position: "left" },
+    ]);
+    expect(canConnectPorts(outPort, inPort2, defA, defB, existing)).toBe(true);
+  });
+});
+
+describe("canConnectPorts - validateConnection callback", () => {
+  it("rejects when fromNodeDef validateConnection returns false", () => {
+    const defA = baseNodeDef("A", [{ id: "out", type: "output", label: "out", position: "right" }]);
+    defA.validateConnection = () => false;
+    const defB = baseNodeDef("B", [{ id: "in", type: "input", label: "in", position: "left" }]);
+
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
+    const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left" };
+    expect(canConnectPorts(outPort, inPort, defA, defB)).toBe(false);
+  });
+
+  it("rejects when toNodeDef validateConnection returns false", () => {
+    const defA = baseNodeDef("A", [{ id: "out", type: "output", label: "out", position: "right" }]);
+    const defB = baseNodeDef("B", [{ id: "in", type: "input", label: "in", position: "left" }]);
+    defB.validateConnection = () => false;
+
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
+    const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left" };
+    expect(canConnectPorts(outPort, inPort, defA, defB)).toBe(false);
+  });
+
+  it("allows when both validateConnection return true", () => {
+    const defA = baseNodeDef("A", [{ id: "out", type: "output", label: "out", position: "right" }]);
+    defA.validateConnection = () => true;
+    const defB = baseNodeDef("B", [{ id: "in", type: "input", label: "in", position: "left" }]);
+    defB.validateConnection = () => true;
+
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
+    const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left" };
+    expect(canConnectPorts(outPort, inPort, defA, defB)).toBe(true);
+  });
+});
+
+describe("canConnectPorts - data type compatibility", () => {
+  it("allows when no data types specified", () => {
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
+    const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left" };
+    expect(canConnectPorts(outPort, inPort)).toBe(true);
+  });
+
+  it("allows matching single dataType", () => {
+    const defA = baseNodeDef("A", [{ id: "out", type: "output", label: "out", position: "right", dataType: "text" }]);
+    const defB = baseNodeDef("B", [{ id: "in", type: "input", label: "in", position: "left", dataType: "text" }]);
+
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
+    const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left" };
+    expect(canConnectPorts(outPort, inPort, defA, defB)).toBe(true);
+  });
+
+  it("rejects non-matching single dataType", () => {
+    const defA = baseNodeDef("A", [{ id: "out", type: "output", label: "out", position: "right", dataType: "text" }]);
+    const defB = baseNodeDef("B", [{ id: "in", type: "input", label: "in", position: "left", dataType: "number" }]);
+
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
+    const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left" };
+    expect(canConnectPorts(outPort, inPort, defA, defB)).toBe(false);
+  });
+
+  it("uses port dataType over definition dataType", () => {
+    const defA = baseNodeDef("A", [{ id: "out", type: "output", label: "out", position: "right", dataType: "text" }]);
+    const defB = baseNodeDef("B", [{ id: "in", type: "input", label: "in", position: "left", dataType: "text" }]);
+
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right", dataType: "json" };
+    const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left", dataType: "json" };
+    expect(canConnectPorts(outPort, inPort, defA, defB)).toBe(true);
+  });
+});
+
+describe("canConnectPorts - maxConnections default/unlimited", () => {
   it("defaults to 1 for both sides when unspecified", () => {
     const defA = baseNodeDef("A", [{ id: "out", type: "output", label: "out", position: "right" }]);
     const defB = baseNodeDef("B", [{ id: "in", type: "input", label: "in", position: "left" }]);

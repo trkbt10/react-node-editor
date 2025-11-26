@@ -5,10 +5,9 @@ import * as React from "react";
 import type { Port } from "../../../types/core";
 import { useDynamicPortPosition } from "../../../hooks/usePortPosition";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
-import { useNodeDefinition } from "../../../contexts/node-definitions/hooks/useNodeDefinition";
+import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import type { PortRenderContext } from "../../../types/NodeDefinition";
 import styles from "./PortView.module.css";
-import { getPortDefinition } from "../../../core/connection/validation";
 
 export type PortViewProps = {
   port: Port;
@@ -93,9 +92,9 @@ export const PortView: React.FC<PortViewProps> = ({
   const { state } = useNodeEditor();
   const node = state.nodes[port.nodeId];
 
-  // Get node definition to check for custom port renderer
-  const nodeDefinition = useNodeDefinition(node?.type);
-  const portDefinition = nodeDefinition ? getPortDefinition(port, nodeDefinition) : undefined;
+  // Get port definition to check for custom port renderer
+  const { getPortDefinition } = useNodeDefinitions();
+  const portDefinition = node ? getPortDefinition(port, node.type) : undefined;
 
   // Default render function
   const defaultRender = React.useCallback(
