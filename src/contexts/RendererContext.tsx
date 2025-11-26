@@ -13,7 +13,14 @@ export type RendererProviderProps = {
 };
 
 export const RendererProvider: React.FC<RendererProviderProps> = ({ renderers, children }) => {
-  return <RendererContext.Provider value={renderers}>{children}</RendererContext.Provider>;
+  // Memoize by individual component references to avoid unnecessary re-renders
+  // when parent recreates the renderers object with the same component references
+  const memoizedRenderers = React.useMemo(
+    () => renderers,
+    [renderers.node, renderers.port, renderers.connection],
+  );
+
+  return <RendererContext.Provider value={memoizedRenderers}>{children}</RendererContext.Provider>;
 };
 
 export const useRenderers = (): NodeEditorRenderers => {

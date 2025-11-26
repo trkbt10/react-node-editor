@@ -140,17 +140,20 @@ export const InlineEditingProvider: React.FC<InlineEditingProviderProps> = ({ ch
     boundActions.cancelEdit();
   }, [boundActions]);
 
-  const contextValue: InlineEditingContextValue = {
-    state,
-    dispatch,
-    actions: boundActions,
-    actionCreators: inlineEditingActions,
-    isEditing,
-    startEditing,
-    updateValue,
-    confirmEdit,
-    cancelEdit,
-  };
+  const contextValue: InlineEditingContextValue = React.useMemo(
+    () => ({
+      state,
+      dispatch,
+      actions: boundActions,
+      actionCreators: inlineEditingActions,
+      isEditing,
+      startEditing,
+      updateValue,
+      confirmEdit,
+      cancelEdit,
+    }),
+    [state, dispatch, boundActions, isEditing, startEditing, updateValue, confirmEdit, cancelEdit],
+  );
 
   return <InlineEditingContext.Provider value={contextValue}>{children}</InlineEditingContext.Provider>;
 };

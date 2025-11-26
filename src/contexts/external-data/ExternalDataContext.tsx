@@ -16,9 +16,7 @@ export type ExternalDataProviderProps = {
 };
 
 export const ExternalDataProvider: React.FC<ExternalDataProviderProps> = ({ children, refs = {} }) => {
-  const contextValue: ExternalDataContextValue = {
-    refs,
-  };
+  const contextValue: ExternalDataContextValue = React.useMemo(() => ({ refs }), [refs]);
 
   return <ExternalDataContext.Provider value={contextValue}>{children}</ExternalDataContext.Provider>;
 };

@@ -472,12 +472,15 @@ export const EditorActionStateProvider: React.FC<EditorActionStateProviderProps>
   });
   const boundActions = React.useMemo(() => bindActionCreators(editorActionStateActions, dispatch), [dispatch]);
 
-  const contextValue: EditorActionStateContextValue = {
-    state,
-    dispatch,
-    actions: boundActions,
-    actionCreators: editorActionStateActions,
-  };
+  const contextValue: EditorActionStateContextValue = React.useMemo(
+    () => ({
+      state,
+      dispatch,
+      actions: boundActions,
+      actionCreators: editorActionStateActions,
+    }),
+    [state, dispatch, boundActions],
+  );
 
   return <EditorActionStateContext.Provider value={contextValue}>{children}</EditorActionStateContext.Provider>;
 };

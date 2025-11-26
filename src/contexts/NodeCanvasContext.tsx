@@ -232,16 +232,19 @@ export const NodeCanvasProvider: React.FC<NodeCanvasProviderProps> = ({ children
     [state.viewport, containerRef],
   );
 
-  const contextValue: NodeCanvasContextValue = {
-    state,
-    dispatch,
-    actions: boundActions,
-    actionCreators: nodeCanvasActions,
-    canvasRef,
-    containerRef,
-    setContainerElement,
-    utils,
-  };
+  const contextValue: NodeCanvasContextValue = React.useMemo(
+    () => ({
+      state,
+      dispatch,
+      actions: boundActions,
+      actionCreators: nodeCanvasActions,
+      canvasRef,
+      containerRef,
+      setContainerElement,
+      utils,
+    }),
+    [state, dispatch, boundActions, setContainerElement, utils],
+  );
 
   return <NodeCanvasContext.Provider value={contextValue}>{children}</NodeCanvasContext.Provider>;
 };

@@ -205,14 +205,17 @@ export const KeyboardShortcutProvider: React.FC<KeyboardShortcutProviderProps> =
     [boundActions],
   );
 
-  const contextValue: KeyboardShortcutContextValue = {
-    state,
-    dispatch,
-    actions: boundActions,
-    actionCreators: keyboardShortcutActions,
-    registerShortcut,
-    unregisterShortcut,
-  };
+  const contextValue: KeyboardShortcutContextValue = React.useMemo(
+    () => ({
+      state,
+      dispatch,
+      actions: boundActions,
+      actionCreators: keyboardShortcutActions,
+      registerShortcut,
+      unregisterShortcut,
+    }),
+    [state, dispatch, boundActions, registerShortcut, unregisterShortcut],
+  );
 
   return <KeyboardShortcutContext.Provider value={contextValue}>{children}</KeyboardShortcutContext.Provider>;
 };
