@@ -1,8 +1,9 @@
 /**
  * @file Connection visual appearance definitions.
+ * Pure data definitions for connection styling based on interaction state.
  */
 import type { CSSProperties } from "react";
-import type { MarkerShapeDimensions, MarkerShapeId } from "./markerShapes";
+import type { MarkerShapeDimensions, MarkerShapeId } from "./marker";
 
 export type ConnectionInteractionPhase =
   | "default"
@@ -121,6 +122,7 @@ const STRIPES_DEFAULT_WIDTH = createStripeStyles(STRIPE_WIDTH_DEFAULT);
 const STRIPES_ACTIVE_WIDTH = createStripeStyles(STRIPE_WIDTH_ACTIVE);
 const ARROW_HEAD_HALF_BASE = 4;
 const ARROW_HEAD_DEPTH = Math.sqrt(3) * ARROW_HEAD_HALF_BASE;
+
 const createArrowHeadAppearance = (
   fill: string,
   pathStyle: CSSProperties,
@@ -229,21 +231,13 @@ type ConnectionVisualInputs = {
 
 export const determineConnectionInteractionPhase = (input: ConnectionVisualInputs): ConnectionInteractionPhase => {
   if (input.isDragging && input.dragProgress > 0) {
-    const isCritical = input.dragProgress > 0.5;
-    if (isCritical) {
-      return "disconnectingCritical";
-    }
-
-    return "disconnecting";
+    return input.dragProgress > 0.5 ? "disconnectingCritical" : "disconnecting";
   }
-
   if (input.isSelected) {
     return "selected";
   }
-
   if (input.isHovered) {
     return "connecting";
   }
-
   return "default";
 };

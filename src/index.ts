@@ -10,8 +10,8 @@ export type { NodeEditorData } from "./types/core";
 export type { NodeEditorRenderers, NodeEditorRendererOverrides } from "./types/renderers";
 
 // Helper components for custom node implementations
-export { NodeResizer, normalizeNodeSize } from "./components/node/NodeResizer";
-export type { NodeResizerProps } from "./components/node/NodeResizer";
+export { NodeResizer, normalizeNodeSize } from "./components/node/resize/NodeResizer";
+export type { NodeResizerProps } from "./components/node/resize/NodeResizer";
 
 // Node definition helpers for custom nodes and inspectors
 export {

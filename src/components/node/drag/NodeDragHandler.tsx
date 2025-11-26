@@ -2,15 +2,15 @@
  * @file Node drag handler component
  */
 import * as React from "react";
-import { NodeId, Position } from "../../types/core";
-import { usePointerDrag } from "../../hooks/usePointerDrag";
-import { useNodeEditor } from "../../contexts/node-editor/context";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { nodeHasGroupBehavior } from "../../types/behaviors";
-import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
-import { addUniqueIds } from "../../utils/selectionUtils";
+import { NodeId, Position } from "../../../types/core";
+import { usePointerDrag } from "../../../hooks/usePointerDrag";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
+import { nodeHasGroupBehavior } from "../../../types/behaviors";
+import { usePointerShortcutMatcher } from "../../../hooks/usePointerShortcutMatcher";
+import { addUniqueIds } from "../../../utils/selectionUtils";
 
 export type NodeDragHandlerProps = {
   nodeId: NodeId;

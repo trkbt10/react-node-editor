@@ -3,7 +3,7 @@
  * This component standardizes size handling for custom node implementations.
  */
 import * as React from "react";
-import type { Size, Node } from "../../types/core";
+import type { Size, Node } from "../../../types/core";
 
 /**
  * Default size constants

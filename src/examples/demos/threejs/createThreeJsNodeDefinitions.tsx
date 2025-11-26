@@ -22,7 +22,7 @@ import { useNodeEditor } from "../../../contexts/node-editor/context";
 import classes from "./ThreeJsNodes.module.css";
 import { calculateConnectionPath } from "../../../core/connection/path";
 import { getOppositePortPosition } from "../../../core/port/position";
-import { NodeResizer } from "../../../components/node/NodeResizer";
+import { NodeResizer } from "../../../components/node/resize/NodeResizer";
 
 type ColorControlData = {
   title: string;

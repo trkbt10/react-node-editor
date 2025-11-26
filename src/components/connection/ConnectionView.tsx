@@ -1,32 +1,30 @@
 /**
  * @file ConnectionView component
+ * Split into Container (context-aware) and Inner (pure rendering) for optimal memoization.
  */
 import * as React from "react";
-import type { Connection, Node, Port } from "../../types/core";
+import type { Connection, Node, Port, PortPosition, Position } from "../../types/core";
 import { calculateConnectionPath, calculateConnectionMidpoint } from "../../core/connection/path";
 import { hasAnyPositionChanged, hasAnySizeChanged } from "../../core/geometry/comparators";
 import { hasPortPositionChanged } from "../../core/port/comparators";
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
-import type { ConnectionRenderContext } from "../../types/NodeDefinition";
+import type { ConnectionRenderContext, PortDefinition } from "../../types/NodeDefinition";
 import {
   CONNECTION_APPEARANCES,
   determineConnectionInteractionPhase,
   type ConnectionAdjacency,
   type ConnectionInteractionPhase,
   type ConnectionVisualAppearance,
-} from "./connectionAppearance";
-import { createMarkerGeometry, placeMarkerGeometry } from "./markerShapes";
+} from "../../core/connection/appearance";
+import { createMarkerGeometry, placeMarkerGeometry } from "../../core/connection/marker";
 import styles from "./ConnectionView.module.css";
 
-type XYPosition = { x: number; y: number };
 const DIRECTION_MARKER_RADIUS = 2;
 
-const resolvePosition = (
-  basePosition: XYPosition | undefined,
-  nodePosition: XYPosition,
-  overridePosition?: XYPosition,
-) => basePosition ?? overridePosition ?? nodePosition;
+// ============================================================================
+// Types
+// ============================================================================
 
 export type ConnectionViewProps = {
   connection: Connection;
@@ -36,13 +34,11 @@ export type ConnectionViewProps = {
   toPort: Port;
   isSelected: boolean;
   isHovered: boolean;
-  // True when this connection touches a selected node
   isAdjacentToSelectedNode?: boolean;
   isDragging?: boolean;
-  dragProgress?: number; // 0-1 for visual feedback during disconnect
-  // Optional override positions for preview during drag
-  fromNodePosition?: { x: number; y: number };
-  toNodePosition?: { x: number; y: number };
+  dragProgress?: number;
+  fromNodePosition?: Position;
+  toNodePosition?: Position;
   fromNodeSize?: { width: number; height: number };
   toNodeSize?: { width: number; height: number };
   onPointerDown?: (e: React.PointerEvent, connectionId: string) => void;
@@ -51,61 +47,51 @@ export type ConnectionViewProps = {
   onContextMenu?: (e: React.MouseEvent, connectionId: string) => void;
 };
 
-/**
- * ConnectionView - Renders a single connection between two ports
- */
-const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
-  connection,
-  fromNode,
-  toNode,
-  fromPort,
-  toPort,
+type ConnectionViewInnerProps = {
+  connectionId: string;
+  fromPosition: Position;
+  toPosition: Position;
+  fromPortPosition: PortPosition;
+  toPortPosition: PortPosition;
+  isSelected: boolean;
+  isHovered: boolean;
+  isAdjacentToSelectedNode: boolean;
+  isDragging: boolean;
+  dragProgress: number;
+  customRenderer: PortDefinition["renderConnection"] | undefined;
+  renderContext: ConnectionRenderContext;
+  onPointerDown: (e: React.PointerEvent) => void;
+  onPointerEnter: (e: React.PointerEvent) => void;
+  onPointerLeave: (e: React.PointerEvent) => void;
+  onContextMenu: (e: React.MouseEvent) => void;
+};
+
+// ============================================================================
+// Inner Component (Pure Rendering)
+// ============================================================================
+
+const ConnectionViewInnerComponent: React.FC<ConnectionViewInnerProps> = ({
+  connectionId,
+  fromPosition,
+  toPosition,
+  fromPortPosition,
+  toPortPosition,
   isSelected,
   isHovered,
+  isAdjacentToSelectedNode,
   isDragging,
-  dragProgress = 0,
-  isAdjacentToSelectedNode = false,
-  fromNodePosition,
-  toNodePosition,
-  fromNodeSize,
-  toNodeSize,
+  dragProgress,
+  customRenderer,
+  renderContext,
   onPointerDown,
   onPointerEnter,
   onPointerLeave,
   onContextMenu,
 }) => {
-  // Get dynamic port positions
-  const baseFromPosition = useDynamicConnectionPoint(fromNode.id, fromPort.id, {
-    positionOverride: fromNodePosition ?? undefined,
-    sizeOverride: fromNodeSize ?? undefined,
-    applyInteractionPreview: false,
-  });
-  const baseToPosition = useDynamicConnectionPoint(toNode.id, toPort.id, {
-    positionOverride: toNodePosition ?? undefined,
-    sizeOverride: toNodeSize ?? undefined,
-    applyInteractionPreview: false,
-  });
-
-  // Calculate port positions (use override positions for drag preview)
-  const fromPosition = React.useMemo(
-    () => resolvePosition(baseFromPosition, fromNode.position, fromNodePosition),
-    [baseFromPosition, fromNode.position.x, fromNode.position.y, fromNodePosition?.x, fromNodePosition?.y],
-  );
-
-  const toPosition = React.useMemo(
-    () => resolvePosition(baseToPosition, toNode.position, toNodePosition),
-    [baseToPosition, toNode.position.x, toNode.position.y, toNodePosition?.x, toNodePosition?.y],
-  );
-
   const adjacency: ConnectionAdjacency = isAdjacentToSelectedNode ? "adjacent" : "self";
+
   const interactionPhase = React.useMemo<ConnectionInteractionPhase>(
-    () =>
-      determineConnectionInteractionPhase({
-        isDragging,
-        dragProgress,
-        isSelected,
-        isHovered,
-      }),
+    () => determineConnectionInteractionPhase({ isDragging, dragProgress, isSelected, isHovered }),
     [isDragging, dragProgress, isSelected, isHovered],
   );
 
@@ -114,16 +100,16 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
     [interactionPhase, adjacency],
   );
 
-  // Calculate bezier path (recalculate when positions change)
   const pathData = React.useMemo(
-    () => calculateConnectionPath(fromPosition, toPosition, fromPort.position, toPort.position),
-    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPort.position, toPort.position],
+    () => calculateConnectionPath(fromPosition, toPosition, fromPortPosition, toPortPosition),
+    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPortPosition, toPortPosition],
   );
-  // Compute mid-point and angle along the bezier at t=0.5
+
   const midAndAngle = React.useMemo(
-    () => calculateConnectionMidpoint(fromPosition, toPosition, fromPort.position, toPort.position),
-    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPort.position, toPort.position],
+    () => calculateConnectionMidpoint(fromPosition, toPosition, fromPortPosition, toPortPosition),
+    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPortPosition, toPortPosition],
   );
+
   const arrowGeometry = React.useMemo(
     () =>
       createMarkerGeometry(visualAppearance.arrowHead.shape, {
@@ -142,45 +128,6 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
     [arrowGeometry, visualAppearance.arrowHead.offset],
   );
 
-  const handlePointerDown = React.useCallback(
-    (e: React.PointerEvent) => {
-      e.stopPropagation();
-      onPointerDown?.(e, connection.id);
-    },
-    [connection.id, onPointerDown],
-  );
-
-  const handlePointerEnter = React.useCallback(
-    (e: React.PointerEvent) => {
-      onPointerEnter?.(e, connection.id);
-    },
-    [connection.id, onPointerEnter],
-  );
-
-  const handlePointerLeave = React.useCallback(
-    (e: React.PointerEvent) => {
-      onPointerLeave?.(e, connection.id);
-    },
-    [connection.id, onPointerLeave],
-  );
-
-  const handleContextMenu = React.useCallback(
-    (e: React.MouseEvent) => {
-      e.stopPropagation();
-      onContextMenu?.(e, connection.id);
-    },
-    [connection.id, onContextMenu],
-  );
-
-  // Get port definitions to check for custom connection renderer
-  const { getPortDefinition } = useNodeDefinitions();
-  const fromPortDefinition = getPortDefinition(fromPort, fromNode.type);
-  const toPortDefinition = getPortDefinition(toPort, toNode.type);
-
-  // Prefer fromPort's renderer, fallback to toPort's renderer
-  const customRenderer = fromPortDefinition?.renderConnection || toPortDefinition?.renderConnection;
-
-  // Default render function
   const defaultRender = React.useCallback(
     () => (
       <g
@@ -190,33 +137,26 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
         data-dragging={isDragging}
         data-adjacent-node-selected={isAdjacentToSelectedNode}
         shapeRendering="geometricPrecision"
-        data-connection-id={connection.id}
+        data-connection-id={connectionId}
       >
-        {/* Base connection line (hit test only on stroke). Draw first, stripes overlay. */}
         <path
           d={pathData}
           style={visualAppearance.path.style}
           className={styles.connectionBase}
-          onPointerDown={handlePointerDown}
-          onPointerEnter={handlePointerEnter}
-          onPointerLeave={handlePointerLeave}
-          onContextMenu={handleContextMenu}
+          onPointerDown={onPointerDown}
+          onPointerEnter={onPointerEnter}
+          onPointerLeave={onPointerLeave}
+          onContextMenu={onContextMenu}
         />
-
-        {/* Flow stripes when hovered or selected (render after base so they appear on top) */}
         {visualAppearance.stripes.map((stripe) => (
           <path key={stripe.id} d={pathData} style={stripe.style} data-testid="connection-flow-stripe" />
         ))}
-
-        {/* Direction marker at mid-point */}
         <g transform={`translate(${midAndAngle.x}, ${midAndAngle.y})`}>
           <circle r={DIRECTION_MARKER_RADIUS} style={visualAppearance.direction.style} />
         </g>
-
-        {/* Arrow marker at the end */}
         <defs>
           <marker
-            id={`arrow-${connection.id}`}
+            id={`arrow-${connectionId}`}
             viewBox={arrowMarker.viewBox}
             refX={arrowMarker.refX}
             refY={arrowMarker.refY}
@@ -228,13 +168,11 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
             <path d={arrowMarker.path} style={visualAppearance.arrowHead.style} />
           </marker>
         </defs>
-
-        {/* Apply arrow marker to the visible path */}
-        <path d={pathData} markerEnd={`url(#arrow-${connection.id})`} className={styles.connectionArrowOverlay} />
+        <path d={pathData} markerEnd={`url(#arrow-${connectionId})`} className={styles.connectionArrowOverlay} />
       </g>
     ),
     [
-      connection.id,
+      connectionId,
       pathData,
       midAndAngle,
       arrowMarker,
@@ -243,18 +181,139 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
       isHovered,
       isDragging,
       isAdjacentToSelectedNode,
-      handlePointerDown,
-      handlePointerEnter,
-      handlePointerLeave,
+      onPointerDown,
+      onPointerEnter,
+      onPointerLeave,
       onContextMenu,
-      handleContextMenu,
     ],
   );
 
-  // Check if there's a custom renderer
   if (customRenderer) {
-    // Build context for custom renderer
-    const context: ConnectionRenderContext = {
+    return customRenderer(renderContext, defaultRender);
+  }
+
+  return defaultRender();
+};
+
+const areInnerPropsEqual = (prev: ConnectionViewInnerProps, next: ConnectionViewInnerProps): boolean => {
+  if (prev.connectionId !== next.connectionId) {
+    return false;
+  }
+  if (prev.isSelected !== next.isSelected || prev.isHovered !== next.isHovered) {
+    return false;
+  }
+  if (prev.isAdjacentToSelectedNode !== next.isAdjacentToSelectedNode) {
+    return false;
+  }
+  if (prev.isDragging !== next.isDragging || prev.dragProgress !== next.dragProgress) {
+    return false;
+  }
+  if (
+    prev.fromPosition.x !== next.fromPosition.x ||
+    prev.fromPosition.y !== next.fromPosition.y ||
+    prev.toPosition.x !== next.toPosition.x ||
+    prev.toPosition.y !== next.toPosition.y
+  ) {
+    return false;
+  }
+  if (prev.fromPortPosition !== next.fromPortPosition || prev.toPortPosition !== next.toPortPosition) {
+    return false;
+  }
+  if (prev.customRenderer !== next.customRenderer) {
+    return false;
+  }
+  // renderContext is memoized in container, check by reference
+  if (prev.renderContext !== next.renderContext) {
+    return false;
+  }
+  return true;
+};
+
+const ConnectionViewInner = React.memo(ConnectionViewInnerComponent, areInnerPropsEqual);
+ConnectionViewInner.displayName = "ConnectionViewInner";
+
+// ============================================================================
+// Container Component (Context-Aware)
+// ============================================================================
+
+const resolvePosition = (
+  basePosition: Position | undefined,
+  nodePosition: Position,
+  overridePosition?: Position,
+): Position => basePosition ?? overridePosition ?? nodePosition;
+
+const ConnectionViewContainer: React.FC<ConnectionViewProps> = ({
+  connection,
+  fromNode,
+  toNode,
+  fromPort,
+  toPort,
+  isSelected,
+  isHovered,
+  isDragging = false,
+  dragProgress = 0,
+  isAdjacentToSelectedNode = false,
+  fromNodePosition,
+  toNodePosition,
+  fromNodeSize,
+  toNodeSize,
+  onPointerDown,
+  onPointerEnter,
+  onPointerLeave,
+  onContextMenu,
+}) => {
+  const connectionId = connection.id;
+
+  // Dynamic port positions
+  const baseFromPosition = useDynamicConnectionPoint(fromNode.id, fromPort.id, {
+    positionOverride: fromNodePosition ?? undefined,
+    sizeOverride: fromNodeSize ?? undefined,
+    applyInteractionPreview: false,
+  });
+  const baseToPosition = useDynamicConnectionPoint(toNode.id, toPort.id, {
+    positionOverride: toNodePosition ?? undefined,
+    sizeOverride: toNodeSize ?? undefined,
+    applyInteractionPreview: false,
+  });
+
+  const fromPosition = React.useMemo(
+    () => resolvePosition(baseFromPosition, fromNode.position, fromNodePosition),
+    [baseFromPosition, fromNode.position.x, fromNode.position.y, fromNodePosition?.x, fromNodePosition?.y],
+  );
+
+  const toPosition = React.useMemo(
+    () => resolvePosition(baseToPosition, toNode.position, toNodePosition),
+    [baseToPosition, toNode.position.x, toNode.position.y, toNodePosition?.x, toNodePosition?.y],
+  );
+
+  // Event handlers (stable via useEffectEvent)
+  const handlePointerDown = React.useEffectEvent((e: React.PointerEvent) => {
+    e.stopPropagation();
+    onPointerDown?.(e, connectionId);
+  });
+
+  const handlePointerEnter = React.useEffectEvent((e: React.PointerEvent) => {
+    onPointerEnter?.(e, connectionId);
+  });
+
+  const handlePointerLeave = React.useEffectEvent((e: React.PointerEvent) => {
+    onPointerLeave?.(e, connectionId);
+  });
+
+  const handleContextMenu = React.useEffectEvent((e: React.MouseEvent) => {
+    e.stopPropagation();
+    onContextMenu?.(e, connectionId);
+  });
+
+  // Get port definitions for custom renderer (context access)
+  const { getPortDefinition } = useNodeDefinitions();
+  const fromPortDefinition = getPortDefinition(fromPort, fromNode.type);
+  const toPortDefinition = getPortDefinition(toPort, toNode.type);
+  const customRenderer = fromPortDefinition?.renderConnection || toPortDefinition?.renderConnection;
+
+  // Build render context for custom renderer
+  const renderContext: ConnectionRenderContext = React.useMemo(
+    () => ({
       connection,
       phase: "connected",
       fromPort,
@@ -274,80 +333,93 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
         onPointerLeave: handlePointerLeave,
         onContextMenu: handleContextMenu,
       },
-    };
+    }),
+    [
+      connection,
+      fromPort,
+      toPort,
+      fromNode,
+      toNode,
+      fromPosition,
+      toPosition,
+      isSelected,
+      isHovered,
+      isAdjacentToSelectedNode,
+      isDragging,
+      dragProgress,
+    ],
+  );
 
-    return customRenderer(context, defaultRender);
-  }
-
-  // Use default rendering
-  return defaultRender();
+  return (
+    <ConnectionViewInner
+      connectionId={connectionId}
+      fromPosition={fromPosition}
+      toPosition={toPosition}
+      fromPortPosition={fromPort.position}
+      toPortPosition={toPort.position}
+      isSelected={isSelected}
+      isHovered={isHovered}
+      isAdjacentToSelectedNode={isAdjacentToSelectedNode}
+      isDragging={isDragging}
+      dragProgress={dragProgress}
+      customRenderer={customRenderer}
+      renderContext={renderContext}
+      onPointerDown={handlePointerDown}
+      onPointerEnter={handlePointerEnter}
+      onPointerLeave={handlePointerLeave}
+      onContextMenu={handleContextMenu}
+    />
+  );
 };
 
-// Custom comparison function for memo
-const areEqual = (prevProps: ConnectionViewProps, nextProps: ConnectionViewProps): boolean => {
-  // Always re-render if basic properties change
+// ============================================================================
+// Exported Memoized Component
+// ============================================================================
+
+const areContainerPropsEqual = (prev: ConnectionViewProps, next: ConnectionViewProps): boolean => {
   if (
-    prevProps.connection.id !== nextProps.connection.id ||
-    prevProps.isSelected !== nextProps.isSelected ||
-    prevProps.isHovered !== nextProps.isHovered ||
-    prevProps.isAdjacentToSelectedNode !== nextProps.isAdjacentToSelectedNode ||
-    prevProps.isDragging !== nextProps.isDragging ||
-    prevProps.dragProgress !== nextProps.dragProgress
+    prev.connection.id !== next.connection.id ||
+    prev.isSelected !== next.isSelected ||
+    prev.isHovered !== next.isHovered ||
+    prev.isAdjacentToSelectedNode !== next.isAdjacentToSelectedNode ||
+    prev.isDragging !== next.isDragging ||
+    prev.dragProgress !== next.dragProgress
   ) {
     return false;
   }
 
-  // Check node position changes (both actual and preview positions)
   if (
     hasAnyPositionChanged([
-      [prevProps.fromNode.position, nextProps.fromNode.position],
-      [prevProps.toNode.position, nextProps.toNode.position],
-      [prevProps.fromNodePosition, nextProps.fromNodePosition],
-      [prevProps.toNodePosition, nextProps.toNodePosition],
+      [prev.fromNode.position, next.fromNode.position],
+      [prev.toNode.position, next.toNode.position],
+      [prev.fromNodePosition, next.fromNodePosition],
+      [prev.toNodePosition, next.toNodePosition],
     ])
   ) {
     return false;
   }
 
-  // Check node size changes (both actual and preview sizes)
   if (
     hasAnySizeChanged([
-      [prevProps.fromNode.size, nextProps.fromNode.size],
-      [prevProps.toNode.size, nextProps.toNode.size],
-      [prevProps.fromNodeSize, nextProps.fromNodeSize],
-      [prevProps.toNodeSize, nextProps.toNodeSize],
+      [prev.fromNode.size, next.fromNode.size],
+      [prev.toNode.size, next.toNode.size],
+      [prev.fromNodeSize, next.fromNodeSize],
+      [prev.toNodeSize, next.toNodeSize],
     ])
   ) {
     return false;
   }
 
-  // Check port position changes
-  if (
-    hasPortPositionChanged(prevProps.fromPort, nextProps.fromPort) ||
-    hasPortPositionChanged(prevProps.toPort, nextProps.toPort)
-  ) {
+  if (hasPortPositionChanged(prev.fromPort, next.fromPort) || hasPortPositionChanged(prev.toPort, next.toPort)) {
     return false;
   }
 
-  // Re-render when node data changes so custom renderers receive fresh values
-  if (prevProps.fromNode.data !== nextProps.fromNode.data || prevProps.toNode.data !== nextProps.toNode.data) {
+  if (prev.fromNode.data !== next.fromNode.data || prev.toNode.data !== next.toNode.data) {
     return false;
   }
 
-  // Props are equal, skip re-render
   return true;
 };
 
-// Export memoized component
-export const ConnectionView = React.memo(ConnectionViewComponent, areEqual);
-
+export const ConnectionView = React.memo(ConnectionViewContainer, areContainerPropsEqual);
 ConnectionView.displayName = "ConnectionView";
-
-/*
-debug-notes:
-- Reviewed src/components/connection/connectionAppearance.ts to align arrow head size fields (depth/halfBase).
-- Reviewed src/types/NodeDefinition.ts for ConnectionRenderContext details.
-- Reviewed src/components/node/NodeLayer.tsx to check how connection hover states propagate through interaction handlers.
-- Reviewed src/components/node/NodeDragHandler.tsx to confirm drag selection updates keep connection overlays in sync.
-- Reviewed src/components/inspector/renderers/NodeTreeListPanel.tsx to understand how inspector-driven selections should reflect on custom connectors.
-*/

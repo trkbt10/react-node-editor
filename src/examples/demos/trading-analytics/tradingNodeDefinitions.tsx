@@ -8,7 +8,7 @@ import {
   type NodeDefinition,
   type NodeRenderProps,
 } from "../../../types/NodeDefinition";
-import { NodeResizer } from "../../../components/node/NodeResizer";
+import { NodeResizer } from "../../../components/node/resize/NodeResizer";
 import { renderTradingConnection, renderTradingPort } from "./tradingRenderers";
 import classes from "./TradingAnalyticsDashboard.module.css";
 

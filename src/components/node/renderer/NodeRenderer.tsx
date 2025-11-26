@@ -2,14 +2,14 @@
  * @file Node renderer component
  */
 import * as React from "react";
-import { Node, NodeId } from "../../types/core";
-import { NodeDragHandler } from "./NodeDragHandler";
-import { createMemoizedComponent, areNodesEqual } from "../../contexts/node-editor/utils/renderOptimizationMemoization";
+import { Node, NodeId } from "../../../types/core";
+import { NodeDragHandler } from "../drag/NodeDragHandler";
+import { createMemoizedComponent, areNodesEqual } from "../../../contexts/node-editor/utils/renderOptimizationMemoization";
 import styles from "./NodeRenderer.module.css";
-import { NodeView } from "./NodeView";
-import { useOptionalRenderers } from "../../contexts/RendererContext";
-import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { nodeHasGroupBehavior } from "../../types/behaviors";
+import { NodeView } from "../NodeView";
+import { useOptionalRenderers } from "../../../contexts/RendererContext";
+import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
+import { nodeHasGroupBehavior } from "../../../types/behaviors";
 
 export type CustomNodeRendererProps = {
   node: Node;

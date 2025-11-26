@@ -2,31 +2,31 @@
  * @file Encapsulated interaction hooks for NodeLayer (ports, drag, connections).
  */
 import * as React from "react";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { useNodeDefinitions } from "../../contexts/node-definitions/context";
-import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { useNodeEditor } from "../../contexts/node-editor/context";
-import { usePortPositions } from "../../contexts/node-ports/context";
+import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
+import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { usePortPositions } from "../../../contexts/node-ports/context";
 import {
   computeConnectablePortIds,
   type ConnectablePortsResult,
-} from "../../contexts/node-ports/utils/connectablePortPlanner";
-import { getOtherPortInfo, isValidReconnection } from "../../contexts/node-ports/utils/portConnectionQueries";
-import { getPortConnections } from "../../core/port/queries";
-import { createValidatedConnection } from "../../contexts/node-ports/utils/connectionOperations";
-import { canConnectPorts } from "../../core/connection/validation";
+} from "../../../contexts/node-ports/utils/connectablePortPlanner";
+import { getOtherPortInfo, isValidReconnection } from "../../../contexts/node-ports/utils/portConnectionQueries";
+import { getPortConnections } from "../../../core/port/queries";
+import { createValidatedConnection } from "../../../contexts/node-ports/utils/connectionOperations";
+import { canConnectPorts } from "../../../core/connection/validation";
 import {
   planConnectionChange,
   ConnectionSwitchBehavior,
-} from "../../contexts/node-ports/utils/connectionSwitchBehavior";
-import { findNearestConnectablePort } from "../../contexts/node-ports/utils/connectionCandidate";
-import { snapMultipleToGrid } from "../../contexts/node-editor/utils/gridSnap";
-import { calculateNewPositions, handleGroupMovement } from "../../contexts/node-editor/utils/nodeDragHelpers";
-import { PORT_INTERACTION_THRESHOLD } from "../../constants/interaction";
-import type { Port, Position, ConnectionDisconnectState } from "../../types/core";
-import { usePointerInteraction } from "../../hooks/usePointerInteraction";
-import type { UseGroupManagementResult } from "../../hooks/useGroupManagement";
+} from "../../../contexts/node-ports/utils/connectionSwitchBehavior";
+import { findNearestConnectablePort } from "../../../contexts/node-ports/utils/connectionCandidate";
+import { snapMultipleToGrid } from "../../../contexts/node-editor/utils/gridSnap";
+import { calculateNewPositions, handleGroupMovement } from "../../../contexts/node-editor/utils/nodeDragHelpers";
+import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
+import type { Port, Position, ConnectionDisconnectState } from "../../../types/core";
+import { usePointerInteraction } from "../../../hooks/usePointerInteraction";
+import type { UseGroupManagementResult } from "../../../hooks/useGroupManagement";
 
 const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
   ids: new Set<string>(),

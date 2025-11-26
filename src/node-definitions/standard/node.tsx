@@ -4,7 +4,7 @@
 import * as React from "react";
 import type { NodeRenderProps } from "../../types/NodeDefinition";
 import { useI18n } from "../../i18n/context";
-import { NodeResizer } from "../../components/node/NodeResizer";
+import { NodeResizer } from "../../components/node/resize/NodeResizer";
 import styles from "./standard.module.css";
 
 /**

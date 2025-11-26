@@ -2,15 +2,15 @@
  * @file Node body renderer component
  */
 import * as React from "react";
-import type { Node } from "../../types/core";
-import type { NodeDefinition } from "../../types/NodeDefinition";
-import type { CustomNodeRendererProps } from "./NodeView";
-import { GroupNodeRenderer as GroupContent } from "../../node-definitions/group/node";
-import { LockIcon } from "../elements/icons";
-import { useI18n } from "../../i18n/context";
+import type { Node } from "../../../types/core";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
+import type { CustomNodeRendererProps } from "../NodeViewPresenter";
+import { GroupNodeRenderer as GroupContent } from "../../../node-definitions/group/node";
+import { LockIcon } from "../../elements/icons";
+import { useI18n } from "../../../i18n/context";
 import styles from "./NodeBodyRenderer.module.css";
-import { areExternalDataStatesEqual } from "../../contexts/external-data/useExternalData";
-import { hasNodeStateChanged } from "../../core/node/comparators";
+import { areExternalDataStatesEqual } from "../../../contexts/external-data/useExternalData";
+import { hasNodeStateChanged } from "../../../core/node/comparators";
 
 export type NodeBodyRendererProps = {
   node: Node;

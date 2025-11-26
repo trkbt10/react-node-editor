@@ -25,9 +25,9 @@ export function useDynamicPortPosition(
   const { state, getNodePorts } = useNodeEditor();
   const { calculateNodePortPositions } = usePortPositions();
   const { state: actionState } = useEditorActionState();
-
+  const currentNode = React.useMemo(() => state.nodes[nodeId], [state.nodes, nodeId]);
+  const nodePorts = React.useMemo(() => getNodePorts(nodeId), [getNodePorts, nodeId]);
   return React.useMemo(() => {
-    const currentNode = state.nodes[nodeId];
     if (!currentNode) {
       return undefined;
     }
@@ -70,15 +70,15 @@ export function useDynamicPortPosition(
       ...currentNode,
       position: positionOverride ?? previewPosition ?? currentNode.position,
       size: sizeOverride ?? previewSize ?? currentNode.size,
-      ports: getNodePorts(nodeId),
+      ports: nodePorts,
     };
 
     return calculateNodePortPositions(effectiveNode).get(portId);
   }, [
-    state.nodes,
+    currentNode,
     nodeId,
     portId,
-    getNodePorts,
+    nodePorts,
     calculateNodePortPositions,
     options?.positionOverride,
     options?.sizeOverride,

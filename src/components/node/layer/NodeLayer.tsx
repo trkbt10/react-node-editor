@@ -2,19 +2,19 @@
  * @file Main node layer rendering and interaction handler for the node editor canvas.
  */
 import * as React from "react";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
-import { useNodeDefinitions } from "../../contexts/node-definitions/context";
-import { useNodeEditor } from "../../contexts/node-editor/context";
-import { useGroupManagement } from "../../hooks/useGroupManagement";
-import { useNodeResize } from "../../hooks/useNodeResize";
-import { useVisibleNodes } from "../../hooks/useVisibleNodes";
+import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useGroupManagement } from "../../../hooks/useGroupManagement";
+import { useNodeResize } from "../../../hooks/useNodeResize";
+import { useVisibleNodes } from "../../../hooks/useVisibleNodes";
 import styles from "./NodeLayer.module.css";
-import { useRenderers } from "../../contexts/RendererContext";
-import { hasGroupBehavior } from "../../types/behaviors";
+import { useRenderers } from "../../../contexts/RendererContext";
+import { hasGroupBehavior } from "../../../types/behaviors";
 import { useNodeLayerDrag, useNodeLayerConnections, useNodeLayerPorts } from "./NodeLayerInteractions";
-import { useNodeSelectionInteractions } from "./hooks/useNodeSelectionInteractions";
-import { isNodeDirectlyDragged, getNodeDragOffset } from "../../core/node/dragState";
+import { useNodeSelectionInteractions } from "../hooks/useNodeSelectionInteractions";
+import { isNodeDirectlyDragged, getNodeDragOffset } from "../../../core/node/dragState";
 
 export type NodeLayerProps = {
   doubleClickToEdit?: boolean;

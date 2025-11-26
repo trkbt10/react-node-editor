@@ -12,7 +12,7 @@ import type {
 import { toUntypedDefinition } from "../../types/NodeDefinition";
 import type { NodeEditorData } from "../../types/core";
 import { StandardNodeDefinition } from "../../node-definitions/standard";
-import { NodeResizer } from "../../components/node/NodeResizer";
+import { NodeResizer } from "../../components/node/resize/NodeResizer";
 import classes from "./CustomNodeExample.module.css";
 
 // Example external data type

@@ -4,7 +4,7 @@
 import * as React from "react";
 import { CanvasBase, type CanvasNodeDropEvent } from "./CanvasBase";
 import { ConnectionLayer } from "../connection/ConnectionLayer";
-import { NodeLayer } from "../node/NodeLayer";
+import { NodeLayer } from "../node/layer/NodeLayer";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { buildNodeFromDefinition } from "../../contexts/node-editor/utils/nodeFactory";

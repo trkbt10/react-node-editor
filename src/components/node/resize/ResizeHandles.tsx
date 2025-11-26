@@ -2,8 +2,8 @@
  * @file SVG-based resize handles for node corners (extensible to edges)
  */
 import * as React from "react";
-import type { Position, ResizeHandle as ResizeHandleDirection, Size } from "../../types/core";
-import { hasSizeChanged } from "../../core/geometry/comparators";
+import type { Position, ResizeHandle as ResizeHandleDirection, Size } from "../../../types/core";
+import { hasSizeChanged } from "../../../core/geometry/comparators";
 import styles from "./ResizeHandle.module.css";
 
 type ResizeHandlesProps = {
