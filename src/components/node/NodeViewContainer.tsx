@@ -10,7 +10,7 @@ import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useNodeDefinition } from "../../contexts/node-definitions/hooks/useNodeDefinition";
 import { useExternalDataRef } from "../../contexts/external-data/ExternalDataContext";
 import { useExternalData } from "../../contexts/external-data/useExternalData";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
+import { useEditorActionStateState, useEditorActionStateActions } from "../../contexts/EditorActionStateContext";
 import { useGroupManagement } from "../../hooks/useGroupManagement";
 import { computeNodeBehaviorState, computeNodeResizeState } from "../../core/node/nodeState";
 import { computeNodeAppearance } from "../../core/node/nodeAppearance";
@@ -65,7 +65,8 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
   // Use split hooks for better performance
   const editingState = useInlineEditingState();
   const { isEditing, startEditing, updateValue, confirmEdit, cancelEdit } = useInlineEditingActions();
-  const { state: actionState, actions: actionActions } = useEditorActionState();
+  const actionState = useEditorActionStateState();
+  const { actions: actionActions } = useEditorActionStateActions();
   const groupManager = useGroupManagement({ autoUpdateMembership: false });
   const nodeDefinition = useNodeDefinition(node.type);
   const externalDataRef = useExternalDataRef(node.id);

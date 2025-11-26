@@ -29,7 +29,16 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
   const matchesPointerAction = usePointerShortcutMatcher();
 
   const node = nodeEditorState.nodes[nodeId];
-  const isDragging = actionState.dragState?.nodeIds.includes(nodeId) || false;
+
+  // Pre-compute dragged node ids set for O(1) lookup
+  const draggedNodeIdsSet = React.useMemo(() => {
+    if (!actionState.dragState) {
+      return null;
+    }
+    return new Set(actionState.dragState.nodeIds);
+  }, [actionState.dragState]);
+
+  const isDragging = draggedNodeIdsSet?.has(nodeId) ?? false;
 
   // Create drag data for the pointer drag hook
   const createDragData = React.useCallback(
@@ -146,60 +155,57 @@ export const NodeDragHandler: React.FC<NodeDragHandlerProps> = ({ nodeId, childr
     threshold: 2,
   });
 
-  const handlePointerDown = React.useCallback(
-    (e: React.PointerEvent) => {
-      if (node?.locked) {
-        return;
-      }
-
-      // Prevent drag if clicking on a port or resize handle
-      const target = e.target as HTMLElement;
-      if (target.closest("[data-port-id]") || target.closest("[data-resize-handle]")) {
-        return;
-      }
-
-      const nativeEvent = e.nativeEvent;
-      const matchesMultiSelect = matchesPointerAction("node-add-to-selection", nativeEvent);
-      const matchesSelect = matchesPointerAction("node-select", nativeEvent) || matchesMultiSelect;
-
-      if (!matchesSelect && !matchesMultiSelect) {
-        return;
-      }
-
-      e.stopPropagation();
-
-      const wasSelected = actionState.selectedNodeIds.includes(nodeId);
-      const hadMultipleSelection = actionState.selectedNodeIds.length > 1;
-
-      if (matchesMultiSelect) {
-        actionActions.selectEditingNode(nodeId, true);
-        actionActions.selectInteractionNode(nodeId, true);
-        if (wasSelected) {
-          return;
-        }
-      } else if (!wasSelected || !hadMultipleSelection) {
-        actionActions.selectEditingNode(nodeId, false);
-        actionActions.selectInteractionNode(nodeId, false);
-      }
-
-      const selectionForDrag = matchesMultiSelect
-        ? addUniqueIds(actionState.selectedNodeIds, [nodeId])
-        : wasSelected && hadMultipleSelection
-          ? actionState.selectedNodeIds
-          : [nodeId];
-
-      startDrag(e, createDragData(selectionForDrag));
-    },
-    [
-      node?.locked,
-      matchesPointerAction,
-      actionState.selectedNodeIds,
-      nodeId,
-      actionActions,
-      startDrag,
-      createDragData,
-    ],
+  // Pre-compute selected node ids set for O(1) lookup in event handler
+  const selectedNodeIdsSet = React.useMemo(
+    () => new Set(actionState.selectedNodeIds),
+    [actionState.selectedNodeIds],
   );
+
+  // Use useEffectEvent for stable handler reference that always accesses latest state
+  const handlePointerDown = React.useEffectEvent((e: React.PointerEvent) => {
+    if (node?.locked) {
+      return;
+    }
+
+    // Prevent drag if clicking on a port or resize handle
+    const target = e.target as HTMLElement;
+    if (target.closest("[data-port-id]") || target.closest("[data-resize-handle]")) {
+      return;
+    }
+
+    const nativeEvent = e.nativeEvent;
+    const matchesMultiSelect = matchesPointerAction("node-add-to-selection", nativeEvent);
+    const matchesSelect = matchesPointerAction("node-select", nativeEvent) || matchesMultiSelect;
+
+    if (!matchesSelect && !matchesMultiSelect) {
+      return;
+    }
+
+    e.stopPropagation();
+
+    // O(1) lookup using Set
+    const wasSelected = selectedNodeIdsSet.has(nodeId);
+    const hadMultipleSelection = actionState.selectedNodeIds.length > 1;
+
+    if (matchesMultiSelect) {
+      actionActions.selectEditingNode(nodeId, true);
+      actionActions.selectInteractionNode(nodeId, true);
+      if (wasSelected) {
+        return;
+      }
+    } else if (!wasSelected || !hadMultipleSelection) {
+      actionActions.selectEditingNode(nodeId, false);
+      actionActions.selectInteractionNode(nodeId, false);
+    }
+
+    const selectionForDrag = matchesMultiSelect
+      ? addUniqueIds(actionState.selectedNodeIds, [nodeId])
+      : wasSelected && hadMultipleSelection
+        ? actionState.selectedNodeIds
+        : [nodeId];
+
+    startDrag(e, createDragData(selectionForDrag));
+  });
 
   return (
     <>
