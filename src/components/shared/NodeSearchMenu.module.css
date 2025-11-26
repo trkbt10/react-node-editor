@@ -2,23 +2,21 @@
 /* Node Search Menu (Context Menu) Styles   */
 /* ========================================= */
 
-.nodeSearchMenuContainer {
-  position: fixed;
-  z-index: 10000;
-}
-
 .nodeSearchMenu {
-  min-width: 360px;
-  max-width: 480px;
-  max-height: 480px;
+  --_menu-min-width: 360px;
+  --_menu-max-width: 480px;
+  --_menu-max-height: 480px;
+
+  min-width: var(--_menu-min-width);
+  max-width: var(--_menu-max-width);
+  max-height: var(--_menu-max-height);
   background: var(--node-editor-control-background);
   border: var(--node-editor-input-border);
   border-radius: var(--node-editor-card-border-radius);
   box-shadow: var(--node-editor-dialog-box-shadow);
   overflow: hidden;
   font-family: var(--node-editor-theme-default-font-family);
-  animation: menuFadeIn 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  z-index: 1000;
+  animation: menuFadeIn var(--node-editor-transition-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
   flex-direction: column;
 }
@@ -26,7 +24,7 @@
 @keyframes menuFadeIn {
   from {
     opacity: 0;
-    transform: scale(0.98) translateY(-4px);
+    transform: scale(0.98) translateY(calc(-1 * var(--node-editor-space-xs)));
   }
 
   to {
@@ -53,19 +51,18 @@
   color: var(--node-editor-text-color);
   outline: none;
   transition:
-    border-color 0.15s ease,
-    box-shadow 0.15s ease;
+    border-color var(--node-editor-transition-duration) ease,
+    box-shadow var(--node-editor-transition-duration) ease;
   box-sizing: border-box;
 }
 
 .searchInput:focus {
   border-color: var(--node-editor-accent-color);
-  box-shadow: 0 0 0 3px var(--node-editor-keyboard-focus-indicator-color);
+  box-shadow: var(--node-editor-card-focus-box-shadow);
 }
 
 .searchInput::placeholder {
   color: var(--node-editor-quaternary-label-color);
-  font-weight: 400;
 }
 
 .searchHint {
@@ -85,9 +82,9 @@
   border: var(--node-editor-input-border);
   border-radius: var(--node-editor-control-border-radius);
   font-size: var(--node-editor-inspector-font-size-meta);
-  font-family: var(--node-editor-input-font);
+  font-family: var(--node-editor-font-mono);
   color: var(--node-editor-text-color);
-  font-weight: 500;
+  font-weight: var(--node-editor-inspector-font-weight-medium);
   box-sizing: border-box;
 }
 
@@ -110,14 +107,14 @@
   background: var(--node-editor-table-header-background-color);
   color: var(--node-editor-secondary-label-color);
   font-size: var(--node-editor-inspector-font-size-meta);
-  font-weight: 600;
+  font-weight: var(--node-editor-inspector-font-weight-medium);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.04em;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background-color 0.15s ease;
+  transition: background-color var(--node-editor-transition-duration) ease;
   border-bottom: var(--node-editor-input-border);
   position: sticky;
   top: 0;
@@ -126,7 +123,7 @@
 }
 
 .categoryHeader:hover {
-  filter: brightness(0.95);
+  background: var(--node-editor-table-header-background-color-hover);
 }
 
 .categoryHeader[data-is-selected="true"] {
@@ -155,7 +152,7 @@
 }
 
 .noResultsIcon {
-  font-size: 32px;
+  font-size: var(--node-editor-space-xxl);
   margin-bottom: var(--node-editor-space-sm);
   color: var(--node-editor-tertiary-label-color);
 }
@@ -171,13 +168,13 @@
 
 .selectionInfo {
   text-align: center;
-  font-weight: 500;
+  font-weight: var(--node-editor-inspector-font-weight-medium);
   color: var(--node-editor-text-color);
 }
 
 /* Modern scrollbar styling */
 .searchResults::-webkit-scrollbar {
-  width: 8px;
+  width: var(--node-editor-space-sm);
 }
 
 .searchResults::-webkit-scrollbar-track {
