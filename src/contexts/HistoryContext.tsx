@@ -108,20 +108,31 @@ export const historyReducer = (state: HistoryState, action: HistoryAction): Hist
   return handler(state, action, undefined);
 };
 
-// Context
-export type HistoryContextValue = {
-  state: HistoryState;
+// Context types
+export type HistoryActionsValue = {
   dispatch: React.Dispatch<HistoryAction>;
   actions: BoundActionCreators<typeof historyActions>;
   actionCreators: typeof historyActions;
-  canUndo: boolean;
-  canRedo: boolean;
-  currentEntry: HistoryEntry | null;
   pushEntry: (action: string, data: NodeEditorData) => void;
   undo: () => HistoryEntry | null;
   redo: () => HistoryEntry | null;
 };
 
+export type HistoryContextValue = HistoryActionsValue & {
+  state: HistoryState;
+  canUndo: boolean;
+  canRedo: boolean;
+  currentEntry: HistoryEntry | null;
+};
+
+// Split contexts for performance optimization
+const HistoryStateContext = React.createContext<HistoryState | null>(null);
+HistoryStateContext.displayName = "HistoryStateContext";
+
+const HistoryActionsContext = React.createContext<HistoryActionsValue | null>(null);
+HistoryActionsContext.displayName = "HistoryActionsContext";
+
+// Combined context for backward compatibility
 export const HistoryContext = React.createContext<HistoryContextValue | null>(null);
 HistoryContext.displayName = "HistoryContext";
 
@@ -137,6 +148,10 @@ export const HistoryProvider: React.FC<HistoryProviderProps> = ({ children, init
   const [state, dispatch] = React.useReducer(historyReducer, { ...defaultHistoryState, ...initialState });
   const boundActions = React.useMemo(() => bindActionCreators(historyActions, dispatch), [dispatch]);
 
+  // Use ref to provide stable undo/redo functions that always read latest state
+  const stateRef = React.useRef(state);
+  stateRef.current = state;
+
   // Apply maxEntries changes via reducer to avoid re-initialization patterns
   React.useEffect(() => {
     if (typeof maxEntries === "number" && maxEntries > 0) {
@@ -149,54 +164,94 @@ export const HistoryProvider: React.FC<HistoryProviderProps> = ({ children, init
   const canRedo = state.currentIndex < state.entries.length - 1;
   const currentEntry = state.currentIndex >= 0 ? state.entries[state.currentIndex] : null;
 
-  // Convenience methods
-  const pushEntry = React.useCallback(
-    (action: string, data: NodeEditorData) => {
+  // Stable actions value - uses ref to access latest state
+  const actionsValue = React.useMemo<HistoryActionsValue>(() => {
+    const pushEntry = (action: string, data: NodeEditorData): void => {
       boundActions.pushEntry(action, data);
-    },
-    [boundActions],
-  );
+    };
 
-  const undo = React.useCallback((): HistoryEntry | null => {
-    if (!canUndo) {
-      return null;
-    }
+    const undo = (): HistoryEntry | null => {
+      const currentState = stateRef.current;
+      if (currentState.currentIndex <= 0) {
+        return null;
+      }
+      const previousEntry = currentState.entries[currentState.currentIndex - 1];
+      boundActions.undo();
+      return previousEntry || null;
+    };
 
-    const previousEntry = state.entries[state.currentIndex - 1];
-    boundActions.undo();
-    return previousEntry || null;
-  }, [canUndo, state.entries, state.currentIndex, boundActions]);
+    const redo = (): HistoryEntry | null => {
+      const currentState = stateRef.current;
+      if (currentState.currentIndex >= currentState.entries.length - 1) {
+        return null;
+      }
+      const nextEntry = currentState.entries[currentState.currentIndex + 1];
+      boundActions.redo();
+      return nextEntry || null;
+    };
 
-  const redo = React.useCallback((): HistoryEntry | null => {
-    if (!canRedo) {
-      return null;
-    }
-
-    const nextEntry = state.entries[state.currentIndex + 1];
-    boundActions.redo();
-    return nextEntry || null;
-  }, [canRedo, state.entries, state.currentIndex, boundActions]);
-
-  const contextValue: HistoryContextValue = React.useMemo(
-    () => ({
-      state,
+    return {
       dispatch,
       actions: boundActions,
       actionCreators: historyActions,
-      canUndo,
-      canRedo,
-      currentEntry,
       pushEntry,
       undo,
       redo,
+    };
+  }, [dispatch, boundActions]);
+
+  // Combined context value for backward compatibility
+  const contextValue = React.useMemo<HistoryContextValue>(
+    () => ({
+      state,
+      canUndo,
+      canRedo,
+      currentEntry,
+      ...actionsValue,
     }),
-    [state, dispatch, boundActions, canUndo, canRedo, currentEntry, pushEntry, undo, redo],
+    [state, canUndo, canRedo, currentEntry, actionsValue],
   );
 
-  return <HistoryContext.Provider value={contextValue}>{children}</HistoryContext.Provider>;
+  return (
+    <HistoryStateContext.Provider value={state}>
+      <HistoryActionsContext.Provider value={actionsValue}>
+        <HistoryContext.Provider value={contextValue}>{children}</HistoryContext.Provider>
+      </HistoryActionsContext.Provider>
+    </HistoryStateContext.Provider>
+  );
 };
 
-// Hook
+// Hooks
+
+/**
+ * Hook to access only the history state
+ * Use this when you only need to read state and don't need actions
+ */
+export const useHistoryState = (): HistoryState => {
+  const state = React.useContext(HistoryStateContext);
+  if (!state) {
+    throw new Error("useHistoryState must be used within a HistoryProvider");
+  }
+  return state;
+};
+
+/**
+ * Hook to access only the history actions
+ * Use this when you only need to dispatch actions and don't need to re-render on state changes
+ * The returned actions have stable references and won't cause re-renders
+ */
+export const useHistoryActions = (): HistoryActionsValue => {
+  const actions = React.useContext(HistoryActionsContext);
+  if (!actions) {
+    throw new Error("useHistoryActions must be used within a HistoryProvider");
+  }
+  return actions;
+};
+
+/**
+ * Hook to access both state and actions (backward compatible)
+ * Prefer useHistoryState or useHistoryActions for better performance
+ */
 export const useHistory = (): HistoryContextValue => {
   const context = React.useContext(HistoryContext);
   if (!context) {

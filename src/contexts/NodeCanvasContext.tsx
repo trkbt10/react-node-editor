@@ -196,18 +196,29 @@ export const createCanvasUtils = (
   },
 });
 
-// Context
-export type NodeCanvasContextValue = {
-  state: NodeCanvasState;
+// Context types
+export type NodeCanvasActionsValue = {
   dispatch: React.Dispatch<NodeCanvasAction>;
   actions: BoundActionCreators<typeof nodeCanvasActions>;
   actionCreators: typeof nodeCanvasActions;
   canvasRef: React.RefObject<HTMLDivElement | null>;
   containerRef: React.RefObject<HTMLDivElement | null>;
   setContainerElement: (element: HTMLDivElement | null) => void;
+};
+
+export type NodeCanvasContextValue = NodeCanvasActionsValue & {
+  state: NodeCanvasState;
   utils: ReturnType<typeof createCanvasUtils>;
 };
 
+// Split contexts for performance optimization
+const NodeCanvasStateContext = React.createContext<NodeCanvasState | null>(null);
+NodeCanvasStateContext.displayName = "NodeCanvasStateContext";
+
+const NodeCanvasActionsContext = React.createContext<NodeCanvasActionsValue | null>(null);
+NodeCanvasActionsContext.displayName = "NodeCanvasActionsContext";
+
+// Combined context for backward compatibility
 export const NodeCanvasContext = React.createContext<NodeCanvasContextValue | null>(null);
 NodeCanvasContext.displayName = "NodeCanvasContext";
 
@@ -227,29 +238,75 @@ export const NodeCanvasProvider: React.FC<NodeCanvasProviderProps> = ({ children
   }, []);
   const boundActions = React.useMemo(() => bindActionCreators(nodeCanvasActions, dispatch), [dispatch]);
 
-  const utils = React.useMemo(
-    () => createCanvasUtils(canvasRef, containerRef, state.viewport),
-    [state.viewport, containerRef],
-  );
-
-  const contextValue: NodeCanvasContextValue = React.useMemo(
+  // Stable actions value - refs and dispatch are stable
+  const actionsValue = React.useMemo<NodeCanvasActionsValue>(
     () => ({
-      state,
       dispatch,
       actions: boundActions,
       actionCreators: nodeCanvasActions,
       canvasRef,
       containerRef,
       setContainerElement,
-      utils,
     }),
-    [state, dispatch, boundActions, setContainerElement, utils],
+    [dispatch, boundActions, setContainerElement],
   );
 
-  return <NodeCanvasContext.Provider value={contextValue}>{children}</NodeCanvasContext.Provider>;
+  // Utils depends on viewport state
+  const utils = React.useMemo(
+    () => createCanvasUtils(canvasRef, containerRef, state.viewport),
+    [state.viewport],
+  );
+
+  // Combined context value for backward compatibility
+  const contextValue = React.useMemo<NodeCanvasContextValue>(
+    () => ({
+      state,
+      utils,
+      ...actionsValue,
+    }),
+    [state, utils, actionsValue],
+  );
+
+  return (
+    <NodeCanvasStateContext.Provider value={state}>
+      <NodeCanvasActionsContext.Provider value={actionsValue}>
+        <NodeCanvasContext.Provider value={contextValue}>{children}</NodeCanvasContext.Provider>
+      </NodeCanvasActionsContext.Provider>
+    </NodeCanvasStateContext.Provider>
+  );
 };
 
-// Hook
+// Hooks
+
+/**
+ * Hook to access only the canvas state
+ * Use this when you only need to read state and don't need actions
+ */
+export const useNodeCanvasState = (): NodeCanvasState => {
+  const state = React.useContext(NodeCanvasStateContext);
+  if (!state) {
+    throw new Error("useNodeCanvasState must be used within a NodeCanvasProvider");
+  }
+  return state;
+};
+
+/**
+ * Hook to access only the canvas actions
+ * Use this when you only need to dispatch actions and don't need to re-render on state changes
+ * The returned actions have stable references and won't cause re-renders
+ */
+export const useNodeCanvasActions = (): NodeCanvasActionsValue => {
+  const actions = React.useContext(NodeCanvasActionsContext);
+  if (!actions) {
+    throw new Error("useNodeCanvasActions must be used within a NodeCanvasProvider");
+  }
+  return actions;
+};
+
+/**
+ * Hook to access both state and actions (backward compatible)
+ * Prefer useNodeCanvasState or useNodeCanvasActions for better performance
+ */
 export const useNodeCanvas = (): NodeCanvasContextValue => {
   const context = React.useContext(NodeCanvasContext);
   if (!context) {
@@ -258,13 +315,22 @@ export const useNodeCanvas = (): NodeCanvasContextValue => {
   return context;
 };
 
-export const useCanvasActions = () => {
-  const { actions } = useNodeCanvas();
+/**
+ * Hook to access only the bound action creators
+ * @deprecated Use useNodeCanvasActions().actions instead
+ */
+export const useCanvasActions = (): BoundActionCreators<typeof nodeCanvasActions> => {
+  const { actions } = useNodeCanvasActions();
   return actions;
 };
 
-export const useCanvasState = () => {
-  const { state, actions } = useNodeCanvas();
+/**
+ * Hook to access state and actions
+ * @deprecated Use useNodeCanvas() instead
+ */
+export const useCanvasState = (): { state: NodeCanvasState; actions: BoundActionCreators<typeof nodeCanvasActions> } => {
+  const state = useNodeCanvasState();
+  const { actions } = useNodeCanvasActions();
   return { state, actions };
 };
 

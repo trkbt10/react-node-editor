@@ -121,9 +121,8 @@ export const defaultKeyboardShortcutState: KeyboardShortcutState = {
   isEnabled: true,
 };
 
-// Context
-export type KeyboardShortcutContextValue = {
-  state: KeyboardShortcutState;
+// Context types
+export type KeyboardShortcutActionsValue = {
   dispatch: React.Dispatch<KeyboardShortcutAction>;
   actions: BoundActionCreators<typeof keyboardShortcutActions>;
   actionCreators: typeof keyboardShortcutActions;
@@ -131,6 +130,18 @@ export type KeyboardShortcutContextValue = {
   unregisterShortcut: (shortcut: KeyboardShortcut) => void;
 };
 
+export type KeyboardShortcutContextValue = KeyboardShortcutActionsValue & {
+  state: KeyboardShortcutState;
+};
+
+// Split contexts for performance optimization
+const KeyboardShortcutStateContext = React.createContext<KeyboardShortcutState | null>(null);
+KeyboardShortcutStateContext.displayName = "KeyboardShortcutStateContext";
+
+const KeyboardShortcutActionsContext = React.createContext<KeyboardShortcutActionsValue | null>(null);
+KeyboardShortcutActionsContext.displayName = "KeyboardShortcutActionsContext";
+
+// Combined context for backward compatibility
 export const KeyboardShortcutContext = React.createContext<KeyboardShortcutContextValue | null>(null);
 KeyboardShortcutContext.displayName = "KeyboardShortcutContext";
 
@@ -147,80 +158,115 @@ export const KeyboardShortcutProvider: React.FC<KeyboardShortcutProviderProps> =
   });
   const boundActions = React.useMemo(() => bindActionCreators(keyboardShortcutActions, dispatch), [dispatch]);
 
-  // Global keyboard event handler
-  React.useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (!state.isEnabled) {
-        return;
-      }
+  // Use ref to access latest state in event handler without re-registering
+  const stateRef = React.useRef(state);
+  stateRef.current = state;
 
-      // Don't handle shortcuts when focused on input elements
-      const target = event.target as HTMLElement;
-      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
-        return;
-      }
+  // Global keyboard event handler - uses ref to avoid re-registering on state change
+  const handleKeyDown = React.useEffectEvent((event: KeyboardEvent) => {
+    const currentState = stateRef.current;
+    if (!currentState.isEnabled) {
+      return;
+    }
 
-      // Check all registered shortcuts
-      for (const [key, handler] of state.shortcuts) {
-        const shortcutParts = key.split("+");
-        const shortcutKey = shortcutParts[shortcutParts.length - 1];
-        const modifiers = shortcutParts.slice(0, -1);
+    // Don't handle shortcuts when focused on input elements
+    const target = event.target as HTMLElement;
+    if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
+      return;
+    }
 
-        const shortcut: KeyboardShortcut = {
-          key: shortcutKey,
-          ctrl: modifiers.includes("ctrl"),
-          shift: modifiers.includes("shift"),
-          alt: modifiers.includes("alt"),
-          meta: modifiers.includes("meta"),
-        };
+    // Check all registered shortcuts
+    for (const [key, handler] of currentState.shortcuts) {
+      const shortcutParts = key.split("+");
+      const shortcutKey = shortcutParts[shortcutParts.length - 1];
+      const modifiers = shortcutParts.slice(0, -1);
 
-        if (matchesShortcut(event, shortcut)) {
-          const result = handler(event);
-          // Only prevent default if handler didn't explicitly return false
-          if (result !== false) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-          break; // Handle only the first matching shortcut
+      const shortcut: KeyboardShortcut = {
+        key: shortcutKey,
+        ctrl: modifiers.includes("ctrl"),
+        shift: modifiers.includes("shift"),
+        alt: modifiers.includes("alt"),
+        meta: modifiers.includes("meta"),
+      };
+
+      if (matchesShortcut(event, shortcut)) {
+        const result = handler(event);
+        // Only prevent default if handler didn't explicitly return false
+        if (result !== false) {
+          event.preventDefault();
+          event.stopPropagation();
         }
+        break; // Handle only the first matching shortcut
       }
-    };
+    }
+  });
 
+  React.useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [state.shortcuts, state.isEnabled]);
+  }, []);
 
-  // Convenience methods
-  const registerShortcut = React.useCallback(
-    (shortcut: KeyboardShortcut, handler: ShortcutHandler) => {
-      boundActions.registerShortcut(shortcut, handler);
-    },
-    [boundActions],
-  );
-
-  const unregisterShortcut = React.useCallback(
-    (shortcut: KeyboardShortcut) => {
-      boundActions.unregisterShortcut(shortcut);
-    },
-    [boundActions],
-  );
-
-  const contextValue: KeyboardShortcutContextValue = React.useMemo(
+  // Stable actions value - only depends on dispatch which is stable
+  const actionsValue = React.useMemo<KeyboardShortcutActionsValue>(
     () => ({
-      state,
       dispatch,
       actions: boundActions,
       actionCreators: keyboardShortcutActions,
-      registerShortcut,
-      unregisterShortcut,
+      registerShortcut: boundActions.registerShortcut,
+      unregisterShortcut: boundActions.unregisterShortcut,
     }),
-    [state, dispatch, boundActions, registerShortcut, unregisterShortcut],
+    [dispatch, boundActions],
   );
 
-  return <KeyboardShortcutContext.Provider value={contextValue}>{children}</KeyboardShortcutContext.Provider>;
+  // Combined context value for backward compatibility
+  const contextValue = React.useMemo<KeyboardShortcutContextValue>(
+    () => ({
+      state,
+      ...actionsValue,
+    }),
+    [state, actionsValue],
+  );
+
+  return (
+    <KeyboardShortcutStateContext.Provider value={state}>
+      <KeyboardShortcutActionsContext.Provider value={actionsValue}>
+        <KeyboardShortcutContext.Provider value={contextValue}>{children}</KeyboardShortcutContext.Provider>
+      </KeyboardShortcutActionsContext.Provider>
+    </KeyboardShortcutStateContext.Provider>
+  );
 };
 
-// Hook
+// Hooks
+
+/**
+ * Hook to access only the keyboard shortcut state
+ * Use this when you only need to read state and don't need actions
+ */
+export const useKeyboardShortcutState = (): KeyboardShortcutState => {
+  const state = React.useContext(KeyboardShortcutStateContext);
+  if (!state) {
+    throw new Error("useKeyboardShortcutState must be used within a KeyboardShortcutProvider");
+  }
+  return state;
+};
+
+/**
+ * Hook to access only the keyboard shortcut actions
+ * Use this when you only need to register/unregister shortcuts and don't need to re-render on state changes
+ * The returned actions have stable references and won't cause re-renders
+ */
+export const useKeyboardShortcutActions = (): KeyboardShortcutActionsValue => {
+  const actions = React.useContext(KeyboardShortcutActionsContext);
+  if (!actions) {
+    throw new Error("useKeyboardShortcutActions must be used within a KeyboardShortcutProvider");
+  }
+  return actions;
+};
+
+/**
+ * Hook to access both state and actions (backward compatible)
+ * Prefer useKeyboardShortcutState or useKeyboardShortcutActions for better performance
+ */
 export const useKeyboardShortcut = (): KeyboardShortcutContextValue => {
   const context = React.useContext(KeyboardShortcutContext);
   if (!context) {
