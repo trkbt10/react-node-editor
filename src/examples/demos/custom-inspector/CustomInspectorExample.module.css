@@ -1,0 +1,25 @@
+/**
+ * @file Minimal styles for CustomInspectorExample
+ *
+ * This file only contains layout styles for the example container.
+ * All inspector UI styling is handled by inspector parts components.
+ */
+
+/* Example container layout - required for demo structure */
+.exampleContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.modeSelector {
+  padding: 8px 12px;
+  background: var(--node-editor-window-background-color);
+  border-bottom: var(--node-editor-input-border);
+}
+
+.editorContainer {
+  flex: 1;
+  min-height: 0;
+}

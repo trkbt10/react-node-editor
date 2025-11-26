@@ -1,0 +1,48 @@
+/**
+ * @file Inspector button group styles using segment control design tokens
+ */
+
+.group {
+  display: flex;
+  gap: 1px;
+  background: var(--node-editor-separator-color);
+  border-radius: var(--node-editor-segment-control-border-radius);
+  overflow: hidden;
+}
+
+.button {
+  flex: 1;
+  padding: var(--node-editor-segment-control-segment-padding);
+  font: var(--node-editor-control-text-font);
+  border: none;
+  background: var(--node-editor-segment-control-background-color);
+  color: var(--node-editor-segment-control-text-color);
+  cursor: pointer;
+  transition: background-color var(--node-editor-transition-duration) ease,
+    color var(--node-editor-transition-duration) ease;
+}
+
+.button:first-child {
+  border-radius: var(--node-editor-segment-control-border-radius) 0 0
+    var(--node-editor-segment-control-border-radius);
+}
+
+.button:last-child {
+  border-radius: 0 var(--node-editor-segment-control-border-radius)
+    var(--node-editor-segment-control-border-radius) 0;
+}
+
+.button:hover:not([data-selected="true"]):not(:disabled) {
+  background: var(--node-editor-control-hover-background);
+}
+
+.button[data-selected="true"] {
+  background: var(--node-editor-segment-control-active-background-color);
+  color: var(--node-editor-segment-control-active-text-color);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  color: var(--node-editor-disabled-control-text-color);
+}

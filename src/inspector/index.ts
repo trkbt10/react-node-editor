@@ -50,6 +50,13 @@ export { InspectorTextarea } from "../components/inspector/parts/InspectorTextar
 export type { InspectorTextareaProps } from "../components/inspector/parts/InspectorTextarea";
 export { InspectorButton } from "../components/inspector/parts/InspectorButton";
 export type { InspectorButtonProps } from "../components/inspector/parts/InspectorButton";
+export { InspectorButtonGroup } from "../components/inspector/parts/InspectorButtonGroup";
+export type {
+  InspectorButtonGroupProps,
+  InspectorButtonGroupOption,
+} from "../components/inspector/parts/InspectorButtonGroup";
+export { InspectorSelect } from "../components/inspector/parts/InspectorSelect";
+export type { InspectorSelectProps } from "../components/inspector/parts/InspectorSelect";
 export {
   InspectorDefinitionList,
   InspectorDefinitionItem,

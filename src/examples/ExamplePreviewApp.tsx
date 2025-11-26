@@ -34,6 +34,7 @@ import { TradingAnalyticsDashboard } from "./demos/trading-analytics/TradingAnal
 import { DataBindingModesExample } from "./demos/DataBindingModesExample";
 import { CustomLayoutDemo } from "./demos/custom-layout-demo";
 import { DynamicPortPlaygroundExample } from "./demos/custom-port/DynamicPortPlaygroundExample";
+import { CustomInspectorExample } from "./demos/custom-inspector/CustomInspectorExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -134,6 +135,13 @@ const examples: ExampleEntry[] = [
     title: "Custom Connector Playground",
     description: "Render bezier connectors with live handle overlays and animated accents.",
     component: CustomConnectorExample,
+    category: "custom",
+  },
+  {
+    id: "custom-inspector",
+    title: "Custom Inspector Panels",
+    description: "Demonstrates custom inspector tabs, settings panels, and per-node renderInspector functions.",
+    component: CustomInspectorExample,
     category: "custom",
   },
   {

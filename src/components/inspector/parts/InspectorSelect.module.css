@@ -1,0 +1,32 @@
+/**
+ * @file Inspector select styles using input design tokens
+ */
+
+.select {
+  width: 100%;
+  padding: var(--node-editor-inspector-input-padding);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
+  font: var(--node-editor-input-font);
+  background: var(--node-editor-input-background);
+  color: var(--node-editor-input-text-color);
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: border-color var(--node-editor-transition-duration) ease;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--node-editor-accent-color);
+  box-shadow: var(--node-editor-card-focus-box-shadow);
+}
+
+.select:hover:not(:focus) {
+  border-color: var(--node-editor-input-border-hover);
+}
+
+.select:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  color: var(--node-editor-disabled-control-text-color);
+}
