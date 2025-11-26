@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import type { Position, ResizeHandle as ResizeHandleDirection, Size } from "../../types/core";
+import { hasSizeChanged } from "../../core/geometry/comparators";
 import styles from "./ResizeHandle.module.css";
 
 type ResizeHandlesProps = {
@@ -171,12 +172,8 @@ const areEqual = (prevProps: ResizeHandlesProps, nextProps: ResizeHandlesProps):
   };
 
   // Check size changes
-  if (prevProps.size.width !== nextProps.size.width) {
-    debugLog("size.width changed", { prev: prevProps.size.width, next: nextProps.size.width });
-    return false;
-  }
-  if (prevProps.size.height !== nextProps.size.height) {
-    debugLog("size.height changed", { prev: prevProps.size.height, next: nextProps.size.height });
+  if (hasSizeChanged(prevProps.size, nextProps.size)) {
+    debugLog("size changed", { prev: prevProps.size, next: nextProps.size });
     return false;
   }
 

@@ -10,6 +10,7 @@ import { LockIcon } from "../elements/icons";
 import { useI18n } from "../../i18n/context";
 import styles from "./NodeBodyRenderer.module.css";
 import { areExternalDataStatesEqual } from "../../contexts/external-data/useExternalData";
+import { hasNodeStateChanged } from "../../core/node/comparators";
 
 export type NodeBodyRendererProps = {
   node: Node;
@@ -154,8 +155,8 @@ export const NodeBodyRenderer = React.memo(NodeBodyRendererComponent, (prevProps
     return false;
   }
 
-  // Check node data changes
-  if (prevProps.node.locked !== nextProps.node.locked) {
+  // Check node state changes
+  if (hasNodeStateChanged(prevProps.node, nextProps.node)) {
     debugLog("node.locked changed", { prev: prevProps.node.locked, next: nextProps.node.locked });
     return false;
   }

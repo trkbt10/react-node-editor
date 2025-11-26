@@ -4,6 +4,7 @@
  */
 import type { Position, PortPosition } from "../../types/core";
 import { getDistance } from "../geometry/position";
+import { cubicBezierPoint, cubicBezierTangent } from "../geometry/curve";
 
 /**
  * Calculate control points for a bezier curve connecting two ports
@@ -86,4 +87,31 @@ export const calculateConnectionPath = (
 ): string => {
   const { cp1, cp2 } = calculateConnectionControlPoints(from, to, fromPortPosition, toPortPosition);
   return `M ${from.x} ${from.y} C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${to.x} ${to.y}`;
+};
+
+/**
+ * Midpoint and angle along a connection path
+ */
+export type ConnectionMidpointInfo = {
+  x: number;
+  y: number;
+  angle: number;
+};
+
+/**
+ * Calculate the midpoint position and tangent angle at t=0.5 along the connection bezier
+ * Useful for placing direction markers or labels
+ */
+export const calculateConnectionMidpoint = (
+  from: Position,
+  to: Position,
+  fromPortPosition?: PortPosition,
+  toPortPosition?: PortPosition,
+): ConnectionMidpointInfo => {
+  const { cp1, cp2 } = calculateConnectionControlPoints(from, to, fromPortPosition, toPortPosition);
+  const t = 0.5;
+  const pt = cubicBezierPoint(from, cp1, cp2, to, t);
+  const tan = cubicBezierTangent(from, cp1, cp2, to, t);
+  const angle = (Math.atan2(tan.y, tan.x) * 180) / Math.PI;
+  return { x: pt.x, y: pt.y, angle };
 };

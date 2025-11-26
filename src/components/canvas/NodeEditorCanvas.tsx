@@ -33,6 +33,7 @@ import {
   getDisabledNodeTypes,
 } from "../../contexts/node-definitions/utils/nodeTypeLimits";
 import { buildNodeFromDefinition } from "../../contexts/node-editor/utils/nodeFactory";
+import { hasNodeGeometryChanged } from "../../core/node/comparators";
 
 export type NodeEditorCanvasProps = {
   className?: string;
@@ -142,13 +143,7 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
         const node = editorState.nodes[nodeId];
         const prevNode = prevNodes[nodeId];
 
-        if (
-          !prevNode ||
-          node.position.x !== prevNode.position.x ||
-          node.position.y !== prevNode.position.y ||
-          node.size?.width !== prevNode.size?.width ||
-          node.size?.height !== prevNode.size?.height
-        ) {
+        if (!prevNode || hasNodeGeometryChanged(prevNode, node)) {
           shouldRecompute = true;
           break;
         }

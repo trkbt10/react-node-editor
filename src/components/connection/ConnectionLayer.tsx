@@ -18,6 +18,7 @@ import type { PointerType } from "../../types/interaction";
 import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
 import { getPortDefinition } from "../../core/connection/validation";
 import { getPreviewPosition } from "../../core/geometry/position";
+import { hasPositionChanged, hasSizeChanged } from "../../core/geometry/comparators";
 import { getNodeDragOffset } from "../../core/node/dragState";
 import { getNodeResizeSize } from "../../core/node/resizeState";
 
@@ -486,23 +487,13 @@ const ConnectionRenderer = React.memo(ConnectionRendererComponent, (prevProps, n
   if (prevProps.isHovered !== nextProps.isHovered) {return false;}
   if (prevProps.isAdjacentToSelectedNode !== nextProps.isAdjacentToSelectedNode) {return false;}
 
-  // Drag offset comparison (check both x and y)
-  const prevFromOffset = prevProps.fromDragOffset;
-  const nextFromOffset = nextProps.fromDragOffset;
-  if (prevFromOffset?.x !== nextFromOffset?.x || prevFromOffset?.y !== nextFromOffset?.y) {return false;}
-
-  const prevToOffset = prevProps.toDragOffset;
-  const nextToOffset = nextProps.toDragOffset;
-  if (prevToOffset?.x !== nextToOffset?.x || prevToOffset?.y !== nextToOffset?.y) {return false;}
+  // Drag offset comparison
+  if (hasPositionChanged(prevProps.fromDragOffset, nextProps.fromDragOffset)) {return false;}
+  if (hasPositionChanged(prevProps.toDragOffset, nextProps.toDragOffset)) {return false;}
 
   // Resize size comparison
-  const prevFromResize = prevProps.fromResizeSize;
-  const nextFromResize = nextProps.fromResizeSize;
-  if (prevFromResize?.width !== nextFromResize?.width || prevFromResize?.height !== nextFromResize?.height) {return false;}
-
-  const prevToResize = prevProps.toResizeSize;
-  const nextToResize = nextProps.toResizeSize;
-  if (prevToResize?.width !== nextToResize?.width || prevToResize?.height !== nextToResize?.height) {return false;}
+  if (hasSizeChanged(prevProps.fromResizeSize, nextProps.fromResizeSize)) {return false;}
+  if (hasSizeChanged(prevProps.toResizeSize, nextProps.toResizeSize)) {return false;}
 
   return true;
 });

@@ -18,6 +18,9 @@ import { getReadableTextColor, applyOpacity } from "../../utils/colorUtils";
 import { NodeBodyRenderer } from "./NodeBodyRenderer";
 import { NodePortsRenderer } from "./NodePortsRenderer";
 import { compareExternalDataStates } from "../../contexts/external-data/useExternalData";
+import { hasPositionChanged, hasSizeChanged } from "../../core/geometry/comparators";
+import { hasNodeStateChanged } from "../../core/node/comparators";
+import { hasPortIdChanged } from "../../core/port/comparators";
 
 export type CustomNodeRendererProps = {
   node: Node;
@@ -477,24 +480,16 @@ const areEqual = (prevProps: NodeViewProps, nextProps: NodeViewProps): boolean =
     return false;
   }
 
-  // Check node data changes
-  if (prevProps.node.position.x !== nextProps.node.position.x) {
-    debugLog("node.position.x changed", { prev: prevProps.node.position.x, next: nextProps.node.position.x });
+  // Check node geometry changes (position and size)
+  if (hasPositionChanged(prevProps.node.position, nextProps.node.position)) {
+    debugLog("node.position changed", { prev: prevProps.node.position, next: nextProps.node.position });
     return false;
   }
-  if (prevProps.node.position.y !== nextProps.node.position.y) {
-    debugLog("node.position.y changed", { prev: prevProps.node.position.y, next: nextProps.node.position.y });
+  if (hasSizeChanged(prevProps.node.size, nextProps.node.size)) {
+    debugLog("node.size changed", { prev: prevProps.node.size, next: nextProps.node.size });
     return false;
   }
-  if (prevProps.node.size?.width !== nextProps.node.size?.width) {
-    debugLog("node.size.width changed", { prev: prevProps.node.size?.width, next: nextProps.node.size?.width });
-    return false;
-  }
-  if (prevProps.node.size?.height !== nextProps.node.size?.height) {
-    debugLog("node.size.height changed", { prev: prevProps.node.size?.height, next: nextProps.node.size?.height });
-    return false;
-  }
-  if (prevProps.node.locked !== nextProps.node.locked) {
+  if (hasNodeStateChanged(prevProps.node, nextProps.node)) {
     debugLog("node.locked changed", { prev: prevProps.node.locked, next: nextProps.node.locked });
     return false;
   }
@@ -507,24 +502,20 @@ const areEqual = (prevProps: NodeViewProps, nextProps: NodeViewProps): boolean =
   }
 
   // Check drag offset changes
-  if (prevProps.dragOffset?.x !== nextProps.dragOffset?.x) {
-    debugLog("dragOffset.x changed", { prev: prevProps.dragOffset?.x, next: nextProps.dragOffset?.x });
-    return false;
-  }
-  if (prevProps.dragOffset?.y !== nextProps.dragOffset?.y) {
-    debugLog("dragOffset.y changed", { prev: prevProps.dragOffset?.y, next: nextProps.dragOffset?.y });
+  if (hasPositionChanged(prevProps.dragOffset, nextProps.dragOffset)) {
+    debugLog("dragOffset changed", { prev: prevProps.dragOffset, next: nextProps.dragOffset });
     return false;
   }
 
   // Check port-related changes
-  if (prevProps.connectingPort?.id !== nextProps.connectingPort?.id) {
+  if (hasPortIdChanged(prevProps.connectingPort, nextProps.connectingPort)) {
     debugLog("connectingPort.id changed", {
       prev: prevProps.connectingPort?.id,
       next: nextProps.connectingPort?.id,
     });
     return false;
   }
-  if (prevProps.hoveredPort?.id !== nextProps.hoveredPort?.id) {
+  if (hasPortIdChanged(prevProps.hoveredPort, nextProps.hoveredPort)) {
     debugLog("hoveredPort.id changed", { prev: prevProps.hoveredPort?.id, next: nextProps.hoveredPort?.id });
     return false;
   }

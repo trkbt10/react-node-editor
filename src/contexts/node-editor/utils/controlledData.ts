@@ -2,153 +2,10 @@
  * @file Utilities for stabilizing controlled NodeEditorData to minimize unnecessary renders.
  */
 import * as React from "react";
-import type { Connection, Node, NodeEditorData, Port } from "../../../types/core";
-import { arePortDataTypesEqual } from "../../../utils/portDataTypeUtils";
-
-const arePositionsEqual = (prev: Node["position"], next: Node["position"]): boolean => {
-  return prev.x === next.x && prev.y === next.y;
-};
-
-const areSizesEqual = (prev?: Node["size"], next?: Node["size"]): boolean => {
-  if (!prev && !next) {
-    return true;
-  }
-  if (!prev || !next) {
-    return false;
-  }
-  return prev.width === next.width && prev.height === next.height;
-};
-
-const areStringArraysEqual = (prev?: string[], next?: string[]): boolean => {
-  if (!prev && !next) {
-    return true;
-  }
-  if (!prev || !next) {
-    return false;
-  }
-  if (prev.length !== next.length) {
-    return false;
-  }
-  return prev.every((value, index) => value === next[index]);
-};
-
-const isPlainValueEqual = (prevValue: unknown, nextValue: unknown): boolean => {
-  if (prevValue === nextValue) {
-    return true;
-  }
-  const prevType = typeof prevValue;
-  const nextType = typeof nextValue;
-  if (prevType !== nextType) {
-    return false;
-  }
-  if (prevValue === null || nextValue === null) {
-    return false;
-  }
-  if (prevType === "object" || prevType === "function") {
-    return false;
-  }
-  return Object.is(prevValue, nextValue);
-};
-
-const areRecordValuesShallowEqual = (prev: Record<string, unknown>, next: Record<string, unknown>): boolean => {
-  if (prev === next) {
-    return true;
-  }
-  const prevKeys = Object.keys(prev);
-  const nextKeys = Object.keys(next);
-  if (prevKeys.length !== nextKeys.length) {
-    return false;
-  }
-  return prevKeys.every((key) => {
-    if (!Object.prototype.hasOwnProperty.call(next, key)) {
-      return false;
-    }
-    return isPlainValueEqual(prev[key], next[key]);
-  });
-};
-
-const arePlacementsEqual = (prev?: Port["placement"], next?: Port["placement"]): boolean => {
-  if (!prev && !next) {
-    return true;
-  }
-  if (!prev || !next) {
-    return false;
-  }
-  return (
-    prev.side === next.side &&
-    prev.segment === next.segment &&
-    prev.segmentOrder === next.segmentOrder &&
-    prev.segmentSpan === next.segmentSpan &&
-    prev.align === next.align
-  );
-};
-
-const arePortsEqual = (prev?: Port[], next?: Port[]): boolean => {
-  if (!prev && !next) {
-    return true;
-  }
-  if (!prev || !next) {
-    return false;
-  }
-  if (prev.length !== next.length) {
-    return false;
-  }
-  return prev.every((port, index) => {
-    const other = next[index];
-    return (
-      port.id === other.id &&
-      port.definitionId === other.definitionId &&
-      port.type === other.type &&
-      port.label === other.label &&
-      port.nodeId === other.nodeId &&
-      port.position === other.position &&
-      arePlacementsEqual(port.placement, other.placement) &&
-      arePortDataTypesEqual(port.dataType, other.dataType) &&
-      port.maxConnections === other.maxConnections &&
-      areStringArraysEqual(port.allowedNodeTypes, other.allowedNodeTypes) &&
-      areStringArraysEqual(port.allowedPortTypes, other.allowedPortTypes) &&
-      port.instanceIndex === other.instanceIndex &&
-      port.instanceTotal === other.instanceTotal
-    );
-  });
-};
-
-export const areNodesStructurallyEqual = (prev: Node, next: Node): boolean => {
-  if (prev === next) {
-    return true;
-  }
-  return (
-    prev.id === next.id &&
-    prev.type === next.type &&
-    prev.order === next.order &&
-    arePositionsEqual(prev.position, next.position) &&
-    areSizesEqual(prev.size, next.size) &&
-    areSizesEqual(prev.minSize, next.minSize) &&
-    areSizesEqual(prev.maxSize, next.maxSize) &&
-    prev.parentId === next.parentId &&
-    areStringArraysEqual(prev.children, next.children) &&
-    prev.expanded === next.expanded &&
-    prev.visible === next.visible &&
-    prev.locked === next.locked &&
-    prev.resizable === next.resizable &&
-    areRecordValuesShallowEqual(prev.data, next.data) &&
-    arePortsEqual(prev._ports, next._ports)
-  );
-};
-
-export const areConnectionsStructurallyEqual = (prev: Connection, next: Connection): boolean => {
-  if (prev === next) {
-    return true;
-  }
-  return (
-    prev.id === next.id &&
-    prev.fromNodeId === next.fromNodeId &&
-    prev.fromPortId === next.fromPortId &&
-    prev.toNodeId === next.toNodeId &&
-    prev.toPortId === next.toPortId &&
-    areRecordValuesShallowEqual(prev.data ?? {}, next.data ?? {})
-  );
-};
+import type { Connection, Node, NodeEditorData } from "../../../types/core";
+import { areStringArraysEqual } from "../../../core/common/comparators";
+import { areNodesStructurallyEqual } from "../../../core/node/comparators";
+import { areConnectionsStructurallyEqual } from "../../../core/connection/comparators";
 
 const mergeRecordWithPrevious = <T extends { id: string }>(
   next: Record<string, T>,
@@ -245,3 +102,6 @@ export const useStabilizedControlledData = (controlledData?: NodeEditorData) => 
     return nextState;
   }, [controlledData]);
 };
+
+// Re-export for backwards compatibility
+export { areNodesStructurallyEqual, areConnectionsStructurallyEqual };

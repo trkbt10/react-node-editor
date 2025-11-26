@@ -16,6 +16,7 @@ import styles from "./NodeInspector.module.css";
 import { calculateAlignmentPositions } from "../../controls/alignments/utils";
 import type { AlignmentActionType } from "../../controls/alignments/types";
 import { getBehaviors, behaviorArrayIncludes } from "../../../types/behaviors";
+import { hasNodeIdentityChanged, hasNodeStateChanged } from "../../../core/node/comparators";
 
 export type NodeInspectorProps = {
   node: Node;
@@ -151,12 +152,12 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
   (prevProps, nextProps) => {
     // Custom comparison function for memo
     // Only re-render if the node ID changes or critical node properties change
+    if (hasNodeIdentityChanged(prevProps.node, nextProps.node)) return false;
+    if (hasNodeStateChanged(prevProps.node, nextProps.node)) return false;
+    // Reference equality for data and position (intentional for performance)
     return (
-      prevProps.node.id === nextProps.node.id &&
-      prevProps.node.type === nextProps.node.type &&
       prevProps.node.data === nextProps.node.data &&
       prevProps.node.position === nextProps.node.position &&
-      prevProps.node.locked === nextProps.node.locked &&
       prevProps.node.visible === nextProps.node.visible
     );
   },

@@ -3,8 +3,9 @@
  */
 import * as React from "react";
 import type { Connection, Node, Port } from "../../types/core";
-import { calculateConnectionPath, calculateConnectionControlPoints } from "../../core/connection/path";
-import { cubicBezierPoint, cubicBezierTangent } from "../../core/geometry/curve";
+import { calculateConnectionPath, calculateConnectionControlPoints, calculateConnectionMidpoint } from "../../core/connection/path";
+import { hasAnyPositionChanged, hasAnySizeChanged } from "../../core/geometry/comparators";
+import { hasPortPositionChanged } from "../../core/port/comparators";
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
 import { useNodeDefinition } from "../../contexts/node-definitions/hooks/useNodeDefinition";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
@@ -123,14 +124,10 @@ const ConnectionViewComponent: React.FC<ConnectionViewProps> = ({
     [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPort.position, toPort.position],
   );
   // Compute mid-point and angle along the bezier at t=0.5
-  const midAndAngle = React.useMemo(() => {
-    const { cp1, cp2 } = calculateConnectionControlPoints(fromPosition, toPosition, fromPort.position, toPort.position);
-    const t = 0.5;
-    const pt = cubicBezierPoint(fromPosition, cp1, cp2, toPosition, t);
-    const tan = cubicBezierTangent(fromPosition, cp1, cp2, toPosition, t);
-    const angle = (Math.atan2(tan.y, tan.x) * 180) / Math.PI;
-    return { x: pt.x, y: pt.y, angle };
-  }, [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPort.position, toPort.position]);
+  const midAndAngle = React.useMemo(
+    () => calculateConnectionMidpoint(fromPosition, toPosition, fromPort.position, toPort.position),
+    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPort.position, toPort.position],
+  );
   const arrowGeometry = React.useMemo(
     () =>
       createMarkerGeometry(visualAppearance.arrowHead.shape, {
@@ -317,36 +314,32 @@ const areEqual = (prevProps: ConnectionViewProps, nextProps: ConnectionViewProps
 
   // Check node position changes (both actual and preview positions)
   if (
-    prevProps.fromNode.position.x !== nextProps.fromNode.position.x ||
-    prevProps.fromNode.position.y !== nextProps.fromNode.position.y ||
-    prevProps.toNode.position.x !== nextProps.toNode.position.x ||
-    prevProps.toNode.position.y !== nextProps.toNode.position.y ||
-    prevProps.fromNodePosition?.x !== nextProps.fromNodePosition?.x ||
-    prevProps.fromNodePosition?.y !== nextProps.fromNodePosition?.y ||
-    prevProps.toNodePosition?.x !== nextProps.toNodePosition?.x ||
-    prevProps.toNodePosition?.y !== nextProps.toNodePosition?.y
+    hasAnyPositionChanged([
+      [prevProps.fromNode.position, nextProps.fromNode.position],
+      [prevProps.toNode.position, nextProps.toNode.position],
+      [prevProps.fromNodePosition, nextProps.fromNodePosition],
+      [prevProps.toNodePosition, nextProps.toNodePosition],
+    ])
   ) {
     return false;
   }
 
   // Check node size changes (both actual and preview sizes)
   if (
-    prevProps.fromNode.size?.width !== nextProps.fromNode.size?.width ||
-    prevProps.fromNode.size?.height !== nextProps.fromNode.size?.height ||
-    prevProps.toNode.size?.width !== nextProps.toNode.size?.width ||
-    prevProps.toNode.size?.height !== nextProps.toNode.size?.height ||
-    prevProps.fromNodeSize?.width !== nextProps.fromNodeSize?.width ||
-    prevProps.fromNodeSize?.height !== nextProps.fromNodeSize?.height ||
-    prevProps.toNodeSize?.width !== nextProps.toNodeSize?.width ||
-    prevProps.toNodeSize?.height !== nextProps.toNodeSize?.height
+    hasAnySizeChanged([
+      [prevProps.fromNode.size, nextProps.fromNode.size],
+      [prevProps.toNode.size, nextProps.toNode.size],
+      [prevProps.fromNodeSize, nextProps.fromNodeSize],
+      [prevProps.toNodeSize, nextProps.toNodeSize],
+    ])
   ) {
     return false;
   }
 
   // Check port position changes
   if (
-    prevProps.fromPort.position !== nextProps.fromPort.position ||
-    prevProps.toPort.position !== nextProps.toPort.position
+    hasPortPositionChanged(prevProps.fromPort, nextProps.fromPort) ||
+    hasPortPositionChanged(prevProps.toPort, nextProps.toPort)
   ) {
     return false;
   }

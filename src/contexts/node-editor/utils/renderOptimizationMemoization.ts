@@ -7,6 +7,8 @@ import * as React from "react";
 import { Node, Connection, NodeId, ConnectionId } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { nodeHasGroupBehavior } from "../../../types/behaviors";
+import { hasPositionChanged, hasSizeChanged } from "../../../core/geometry/comparators";
+import { hasNodeIdentityChanged, hasNodeStateChanged } from "../../../core/node/comparators";
 
 /**
  * Custom equality function for nodes that ignores position changes during drag
@@ -16,14 +18,14 @@ export function areNodesEqual(prevNode: Node, nextNode: Node, isDragging: boolea
     return prevNode === nextNode;
   }
 
-  // During drag, ignore position changes
+  // During drag, ignore position changes but check identity, size, and state
+  if (hasNodeIdentityChanged(prevNode, nextNode)) {return false;}
+  if (hasSizeChanged(prevNode.size, nextNode.size)) {return false;}
+  if (hasNodeStateChanged(prevNode, nextNode)) {return false;}
+
+  // Additional state checks not covered by core utilities
   return (
-    prevNode.id === nextNode.id &&
-    prevNode.type === nextNode.type &&
-    prevNode.size?.width === nextNode.size?.width &&
-    prevNode.size?.height === nextNode.size?.height &&
     prevNode.data === nextNode.data &&
-    prevNode.locked === nextNode.locked &&
     prevNode.visible === nextNode.visible &&
     prevNode.expanded === nextNode.expanded
   );
@@ -54,16 +56,12 @@ export function areConnectionsEqual(
   }
 
   // Check if positions or sizes have changed
-  return (
-    prevFromNode.position.x === nextFromNode.position.x &&
-    prevFromNode.position.y === nextFromNode.position.y &&
-    prevFromNode.size?.width === nextFromNode.size?.width &&
-    prevFromNode.size?.height === nextFromNode.size?.height &&
-    prevToNode.position.x === nextToNode.position.x &&
-    prevToNode.position.y === nextToNode.position.y &&
-    prevToNode.size?.width === nextToNode.size?.width &&
-    prevToNode.size?.height === nextToNode.size?.height
-  );
+  if (hasPositionChanged(prevFromNode.position, nextFromNode.position)) {return false;}
+  if (hasPositionChanged(prevToNode.position, nextToNode.position)) {return false;}
+  if (hasSizeChanged(prevFromNode.size, nextFromNode.size)) {return false;}
+  if (hasSizeChanged(prevToNode.size, nextToNode.size)) {return false;}
+
+  return true;
 }
 
 /**

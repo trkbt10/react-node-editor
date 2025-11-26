@@ -7,6 +7,7 @@ import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/con
 import { isPortConnectable } from "../../contexts/node-ports/utils/portConnectability";
 import { PortView } from "../connection/ports/PortView";
 import { useOptionalRenderers } from "../../contexts/RendererContext";
+import { hasPortIdChanged } from "../../core/port/comparators";
 import styles from "./NodePortsRenderer.module.css";
 
 export type NodePortsRendererProps = {
@@ -101,7 +102,7 @@ export const NodePortsRenderer = React.memo(NodePortsRendererComponent, (prevPro
   }
 
   // Check if port-related state changed
-  if (prevProps.hoveredPort?.id !== nextProps.hoveredPort?.id) {
+  if (hasPortIdChanged(prevProps.hoveredPort, nextProps.hoveredPort)) {
     debugLog("hoveredPort.id changed", { prev: prevProps.hoveredPort?.id, next: nextProps.hoveredPort?.id });
     return false;
   }
