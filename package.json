@@ -1,6 +1,6 @@
 {
   "name": "react-wireflow",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -137,8 +137,8 @@
     "vitest": "^4.0.1"
   },
   "peerDependencies": {
-    "react": "^18.0.0 || ^19.0.0",
-    "react-dom": "^18.0.0 || ^19.0.0"
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "dependencies": {},
   "description": "Composable React node editor canvas with configurable nodes, connections, and inspector UI.",
