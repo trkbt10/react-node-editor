@@ -135,3 +135,170 @@ Drawer for mobile:
 ```
 
 See [examples](https://github.com/trkbt10/react-node-editor/tree/main/src/examples/demos) for complete implementations.
+
+## Custom Inspector Panels
+
+The Inspector panel can be customized at three levels:
+
+### 1. Per-Node Custom Inspector (`renderInspector`)
+
+Define `renderInspector` in your node definition to provide custom inspector content when that node type is selected:
+
+```tsx
+import {
+  createNodeDefinition,
+  PropertySection,
+  InspectorInput,
+  InspectorDefinitionList,
+  InspectorDefinitionItem,
+  type InspectorRenderProps,
+} from "react-wireflow";
+
+type PersonNodeData = {
+  name: string;
+  email: string;
+};
+
+// Custom inspector component (function name starts with uppercase to use hooks)
+function PersonInspector({ node, onUpdateNode }: InspectorRenderProps<PersonNodeData>) {
+  const data = node.data ?? {};
+
+  return (
+    <PropertySection title="Person Details">
+      <InspectorDefinitionList>
+        <InspectorDefinitionItem label="Name">
+          <InspectorInput
+            value={data.name ?? ""}
+            onChange={(e) => onUpdateNode({ data: { ...data, name: e.target.value } })}
+          />
+        </InspectorDefinitionItem>
+        <InspectorDefinitionItem label="Email">
+          <InspectorInput
+            type="email"
+            value={data.email ?? ""}
+            onChange={(e) => onUpdateNode({ data: { ...data, email: e.target.value } })}
+          />
+        </InspectorDefinitionItem>
+      </InspectorDefinitionList>
+    </PropertySection>
+  );
+}
+
+const PersonNode = createNodeDefinition({
+  type: "person",
+  displayName: "Person",
+  renderInspector: PersonInspector,
+});
+```
+
+`InspectorRenderProps` provides:
+- `node` - The selected node with typed `data`
+- `onUpdateNode(updates)` - Callback to update node properties
+- `onDeleteNode()` - Callback to delete the node
+- `externalData`, `isLoadingExternalData`, `externalDataError` - External data state
+- `onUpdateExternalData(data)` - Callback to update external data
+
+### 2. Custom Inspector Tabs
+
+Replace or extend the default tabs (Layers, Properties, Settings) by passing `tabs` to `InspectorPanel`:
+
+```tsx
+import {
+  InspectorPanel,
+  InspectorLayersTab,
+  InspectorPropertiesTab,
+  InspectorSettingsTab,
+  InspectorSection,
+  PropertySection,
+  type InspectorPanelTabConfig,
+} from "react-wireflow";
+
+// Custom tab component
+const StatisticsTab = () => (
+  <InspectorSection>
+    <PropertySection title="Statistics">
+      <p>Total nodes: 10</p>
+    </PropertySection>
+  </InspectorSection>
+);
+
+const customTabs: InspectorPanelTabConfig[] = [
+  { id: "layers", label: "Layers", render: () => <InspectorLayersTab /> },
+  { id: "properties", label: "Properties", render: () => <InspectorPropertiesTab /> },
+  { id: "stats", label: "Stats", render: () => <StatisticsTab /> },
+  { id: "settings", label: "Settings", render: () => <InspectorSettingsTab panels={[]} /> },
+];
+
+<InspectorPanel tabs={customTabs} />
+```
+
+### 3. Custom Settings Panels
+
+Add panels to the Settings tab using `settingsPanels`:
+
+```tsx
+import {
+  InspectorPanel,
+  InspectorDefinitionList,
+  InspectorDefinitionItem,
+  InspectorButton,
+  type InspectorSettingsPanelConfig,
+} from "react-wireflow";
+
+const ExportPanel = () => {
+  return (
+    <InspectorDefinitionList>
+      <InspectorDefinitionItem label="Format">
+        <select><option>JSON</option><option>YAML</option></select>
+      </InspectorDefinitionItem>
+      <InspectorDefinitionItem label="">
+        <InspectorButton onClick={() => alert("Exporting...")}>Export</InspectorButton>
+      </InspectorDefinitionItem>
+    </InspectorDefinitionList>
+  );
+};
+
+const settingsPanels: InspectorSettingsPanelConfig[] = [
+  { title: "Export Options", component: ExportPanel },
+];
+
+<InspectorPanel settingsPanels={settingsPanels} />
+```
+
+### Available Inspector UI Components
+
+Build consistent inspector UIs with these components:
+
+**Layout Components:**
+
+| Component | Description |
+|-----------|-------------|
+| `PropertySection` | Titled section with header |
+| `InspectorSection` | Basic section container |
+| `InspectorSectionTitle` | Standalone section title (H4) |
+| `InspectorDefinitionList` | Semantic `<dl>` wrapper |
+| `InspectorDefinitionItem` | Label-value pair (`<dt>`/`<dd>`) |
+| `InspectorField` | Field wrapper with label |
+| `PositionInputsGrid` | Grid layout for position/size inputs |
+
+**Form Inputs:**
+
+| Component | Description |
+|-----------|-------------|
+| `InspectorInput` | Styled text input |
+| `InspectorNumberInput` | Number input with label |
+| `InspectorTextarea` | Multi-line text input |
+| `InspectorSelect` | Styled select dropdown |
+| `InspectorLabel` | Standalone form label |
+| `ReadOnlyField` | Non-editable display field |
+
+**Interactive:**
+
+| Component | Description |
+|-----------|-------------|
+| `InspectorButton` | Button (variants: primary, secondary, danger) |
+| `InspectorButtonGroup` | Segmented button control for options |
+| `InspectorShortcutButton` | Compact button for shortcut settings |
+| `InspectorShortcutBindingValue` | Keyboard/pointer shortcut display |
+
+See the [Custom Inspector example](https://github.com/trkbt10/react-node-editor/tree/main/src/examples/demos/custom-inspector) for a complete implementation.
