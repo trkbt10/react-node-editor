@@ -36,7 +36,6 @@ import { buildNodeFromDefinition } from "../../contexts/node-editor/utils/nodeFa
 import { hasNodeGeometryChanged } from "../../core/node/comparators";
 
 export type NodeEditorCanvasProps = {
-  className?: string;
   settingsManager?: SettingsManager;
   portPositionBehavior?: PortPositionBehavior;
   /** Children to render within the canvas (e.g., custom layout) */
@@ -56,7 +55,6 @@ export type NodeEditorCanvasProps = {
  * getting all the canvas functionality.
  */
 export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
-  className,
   settingsManager,
   portPositionBehavior,
   children,
@@ -293,13 +291,7 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
   );
 
   return (
-    <NodeEditorBase
-      className={className}
-      style={editorStyles}
-      data-theme={theme}
-      data-node-editor-root="true"
-      data-smooth-animations={smoothAnimations}
-    >
+    <NodeEditorBase>
       <PortPositionProvider portPositions={portPositions} behavior={portPositionBehavior} config={portPositionConfig}>
         {children}
       </PortPositionProvider>

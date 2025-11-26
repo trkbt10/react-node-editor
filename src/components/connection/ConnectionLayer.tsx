@@ -19,7 +19,6 @@ import type { PointerType } from "../../types/interaction";
 import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
 import { getPreviewPosition } from "../../core/geometry/position";
 import { hasPositionChanged, hasSizeChanged } from "../../core/geometry/comparators";
-import { getNodeDragOffset } from "../../core/node/dragState";
 import { getNodeResizeSize } from "../../core/node/resizeState";
 import { ensurePort } from "../../core/port/typeGuards";
 
@@ -36,18 +35,43 @@ export const ConnectionLayer: React.FC<ConnectionLayerProps> = ({ className }) =
 
   const { dragState, resizeState, selectedConnectionIds, hoveredConnectionId, selectedNodeIds } = actionState;
 
+  // Convert to Sets for O(1) lookup instead of O(n) includes
+  const selectedConnectionIdsSet = React.useMemo(
+    () => new Set(selectedConnectionIds),
+    [selectedConnectionIds],
+  );
+  const selectedNodeIdsSet = React.useMemo(() => new Set(selectedNodeIds), [selectedNodeIds]);
+
+  // Pre-compute drag state set for O(1) lookup
+  const draggedNodeIdsSet = React.useMemo(() => {
+    if (!dragState) {
+      return null;
+    }
+    const set = new Set<string>(dragState.nodeIds);
+    // Include affected children
+    for (const childIds of Object.values(dragState.affectedChildNodes)) {
+      for (const id of childIds) {
+        set.add(id);
+      }
+    }
+    return set;
+  }, [dragState]);
+
   return (
     <svg className={className ? `${styles.root} ${className}` : styles.root} data-connection-layer="root">
       {/* Render all connections */}
       {Object.values(nodeEditorState.connections).map((connection) => {
-        const fromDragOffset = getNodeDragOffset(dragState, connection.fromNodeId);
-        const toDragOffset = getNodeDragOffset(dragState, connection.toNodeId);
+        // O(1) lookup using Sets
+        const isFromDragging = draggedNodeIdsSet?.has(connection.fromNodeId) ?? false;
+        const isToDragging = draggedNodeIdsSet?.has(connection.toNodeId) ?? false;
+        const fromDragOffset = isFromDragging && dragState ? dragState.offset : null;
+        const toDragOffset = isToDragging && dragState ? dragState.offset : null;
         const fromResizeSize = getNodeResizeSize(resizeState, connection.fromNodeId);
         const toResizeSize = getNodeResizeSize(resizeState, connection.toNodeId);
-        const isSelected = selectedConnectionIds.includes(connection.id);
+        const isSelected = selectedConnectionIdsSet.has(connection.id);
         const isHovered = hoveredConnectionId === connection.id;
         const isAdjacentToSelectedNode =
-          selectedNodeIds.includes(connection.fromNodeId) || selectedNodeIds.includes(connection.toNodeId);
+          selectedNodeIdsSet.has(connection.fromNodeId) || selectedNodeIdsSet.has(connection.toNodeId);
 
         return (
           <ConnectionRenderer

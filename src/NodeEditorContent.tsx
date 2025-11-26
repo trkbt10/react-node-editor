@@ -5,13 +5,11 @@ import * as React from "react";
 import { GridLayout } from "./components/layout/GridLayout";
 import { NodeEditorCanvas } from "./components/canvas/NodeEditorCanvas";
 import { defaultEditorGridConfig, defaultEditorGridLayers } from "./config/defaultLayout";
-import styles from "./NodeEditorContent.module.css";
 import type { SettingsManager } from "./settings/SettingsManager";
 import type { GridLayoutConfig, LayerDefinition } from "./types/panels";
 import { type PortPositionBehavior } from "./types/portPosition";
 
 export const NodeEditorContent: React.FC<{
-  className?: string;
   settingsManager?: SettingsManager;
   autoSaveEnabled?: boolean;
   autoSaveInterval?: number;
@@ -20,7 +18,7 @@ export const NodeEditorContent: React.FC<{
   gridConfig?: GridLayoutConfig;
   /** Grid layer definitions */
   gridLayers?: LayerDefinition[];
-}> = ({ className, settingsManager, portPositionBehavior, gridConfig, gridLayers }) => {
+}> = ({ settingsManager, portPositionBehavior, gridConfig, gridLayers }) => {
   // Track grid changes to force GridLayout re-render when needed
   const gridLayoutVersionRef = React.useRef(0);
   const prevGridConfigRef = React.useRef(gridConfig);
@@ -57,12 +55,11 @@ export const NodeEditorContent: React.FC<{
   const gridLayoutKey = gridConfig || gridLayers ? `custom-${gridLayoutVersionRef.current}` : "default";
 
   return (
-    <NodeEditorCanvas className={className} settingsManager={settingsManager} portPositionBehavior={portPositionBehavior}>
+    <NodeEditorCanvas settingsManager={settingsManager} portPositionBehavior={portPositionBehavior}>
       <GridLayout
         key={gridLayoutKey}
         config={effectiveGridConfig}
         layers={effectiveGridLayers}
-        className={styles.gridLayoutContainer}
       />
     </NodeEditorCanvas>
   );

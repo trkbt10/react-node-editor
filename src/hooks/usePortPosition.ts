@@ -27,6 +27,23 @@ export function useDynamicPortPosition(
   const { state: actionState } = useEditorActionState();
   const currentNode = React.useMemo(() => state.nodes[nodeId], [state.nodes, nodeId]);
   const nodePorts = React.useMemo(() => getNodePorts(nodeId), [getNodePorts, nodeId]);
+
+  // Pre-compute sets for O(1) lookup instead of O(n) includes/some
+  const draggedNodeIdsSet = React.useMemo(() => {
+    const dragState = actionState.dragState;
+    if (!dragState) {
+      return null;
+    }
+    const set = new Set<string>(dragState.nodeIds);
+    // Include affected children
+    for (const childIds of Object.values(dragState.affectedChildNodes ?? {})) {
+      for (const id of childIds) {
+        set.add(id);
+      }
+    }
+    return set;
+  }, [actionState.dragState]);
+
   return React.useMemo(() => {
     if (!currentNode) {
       return undefined;
@@ -39,14 +56,8 @@ export function useDynamicPortPosition(
         return null;
       }
       const dragState = actionState.dragState;
-      if (dragState) {
-        if (dragState.nodeIds.includes(nodeId)) {
-          return { x: currentNode.position.x + dragState.offset.x, y: currentNode.position.y + dragState.offset.y };
-        }
-        const isChild = Object.values(dragState.affectedChildNodes ?? {}).some((children) => children.includes(nodeId));
-        if (isChild) {
-          return { x: currentNode.position.x + dragState.offset.x, y: currentNode.position.y + dragState.offset.y };
-        }
+      if (dragState && draggedNodeIdsSet?.has(nodeId)) {
+        return { x: currentNode.position.x + dragState.offset.x, y: currentNode.position.y + dragState.offset.y };
       }
       const resizeState = actionState.resizeState;
       if (resizeState?.nodeId === nodeId) {
@@ -85,6 +96,7 @@ export function useDynamicPortPosition(
     options?.applyInteractionPreview,
     actionState.dragState,
     actionState.resizeState,
+    draggedNodeIdsSet,
   ]);
 }
 

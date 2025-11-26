@@ -14,7 +14,6 @@ import { useRenderers } from "../../../contexts/RendererContext";
 import { hasGroupBehavior } from "../../../types/behaviors";
 import { useNodeLayerDrag, useNodeLayerConnections, useNodeLayerPorts } from "./NodeLayerInteractions";
 import { useNodeSelectionInteractions } from "../hooks/useNodeSelectionInteractions";
-import { isNodeDirectlyDragged, getNodeDragOffset } from "../../../core/node/dragState";
 
 export type NodeLayerProps = {
   doubleClickToEdit?: boolean;
@@ -100,17 +99,43 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
 
   const { dragState, selectedNodeIds, connectionDragState, hoveredPort, connectablePorts } = actionState;
 
+  // Convert selectedNodeIds to Set for O(1) lookup instead of O(n) includes
+  const selectedNodeIdsSet = React.useMemo(() => new Set(selectedNodeIds), [selectedNodeIds]);
+
+  // Pre-compute drag state sets for O(1) lookup
+  const draggedNodeIdsSet = React.useMemo(() => {
+    if (!dragState) {
+      return null;
+    }
+    return new Set(dragState.nodeIds);
+  }, [dragState]);
+
+  const affectedChildNodeIdsSet = React.useMemo(() => {
+    if (!dragState) {
+      return null;
+    }
+    const set = new Set<string>();
+    for (const childIds of Object.values(dragState.affectedChildNodes)) {
+      for (const id of childIds) {
+        set.add(id);
+      }
+    }
+    return set;
+  }, [dragState]);
+
   return (
     <div className={styles.nodeLayer} data-node-layer>
       {sortedNodes.map((node) => {
-        const isDirectlyDragging = isNodeDirectlyDragged(dragState, node.id);
-        const dragOffset = getNodeDragOffset(dragState, node.id) ?? undefined;
+        // O(1) lookup using Sets
+        const isDirectlyDragging = draggedNodeIdsSet?.has(node.id) ?? false;
+        const isInDragState = isDirectlyDragging || (affectedChildNodeIdsSet?.has(node.id) ?? false);
+        const dragOffset = isInDragState && dragState ? dragState.offset : undefined;
 
         return (
           <NodeComponent
             key={node.id}
             node={node}
-            isSelected={selectedNodeIds.includes(node.id)}
+            isSelected={selectedNodeIdsSet.has(node.id)}
             isDragging={isDirectlyDragging}
             dragOffset={dragOffset}
             onPointerDown={handleNodePointerDown}

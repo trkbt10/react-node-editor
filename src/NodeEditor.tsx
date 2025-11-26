@@ -21,7 +21,6 @@ export type NodeEditorProps = {
   onDataChange?: (data: NodeEditorData) => void;
   onSave?: (data: NodeEditorData) => void | Promise<void>;
   onLoad?: () => NodeEditorData | Promise<NodeEditorData>;
-  className?: string;
   /** Custom node definitions */
   nodeDefinitions?: NodeDefinition[];
   /** Whether to include default node definitions */
@@ -64,7 +63,6 @@ export function NodeEditor({
   onDataChange,
   onSave,
   onLoad,
-  className,
   nodeDefinitions,
   includeDefaultDefinitions = true,
   externalDataRefs,
@@ -104,7 +102,6 @@ export function NodeEditor({
       interactionSettings={interactionSettings}
     >
       <NodeEditorContent
-        className={className}
         settingsManager={settingsManager}
         autoSaveEnabled={autoSaveEnabled}
         autoSaveInterval={autoSaveInterval}
