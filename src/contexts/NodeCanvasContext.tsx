@@ -209,6 +209,7 @@ export type NodeCanvasContextValue = {
 };
 
 export const NodeCanvasContext = React.createContext<NodeCanvasContextValue | null>(null);
+NodeCanvasContext.displayName = "NodeCanvasContext";
 
 // Provider
 export type NodeCanvasProviderProps = {

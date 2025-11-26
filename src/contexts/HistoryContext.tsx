@@ -123,6 +123,7 @@ export type HistoryContextValue = {
 };
 
 export const HistoryContext = React.createContext<HistoryContextValue | null>(null);
+HistoryContext.displayName = "HistoryContext";
 
 // Provider
 export type HistoryProviderProps = {

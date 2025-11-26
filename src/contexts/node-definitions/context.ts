@@ -26,6 +26,7 @@ export const NodeDefinitionContext = React.createContext<NodeDefinitionContextVa
     },
   }),
 );
+NodeDefinitionContext.displayName = "NodeDefinitionContext";
 
 /**
  * Hook to use node definitions

@@ -25,6 +25,7 @@ export type DragStateContextValue = {
 };
 
 const DragStateContext = React.createContext<DragStateContextValue | null>(null);
+DragStateContext.displayName = "DragStateContext";
 
 export const DragStateProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [dragState, setDragState] = React.useState<DragState | null>(null);

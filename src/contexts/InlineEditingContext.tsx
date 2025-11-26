@@ -89,6 +89,7 @@ export type InlineEditingContextValue = {
 };
 
 export const InlineEditingContext = React.createContext<InlineEditingContextValue | null>(null);
+InlineEditingContext.displayName = "InlineEditingContext";
 
 // Provider
 export type InlineEditingProviderProps = {

@@ -457,6 +457,7 @@ export type EditorActionStateContextValue = {
 };
 
 export const EditorActionStateContext = React.createContext<EditorActionStateContextValue | null>(null);
+EditorActionStateContext.displayName = "EditorActionStateContext";
 
 // Provider
 export type EditorActionStateProviderProps = {

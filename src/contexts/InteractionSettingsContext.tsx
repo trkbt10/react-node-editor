@@ -178,6 +178,7 @@ export const defaultInteractionSettings: NodeEditorInteractionSettings = {
 };
 
 const InteractionSettingsContext = React.createContext<NodeEditorInteractionSettings>(defaultInteractionSettings);
+InteractionSettingsContext.displayName = "InteractionSettingsContext";
 
 export type InteractionSettingsUpdateContextValue = {
   setKeyboardShortcutBindings: (action: NodeEditorShortcutAction, bindings: ShortcutBinding[]) => void;
@@ -187,6 +188,7 @@ export type InteractionSettingsUpdateContextValue = {
 };
 
 const InteractionSettingsUpdateContext = React.createContext<InteractionSettingsUpdateContextValue | null>(null);
+InteractionSettingsUpdateContext.displayName = "InteractionSettingsUpdateContext";
 
 export type InteractionSettingsProviderProps = {
   children: React.ReactNode;

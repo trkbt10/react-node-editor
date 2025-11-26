@@ -132,6 +132,7 @@ export type KeyboardShortcutContextValue = {
 };
 
 export const KeyboardShortcutContext = React.createContext<KeyboardShortcutContextValue | null>(null);
+KeyboardShortcutContext.displayName = "KeyboardShortcutContext";
 
 // Provider
 export type KeyboardShortcutProviderProps = {

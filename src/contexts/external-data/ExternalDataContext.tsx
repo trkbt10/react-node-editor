@@ -8,6 +8,7 @@ export type ExternalDataContextValue = {
 };
 
 export const ExternalDataContext = React.createContext<ExternalDataContextValue | null>(null);
+ExternalDataContext.displayName = "ExternalDataContext";
 
 export type ExternalDataProviderProps = {
   children: React.ReactNode;

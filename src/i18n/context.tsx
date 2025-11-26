@@ -5,6 +5,7 @@ import * as React from "react";
 import type { Locale, I18nContextValue, I18nMessages, I18nKey, I18nDictionaries } from "./types";
 
 const I18nContext = React.createContext<I18nContextValue | null>(null);
+I18nContext.displayName = "I18nContext";
 
 type I18nProviderProps = {
   children: React.ReactNode;

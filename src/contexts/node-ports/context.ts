@@ -36,6 +36,7 @@ export type PortPositionContextValue = {
  * Context for accessing pre-computed port positions
  */
 export const PortPositionContext = React.createContext<PortPositionContextValue | null>(null);
+PortPositionContext.displayName = "PortPositionContext";
 
 /**
  * Hook to access port positions

@@ -13,6 +13,7 @@ export type SubEditorHostContextValue = {
 };
 
 const SubEditorHostContext = React.createContext<SubEditorHostContextValue | null>(null);
+SubEditorHostContext.displayName = "SubEditorHostContext";
 
 export type SubEditorHostProviderProps = {
   value: SubEditorHostContextValue;

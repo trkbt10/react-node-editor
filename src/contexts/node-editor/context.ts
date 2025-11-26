@@ -65,6 +65,7 @@ export type NodeEditorContextValue = {
 };
 
 export const NodeEditorContext = React.createContext<NodeEditorContextValue | null>(null);
+NodeEditorContext.displayName = "NodeEditorContext";
 
 export const useNodeEditor = (): NodeEditorContextValue => {
   const context = React.useContext(NodeEditorContext);

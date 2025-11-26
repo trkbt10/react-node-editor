@@ -21,6 +21,7 @@ type CanvasPointerActionRegistryContextValue = {
 
 const CanvasPointerActionRegistryContext =
   React.createContext<CanvasPointerActionRegistryContextValue | null>(null);
+CanvasPointerActionRegistryContext.displayName = "CanvasPointerActionRegistryContext";
 
 export const CanvasPointerActionProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const injectionsRef = React.useRef<CanvasPointerActionInjection[]>([]);

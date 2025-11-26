@@ -43,6 +43,7 @@ const particleSystemReducer = (state: ParticleSystemState, action: ParticleSyste
 };
 
 const ParticleSystemStoreContext = React.createContext<ParticleSystemDataStore | null>(null);
+ParticleSystemStoreContext.displayName = "ParticleSystemStoreContext";
 
 export const ParticleSystemStoreProvider: React.FC<{
   children: React.ReactNode;

@@ -5,6 +5,7 @@ import * as React from "react";
 import type { NodeEditorRenderers } from "../types/renderers";
 
 const RendererContext = React.createContext<NodeEditorRenderers | null>(null);
+RendererContext.displayName = "RendererContext";
 
 export type RendererProviderProps = {
   renderers: NodeEditorRenderers;
