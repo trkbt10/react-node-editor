@@ -75,9 +75,8 @@ export const inlineEditingReducer = (state: InlineEditingState, action: InlineEd
   return handler(state, action, undefined);
 };
 
-// Context
-export type InlineEditingContextValue = {
-  state: InlineEditingState;
+// Context types
+export type InlineEditingActionsValue = {
   dispatch: React.Dispatch<InlineEditingAction>;
   actions: BoundActionCreators<typeof inlineEditingActions>;
   actionCreators: typeof inlineEditingActions;
@@ -88,6 +87,18 @@ export type InlineEditingContextValue = {
   cancelEdit: () => void;
 };
 
+export type InlineEditingContextValue = InlineEditingActionsValue & {
+  state: InlineEditingState;
+};
+
+// Split contexts for performance optimization
+const InlineEditingStateContext = React.createContext<InlineEditingState | null>(null);
+InlineEditingStateContext.displayName = "InlineEditingStateContext";
+
+const InlineEditingActionsContext = React.createContext<InlineEditingActionsValue | null>(null);
+InlineEditingActionsContext.displayName = "InlineEditingActionsContext";
+
+// Combined context for backward compatibility
 export const InlineEditingContext = React.createContext<InlineEditingContextValue | null>(null);
 InlineEditingContext.displayName = "InlineEditingContext";
 
@@ -101,64 +112,87 @@ export const InlineEditingProvider: React.FC<InlineEditingProviderProps> = ({ ch
   const [state, dispatch] = React.useReducer(inlineEditingReducer, { ...defaultInlineEditingState, ...initialState });
   const boundActions = React.useMemo(() => bindActionCreators(inlineEditingActions, dispatch), [dispatch]);
 
-  // Convenience methods
-  const isEditing = React.useCallback(
-    (nodeId: NodeId, field?: "title" | "data") => {
-      if (!state.isActive) {
+  // Use ref to provide stable isEditing function that always reads latest state
+  const stateRef = React.useRef(state);
+  stateRef.current = state;
+
+  // Stable actions value - only depends on dispatch which is stable
+  const actionsValue = React.useMemo<InlineEditingActionsValue>(() => {
+    const isEditing = (nodeId: NodeId, field?: "title" | "data"): boolean => {
+      const currentState = stateRef.current;
+      if (!currentState.isActive) {
         return false;
       }
-      if (state.editingNodeId !== nodeId) {
+      if (currentState.editingNodeId !== nodeId) {
         return false;
       }
-      if (field && state.editingField !== field) {
+      if (field && currentState.editingField !== field) {
         return false;
       }
       return true;
-    },
-    [state.isActive, state.editingNodeId, state.editingField],
-  );
+    };
 
-  const startEditing = React.useCallback(
-    (nodeId: NodeId, field: "title" | "data", value: string) => {
-      boundActions.startEditing(nodeId, field, value);
-    },
-    [boundActions],
-  );
-
-  const updateValue = React.useCallback(
-    (value: string) => {
-      boundActions.updateValue(value);
-    },
-    [boundActions],
-  );
-
-  const confirmEdit = React.useCallback(() => {
-    boundActions.confirmEdit();
-  }, [boundActions]);
-
-  const cancelEdit = React.useCallback(() => {
-    boundActions.cancelEdit();
-  }, [boundActions]);
-
-  const contextValue: InlineEditingContextValue = React.useMemo(
-    () => ({
-      state,
+    return {
       dispatch,
       actions: boundActions,
       actionCreators: inlineEditingActions,
       isEditing,
-      startEditing,
-      updateValue,
-      confirmEdit,
-      cancelEdit,
+      startEditing: boundActions.startEditing,
+      updateValue: boundActions.updateValue,
+      confirmEdit: boundActions.confirmEdit,
+      cancelEdit: boundActions.cancelEdit,
+    };
+  }, [dispatch, boundActions]);
+
+  // Combined context value for backward compatibility
+  const contextValue = React.useMemo<InlineEditingContextValue>(
+    () => ({
+      state,
+      ...actionsValue,
     }),
-    [state, dispatch, boundActions, isEditing, startEditing, updateValue, confirmEdit, cancelEdit],
+    [state, actionsValue],
   );
 
-  return <InlineEditingContext.Provider value={contextValue}>{children}</InlineEditingContext.Provider>;
+  return (
+    <InlineEditingStateContext.Provider value={state}>
+      <InlineEditingActionsContext.Provider value={actionsValue}>
+        <InlineEditingContext.Provider value={contextValue}>{children}</InlineEditingContext.Provider>
+      </InlineEditingActionsContext.Provider>
+    </InlineEditingStateContext.Provider>
+  );
 };
 
-// Hook
+// Hooks
+
+/**
+ * Hook to access only the inline editing state
+ * Use this when you only need to read state and don't need actions
+ */
+export const useInlineEditingState = (): InlineEditingState => {
+  const state = React.useContext(InlineEditingStateContext);
+  if (!state) {
+    throw new Error("useInlineEditingState must be used within an InlineEditingProvider");
+  }
+  return state;
+};
+
+/**
+ * Hook to access only the inline editing actions
+ * Use this when you only need to dispatch actions and don't need to re-render on state changes
+ * The returned actions have stable references and won't cause re-renders
+ */
+export const useInlineEditingActions = (): InlineEditingActionsValue => {
+  const actions = React.useContext(InlineEditingActionsContext);
+  if (!actions) {
+    throw new Error("useInlineEditingActions must be used within an InlineEditingProvider");
+  }
+  return actions;
+};
+
+/**
+ * Hook to access both state and actions (backward compatible)
+ * Prefer useInlineEditingState or useInlineEditingActions for better performance
+ */
 export const useInlineEditing = (): InlineEditingContextValue => {
   const context = React.useContext(InlineEditingContext);
   if (!context) {

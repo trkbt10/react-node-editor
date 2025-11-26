@@ -5,7 +5,7 @@
 import * as React from "react";
 import type { Node, Position, Port, ResizeHandle as NodeResizeHandle } from "../../types/core";
 import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
-import { useInlineEditing } from "../../contexts/InlineEditingContext";
+import { useInlineEditingActions, useInlineEditingState } from "../../contexts/InlineEditingContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useNodeDefinition } from "../../contexts/node-definitions/hooks/useNodeDefinition";
 import { useExternalDataRef } from "../../contexts/external-data/ExternalDataContext";
@@ -62,7 +62,9 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
   candidatePortId,
 }) => {
   const { actions: nodeEditorActions, getNodePorts, getNodeById } = useNodeEditor();
-  const { isEditing, startEditing, updateValue, confirmEdit, cancelEdit, state: editingState } = useInlineEditing();
+  // Use split hooks for better performance
+  const editingState = useInlineEditingState();
+  const { isEditing, startEditing, updateValue, confirmEdit, cancelEdit } = useInlineEditingActions();
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const groupManager = useGroupManagement({ autoUpdateMembership: false });
   const nodeDefinition = useNodeDefinition(node.type);
@@ -100,46 +102,39 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
 
   const isEditingTitle = isEditing(node.id, "title");
 
-  const handleTitleDoubleClick = React.useCallback(
-    (e: React.MouseEvent) => {
+  // Use useEffectEvent for stable event handler references
+  // These handlers always access the latest props/state without causing re-renders
+  const handleTitleDoubleClick = React.useEffectEvent((e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!node.locked) {
+      const currentTitle = node.data.title || "";
+      startEditing(node.id, "title", currentTitle);
+    }
+  });
+
+  const handleEditingChange = React.useEffectEvent((e: React.ChangeEvent<HTMLInputElement>) => {
+    updateValue(e.target.value);
+  });
+
+  const handleEditingKeyDown = React.useEffectEvent((e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
       e.stopPropagation();
-      if (!node.locked) {
-        const currentTitle = node.data.title || "";
-        startEditing(node.id, "title", currentTitle);
-      }
-    },
-    [node.id, node.data.title, node.locked, startEditing],
-  );
+      nodeEditorActions.updateNode(node.id, {
+        data: {
+          ...node.data,
+          title: editingState.currentValue,
+        },
+      });
+      confirmEdit();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      e.stopPropagation();
+      cancelEdit();
+    }
+  });
 
-  const handleEditingChange = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      updateValue(e.target.value);
-    },
-    [updateValue],
-  );
-
-  const handleEditingKeyDown = React.useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        e.stopPropagation();
-        nodeEditorActions.updateNode(node.id, {
-          data: {
-            ...node.data,
-            title: editingState.currentValue,
-          },
-        });
-        confirmEdit();
-      } else if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        cancelEdit();
-      }
-    },
-    [editingState.currentValue, node.id, node.data, nodeEditorActions, confirmEdit, cancelEdit],
-  );
-
-  const handleEditingBlur = React.useCallback(() => {
+  const handleEditingBlur = React.useEffectEvent(() => {
     nodeEditorActions.updateNode(node.id, {
       data: {
         ...node.data,
@@ -147,41 +142,35 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
       },
     });
     confirmEdit();
-  }, [editingState.currentValue, node.id, node.data, nodeEditorActions, confirmEdit]);
+  });
 
-  const handleUpdateNode = React.useCallback(
-    (updates: Partial<Node>) => {
-      nodeEditorActions.updateNode(node.id, updates);
-    },
-    [node.id, nodeEditorActions],
-  );
+  const handleUpdateNode = React.useEffectEvent((updates: Partial<Node>) => {
+    nodeEditorActions.updateNode(node.id, updates);
+  });
 
-  const handleStartEdit = React.useCallback(() => {
+  const handleStartEdit = React.useEffectEvent(() => {
     startEditing(node.id, "title", node.data.title || "");
-  }, [node.id, node.data.title, startEditing]);
+  });
 
-  const handleResizeStart = React.useCallback(
-    (e: React.PointerEvent, handle: NodeResizeHandle) => {
-      e.stopPropagation();
-      e.preventDefault();
+  const handleResizeStart = React.useEffectEvent((e: React.PointerEvent, handle: NodeResizeHandle) => {
+    e.stopPropagation();
+    e.preventDefault();
 
-      if (node.locked) {
-        return;
-      }
+    if (node.locked) {
+      return;
+    }
 
-      const liveNode = getNodeById(node.id) || node;
-      const currentSize = {
-        width: liveNode.size?.width || 150,
-        height: liveNode.size?.height || 50,
-      };
+    const liveNode = getNodeById(node.id) || node;
+    const currentSize = {
+      width: liveNode.size?.width || 150,
+      height: liveNode.size?.height || 50,
+    };
 
-      actionActions.startNodeResize(node.id, { x: e.clientX, y: e.clientY }, currentSize, handle, {
-        x: liveNode.position.x,
-        y: liveNode.position.y,
-      });
-    },
-    [node.id, node.locked, actionActions, getNodeById],
-  );
+    actionActions.startNodeResize(node.id, { x: e.clientX, y: e.clientY }, currentSize, handle, {
+      x: liveNode.position.x,
+      y: liveNode.position.y,
+    });
+  });
 
   return (
     <NodeViewPresenter

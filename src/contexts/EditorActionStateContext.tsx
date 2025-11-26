@@ -448,14 +448,25 @@ export const defaultEditorActionState: EditorActionState = {
 };
 
 
-// Context
-export type EditorActionStateContextValue = {
-  state: EditorActionState;
+// Context types
+export type EditorActionStateActionsValue = {
   dispatch: React.Dispatch<EditorActionStateAction>;
   actions: BoundActionCreators<typeof editorActionStateActions>;
   actionCreators: typeof editorActionStateActions;
 };
 
+export type EditorActionStateContextValue = EditorActionStateActionsValue & {
+  state: EditorActionState;
+};
+
+// Split contexts for performance optimization
+const EditorActionStateStateContext = React.createContext<EditorActionState | null>(null);
+EditorActionStateStateContext.displayName = "EditorActionStateStateContext";
+
+const EditorActionStateActionsContext = React.createContext<EditorActionStateActionsValue | null>(null);
+EditorActionStateActionsContext.displayName = "EditorActionStateActionsContext";
+
+// Combined context for backward compatibility
 export const EditorActionStateContext = React.createContext<EditorActionStateContextValue | null>(null);
 EditorActionStateContext.displayName = "EditorActionStateContext";
 
@@ -472,20 +483,65 @@ export const EditorActionStateProvider: React.FC<EditorActionStateProviderProps>
   });
   const boundActions = React.useMemo(() => bindActionCreators(editorActionStateActions, dispatch), [dispatch]);
 
-  const contextValue: EditorActionStateContextValue = React.useMemo(
+  // Stable actions value - only depends on dispatch which is stable
+  const actionsValue = React.useMemo<EditorActionStateActionsValue>(
     () => ({
-      state,
       dispatch,
       actions: boundActions,
       actionCreators: editorActionStateActions,
     }),
-    [state, dispatch, boundActions],
+    [dispatch, boundActions],
   );
 
-  return <EditorActionStateContext.Provider value={contextValue}>{children}</EditorActionStateContext.Provider>;
+  // Combined context value for backward compatibility
+  const contextValue = React.useMemo<EditorActionStateContextValue>(
+    () => ({
+      state,
+      ...actionsValue,
+    }),
+    [state, actionsValue],
+  );
+
+  return (
+    <EditorActionStateStateContext.Provider value={state}>
+      <EditorActionStateActionsContext.Provider value={actionsValue}>
+        <EditorActionStateContext.Provider value={contextValue}>{children}</EditorActionStateContext.Provider>
+      </EditorActionStateActionsContext.Provider>
+    </EditorActionStateStateContext.Provider>
+  );
 };
 
-// Hook
+// Hooks
+
+/**
+ * Hook to access only the editor action state
+ * Use this when you only need to read state and don't need actions
+ */
+export const useEditorActionStateState = (): EditorActionState => {
+  const state = React.useContext(EditorActionStateStateContext);
+  if (!state) {
+    throw new Error("useEditorActionStateState must be used within an EditorActionStateProvider");
+  }
+  return state;
+};
+
+/**
+ * Hook to access only the editor action state actions
+ * Use this when you only need to dispatch actions and don't need to re-render on state changes
+ * The returned actions have stable references and won't cause re-renders
+ */
+export const useEditorActionStateActions = (): EditorActionStateActionsValue => {
+  const actionsValue = React.useContext(EditorActionStateActionsContext);
+  if (!actionsValue) {
+    throw new Error("useEditorActionStateActions must be used within an EditorActionStateProvider");
+  }
+  return actionsValue;
+};
+
+/**
+ * Hook to access both state and actions (backward compatible)
+ * Prefer useEditorActionStateState or useEditorActionStateActions for better performance
+ */
 export const useEditorActionState = (): EditorActionStateContextValue => {
   const context = React.useContext(EditorActionStateContext);
   if (!context) {
@@ -494,12 +550,22 @@ export const useEditorActionState = (): EditorActionStateContextValue => {
   return context;
 };
 
-export const useActionStateActions = () => {
-  const { actions } = useEditorActionState();
+/**
+ * Hook to access only the bound action creators
+ * Use this when you only need to dispatch actions without re-rendering on state changes
+ * @deprecated Use useEditorActionStateActions().actions instead
+ */
+export const useActionStateActions = (): BoundActionCreators<typeof editorActionStateActions> => {
+  const { actions } = useEditorActionStateActions();
   return actions;
 };
 
-export const useActionState = () => {
-  const { state, actions } = useEditorActionState();
+/**
+ * Hook to access state and actions
+ * @deprecated Use useEditorActionState() instead
+ */
+export const useActionState = (): { state: EditorActionState; actions: BoundActionCreators<typeof editorActionStateActions> } => {
+  const state = useEditorActionStateState();
+  const { actions } = useEditorActionStateActions();
   return { state, actions };
 };
