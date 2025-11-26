@@ -7,28 +7,21 @@ import styles from "./StatusSection.module.css";
 export type StatusSectionProps = {
   label: string;
   value: React.ReactNode;
-  labelClassName?: string;
-  valueClassName?: string;
+  /** Variant type for styling - use CSS [data-variant="..."] selector */
+  variant?: "default" | "mode" | "saving";
 };
 
-export const StatusSection: React.FC<StatusSectionProps> = ({
+export const StatusSection: React.FC<StatusSectionProps> = React.memo(({
   label,
   value,
-  labelClassName,
-  valueClassName,
+  variant,
 }) => {
-  const mergedLabelClassName = labelClassName ? `${styles.statusLabel} ${labelClassName}` : styles.statusLabel;
-  const mergedValueClassName = valueClassName ? `${styles.statusValue} ${valueClassName}` : styles.statusValue;
-
   return (
-    <div className={styles.statusSection} data-status-section="true">
-      <span className={mergedLabelClassName}>{label}:</span>
-      <span className={mergedValueClassName}>{value}</span>
+    <div className={styles.statusSection} data-status-section="true" data-variant={variant}>
+      <span className={styles.statusLabel}>{label}:</span>
+      <span className={styles.statusValue}>{value}</span>
     </div>
   );
-};
+});
 
 StatusSection.displayName = "StatusSection";
-
-// Export styles for external use
-export const statusSectionStyles = styles;

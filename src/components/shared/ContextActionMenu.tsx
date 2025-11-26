@@ -122,10 +122,10 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
       visible={visible}
       onClose={onClose}
       onPositionChange={setResolvedPosition}
-      contentClassName={`${styles.menu} ${styles.menuContainer}`}
       dataAttributes={{ "context-action-menu": true }}
     >
-      <ul className={styles.menuList}>
+      <div className={styles.menu}>
+        <ul className={styles.menuList}>
         {showAlignmentControls && (
           <li className={styles.alignmentControlsItem}>
             <div className={alignmentStyles.alignmentLabel}>Alignment ({selectedNodes.length} nodes)</div>
@@ -199,7 +199,8 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
             </li>
           </>
         )}
-      </ul>
+        </ul>
+      </div>
     </ContextMenuOverlay>
   );
 };

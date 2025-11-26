@@ -145,84 +145,85 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
       visible={visible}
       onClose={onClose}
       onKeyDown={handleKeyDown}
-      contentClassName={`${styles.nodeSearchMenu} ${styles.nodeSearchMenuContainer}`}
       dataAttributes={{ "node-search-menu": true }}
     >
-      <div className={styles.searchHeader}>
-        <Input
-          ref={searchInputRef}
-          id="node-search"
-          name="nodeSearch"
-          type="text"
-          placeholder="Search nodes..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className={styles.searchInput}
-          aria-label="Search for nodes"
-          aria-describedby="search-hint"
-        />
-        <div id="search-hint" className={styles.searchHint}>
-          <kbd>↑↓</kbd> Navigate • <kbd>⏎</kbd> Create • <kbd>⇥</kbd> Category • <kbd>⎋</kbd> Close
-        </div>
-      </div>
-
-      <div className={styles.searchResults}>
-        {filteredResults.length === 0 ? (
-          <div className={styles.noResults}>
-            <div className={styles.noResultsIcon}>🔍</div>
-            <div>No nodes found for "{searchQuery}"</div>
+      <div className={styles.nodeSearchMenu}>
+        <div className={styles.searchHeader}>
+          <Input
+            ref={searchInputRef}
+            id="node-search"
+            name="nodeSearch"
+            type="text"
+            placeholder="Search nodes..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className={styles.searchInput}
+            aria-label="Search for nodes"
+            aria-describedby="search-hint"
+          />
+          <div id="search-hint" className={styles.searchHint}>
+            <kbd>↑↓</kbd> Navigate • <kbd>⏎</kbd> Create • <kbd>⇥</kbd> Category • <kbd>⎋</kbd> Close
           </div>
-        ) : (
-          <div className={styles.categoryList}>
-            {filteredResults.map((category) => (
-              <div key={category.name} className={styles.categoryGroup}>
-                <div
-                  className={styles.categoryHeader}
-                  onClick={() => setSelectedCategory(selectedCategory === category.name ? null : category.name)}
-                  data-is-selected={selectedCategory === category.name}
-                >
-                  <span className={styles.categoryName}>{category.name}</span>
-                  <span className={styles.nodeCount}>{category.nodes.length}</span>
-                </div>
+        </div>
 
-                <div className={styles.nodeList}>
-                  {category.nodes.map((node) => {
-                    const globalIndex = nodeIndexByType.get(node.type) ?? -1;
-                    const isSelected = globalIndex === selectedIndex;
-                    const isDisabled = disabledSet.has(node.type);
+        <div className={styles.searchResults}>
+          {filteredResults.length === 0 ? (
+            <div className={styles.noResults}>
+              <div className={styles.noResultsIcon}>🔍</div>
+              <div>No nodes found for "{searchQuery}"</div>
+            </div>
+          ) : (
+            <div className={styles.categoryList}>
+              {filteredResults.map((category) => (
+                <div key={category.name} className={styles.categoryGroup}>
+                  <div
+                    className={styles.categoryHeader}
+                    onClick={() => setSelectedCategory(selectedCategory === category.name ? null : category.name)}
+                    data-is-selected={selectedCategory === category.name}
+                  >
+                    <span className={styles.categoryName}>{category.name}</span>
+                    <span className={styles.nodeCount}>{category.nodes.length}</span>
+                  </div>
 
-                    return (
-                      <NodeDefinitionCard
-                        key={node.type}
-                        node={node}
-                        variant="list"
-                        isSelected={isSelected}
-                        disabled={isDisabled}
-                        onClick={() => !isDisabled && handleNodeSelect(node.type)}
-                        onPointerEnter={() => {
-                          if (globalIndex >= 0) {
-                            setSelectedIndex(globalIndex);
-                          }
-                        }}
-                        role="menuitem"
-                        tabIndex={-1}
-                      />
-                    );
-                  })}
+                  <div className={styles.nodeList}>
+                    {category.nodes.map((node) => {
+                      const globalIndex = nodeIndexByType.get(node.type) ?? -1;
+                      const isSelected = globalIndex === selectedIndex;
+                      const isDisabled = disabledSet.has(node.type);
+
+                      return (
+                        <NodeDefinitionCard
+                          key={node.type}
+                          node={node}
+                          variant="list"
+                          isSelected={isSelected}
+                          disabled={isDisabled}
+                          onClick={() => !isDisabled && handleNodeSelect(node.type)}
+                          onPointerEnter={() => {
+                            if (globalIndex >= 0) {
+                              setSelectedIndex(globalIndex);
+                            }
+                          }}
+                          role="menuitem"
+                          tabIndex={-1}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          )}
+        </div>
+
+        {allNodes.length > 0 && (
+          <div className={styles.searchFooter}>
+            <div className={styles.selectionInfo}>
+              {selectedIndex + 1} of {allNodes.length} • {filteredResults.length} categories
+            </div>
           </div>
         )}
       </div>
-
-      {allNodes.length > 0 && (
-        <div className={styles.searchFooter}>
-          <div className={styles.selectionInfo}>
-            {selectedIndex + 1} of {allNodes.length} • {filteredResults.length} categories
-          </div>
-        </div>
-      )}
     </ContextMenuOverlay>
   );
 };

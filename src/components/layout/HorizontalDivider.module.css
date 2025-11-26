@@ -12,7 +12,7 @@
   opacity: 0.3;
 }
 
-.horizontalDivider.dragging {
+.horizontalDivider[data-dragging] {
   background: var(--node-editor-accent-color, #007aff);
   opacity: 0.6;
 }
@@ -31,7 +31,7 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .horizontalDivider:hover,
-  .horizontalDivider.dragging {
+  .horizontalDivider[data-dragging] {
     background: var(--node-editor-accent-color, #0099ff);
   }
 }

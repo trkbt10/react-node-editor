@@ -140,7 +140,6 @@ export const SubEditorWindow: React.FC<SubEditorWindowProps> = ({ nodeId, title,
           }}
         >
           <NodeEditor
-            className={styles.editorMain}
             initialData={editorData}
             nodeDefinitions={nestedDefinitions}
             includeDefaultDefinitions={false}

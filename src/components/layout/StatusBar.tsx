@@ -6,7 +6,7 @@ import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import type { SettingsManager as _SettingsManager } from "../../settings/SettingsManager";
-import { StatusSection, statusSectionStyles } from "./StatusSection";
+import { StatusSection } from "./StatusSection";
 import styles from "./StatusBar.module.css";
 
 export type StatusBarProps = {
@@ -19,7 +19,7 @@ export type StatusBarProps = {
  * StatusBar - Displays current editor state information
  * Settings are retrieved from NodeEditorContext if not provided via props.
  */
-export const StatusBar: React.FC<StatusBarProps> = ({
+export const StatusBar: React.FC<StatusBarProps> = React.memo(({
   autoSave: autoSaveProp,
   isSaving: isSavingProp,
   settingsManager: settingsManagerProp,
@@ -41,7 +41,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
   const zoomPercentage = Math.round(canvasState.viewport.scale * 100);
 
   // Determine operation mode
-  const getOperationMode = (): string => {
+  const operationMode = React.useMemo((): string => {
     if (actionState.dragState) {
       return "Moving";
     }
@@ -55,17 +55,25 @@ export const StatusBar: React.FC<StatusBarProps> = ({
       return "Panning";
     }
     return "Ready";
-  };
-
-  const operationMode = getOperationMode();
+  }, [
+    actionState.dragState,
+    actionState.selectionBox,
+    actionState.connectionDragState,
+    canvasState.isSpacePanning,
+    canvasState.panState.isPanning,
+  ]);
 
   // Get cursor position (if dragging)
-  const getCursorPosition = () => {
+  const cursorPosition = React.useMemo(() => {
     if (actionState.dragState) {
       return `Offset: (${Math.round(actionState.dragState.offset.x)}, ${Math.round(actionState.dragState.offset.y)})`;
     }
     return `Canvas: (${Math.round(canvasState.viewport.offset.x)}, ${Math.round(canvasState.viewport.offset.y)})`;
-  };
+  }, [
+    actionState.dragState,
+    canvasState.viewport.offset.x,
+    canvasState.viewport.offset.y,
+  ]);
 
   return (
     <div className={styles.statusBar} data-testid="status-bar">
@@ -87,13 +95,13 @@ export const StatusBar: React.FC<StatusBarProps> = ({
       <StatusSection label="Total" value={`${totalNodes} nodes, ${totalConnections} connections`} />
 
       {/* Operation mode */}
-      <StatusSection label="Mode" value={operationMode} valueClassName={statusSectionStyles.statusMode} />
+      <StatusSection label="Mode" value={operationMode} variant="mode" />
 
       {/* Zoom level */}
       <StatusSection label="Zoom" value={`${zoomPercentage}%`} />
 
       {/* Position */}
-      <StatusSection label="Position" value={getCursorPosition()} />
+      <StatusSection label="Position" value={cursorPosition} />
 
       {/* Grid info */}
       {canvasState.gridSettings.showGrid && (
@@ -113,7 +121,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({
         <StatusSection
           label="Auto-save"
           value={isSaving ? "Saving..." : "ON"}
-          valueClassName={isSaving ? statusSectionStyles.statusSaving : undefined}
+          variant={isSaving ? "saving" : undefined}
         />
       )}
 
@@ -123,6 +131,6 @@ export const StatusBar: React.FC<StatusBarProps> = ({
       )}
     </div>
   );
-};
+});
 
 StatusBar.displayName = "StatusBar";

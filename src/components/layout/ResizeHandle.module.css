@@ -6,11 +6,11 @@
 }
 
 .resizeHandle:hover,
-.resizeHandle[data-is-dragging="true"] {
+.resizeHandle[data-dragging] {
   background-color: var(--node-editor-color-primary, #2196f3);
 }
 
-.resizeHandle[data-is-dragging="true"] {
+.resizeHandle[data-dragging] {
   opacity: 0.8;
 }
 

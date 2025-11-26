@@ -6,10 +6,9 @@ import styles from "./HorizontalDivider.module.css";
 
 export type HorizontalDividerProps = {
   onResize: (deltaX: number) => void;
-  className?: string;
 };
 
-export const HorizontalDivider: React.FC<HorizontalDividerProps> = ({ onResize, className }) => {
+export const HorizontalDivider: React.FC<HorizontalDividerProps> = React.memo(({ onResize }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const lastXRef = React.useRef<number>(0);
 
@@ -40,10 +39,13 @@ export const HorizontalDivider: React.FC<HorizontalDividerProps> = ({ onResize, 
 
   return (
     <div
-      className={`${styles.horizontalDivider} ${className || ""} ${isDragging ? styles.dragging : ""}`}
+      className={styles.horizontalDivider}
+      data-dragging={isDragging || undefined}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
     />
   );
-};
+});
+
+HorizontalDivider.displayName = "HorizontalDivider";

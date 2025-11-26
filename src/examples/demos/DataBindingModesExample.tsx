@@ -77,7 +77,6 @@ export function DataBindingModesExample(): React.ReactElement {
           nodeDefinitions={definitions}
           initialData={createBaseData()}
           onDataChange={() => setUncontrolledUpdates((count) => count + 1)}
-          className={classes.editor}
         />
       </section>
 
@@ -99,7 +98,6 @@ export function DataBindingModesExample(): React.ReactElement {
             setControlledUpdates((count) => count + 1);
             setControlledData(next);
           }}
-          className={classes.editor}
         />
       </section>
     </div>

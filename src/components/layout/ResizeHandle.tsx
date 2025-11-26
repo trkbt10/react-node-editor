@@ -9,20 +9,23 @@ export type ResizeHandleProps = {
   direction: "horizontal" | "vertical";
   /** Callback when resize occurs */
   onResize?: (delta: number) => void;
-  /** Additional className (overrides default styles if provided) */
-  className?: string;
 };
 
 /**
  * ResizeHandle - Draggable handle for resizing grid areas
  */
-export const ResizeHandle: React.FC<ResizeHandleProps> = ({
+export const ResizeHandle: React.FC<ResizeHandleProps> = React.memo(({
   direction,
   onResize,
-  className = styles.resizeHandle,
 }) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const startPosRef = React.useRef<number>(0);
+
+  // Use useEffectEvent to avoid re-registering listeners when callbacks change
+  const handleResize = React.useEffectEvent((delta: number) => {
+    onResize?.(delta);
+  });
+
   const handlePointerDown = React.useCallback(
     (e: React.PointerEvent) => {
       e.preventDefault();
@@ -41,8 +44,8 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
       const currentPos = direction === "horizontal" ? e.clientY : e.clientX;
       const delta = currentPos - startPosRef.current;
 
-      if (onResize && Math.abs(delta) > 0) {
-        onResize(delta);
+      if (Math.abs(delta) > 0) {
+        handleResize(delta);
         startPosRef.current = currentPos;
       }
     };
@@ -58,15 +61,17 @@ export const ResizeHandle: React.FC<ResizeHandleProps> = ({
       document.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("pointerup", handlePointerUp);
     };
-  }, [isDragging, direction, onResize]);
+  }, [isDragging, direction]);
 
   return (
     <div
-      className={className}
+      className={styles.resizeHandle}
       data-resize-handle="true"
       data-direction={direction}
-      data-is-dragging={isDragging ? "true" : undefined}
+      data-dragging={isDragging || undefined}
       onPointerDown={handlePointerDown}
     />
   );
-};
+});
+
+ResizeHandle.displayName = "ResizeHandle";

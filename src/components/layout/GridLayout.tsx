@@ -12,10 +12,6 @@ export type GridLayoutProps = {
   config: GridLayoutConfig;
   /** Layer definitions */
   layers: LayerDefinition[];
-  /** Additional className */
-  className?: string;
-  /** Additional style */
-  style?: React.CSSProperties;
 };
 
 // ============================================================================
@@ -248,7 +244,7 @@ const createTrackSizeUpdater =
  * GridLayout - Flexible grid-based layout system for node editor
  * Supports unified layer system for background, canvas, overlays, and UI elements
  */
-export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, className, style: styleProp }) => {
+export const GridLayout: React.FC<GridLayoutProps> = React.memo(({ config, layers }) => {
   // Track sizes for resizable tracks
   const [trackSizes, setTrackSizes] = React.useState<Record<string, number>>(() => {
     const initial: Record<string, number> = {};
@@ -279,13 +275,12 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
   const gridStyle = React.useMemo((): React.CSSProperties => {
     return {
       ...config.style,
-      ...styleProp,
       gridTemplateAreas: areasString,
       gridTemplateRows: buildTrackTemplateString(config.rows, trackSizes, "row"),
       gridTemplateColumns: buildTrackTemplateString(config.columns, trackSizes, "col"),
       ...(config.gap !== undefined && { gap: config.gap }),
     };
-  }, [config, styleProp, areasString, trackSizes]);
+  }, [config, areasString, trackSizes]);
 
   // Handle resize for a specific track
   const handleResize = React.useCallback(
@@ -327,6 +322,17 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
     layerId: string;
   } | null>(null);
 
+  // Use useEffectEvent to avoid re-registering listeners when layers change
+  const notifyLayerPositionChange = React.useEffectEvent((layerId: string, newPos: { x: number; y: number }) => {
+    const layer = layers.find((l) => l.id === layerId);
+    layer?.onPositionChange?.(newPos);
+  });
+
+  const isLayerDraggable = React.useEffectEvent((layerId: string): boolean => {
+    const layer = layers.find((l) => l.id === layerId);
+    return layer?.draggable ?? false;
+  });
+
   // Handle layer drag start
   const handleLayerDragStart = React.useCallback(
     (layerId: string, e: React.PointerEvent) => {
@@ -335,8 +341,7 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
       if (isInputElement) {
         return;
       }
-      const layer = layers.find((l) => l.id === layerId);
-      if (!layer?.draggable) {
+      if (!isLayerDraggable(layerId)) {
         return;
       }
 
@@ -353,7 +358,7 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
         layerId,
       };
     },
-    [layers, layerPositions],
+    [layerPositions],
   );
 
   // Handle pointer move and pointer up during drag
@@ -375,9 +380,7 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
       };
 
       setLayerPositions((prev) => ({ ...prev, [dragStart.layerId]: newPos }));
-
-      const layer = layers.find((l) => l.id === dragStart.layerId);
-      layer?.onPositionChange?.(newPos);
+      notifyLayerPositionChange(dragStart.layerId, newPos);
     };
 
     const handlePointerUp = () => {
@@ -392,7 +395,7 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
       document.removeEventListener("pointermove", handlePointerMove);
       document.removeEventListener("pointerup", handlePointerUp);
     };
-  }, [draggingLayerId, layers]);
+  }, [draggingLayerId]);
 
   // Build layer style with draggable position
   const buildDraggableLayerStyle = React.useCallback(
@@ -417,19 +420,20 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
 
   // Separate regular layers and drawer layers
   const regularLayers = React.useMemo(() => visibleLayers.filter((layer) => !layer.drawer), [visibleLayers]);
+
   return (
     <>
       <div
-        className={`${styles.gridLayout} ${config.className || ""} ${className || ""}`}
+        className={styles.gridLayout}
         style={gridStyle}
-        data-dragging={draggingLayerId ? "true" : undefined}
+        data-dragging={draggingLayerId || undefined}
       >
         {regularLayers.map((layer) => (
           <div
             key={layer.id}
             data-layer-id={layer.id}
             data-draggable={layer.draggable || undefined}
-            className={`${styles.gridLayer} ${layer.className || ""}`}
+            className={styles.gridLayer}
             style={buildDraggableLayerStyle(layer)}
             onPointerDown={layer.draggable ? (e) => handleLayerDragStart(layer.id, e) : undefined}
           >
@@ -480,25 +484,37 @@ export const GridLayout: React.FC<GridLayoutProps> = ({ config, layers, classNam
       <DrawerLayers layers={visibleLayers} />
     </>
   );
-};
-const ResizeHandleRenderer = (props: {
+});
+
+GridLayout.displayName = "GridLayout";
+
+type ResizeHandleRendererProps = {
   direction: "row" | "col";
   gridArea: string;
   index: number;
   onResize: (direction: "row" | "col", index: number, delta: number) => void;
+};
+
+const ResizeHandleRenderer: React.FC<ResizeHandleRendererProps> = React.memo(({
+  direction,
+  gridArea,
+  index,
+  onResize,
 }) => {
-  const onResize = React.useCallback(
+  const handleResize = React.useCallback(
     (delta: number) => {
-      // Placeholder function for resize handling
-      props.onResize(props.direction, props.index, delta);
+      onResize(direction, index, delta);
     },
-    [props.onResize, props.direction, props.index],
+    [onResize, direction, index],
   );
+
   return (
-    <div data-resizable="true" style={{ gridArea: props.gridArea }} className={styles.gridLayer}>
-      <div className={props.direction === "col" ? styles.resizeHandleVertical : styles.resizeHandleHorizontal}>
-        <ResizeHandle direction={props.direction === "col" ? "vertical" : "horizontal"} onResize={onResize} />
+    <div data-resizable="true" style={{ gridArea }} className={styles.gridLayer}>
+      <div className={direction === "col" ? styles.resizeHandleVertical : styles.resizeHandleHorizontal}>
+        <ResizeHandle direction={direction === "col" ? "vertical" : "horizontal"} onResize={handleResize} />
       </div>
     </div>
   );
-};
+});
+
+ResizeHandleRenderer.displayName = "ResizeHandleRenderer";

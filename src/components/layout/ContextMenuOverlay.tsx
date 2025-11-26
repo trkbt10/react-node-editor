@@ -15,8 +15,6 @@ export type ContextMenuOverlayProps = {
   visible: boolean;
   onClose: () => void;
   children: React.ReactNode;
-  contentClassName?: string;
-  contentStyle?: React.CSSProperties;
   dataAttributes?: Record<string, string | number | boolean | null | undefined>;
   onKeyDown?: React.KeyboardEventHandler<HTMLDivElement>;
   onPositionChange?: (position: Position) => void;
@@ -26,13 +24,11 @@ const isBrowser = typeof window !== "undefined" && typeof document !== "undefine
 
 ensureDialogPolyfill();
 
-export const ContextMenuOverlay: React.FC<ContextMenuOverlayProps> = ({
+export const ContextMenuOverlay: React.FC<ContextMenuOverlayProps> = React.memo(({
   anchor,
   visible,
   onClose,
   children,
-  contentClassName,
-  contentStyle,
   dataAttributes,
   onKeyDown,
   onPositionChange,
@@ -40,6 +36,15 @@ export const ContextMenuOverlay: React.FC<ContextMenuOverlayProps> = ({
   const dialogRef = React.useRef<HTMLDialogElement>(null);
   const internalContentRef = React.useRef<HTMLDivElement>(null);
   const [computedPosition, setComputedPosition] = React.useState<Position>(anchor);
+
+  // Use useEffectEvent to avoid re-registering listeners when callbacks change
+  const handleClose = React.useEffectEvent(() => {
+    onClose();
+  });
+
+  const handlePositionChange = React.useEffectEvent((position: Position) => {
+    onPositionChange?.(position);
+  });
 
   const updatePosition = React.useCallback(() => {
     if (!isBrowser || !internalContentRef.current) {
@@ -50,8 +55,8 @@ export const ContextMenuOverlay: React.FC<ContextMenuOverlayProps> = ({
     const viewport = getViewportInfo();
     const nextPosition = calculateContextMenuPosition(anchor.x, anchor.y, rect.width, rect.height, viewport);
     setComputedPosition(nextPosition);
-    onPositionChange?.(nextPosition);
-  }, [anchor.x, anchor.y, onPositionChange]);
+    handlePositionChange(nextPosition);
+  }, [anchor.x, anchor.y]);
 
   React.useLayoutEffect(() => {
     if (!visible || !isBrowser || !dialogRef.current) {
@@ -72,7 +77,7 @@ export const ContextMenuOverlay: React.FC<ContextMenuOverlayProps> = ({
     if (visible) {
       setComputedPosition(anchor);
     }
-  }, [visible, anchor.x, anchor.y]);
+  }, [visible, anchor.x, anchor.y, anchor]);
 
   React.useLayoutEffect(() => {
     if (!visible) {
@@ -91,13 +96,13 @@ export const ContextMenuOverlay: React.FC<ContextMenuOverlayProps> = ({
         return;
       }
       if (internalContentRef.current && !internalContentRef.current.contains(event.target)) {
-        onClose();
+        handleClose();
       }
     };
 
     document.addEventListener("pointerdown", handlePointerDown);
     return () => document.removeEventListener("pointerdown", handlePointerDown);
-  }, [visible, onClose]);
+  }, [visible]);
 
   React.useEffect(() => {
     if (!visible || !dialogRef.current) {
@@ -107,18 +112,17 @@ export const ContextMenuOverlay: React.FC<ContextMenuOverlayProps> = ({
     const dialog = dialogRef.current;
     const handleCancel = (event: Event) => {
       event.preventDefault();
-      onClose();
+      handleClose();
     };
 
     dialog.addEventListener("cancel", handleCancel);
     return () => dialog.removeEventListener("cancel", handleCancel);
-  }, [visible, onClose]);
+  }, [visible]);
 
-  const mergedStyle: React.CSSProperties = {
-    ...contentStyle,
+  const positionStyle = React.useMemo((): React.CSSProperties => ({
     left: computedPosition.x,
     top: computedPosition.y,
-  };
+  }), [computedPosition.x, computedPosition.y]);
 
   const dataProps = React.useMemo<DataAttributes>(() => {
     if (!dataAttributes) {
@@ -141,8 +145,8 @@ export const ContextMenuOverlay: React.FC<ContextMenuOverlayProps> = ({
     <dialog ref={dialogRef} className={styles.contextDialog}>
       <div
         ref={internalContentRef}
-        className={`${styles.contextContent}${contentClassName ? ` ${contentClassName}` : ""}`}
-        style={mergedStyle}
+        className={styles.contextContent}
+        style={positionStyle}
         onKeyDown={onKeyDown}
         {...dataProps}
       >
@@ -151,6 +155,6 @@ export const ContextMenuOverlay: React.FC<ContextMenuOverlayProps> = ({
     </dialog>,
     document.body,
   );
-};
+});
 
 ContextMenuOverlay.displayName = "ContextMenuOverlay";

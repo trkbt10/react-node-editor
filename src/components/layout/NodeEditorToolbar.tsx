@@ -10,9 +10,11 @@ import { Button } from "../elements/Button";
 import styles from "./NodeEditorToolbar.module.css";
 import { countNodesByType, canAddNodeType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
 
-export type NodeEditorToolbarProps = {} & React.HTMLAttributes<HTMLDivElement>;
+export type NodeEditorToolbarProps = {
+  children?: React.ReactNode;
+};
 
-export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({ className, children, ...rest }) => {
+export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = React.memo(({ children }) => {
   const nodeDefinitions = useNodeDefinitionList();
   const { actions: actionActions } = useEditorActionState();
   const { state: canvasState } = useNodeCanvas();
@@ -103,38 +105,32 @@ export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = ({ className,
     </>
   );
 
-  const toolbarClassName = React.useMemo(() => {
-    return [styles.topToolbar, className].filter(Boolean).join(" ");
-  }, [className]);
-
   return (
-    <div className={toolbarClassName} {...rest}>
+    <div className={styles.topToolbar}>
       {toolbarContent}
       {children}
     </div>
   );
+});
+
+NodeEditorToolbar.displayName = "NodeEditorToolbar";
+
+export type NodeEditorToolbarGroupProps = {
+  children?: React.ReactNode;
 };
 
-export type NodeEditorToolbarGroupProps = {} & React.HTMLAttributes<HTMLDivElement>;
-
-export const NodeEditorToolbarGroup: React.FC<NodeEditorToolbarGroupProps> = ({
-  className = "",
-  children,
-  ...props
-}) => {
-  const classes = [styles.group, className].filter(Boolean).join(" ");
-
+export const NodeEditorToolbarGroup: React.FC<NodeEditorToolbarGroupProps> = React.memo(({ children }) => {
   return (
-    <div className={classes} {...props}>
+    <div className={styles.group}>
       {children}
     </div>
   );
-};
+});
 
-export type NodeEditorToolbarSeparatorProps = {} & React.HTMLAttributes<HTMLDivElement>;
+NodeEditorToolbarGroup.displayName = "NodeEditorToolbarGroup";
 
-export const NodeEditorToolbarSeparator: React.FC<NodeEditorToolbarSeparatorProps> = ({ className = "", ...props }) => {
-  const classes = [styles.separator, className].filter(Boolean).join(" ");
+export const NodeEditorToolbarSeparator: React.FC = React.memo(() => {
+  return <div className={styles.separator} role="separator" />;
+});
 
-  return <div className={classes} role="separator" {...props} />;
-};
+NodeEditorToolbarSeparator.displayName = "NodeEditorToolbarSeparator";
