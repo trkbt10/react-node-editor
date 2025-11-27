@@ -257,7 +257,7 @@ export const NodeSearchMenuExample: React.FC = () => {
             className={styles.select}
           >
             <option value="list">List (Classic)</option>
-            <option value="split">Split Pane (GCP-style)</option>
+            <option value="split">Split Pane</option>
           </select>
         </div>
         <button type="button" className={styles.button} onClick={() => setMenuVisible(true)}>
