@@ -1,0 +1,240 @@
+:root {
+    /* Core spacing scale */
+    --node-editor-space-xs: 4px;
+    --node-editor-space-sm: 8px;
+    --node-editor-space-md: 12px;
+    --node-editor-space-lg: 16px;
+    --node-editor-space-xl: 24px;
+    --node-editor-space-xxl: 32px;
+
+    /* Layout spacing */
+    --node-editor-control-padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+
+    /* Inspector spacing system */
+    --node-editor-inspector-space-xs: var(--node-editor-space-xs);
+    --node-editor-inspector-space-sm: var(--node-editor-space-sm);
+    --node-editor-inspector-space-md: var(--node-editor-space-md);
+    --node-editor-inspector-space-lg: var(--node-editor-space-lg);
+    --node-editor-inspector-space-xl: var(--node-editor-space-xl);
+    --node-editor-inspector-space-xxl: var(--node-editor-space-xxl);
+    --node-editor-inspector-content-padding: var(--node-editor-inspector-space-md);
+    --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
+    --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-xs);
+    --node-editor-inspector-header-gap: var(--node-editor-inspector-space-sm);
+    --node-editor-inspector-section-gap: var(--node-editor-inspector-space-md);
+    --node-editor-inspector-field-gap: var(--node-editor-inspector-space-sm);
+    --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
+    --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
+    --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+    --node-editor-inspector-input-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+
+    /* Inspector typography */
+    --node-editor-inspector-font-size-title: 0.875rem;
+    --node-editor-inspector-line-height-title: 1.2;
+    --node-editor-inspector-font-size-body: 1rem;
+    --node-editor-inspector-line-height-body: 1.4;
+    --node-editor-inspector-font-size-meta: 0.875rem;
+    --node-editor-inspector-line-height-meta: 1.2;
+    --node-editor-inspector-font-weight-medium: 700;
+    --node-editor-inspector-font-size-heading: 1.125rem;
+    --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
+    --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+    /* Font families & typography */
+    --node-editor-theme-default-font-family:
+        "Courier New", Courier, monospace;
+    --node-editor-theme-control-font-family:
+        "Courier New", Courier, monospace;
+    --node-editor-theme-label-font-family:
+        "Courier New", Courier, monospace;
+    --node-editor-system-font: "Courier New", Courier, monospace;
+    --node-editor-font-mono: "Courier New", Courier, monospace;
+    --node-editor-title-font: 700 1rem/1.2 var(--node-editor-theme-label-font-family);
+    --node-editor-subtitle-font: 700 1rem/1.2 var(--node-editor-theme-label-font-family);
+    --node-editor-caption-font: 700 0.875rem/1.2 var(--node-editor-theme-default-font-family);
+    --node-editor-control-text-font: 700 var(--node-editor-inspector-font-size-body) / 1.4 var(--node-editor-theme-control-font-family);
+    --node-editor-input-font: 700 var(--node-editor-inspector-font-size-body) / 1.4 var(--node-editor-theme-default-font-family);
+    --node-editor-font-size-lg: 1.25rem;
+    --node-editor-font-size-sm: 0.875rem;
+    --node-editor-font-size-xs: 0.75rem;
+
+    /* Canvas grid */
+    --node-editor-grid-color: #000000;
+    --node-editor-grid-opacity: 0.2;
+
+    /* Shadow system */
+    --node-editor-shadow-sm: 2px 2px 0px #000000;
+    --node-editor-shadow-md: 4px 4px 0px #000000;
+    --node-editor-shadow-lg: 8px 8px 0px #000000;
+
+    /* Transition system */
+    --node-editor-transition-duration: 0s;
+
+    /* Inspector shadows */
+    --node-editor-inspector-shadow: -2px 0 0 0 #000000;
+    --node-editor-inspector-header-shadow: 0 2px 0 #000000;
+
+    /* Tree & List Components */
+    --node-editor-tree-item-height: 32px;
+    --node-editor-tree-indent: 24px;
+
+    /* Control Buttons */
+    --node-editor-control-button-size-sm: 24px;
+    --node-editor-control-button-size: 32px;
+
+    /* Icons */
+    --node-editor-icon-size-sm: 16px;
+    --node-editor-icon-selected-brightness: 1;
+
+    /* Text colors */
+    --node-editor-text-color: #000000;
+    --node-editor-text-secondary: #000000;
+    --node-editor-header-text-color: #000000;
+    --node-editor-label-color: #000000;
+    --node-editor-secondary-label-color: #000000;
+    --node-editor-tertiary-label-color: #000000;
+    --node-editor-quaternary-label-color: #000000;
+    --node-editor-control-text-color: #000000;
+    --node-editor-control-text-color-primary: #000000;
+    --node-editor-control-text-color-secondary: #000000;
+    --node-editor-control-hover-text-color-primary: #000000;
+    --node-editor-input-text-color: #000000;
+    --node-editor-selected-control-text-color: #000000;
+    --node-editor-selected-menu-item-text-color: #000000;
+
+    /* Status & accent colors */
+    --node-editor-accent-color: #ff5e00;
+    --node-editor-accent-color-hover: #ff0000;
+    --node-editor-color-primary: #ff5e00;
+    --node-editor-keyboard-focus-indicator-color: #000000;
+    --node-editor-success-color: #00ff00;
+    --node-editor-warning-color: #ffff00;
+    --node-editor-caution-color: #ff0000;
+    --node-editor-caution-hover-background: #ff0000;
+    --node-editor-system-orange-color: #ff5e00;
+    --node-editor-system-red-color: #ff0000;
+    --node-editor-connection-color: #000000;
+
+    /* Surface colors */
+    --node-editor-surface-primary: #f0f0f0;
+    --node-editor-surface-secondary: #ffffff;
+    --node-editor-surface-tertiary: #e0e0e0;
+    --node-editor-selected-content-background-color: #ff5e00;
+    --node-editor-selected-control-color: #ff5e00;
+    --node-editor-under-page-background-color: #f0f0f0;
+    --node-editor-window-background-color: #f0f0f0;
+    --node-editor-background-surface: #f0f0f0;
+
+    /* Control surfaces */
+    --node-editor-control-background: #ffffff;
+    --node-editor-control-background-primary: #ff5e00;
+    --node-editor-control-background-secondary: #ffffff;
+    --node-editor-control-hover-background: #e0e0e0;
+    --node-editor-control-hover-background-primary: #ff0000;
+    --node-editor-hover-background: #e0e0e0;
+    --node-editor-control-box-shadow-primary: 2px 2px 0 #000000;
+    --node-editor-control-box-shadow-secondary: inset 0 0 0 2px #000000;
+    --node-editor-disabled-control-text-color: #888888;
+
+    /* Input surfaces */
+    --node-editor-input-background: #ffffff;
+    --node-editor-input-border: 2px solid #000000;
+    --node-editor-input-border-hover: 2px solid #ff5e00;
+    --node-editor-input-box-shadow: 2px 2px 0 #000000;
+    --node-editor-input-padding: 8px 12px;
+
+    /* Card & panel styling */
+    --node-editor-card-border-color: #000000;
+    --node-editor-card-border: 2px solid #000000;
+    --node-editor-card-border-radius: 0px;
+    --node-editor-card-box-shadow: 4px 4px 0 #000000;
+    --node-editor-card-hover-box-shadow: 6px 6px 0 #000000;
+    --node-editor-card-elevated-box-shadow: 8px 8px 0 #000000;
+    --node-editor-card-focus-box-shadow: 0 0 0 2px #000000;
+    --node-editor-card-disabled-background: #cccccc;
+    --node-editor-card-filled-background: #ffffff;
+    --node-editor-card-filled-hover-background: #ffffff;
+    --node-editor-card-hover-border-color: #000000;
+
+    /* Dialogs & overlays */
+    --node-editor-dialog-background: #ffffff;
+    --node-editor-dialog-box-shadow: 8px 8px 0 #000000;
+    --node-editor-dialog-level-elevation: 1000;
+
+    /* Scrollbars */
+    --node-editor-scroll-bar-thumb-color: #000000;
+    --node-editor-active-scroll-bar-thumb-color: #ff5e00;
+
+    /* Selected State Colors */
+    --node-editor-selected-secondary-color: #ff5e00;
+    --node-editor-selected-hover-background: #ff5e00;
+
+    /* Tables & list accents */
+    --node-editor-table-header-background-color: #e0e0e0;
+    --node-editor-table-header-background-color-hover: #d0d0d0;
+    --node-editor-table-header-background-color-active: #ff5e00;
+
+    /* Node-specific colors */
+    --node-editor-group-node-background: #ffffff;
+    --node-editor-group-node-border: #000000;
+    --node-editor-group-node-active-background: #ff5e00;
+    --node-editor-group-node-active-color: #000000;
+    --node-editor-node-port-input-color: #000000;
+    --node-editor-node-port-output-color: #000000;
+
+    /* System fills */
+    --node-editor-tertiary-system-background: #e0e0e0;
+    --node-editor-tertiary-system-fill-color: #d0d0d0;
+    --node-editor-quaternary-system-fill-color: #c0c0c0;
+
+    /* Border Radii */
+    --node-editor-border-radius-xxs: 0px;
+    --node-editor-border-radius-xs: 0px;
+    --node-editor-radius-xs: 0px;
+    --node-editor-radius-sm: 0px;
+    --node-editor-radius-md: 0px;
+    --node-editor-control-border-radius: 0px;
+    --node-editor-segment-control-border-radius: 0px;
+
+    /* Borders */
+    --node-editor-border-width: 2px;
+    --node-editor-border-color: #000000;
+    --node-editor-divider-color: #000000;
+    --node-editor-separator-color: #000000;
+
+    /* Segment controls */
+    --node-editor-segment-backdrop-filter: none;
+    --node-editor-segment-control-background: #ffffff;
+    --node-editor-segment-control-background-color: #ffffff;
+    --node-editor-segment-control-text-color: #000000;
+    --node-editor-segment-control-active-background-color: #ff5e00;
+    --node-editor-segment-control-active-text-color: #000000;
+    --node-editor-segment-control-segment-padding: 4px 8px;
+
+    /* Connection styling - Brutalist theme */
+    --node-editor-connection-base-stroke-width: 3;
+    --node-editor-connection-active-stroke-width: 5;
+    --node-editor-connection-flow-stripe-stroke-width: 3;
+    --node-editor-connection-flow-stripe-active-stroke-width: 5;
+    --node-editor-connection-direction-stroke-width: 3;
+    --node-editor-connection-hover-shadow: none;
+    --node-editor-connection-selected-shadow: none;
+    --node-editor-connection-hover-opacity: 1;
+    --node-editor-connection-dragging-opacity: 1;
+    --node-editor-connection-stripe-dash-array: 0 0;
+    --node-editor-connection-stripe-dash-offset-bg: 0;
+    --node-editor-connection-stripe-opacity-accent: 1;
+    --node-editor-connection-stripe-opacity-background: 1;
+    --node-editor-connection-flow-animation-duration: 0s;
+    --node-editor-connection-flow-animation-distance: 0;
+    --node-editor-connection-base-transition: none;
+    --node-editor-connection-arrow-transition: none;
+
+    /* Connection drag styling - Brutalist theme */
+    --node-editor-connection-drag-stroke-width-connecting: 3;
+    --node-editor-connection-drag-stroke-width-disconnecting: 5;
+    --node-editor-connection-drag-dash-array-connecting: 10 10;
+    --node-editor-connection-drag-dash-array-disconnecting: 10 10;
+    --node-editor-connection-drag-animation-duration: 0s;
+    --node-editor-connection-drag-animation-distance: 0;
+}

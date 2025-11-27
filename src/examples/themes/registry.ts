@@ -19,7 +19,13 @@ export type NodeEditorThemeId =
   | "opal"
   | "unity"
   | "adobe"
-  | "figma";
+  | "figma"
+  | "antigravity"
+  | "notion"
+  | "brutalist"
+  | "constructivist"
+  | "russian-avant-garde"
+  | "akzidenz-grotesk";
 
 export type NodeEditorTheme = {
   id: NodeEditorThemeId;
@@ -141,6 +147,42 @@ const AVAILABLE_THEMES: NodeEditorTheme[] = [
     label: "Figma",
     description: "Clean light interface with Figma's signature blue and minimal design language.",
     cssPath: "/themes/figma.css",
+  },
+  {
+    id: "antigravity",
+    label: "Antigravity",
+    description: "Deep space aesthetic with neon accents and glassmorphism effects.",
+    cssPath: "/themes/antigravity.css",
+  },
+  {
+    id: "notion",
+    label: "Notion",
+    description: "Clean, minimalist workspace with crisp typography and subtle borders.",
+    cssPath: "/themes/notion.css",
+  },
+  {
+    id: "brutalist",
+    label: "Brutalist",
+    description: "Raw, bold aesthetic with hard shadows and high contrast.",
+    cssPath: "/themes/brutalist.css",
+  },
+  {
+    id: "constructivist",
+    label: "Constructivist",
+    description: "Avant-garde Russian art style with bold geometry and revolutionary red.",
+    cssPath: "/themes/constructivist.css",
+  },
+  {
+    id: "russian-avant-garde",
+    label: "Russian Avant-Garde",
+    description: "Suprematist composition with floating geometry and primary colors.",
+    cssPath: "/themes/russian-avant-garde.css",
+  },
+  {
+    id: "akzidenz-grotesk",
+    label: "Akzidenz-Grotesk",
+    description: "Swiss Style minimalism with strict grids and neutral typography.",
+    cssPath: "/themes/akzidenz-grotesk.css",
   },
 ];
 
