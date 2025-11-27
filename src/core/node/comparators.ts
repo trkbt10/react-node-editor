@@ -49,7 +49,9 @@ export const DEFAULT_NODE_SIZE: Size = { width: 150, height: 50 };
  * Used for controlled data stabilization
  */
 export const areNodesStructurallyEqual = (prev: Node, next: Node): boolean => {
-  if (prev === next) return true;
+  if (prev === next) {
+    return true;
+  }
   return (
     prev.id === next.id &&
     prev.type === next.type &&

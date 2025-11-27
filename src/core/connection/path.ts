@@ -31,7 +31,9 @@ const PORT_OFFSET_DELTA: Record<PortPosition, { dx: -1 | 0 | 1; dy: -1 | 0 | 1 }
  * Check if two port positions are facing opposite directions
  */
 const isOppositeFacing = (from?: PortPosition, to?: PortPosition): boolean => {
-  if (!from || !to) return false;
+  if (!from || !to) {
+    return false;
+  }
   return OPPOSITE_POSITIONS[from] === to;
 };
 

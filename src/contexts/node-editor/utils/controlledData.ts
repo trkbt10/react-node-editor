@@ -2,7 +2,7 @@
  * @file Utilities for stabilizing controlled NodeEditorData to minimize unnecessary renders.
  */
 import * as React from "react";
-import type { Connection, Node, NodeEditorData } from "../../../types/core";
+import type { NodeEditorData } from "../../../types/core";
 import { areStringArraysEqual } from "../../../core/common/comparators";
 import { areNodesStructurallyEqual } from "../../../core/node/comparators";
 import { areConnectionsStructurallyEqual } from "../../../core/connection/comparators";

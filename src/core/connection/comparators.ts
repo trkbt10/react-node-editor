@@ -10,7 +10,9 @@ import { areRecordValuesShallowEqual } from "../common/comparators";
  * Used for controlled data stabilization
  */
 export const areConnectionsStructurallyEqual = (prev: Connection, next: Connection): boolean => {
-  if (prev === next) return true;
+  if (prev === next) {
+    return true;
+  }
   return (
     prev.id === next.id &&
     prev.fromNodeId === next.fromNodeId &&

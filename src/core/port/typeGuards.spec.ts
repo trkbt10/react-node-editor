@@ -1,4 +1,6 @@
-import { describe, expect, it } from "vitest";
+/**
+ * @file Tests for port type guards
+ */
 import { isPort, ensurePort } from "./typeGuards";
 import type { Port } from "../../types/core";
 

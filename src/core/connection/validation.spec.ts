@@ -72,7 +72,7 @@ describe("canConnectPorts - duplicate connection detection", () => {
 
   it("allows connection to different port on same node", () => {
     const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
-    const inPort1: Port = { id: "in1", nodeId: "b", type: "input", label: "in1", position: "left" };
+    const _inPort1: Port = { id: "in1", nodeId: "b", type: "input", label: "in1", position: "left" };
     const inPort2: Port = { id: "in2", nodeId: "b", type: "input", label: "in2", position: "left" };
     const existing: Record<string, Connection> = {
       c1: { id: "c1", fromNodeId: "a", fromPortId: "out", toNodeId: "b", toPortId: "in1" },

@@ -152,8 +152,12 @@ export const NodeInspector: React.FC<NodeInspectorProps> = React.memo(
   (prevProps, nextProps) => {
     // Custom comparison function for memo
     // Only re-render if the node ID changes or critical node properties change
-    if (hasNodeIdentityChanged(prevProps.node, nextProps.node)) return false;
-    if (hasNodeStateChanged(prevProps.node, nextProps.node)) return false;
+    if (hasNodeIdentityChanged(prevProps.node, nextProps.node)) {
+      return false;
+    }
+    if (hasNodeStateChanged(prevProps.node, nextProps.node)) {
+      return false;
+    }
     // Reference equality for data and position (intentional for performance)
     return (
       prevProps.node.data === nextProps.node.data &&

@@ -29,8 +29,12 @@ export const arePlacementsEqual = (
   prev: PortPlacement | undefined | null,
   next: PortPlacement | undefined | null,
 ): boolean => {
-  if (prev === next) return true;
-  if (!prev || !next) return false;
+  if (prev === next) {
+    return true;
+  }
+  if (!prev || !next) {
+    return false;
+  }
   return (
     prev.side === next.side &&
     prev.segment === next.segment &&
@@ -52,7 +56,9 @@ export const hasPortPlacementChanged = (
  * Check if two ports are structurally equal (full comparison of all fields)
  */
 export const arePortsEqual = (prev: Port, next: Port): boolean => {
-  if (prev === next) return true;
+  if (prev === next) {
+    return true;
+  }
   return (
     prev.id === next.id &&
     prev.definitionId === next.definitionId &&
@@ -74,9 +80,17 @@ export const arePortsEqual = (prev: Port, next: Port): boolean => {
  * Check if two port arrays are equal
  */
 export const arePortArraysEqual = (prev?: Port[], next?: Port[]): boolean => {
-  if (prev === next) return true;
-  if (!prev && !next) return true;
-  if (!prev || !next) return false;
-  if (prev.length !== next.length) return false;
+  if (prev === next) {
+    return true;
+  }
+  if (!prev && !next) {
+    return true;
+  }
+  if (!prev || !next) {
+    return false;
+  }
+  if (prev.length !== next.length) {
+    return false;
+  }
   return prev.every((port, index) => arePortsEqual(port, next[index]));
 };

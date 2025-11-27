@@ -1,7 +1,6 @@
 /**
  * @file Tests for node derived state computations
  */
-import { describe, it, expect } from "vitest";
 import type { Node, Position, Size, ResizeHandle } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import {

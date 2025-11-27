@@ -176,20 +176,7 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
   }, [editorState.nodes, portPositionBehavior, portPositionConfig, getNodePorts, computePositionsForNodes]);
 
   // Use settings hook for clean state management
-  const settings = useSettings(settingsManager);
-  const { theme, smoothAnimations, fontSize, gridSize, gridOpacity, canvasBackground } = settings;
-
-  // Apply settings-based CSS custom properties
-  const editorStyles = React.useMemo(
-    () =>
-      ({
-        "--editor-font-size": `${fontSize}px`,
-        "--editor-grid-size": `${gridSize}px`,
-        "--editor-grid-opacity": `${gridOpacity}`,
-        "--editor-canvas-background": canvasBackground,
-      }) as React.CSSProperties,
-    [fontSize, gridSize, gridOpacity, canvasBackground],
-  );
+  const _settings = useSettings(settingsManager);
 
   // Node creation handler for context menu
   const handleCreateNode = React.useCallback(

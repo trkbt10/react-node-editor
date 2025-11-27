@@ -18,6 +18,9 @@ export type InspectorButtonGroupProps<T extends string = string> = {
   "aria-label"?: string;
 };
 
+/**
+ * Segmented button group for selecting between mutually exclusive options
+ */
 export function InspectorButtonGroup<T extends string = string>({
   options,
   value,

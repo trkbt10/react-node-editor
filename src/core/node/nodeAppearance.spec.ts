@@ -1,7 +1,6 @@
 /**
  * @file Tests for node appearance calculations
  */
-import { describe, it, expect } from "vitest";
 import type { Node } from "../../types/core";
 import {
   getGroupBackground,
