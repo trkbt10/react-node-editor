@@ -22,6 +22,16 @@ type I18nProviderProps = {
 
 const DEFAULT_FALLBACK_LOCALE: Locale = "en";
 
+/**
+ * Interpolates parameters into a message template using {{key}} syntax
+ */
+const interpolateParams = (message: string, params: Record<string, string | number>): string => {
+  return message.replace(/\{\{(\w+)\}\}/g, (match, key: string) => {
+    const value = params[key];
+    return value !== undefined ? String(value) : match;
+  });
+};
+
 const mergeDictionaries = (
   dictionaries: I18nDictionaries,
   fallbackLocale: Locale,
@@ -119,15 +129,9 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({
     (key: I18nKey, params?: Record<string, string | number>): string => {
       const activeDictionary = mergedDictionaries[locale] ?? mergedDictionaries[resolvedFallbackLocale];
       const fallbackDictionary = mergedDictionaries[resolvedFallbackLocale];
-      let message = activeDictionary?.[key] ?? fallbackDictionary?.[key] ?? key;
+      const message = activeDictionary?.[key] ?? fallbackDictionary?.[key] ?? key;
 
-      if (params) {
-        Object.entries(params).forEach(([paramKey, value]) => {
-          message = message.replace(new RegExp(`{{${paramKey}}}`, "g"), String(value));
-        });
-      }
-
-      return message;
+      return params ? interpolateParams(message, params) : message;
     },
     [locale, mergedDictionaries, resolvedFallbackLocale],
   );
@@ -149,13 +153,8 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({
  * Fallback translation function that uses English dictionary when I18nProvider is not available
  */
 const fallbackTranslate = (key: I18nKey, params?: Record<string, string | number>): string => {
-  let message = enMessages[key] ?? key;
-  if (params) {
-    Object.entries(params).forEach(([paramKey, value]) => {
-      message = message.replace(new RegExp(`{{${paramKey}}}`, "g"), String(value));
-    });
-  }
-  return message;
+  const message = enMessages[key] ?? key;
+  return params ? interpolateParams(message, params) : message;
 };
 
 const fallbackI18nValue: I18nContextValue = {
