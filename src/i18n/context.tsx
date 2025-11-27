@@ -144,12 +144,29 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({
   return <I18nContext.Provider value={contextValue}>{children}</I18nContext.Provider>;
 };
 
+/**
+ * Fallback translation function that returns the key as-is with parameter substitution
+ */
+const fallbackTranslate = (key: string, params?: Record<string, string | number>): string => {
+  let message = key;
+  if (params) {
+    Object.entries(params).forEach(([paramKey, value]) => {
+      message = message.replace(new RegExp(`{{${paramKey}}}`, "g"), String(value));
+    });
+  }
+  return message;
+};
+
+const fallbackI18nValue: I18nContextValue = {
+  locale: "en",
+  setLocale: () => {},
+  t: fallbackTranslate,
+  availableLocales: ["en"],
+};
+
 export const useI18n = (): I18nContextValue => {
   const context = React.useContext(I18nContext);
-  if (!context) {
-    throw new Error("useI18n must be used within an I18nProvider");
-  }
-  return context;
+  return context ?? fallbackI18nValue;
 };
 
 // Hook for getting translated messages with fallback
