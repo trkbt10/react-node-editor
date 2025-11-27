@@ -199,4 +199,17 @@ export const jaMessages: I18nMessages = {
   fieldOpacity: "透明度",
   fieldTextColor: "文字色",
   inspectorGroupAppearanceTitle: "外観",
+
+  // Node Search Menu
+  nodeSearchPlaceholder: "ノードを検索…",
+  nodeSearchAriaLabel: "ノードを検索",
+  nodeSearchHintNavigate: "移動",
+  nodeSearchHintCreate: "作成",
+  nodeSearchHintCategory: "カテゴリ",
+  nodeSearchHintClose: "閉じる",
+  nodeSearchFooter: "{{current}} / {{total}} • {{categories}} カテゴリ",
+  nodeSearchNoResults: "「{{query}}」に一致するノードはありません",
+  nodeSearchCategoriesHeader: "カテゴリ",
+  nodeSearchAllNodes: "すべてのノード",
+  nodeSearchEmptyCategory: "このカテゴリにノードはありません",
 };

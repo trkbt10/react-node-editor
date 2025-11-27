@@ -11,6 +11,7 @@ import { SearchFooter } from "./parts/SearchFooter";
 import { NoResults } from "./parts/NoResults";
 import { CategoryListView } from "./parts/CategoryListView";
 import { SplitPaneView } from "./parts/SplitPaneView";
+import { useI18n } from "../../../i18n/context";
 import {
   flattenGroupedNodeDefinitions,
   groupNodeDefinitions,
@@ -36,12 +37,6 @@ export type NodeSearchMenuProps = {
   viewMode?: NodeSearchMenuViewMode;
 };
 
-const DEFAULT_HINTS = (
-  <>
-    <kbd>↑↓</kbd> Navigate • <kbd>⏎</kbd> Create • <kbd>⇥</kbd> Category • <kbd>⎋</kbd> Close
-  </>
-);
-
 /**
  * NodeSearchMenu - Searchable context menu for creating nodes with multiple view modes
  */
@@ -54,10 +49,21 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
   disabledNodeTypes = [],
   viewMode = "list",
 }) => {
+  const { t } = useI18n();
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
   const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+  const keyboardHints = React.useMemo(
+    () => (
+      <>
+        <kbd>↑↓</kbd> {t("nodeSearchHintNavigate")} • <kbd>⏎</kbd> {t("nodeSearchHintCreate")} • <kbd>⇥</kbd>{" "}
+        {t("nodeSearchHintCategory")} • <kbd>⎋</kbd> {t("nodeSearchHintClose")}
+      </>
+    ),
+    [t],
+  );
 
   // Group node definitions based on view mode
   const groupedDefinitions = React.useMemo<NodeDefinitionCategory[]>(() => {
@@ -209,7 +215,9 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           inputRef={searchInputRef}
-          hints={DEFAULT_HINTS}
+          placeholder={t("nodeSearchPlaceholder")}
+          ariaLabel={t("nodeSearchAriaLabel")}
+          hints={keyboardHints}
         />
 
         <div className={styles.searchResults}>

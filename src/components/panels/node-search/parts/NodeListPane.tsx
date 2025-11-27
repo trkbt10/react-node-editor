@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import type { NodeDefinition } from "../../../../types/NodeDefinition";
+import { useI18n } from "../../../../i18n/context";
 import { NodeDefinitionCard } from "./NodeDefinitionCard";
 import styles from "./NodeListPane.module.css";
 
@@ -25,6 +26,8 @@ export const NodeListPane: React.FC<NodeListPaneProps> = ({
   disabledNodeTypes,
   nodeIndexByType,
 }) => {
+  const { t } = useI18n();
+
   const handleNodeClick = React.useCallback(
     (node: NodeDefinition) => {
       if (!disabledNodeTypes.has(node.type)) {
@@ -64,9 +67,7 @@ export const NodeListPane: React.FC<NodeListPaneProps> = ({
             />
           );
         })}
-        {nodes.length === 0 ? (
-          <div className={styles.emptyState}>No nodes in this category</div>
-        ) : null}
+        {nodes.length === 0 ? <div className={styles.emptyState}>{t("nodeSearchEmptyCategory")}</div> : null}
       </div>
     </div>
   );

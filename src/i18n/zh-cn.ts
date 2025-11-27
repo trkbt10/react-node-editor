@@ -199,4 +199,17 @@ export const zhCNMessages: I18nMessages = {
   fieldOpacity: "不透明度",
   fieldTextColor: "文本颜色",
   inspectorGroupAppearanceTitle: "外观",
+
+  // Node Search Menu
+  nodeSearchPlaceholder: "搜索节点…",
+  nodeSearchAriaLabel: "搜索节点",
+  nodeSearchHintNavigate: "导航",
+  nodeSearchHintCreate: "创建",
+  nodeSearchHintCategory: "类别",
+  nodeSearchHintClose: "关闭",
+  nodeSearchFooter: "{{current}} / {{total}} • {{categories}} 个类别",
+  nodeSearchNoResults: "未找到「{{query}}」相关的节点",
+  nodeSearchCategoriesHeader: "类别",
+  nodeSearchAllNodes: "所有节点",
+  nodeSearchEmptyCategory: "此类别中没有节点",
 };

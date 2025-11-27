@@ -199,4 +199,17 @@ export const zhMessages: I18nMessages = {
   fieldOpacity: "不透明度",
   fieldTextColor: "文字顏色",
   inspectorGroupAppearanceTitle: "外觀",
+
+  // Node Search Menu
+  nodeSearchPlaceholder: "搜尋節點…",
+  nodeSearchAriaLabel: "搜尋節點",
+  nodeSearchHintNavigate: "導覽",
+  nodeSearchHintCreate: "建立",
+  nodeSearchHintCategory: "類別",
+  nodeSearchHintClose: "關閉",
+  nodeSearchFooter: "{{current}} / {{total}} • {{categories}} 個類別",
+  nodeSearchNoResults: "找不到「{{query}}」相關的節點",
+  nodeSearchCategoriesHeader: "類別",
+  nodeSearchAllNodes: "所有節點",
+  nodeSearchEmptyCategory: "此類別中沒有節點",
 };

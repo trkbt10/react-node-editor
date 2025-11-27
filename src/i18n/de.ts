@@ -204,4 +204,17 @@ export const deMessages: I18nMessages = {
   fieldOpacity: "Deckkraft",
   fieldTextColor: "Textfarbe",
   inspectorGroupAppearanceTitle: "Erscheinungsbild",
+
+  // Node Search Menu
+  nodeSearchPlaceholder: "Knoten suchen…",
+  nodeSearchAriaLabel: "Knoten suchen",
+  nodeSearchHintNavigate: "Navigieren",
+  nodeSearchHintCreate: "Erstellen",
+  nodeSearchHintCategory: "Kategorie",
+  nodeSearchHintClose: "Schließen",
+  nodeSearchFooter: "{{current}} von {{total}} • {{categories}} Kategorien",
+  nodeSearchNoResults: 'Keine Knoten für "{{query}}" gefunden',
+  nodeSearchCategoriesHeader: "Kategorien",
+  nodeSearchAllNodes: "Alle Knoten",
+  nodeSearchEmptyCategory: "Keine Knoten in dieser Kategorie",
 };

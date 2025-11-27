@@ -203,4 +203,17 @@ export const koMessages: I18nMessages = {
   fieldOpacity: "불투명도",
   fieldTextColor: "텍스트 색상",
   inspectorGroupAppearanceTitle: "모양",
+
+  // Node Search Menu
+  nodeSearchPlaceholder: "노드 검색…",
+  nodeSearchAriaLabel: "노드 검색",
+  nodeSearchHintNavigate: "이동",
+  nodeSearchHintCreate: "생성",
+  nodeSearchHintCategory: "카테고리",
+  nodeSearchHintClose: "닫기",
+  nodeSearchFooter: "{{current}} / {{total}} • {{categories}}개 카테고리",
+  nodeSearchNoResults: '"{{query}}"에 해당하는 노드가 없습니다',
+  nodeSearchCategoriesHeader: "카테고리",
+  nodeSearchAllNodes: "모든 노드",
+  nodeSearchEmptyCategory: "이 카테고리에 노드가 없습니다",
 };

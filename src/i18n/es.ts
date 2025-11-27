@@ -203,4 +203,17 @@ export const esMessages: I18nMessages = {
   fieldOpacity: "Opacidad",
   fieldTextColor: "Color del texto",
   inspectorGroupAppearanceTitle: "Apariencia",
+
+  // Node Search Menu
+  nodeSearchPlaceholder: "Buscar nodos…",
+  nodeSearchAriaLabel: "Buscar nodos",
+  nodeSearchHintNavigate: "Navegar",
+  nodeSearchHintCreate: "Crear",
+  nodeSearchHintCategory: "Categoría",
+  nodeSearchHintClose: "Cerrar",
+  nodeSearchFooter: "{{current}} de {{total}} • {{categories}} categorías",
+  nodeSearchNoResults: 'No se encontraron nodos para "{{query}}"',
+  nodeSearchCategoriesHeader: "Categorías",
+  nodeSearchAllNodes: "Todos los nodos",
+  nodeSearchEmptyCategory: "No hay nodos en esta categoría",
 };

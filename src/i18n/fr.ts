@@ -204,4 +204,17 @@ export const frMessages: I18nMessages = {
   fieldOpacity: "Opacité",
   fieldTextColor: "Couleur du texte",
   inspectorGroupAppearanceTitle: "Apparence",
+
+  // Node Search Menu
+  nodeSearchPlaceholder: "Rechercher des nœuds…",
+  nodeSearchAriaLabel: "Rechercher des nœuds",
+  nodeSearchHintNavigate: "Naviguer",
+  nodeSearchHintCreate: "Créer",
+  nodeSearchHintCategory: "Catégorie",
+  nodeSearchHintClose: "Fermer",
+  nodeSearchFooter: "{{current}} sur {{total}} • {{categories}} catégories",
+  nodeSearchNoResults: "Aucun nœud trouvé pour « {{query}} »",
+  nodeSearchCategoriesHeader: "Catégories",
+  nodeSearchAllNodes: "Tous les nœuds",
+  nodeSearchEmptyCategory: "Aucun nœud dans cette catégorie",
 };

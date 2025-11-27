@@ -214,4 +214,17 @@ export const enMessages: I18nMessages = {
   fieldOpacity: "Opacity",
   fieldTextColor: "Text Color",
   inspectorGroupAppearanceTitle: "Appearance",
+
+  // Node Search Menu
+  nodeSearchPlaceholder: "Search nodes…",
+  nodeSearchAriaLabel: "Search for nodes",
+  nodeSearchHintNavigate: "Navigate",
+  nodeSearchHintCreate: "Create",
+  nodeSearchHintCategory: "Category",
+  nodeSearchHintClose: "Close",
+  nodeSearchFooter: "{{current}} of {{total}} • {{categories}} categories",
+  nodeSearchNoResults: 'No nodes found for "{{query}}"',
+  nodeSearchCategoriesHeader: "Categories",
+  nodeSearchAllNodes: "All Nodes",
+  nodeSearchEmptyCategory: "No nodes in this category",
 };

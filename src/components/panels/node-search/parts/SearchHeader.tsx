@@ -9,6 +9,7 @@ export type SearchHeaderProps = {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   placeholder?: string;
+  ariaLabel?: string;
   inputRef?: React.RefObject<HTMLInputElement | null>;
   hints?: React.ReactNode;
 };
@@ -16,7 +17,8 @@ export type SearchHeaderProps = {
 export const SearchHeader: React.FC<SearchHeaderProps> = ({
   searchQuery,
   onSearchChange,
-  placeholder = "Search nodes...",
+  placeholder,
+  ariaLabel,
   inputRef,
   hints,
 }) => {
@@ -31,7 +33,7 @@ export const SearchHeader: React.FC<SearchHeaderProps> = ({
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
         className={styles.searchInput}
-        aria-label="Search for nodes"
+        aria-label={ariaLabel}
         aria-describedby="search-hint"
       />
       {hints ? (

@@ -219,6 +219,19 @@ export type I18nMessages = {
   fieldOpacity?: string;
   fieldTextColor?: string;
   inspectorGroupAppearanceTitle?: string;
+
+  // Node Search Menu
+  nodeSearchPlaceholder?: string;
+  nodeSearchAriaLabel?: string;
+  nodeSearchHintNavigate?: string;
+  nodeSearchHintCreate?: string;
+  nodeSearchHintCategory?: string;
+  nodeSearchHintClose?: string;
+  nodeSearchFooter?: string;
+  nodeSearchNoResults?: string;
+  nodeSearchCategoriesHeader?: string;
+  nodeSearchAllNodes?: string;
+  nodeSearchEmptyCategory?: string;
 };
 
 export type I18nKey = keyof I18nMessages;

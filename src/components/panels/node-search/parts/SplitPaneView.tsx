@@ -4,6 +4,7 @@
 import * as React from "react";
 import type { NodeDefinition } from "../../../../types/NodeDefinition";
 import type { NestedNodeDefinitionCategory } from "../../../../contexts/node-definitions/category/nodeDefinitionCatalog";
+import { useI18n } from "../../../../i18n/context";
 import { CategoryTree } from "./CategoryTree";
 import { NodeListPane } from "./NodeListPane";
 import styles from "./SplitPaneView.module.css";
@@ -59,6 +60,7 @@ export const SplitPaneView: React.FC<SplitPaneViewProps> = ({
   disabledNodeTypes,
   nodeIndexByType,
 }) => {
+  const { t } = useI18n();
   const [expandedPaths, setExpandedPaths] = React.useState<Set<string>>(() => {
     return new Set(categories.map((c) => c.path));
   });
@@ -92,12 +94,12 @@ export const SplitPaneView: React.FC<SplitPaneViewProps> = ({
     return getAllNodesFromCategory(selectedCategory);
   }, [categories, selectedCategory]);
 
-  const paneTitle = selectedCategory ? selectedCategory.name : "All Nodes";
+  const paneTitle = selectedCategory ? selectedCategory.name : t("nodeSearchAllNodes");
 
   return (
     <div className={styles.splitPane}>
       <div className={styles.categoryPane}>
-        <div className={styles.categoryPaneHeader}>Categories</div>
+        <div className={styles.categoryPaneHeader}>{t("nodeSearchCategoriesHeader")}</div>
         <CategoryTree
           categories={categories}
           selectedPath={selectedCategoryPath}
