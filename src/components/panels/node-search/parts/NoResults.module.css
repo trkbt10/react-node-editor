@@ -1,0 +1,12 @@
+.noResults {
+  padding: var(--node-editor-space-xxl) var(--node-editor-space-xl);
+  text-align: center;
+  color: var(--node-editor-secondary-label-color);
+  box-sizing: border-box;
+}
+
+.noResultsIcon {
+  font-size: var(--node-editor-space-xxl);
+  margin-bottom: var(--node-editor-space-sm);
+  color: var(--node-editor-tertiary-label-color);
+}

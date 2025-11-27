@@ -1,0 +1,76 @@
+/* Node list pane - right side of split view */
+.nodePane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  background: var(--node-editor-control-background);
+  overflow: hidden;
+}
+
+/* Shared pane header style */
+.nodePaneHeader {
+  padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  font-weight: var(--node-editor-inspector-font-weight-medium);
+  color: var(--node-editor-secondary-label-color);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: var(--node-editor-input-border);
+  flex-shrink: 0;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-space-sm);
+  box-sizing: border-box;
+  background: var(--node-editor-table-header-background-color);
+}
+
+.nodeCountBadge {
+  font-size: var(--node-editor-inspector-font-size-meta);
+  font-weight: normal;
+  color: var(--node-editor-secondary-label-color);
+  padding: var(--node-editor-space-xxs, 2px) var(--node-editor-space-xs);
+  background: var(--node-editor-control-background);
+  border-radius: var(--node-editor-control-border-radius);
+}
+
+/* Node list - self-contained scroll region */
+.nodeList {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Scrollbar styling */
+.nodeList::-webkit-scrollbar {
+  width: var(--node-editor-space-sm);
+}
+
+.nodeList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nodeList::-webkit-scrollbar-thumb {
+  background: var(--node-editor-scroll-bar-thumb-color);
+  border-radius: var(--node-editor-control-border-radius);
+}
+
+.nodeList::-webkit-scrollbar-thumb:hover {
+  background: var(--node-editor-active-scroll-bar-thumb-color);
+}
+
+.nodeList {
+  scrollbar-width: thin;
+  scrollbar-color: var(--node-editor-scroll-bar-thumb-color) transparent;
+}
+
+.emptyState {
+  padding: var(--node-editor-space-xl);
+  text-align: center;
+  color: var(--node-editor-tertiary-label-color);
+  font-size: var(--node-editor-inspector-font-size-body);
+}

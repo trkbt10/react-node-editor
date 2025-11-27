@@ -1,0 +1,54 @@
+.searchHeader {
+  padding: var(--node-editor-space-md) var(--node-editor-space-lg);
+  border-bottom: var(--node-editor-input-border);
+  background: var(--node-editor-table-header-background-color);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.searchInput {
+  width: 100%;
+  padding: var(--node-editor-input-padding);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
+  font: var(--node-editor-input-font);
+  background: var(--node-editor-control-background);
+  color: var(--node-editor-text-color);
+  outline: none;
+  transition:
+    border-color var(--node-editor-transition-duration) ease,
+    box-shadow var(--node-editor-transition-duration) ease;
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  border-color: var(--node-editor-accent-color);
+  box-shadow: var(--node-editor-card-focus-box-shadow);
+}
+
+.searchInput::placeholder {
+  color: var(--node-editor-quaternary-label-color);
+}
+
+.searchHint {
+  margin-top: var(--node-editor-space-sm);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--node-editor-secondary-label-color);
+  display: flex;
+  gap: var(--node-editor-space-sm);
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.searchHint kbd {
+  padding: var(--node-editor-space-xs);
+  background: var(--node-editor-table-header-background-color);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  font-family: var(--node-editor-font-mono);
+  color: var(--node-editor-text-color);
+  font-weight: var(--node-editor-inspector-font-weight-medium);
+  box-sizing: border-box;
+}

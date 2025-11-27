@@ -2,8 +2,8 @@
  * @file Shared node definition summary card component used by context menus and inspector palettes.
  */
 import * as React from "react";
-import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { getNodeIcon } from "../../../contexts/node-definitions/utils/iconUtils";
+import type { NodeDefinition } from "../../../../types/NodeDefinition";
+import { getNodeIcon } from "../../../../contexts/node-definitions/utils/iconUtils";
 import styles from "./NodeDefinitionCard.module.css";
 
 export type NodeDefinitionCardVariant = "list" | "grid";

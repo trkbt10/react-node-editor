@@ -8,12 +8,12 @@ import { useI18n } from "../../../i18n/context";
 import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { countNodesByType, getDisabledNodeTypes } from "../../../contexts/node-definitions/utils/nodeTypeLimits";
-import { NodeDefinitionCard } from "../../shared/node-library/NodeDefinitionCard";
+import { NodeDefinitionCard } from "../../panels/node-search/parts/NodeDefinitionCard";
 import {
   groupNodeDefinitions,
   filterGroupedNodeDefinitions,
   type NodeDefinitionCategory,
-} from "../../shared/node-library/nodeDefinitionCatalog";
+} from "../../../contexts/node-definitions/category/nodeDefinitionCatalog";
 import { NODE_DRAG_MIME } from "../../../constants/dnd";
 import styles from "./NodePalettePanel.module.css";
 

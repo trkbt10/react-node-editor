@@ -35,6 +35,7 @@ import { DataBindingModesExample } from "./demos/DataBindingModesExample";
 import { CustomLayoutDemo } from "./demos/custom-layout-demo";
 import { DynamicPortPlaygroundExample } from "./demos/custom-port/DynamicPortPlaygroundExample";
 import { CustomInspectorExample } from "./demos/custom-inspector/CustomInspectorExample";
+import { NodeSearchMenuExample } from "./demos/node-search/NodeSearchMenuExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -49,7 +50,8 @@ const examples: ExampleEntry[] = [
   {
     id: "trading-analytics-dashboard",
     title: "Trading Analytics Dashboard",
-    description: "Financial analytics dashboard showing trading strategies, execution metrics, and portfolio performance.",
+    description:
+      "Financial analytics dashboard showing trading strategies, execution metrics, and portfolio performance.",
     component: TradingAnalyticsDashboard,
     category: "advanced",
   },
@@ -142,6 +144,13 @@ const examples: ExampleEntry[] = [
     title: "Custom Inspector Panels",
     description: "Demonstrates custom inspector tabs, settings panels, and per-node renderInspector functions.",
     component: CustomInspectorExample,
+    category: "custom",
+  },
+  {
+    id: "node-search-menu",
+    title: "Node Search Menu (Split Pane)",
+    description: "split pane view with nested category tree for node creation menu.",
+    component: NodeSearchMenuExample,
     category: "custom",
   },
   {

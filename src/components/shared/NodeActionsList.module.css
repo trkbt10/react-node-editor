@@ -5,9 +5,14 @@
   align-items: center;
   gap: var(--node-editor-space-sm, 8px);
   padding: var(--node-editor-space-sm, 8px) var(--node-editor-space-md, 12px);
+  margin: 2px 4px;
   border-radius: var(--node-editor-control-border-radius, 6px);
   cursor: pointer;
   user-select: none;
+  font-family: var(--node-editor-theme-control-font-family);
+  font-size: var(--node-editor-font-size-sm, 13px);
+  color: var(--node-editor-text-color);
+  transition: background-color 0.1s ease;
 }
 
 .actionItem:hover {
@@ -16,6 +21,16 @@
 
 .actionItemDanger {
   color: var(--node-editor-caution-color, #ff3b30);
+}
+
+.actionItemDanger:hover {
+  background: var(--node-editor-caution-hover-background, rgba(255, 59, 48, 0.1));
+}
+
+.separator {
+  height: 1px;
+  background-color: var(--node-editor-separator-color, rgba(0, 0, 0, 0.1));
+  margin: 4px 0;
 }
 
 .actionShortcut {

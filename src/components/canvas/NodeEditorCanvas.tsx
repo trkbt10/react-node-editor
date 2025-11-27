@@ -9,7 +9,7 @@
 import * as React from "react";
 import { NodeEditorBase } from "../layout/NodeEditorBase";
 import { ContextActionMenu } from "../shared/ContextActionMenu";
-import { NodeSearchMenu } from "../shared/NodeSearchMenu";
+import { NodeSearchMenu } from "../panels/node-search/NodeSearchMenu";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";

@@ -1,0 +1,111 @@
+/* Category tree - self-contained scroll region */
+.categoryTree {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--node-editor-space-xs) 0;
+  min-height: 0;
+}
+
+/* Scrollbar styling */
+.categoryTree::-webkit-scrollbar {
+  width: var(--node-editor-space-sm);
+}
+
+.categoryTree::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.categoryTree::-webkit-scrollbar-thumb {
+  background: var(--node-editor-scroll-bar-thumb-color);
+  border-radius: var(--node-editor-control-border-radius);
+}
+
+.categoryTree::-webkit-scrollbar-thumb:hover {
+  background: var(--node-editor-active-scroll-bar-thumb-color);
+}
+
+.categoryTree {
+  scrollbar-width: thin;
+  scrollbar-color: var(--node-editor-scroll-bar-thumb-color) transparent;
+}
+
+/* Tree item styles */
+.treeItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.treeItemHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-space-xs);
+  padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+  padding-right: var(--node-editor-space-sm);
+  cursor: pointer;
+  transition: background-color var(--node-editor-transition-duration) ease;
+  font-size: var(--node-editor-inspector-font-size-body);
+  color: var(--node-editor-text-color);
+  min-height: 28px;
+  box-sizing: border-box;
+}
+
+.treeItemHeader:hover {
+  background: var(--node-editor-control-hover-background);
+}
+
+.treeItemHeader[data-is-selected="true"] {
+  background: var(--node-editor-selected-control-color);
+  color: var(--node-editor-selected-control-text-color);
+}
+
+.expandButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.expandIcon {
+  font-size: 8px;
+  transition: transform var(--node-editor-transition-duration) ease;
+  display: inline-block;
+}
+
+.expandIcon[data-expanded="true"] {
+  transform: rotate(90deg);
+}
+
+.expandPlaceholder {
+  width: 16px;
+  flex-shrink: 0;
+}
+
+.categoryLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.categoryCount {
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--node-editor-tertiary-label-color);
+  flex-shrink: 0;
+}
+
+.treeItemHeader[data-is-selected="true"] .categoryCount {
+  color: inherit;
+  opacity: 0.8;
+}
+
+.treeChildren {
+  display: flex;
+  flex-direction: column;
+}

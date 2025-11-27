@@ -1,0 +1,14 @@
+.searchFooter {
+  padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  border-top: var(--node-editor-input-border);
+  background: var(--node-editor-table-header-background-color);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--node-editor-secondary-label-color);
+  box-sizing: border-box;
+}
+
+.selectionInfo {
+  text-align: center;
+  font-weight: var(--node-editor-inspector-font-weight-medium);
+  color: var(--node-editor-text-color);
+}

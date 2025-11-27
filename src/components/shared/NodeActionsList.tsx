@@ -149,10 +149,13 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
         </li>
       )}
       {includeDelete && (
-        <li className={[styles.actionItem, styles.actionItemDanger].join(" ")} onClick={handleDelete}>
-          <DeleteIcon size={14} /> {t("contextMenuDeleteNode")}
-          {deleteShortcut ? <span className={styles.actionShortcut}>{deleteShortcut}</span> : null}
-        </li>
+        <>
+          <li className={styles.separator} aria-hidden="true" />
+          <li className={[styles.actionItem, styles.actionItemDanger].join(" ")} onClick={handleDelete}>
+            <DeleteIcon size={14} /> {t("contextMenuDeleteNode")}
+            {deleteShortcut ? <span className={styles.actionShortcut}>{deleteShortcut}</span> : null}
+          </li>
+        </>
       )}
     </>
   );
