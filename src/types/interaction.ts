@@ -4,6 +4,11 @@
 import type { Position } from "./core";
 
 /**
+ * View mode for the node search menu.
+ */
+export type NodeSearchViewMode = "list" | "split";
+
+/**
  * Supported pointer input types for editor interactions.
  */
 export type PointerType = "mouse" | "pen" | "touch";
@@ -259,6 +264,8 @@ export type NodeEditorInteractionSettings = {
   contextMenu: ContextMenuBehavior;
   keyboardShortcuts: KeyboardShortcutBehavior;
   pointerShortcuts: PointerShortcutBehavior;
+  /** View mode for the node search menu */
+  nodeSearchViewMode: NodeSearchViewMode;
 };
 
 /**
@@ -276,4 +283,6 @@ export type NodeEditorInteractionSettingsPatch = {
     enabled?: boolean;
     actions?: Partial<Record<NodeEditorPointerAction, PointerShortcutActionBehavior>>;
   };
+  /** View mode for the node search menu */
+  nodeSearchViewMode?: NodeSearchViewMode;
 };

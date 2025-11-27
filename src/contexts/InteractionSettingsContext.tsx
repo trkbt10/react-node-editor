@@ -175,6 +175,7 @@ export const defaultInteractionSettings: NodeEditorInteractionSettings = {
   contextMenu: {},
   keyboardShortcuts: createDefaultKeyboardShortcuts(),
   pointerShortcuts: defaultPointerShortcuts,
+  nodeSearchViewMode: "list",
 };
 
 const InteractionSettingsContext = React.createContext<NodeEditorInteractionSettings>(defaultInteractionSettings);
@@ -486,6 +487,7 @@ const applyInteractionPatch = (
     },
     keyboardShortcuts,
     pointerShortcuts,
+    nodeSearchViewMode: patch.nodeSearchViewMode ?? base.nodeSearchViewMode,
   };
 };
 

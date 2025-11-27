@@ -261,6 +261,19 @@ export const defaultSettings: SettingDefinition[] = [
     step: 0.1,
     order: 7,
   },
+  {
+    key: "behavior.nodeSearchViewMode",
+    label: "Node Search View Mode",
+    description: "View mode for the node search menu",
+    category: "behavior",
+    type: "select",
+    defaultValue: "list",
+    options: [
+      { value: "list", label: "List" },
+      { value: "split", label: "Split Pane" },
+    ],
+    order: 8,
+  },
 
   // Performance settings
   {
