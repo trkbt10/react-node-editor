@@ -4,6 +4,8 @@
 import * as React from "react";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { NodeSearchMenu, type NodeSearchMenuViewMode } from "../../../components/panels/node-search/NodeSearchMenu";
+import { I18nProvider } from "../../../i18n/context";
+import { enMessages } from "../../../i18n/en";
 import styles from "./NodeSearchMenuExample.module.css";
 
 /**
@@ -246,9 +248,12 @@ export const NodeSearchMenuExample: React.FC = () => {
     [menuVisible],
   );
 
+  const dictionaries = React.useMemo(() => ({ en: enMessages }), []);
+
   return (
-    <div className={styles.container}>
-      <div className={styles.controls}>
+    <I18nProvider dictionaries={dictionaries} initialLocale="en">
+      <div className={styles.container}>
+        <div className={styles.controls}>
         <div className={styles.controlGroup}>
           <label className={styles.label}>View Mode:</label>
           <select
@@ -322,5 +327,6 @@ export const NodeSearchMenuExample: React.FC = () => {
         </div>
       </div>
     </div>
+    </I18nProvider>
   );
 };

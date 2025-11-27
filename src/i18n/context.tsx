@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import type { Locale, I18nContextValue, I18nMessages, I18nKey, I18nDictionaries } from "./types";
+import { enMessages } from "./en";
 
 const I18nContext = React.createContext<I18nContextValue | null>(null);
 I18nContext.displayName = "I18nContext";
@@ -145,10 +146,10 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({
 };
 
 /**
- * Fallback translation function that returns the key as-is with parameter substitution
+ * Fallback translation function that uses English dictionary when I18nProvider is not available
  */
-const fallbackTranslate = (key: string, params?: Record<string, string | number>): string => {
-  let message = key;
+const fallbackTranslate = (key: I18nKey, params?: Record<string, string | number>): string => {
+  let message = enMessages[key] ?? key;
   if (params) {
     Object.entries(params).forEach(([paramKey, value]) => {
       message = message.replace(new RegExp(`{{${paramKey}}}`, "g"), String(value));
