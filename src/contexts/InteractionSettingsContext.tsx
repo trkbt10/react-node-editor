@@ -44,25 +44,25 @@ const DEFAULT_SHORTCUT_BINDINGS: Record<NodeEditorShortcutAction, ShortcutBindin
 const DEFAULT_POINTER_BINDINGS: Record<NodeEditorPointerAction, PointerShortcutBinding> = {
   "canvas-clear-selection": {
     button: 0,
-    pointerTypes: ["mouse", "pen"],
+    pointerTypes: ["mouse", "pen", "touch"],
   },
   "canvas-range-select": {
     button: 0,
-    pointerTypes: ["mouse", "pen"],
+    pointerTypes: ["mouse", "pen", "touch"],
     modifiers: { shift: true },
   },
   "canvas-pan": {
     button: 0,
-    pointerTypes: ["mouse"],
+    pointerTypes: ["mouse", "touch"],
     requireEmptyTarget: true,
   },
   "node-select": {
     button: 0,
-    pointerTypes: ["mouse", "pen"],
+    pointerTypes: ["mouse", "pen", "touch"],
   },
   "node-add-to-selection": {
     button: 0,
-    pointerTypes: ["mouse", "pen"],
+    pointerTypes: ["mouse", "pen", "touch"],
     modifiers: { shift: true },
   },
   "node-open-context-menu": {
