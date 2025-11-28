@@ -146,6 +146,7 @@
 /* Custom renderer nodes: set highlight colors to transparent */
 .nodeView[data-custom-renderer="true"] {
   --node-editor-accent-color: transparent;
+  --node-editor-input-border: 1px solid transparent;
   --node-editor-shadow-sm: none;
   --node-editor-shadow-md: none;
   background-color: transparent;
