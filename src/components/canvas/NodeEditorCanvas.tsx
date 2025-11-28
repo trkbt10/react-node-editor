@@ -11,7 +11,6 @@ import { NodeEditorBase } from "../layout/NodeEditorBase";
 import { ContextActionMenu } from "../shared/ContextActionMenu";
 import { NodeSearchMenu } from "../panels/node-search/NodeSearchMenu";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
@@ -63,7 +62,7 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
   const { state: editorState, actions, getNodePorts } = useNodeEditor();
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
-  const interactionSettings = useInteractionSettings();
+  const settings = useSettings(settingsManager);
 
   const portPositionConfig = React.useMemo<PortPositionConfig>(
     () => ({ ...DEFAULT_PORT_POSITION_CONFIG, ...portPositionBehavior?.config }),
@@ -176,9 +175,6 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
       prevConfigRef.current = portPositionConfig;
     }
   }, [editorState.nodes, portPositionBehavior, portPositionConfig, getNodePorts, computePositionsForNodes]);
-
-  // Use settings hook for clean state management
-  const _settings = useSettings(settingsManager);
 
   // Node creation handler for context menu
   const handleCreateNode = React.useCallback(
@@ -303,7 +299,7 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
           onCreateNode={handleCreateNode}
           onClose={() => actionActions.hideContextMenu()}
           visible={true}
-          viewMode={interactionSettings.nodeSearchViewMode}
+          viewMode={settings.nodeSearchViewMode}
         />
       )}
 

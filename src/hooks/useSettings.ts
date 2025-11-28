@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import type { SettingsManager } from "../settings/SettingsManager";
+import type { NodeSearchViewMode } from "../types/interaction";
 
 type ThemeValue = "light" | "dark" | "auto";
 
@@ -19,6 +20,7 @@ type Settings = {
   gridSize: number;
   gridOpacity: number;
   canvasBackground: string;
+  nodeSearchViewMode: NodeSearchViewMode;
 };
 
 const defaultSettings: Settings = {
@@ -34,10 +36,15 @@ const defaultSettings: Settings = {
   gridSize: 20,
   gridOpacity: 0.3,
   canvasBackground: "#ffffff",
+  nodeSearchViewMode: "list",
 };
 
 function isValidTheme(value: unknown): value is ThemeValue {
   return typeof value === "string" && ["light", "dark", "auto"].includes(value);
+}
+
+function isValidNodeSearchViewMode(value: unknown): value is NodeSearchViewMode {
+  return typeof value === "string" && ["list", "split"].includes(value);
 }
 
 function getBooleanSetting(settingsManager: SettingsManager, key: string, defaultValue: boolean): boolean {
@@ -58,6 +65,15 @@ function getStringSetting(settingsManager: SettingsManager, key: string, default
 function getThemeSetting(settingsManager: SettingsManager, key: string, defaultValue: ThemeValue): ThemeValue {
   const value = settingsManager.getValue(key);
   return isValidTheme(value) ? value : defaultValue;
+}
+
+function getNodeSearchViewModeSetting(
+  settingsManager: SettingsManager,
+  key: string,
+  defaultValue: NodeSearchViewMode,
+): NodeSearchViewMode {
+  const value = settingsManager.getValue(key);
+  return isValidNodeSearchViewMode(value) ? value : defaultValue;
 }
 
 export type { Settings };
@@ -112,6 +128,11 @@ export function useSettings(settingsManager?: SettingsManager): Settings {
         settingsManager,
         "appearance.canvasBackground",
         defaultSettings.canvasBackground,
+      ),
+      nodeSearchViewMode: getNodeSearchViewModeSetting(
+        settingsManager,
+        "behavior.nodeSearchViewMode",
+        defaultSettings.nodeSearchViewMode,
       ),
     };
   }, [settingsManager, settingsVersion]);

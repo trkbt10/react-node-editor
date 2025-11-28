@@ -264,8 +264,6 @@ export type NodeEditorInteractionSettings = {
   contextMenu: ContextMenuBehavior;
   keyboardShortcuts: KeyboardShortcutBehavior;
   pointerShortcuts: PointerShortcutBehavior;
-  /** View mode for the node search menu */
-  nodeSearchViewMode: NodeSearchViewMode;
 };
 
 /**
@@ -283,6 +281,4 @@ export type NodeEditorInteractionSettingsPatch = {
     enabled?: boolean;
     actions?: Partial<Record<NodeEditorPointerAction, PointerShortcutActionBehavior>>;
   };
-  /** View mode for the node search menu */
-  nodeSearchViewMode?: NodeSearchViewMode;
 };

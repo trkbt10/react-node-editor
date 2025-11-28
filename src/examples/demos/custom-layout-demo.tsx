@@ -9,6 +9,7 @@ import {
   NodeEditorCore,
   NodeEditorCanvas,
   createNodeDefinition,
+  SettingsManager,
   type NodeEditorData,
 } from "../../core";
 import { NodeCanvas } from "../../components/canvas/NodeCanvas";
@@ -121,6 +122,13 @@ const initialData: Partial<NodeEditorData> = {
 export const CustomLayoutDemo: React.FC = () => {
   const [data, setData] = React.useState<NodeEditorData | undefined>();
 
+  // Create SettingsManager with split view mode for node search menu
+  const settingsManager = React.useMemo(() => {
+    const settings = new SettingsManager();
+    settings.setValue("behavior.nodeSearchViewMode", "split");
+    return settings;
+  }, []);
+
   const nodeCount = React.useMemo(() => (data ? Object.keys(data.nodes).length : 0), [data]);
   const connectionCount = React.useMemo(() => (data ? Object.keys(data.connections).length : 0), [data]);
 
@@ -172,7 +180,7 @@ export const CustomLayoutDemo: React.FC = () => {
 
           {/* Canvas area with NodeEditorCanvas */}
           <div className={styles.canvasArea}>
-            <NodeEditorCanvas>
+            <NodeEditorCanvas settingsManager={settingsManager}>
               <NodeCanvas />
             </NodeEditorCanvas>
           </div>
