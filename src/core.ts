@@ -12,13 +12,13 @@ export { NodeEditor } from "./NodeEditor";
 export type { NodeEditorProps } from "./NodeEditor";
 
 // Core components for custom layouts (without panel dependencies)
-export { NodeEditorCore } from "./NodeEditorCore";
-export type { NodeEditorCoreProps } from "./NodeEditorCore";
 export { NodeEditorCanvas } from "./components/canvas/NodeEditorCanvas";
 export type { NodeEditorCanvasProps } from "./components/canvas/NodeEditorCanvas";
+export { NodeEditorCore } from "./NodeEditorCore";
+export type { NodeEditorCoreProps } from "./NodeEditorCore";
 
 export type { NodeEditorData } from "./types/core";
-export type { NodeEditorRenderers, NodeEditorRendererOverrides } from "./types/renderers";
+export type { NodeEditorRendererOverrides, NodeEditorRenderers } from "./types/renderers";
 
 // Helper components for custom node implementations
 export { NodeResizer, normalizeNodeSize } from "./components/node/resize/NodeResizer";
@@ -60,6 +60,7 @@ export type {
 export type { Connection, ConnectionId, Node, NodeId, Port, PortId } from "./types/core";
 
 // Port positioning customization
+export { DEFAULT_PORT_POSITION_CONFIG } from "./types/portPosition";
 export type {
   EditorPortPositions,
   NodePortPositions,
@@ -68,7 +69,6 @@ export type {
   PortPositionConfig,
   PortPositionNode,
 } from "./types/portPosition";
-export { DEFAULT_PORT_POSITION_CONFIG } from "./types/portPosition";
 
 // Layout and panel configuration for custom panels
 export type {
@@ -81,19 +81,21 @@ export type {
 } from "./types/panels";
 
 // Default configuration surface
+export { NodeCanvas } from "./components/canvas/NodeCanvas";
+export type { NodeCanvasProps } from "./components/canvas/NodeCanvas";
 export { defaultEditorGridConfig, defaultEditorGridLayers } from "./config/defaultLayout";
 export { defaultSettings } from "./settings/defaultSettings";
-export { SettingsManager, LocalSettingsStorage } from "./settings/SettingsManager";
+export { LocalSettingsStorage, SettingsManager } from "./settings/SettingsManager";
 export type {
   CanvasPanActivator,
+  ContextMenuBehavior,
   ContextMenuRequest,
   ContextMenuTarget,
-  ContextMenuBehavior,
+  KeyboardShortcutActionBehavior,
+  KeyboardShortcutBehavior,
   NodeEditorInteractionSettings,
   NodeEditorInteractionSettingsPatch,
-  KeyboardShortcutBehavior,
-  KeyboardShortcutActionBehavior,
   NodeEditorShortcutAction,
-  ShortcutBinding,
   PinchZoomSettings,
+  ShortcutBinding,
 } from "./types/interaction";
