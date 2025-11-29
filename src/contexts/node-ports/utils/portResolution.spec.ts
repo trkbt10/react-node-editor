@@ -3,7 +3,51 @@
  */
 import type { Node } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { inferDefaultPortDefinitions, getNodePorts } from "./portResolution";
+import { inferDefaultPortDefinitions, getNodePorts, normalizePlacement } from "./portResolution";
+
+describe("normalizePlacement", () => {
+  it("should return default placement when position is undefined", () => {
+    const result = normalizePlacement(undefined);
+    expect(result).toEqual({ side: "right" });
+  });
+
+  it("should convert string position to PortPlacement", () => {
+    expect(normalizePlacement("left")).toEqual({ side: "left" });
+    expect(normalizePlacement("right")).toEqual({ side: "right" });
+    expect(normalizePlacement("top")).toEqual({ side: "top" });
+    expect(normalizePlacement("bottom")).toEqual({ side: "bottom" });
+  });
+
+  it("should preserve PortPlacement object properties", () => {
+    const placement = {
+      side: "right" as const,
+      segment: "main",
+      segmentOrder: 1,
+      segmentSpan: 2,
+      align: "center" as const,
+    };
+    const result = normalizePlacement(placement);
+    expect(result).toEqual({
+      side: "right",
+      segment: "main",
+      segmentOrder: 1,
+      segmentSpan: 2,
+      align: "center",
+    });
+  });
+
+  it("should handle partial PortPlacement object", () => {
+    const placement = { side: "left" as const, segment: "secondary" };
+    const result = normalizePlacement(placement);
+    expect(result).toEqual({
+      side: "left",
+      segment: "secondary",
+      segmentOrder: undefined,
+      segmentSpan: undefined,
+      align: undefined,
+    });
+  });
+});
 
 describe("inferDefaultPortDefinitions", () => {
   it("should create default input (left) and output (right) ports when node has no _ports", () => {

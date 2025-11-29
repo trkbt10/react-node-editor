@@ -15,6 +15,7 @@ import {
 import { getOtherPortInfo, isValidReconnection } from "../../../contexts/node-ports/utils/portConnectionQueries";
 import { getPortConnections } from "../../../core/port/queries";
 import { createValidatedConnection } from "../../../contexts/node-ports/utils/connectionOperations";
+import { normalizePlacement } from "../../../contexts/node-ports/utils/portResolution";
 import { canConnectPorts } from "../../../core/connection/validation";
 import {
   planConnectionChange,
@@ -612,14 +613,15 @@ export const useNodeLayerConnections = () => {
             if (p.type === fromPort.type) {
               return false;
             }
+            const placement = normalizePlacement(p.position);
             const tempPort: Port = {
               id: p.id,
               definitionId: p.id,
               type: p.type,
               label: p.label,
               nodeId: "new",
-              position: typeof p.position === "string" ? p.position : p.position.side,
-              placement: typeof p.position === "string" ? undefined : p.position,
+              position: placement.side,
+              placement,
             };
             return canConnectPorts(
               fromPort.type === "output" ? fromPort : tempPort,

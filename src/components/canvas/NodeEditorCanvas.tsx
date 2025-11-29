@@ -27,6 +27,7 @@ import {
 } from "../../types/portPosition";
 import { computeAllPortPositions, computeNodePortPositions } from "../../contexts/node-ports/utils/computePortPositions";
 import { canConnectPorts } from "../../core/connection/validation";
+import { normalizePlacement } from "../../contexts/node-ports/utils/portResolution";
 import {
   canAddNodeType,
   countNodesByType,
@@ -218,14 +219,15 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
           if (p.type === fromPort.type) {
             return false;
           }
+          const placement = normalizePlacement(p.position);
           const tempPort: CorePort = {
             id: p.id,
             definitionId: p.id,
             type: p.type,
             label: p.label,
             nodeId: newNode.id,
-            position: typeof p.position === "string" ? p.position : p.position.side,
-            placement: typeof p.position === "string" ? undefined : p.position,
+            position: placement.side,
+            placement,
           };
           return canConnectPorts(
             fromPort.type === "output" ? fromPort : tempPort,
@@ -237,14 +239,15 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
           );
         });
         if (targetPortDef) {
+          const targetPlacement = normalizePlacement(targetPortDef.position);
           const tempPort: CorePort = {
             id: targetPortDef.id,
             definitionId: targetPortDef.id,
             type: targetPortDef.type,
             label: targetPortDef.label,
             nodeId: newNode.id,
-            position: typeof targetPortDef.position === "string" ? targetPortDef.position : targetPortDef.position.side,
-            placement: typeof targetPortDef.position === "string" ? undefined : targetPortDef.position,
+            position: targetPlacement.side,
+            placement: targetPlacement,
           };
           const connection =
             fromPort.type === "output"

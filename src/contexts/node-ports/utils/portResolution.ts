@@ -26,7 +26,7 @@ export type PortOverride = {
   disabled?: boolean;
 };
 
-const normalizePlacement = (position?: PortDefinition["position"] | PortPlacement): PortPlacement => {
+export const normalizePlacement = (position?: PortDefinition["position"] | PortPlacement): PortPlacement => {
   if (!position) {
     return { side: "right" };
   }
