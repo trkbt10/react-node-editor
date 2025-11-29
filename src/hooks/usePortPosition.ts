@@ -60,8 +60,9 @@ export function useDynamicPortPosition(
   // Cache for custom computePortPositions results (only recompute on size/ports change)
   const customComputeCache = React.useRef<{
     key: ComputeCacheKey | null;
+    basePosition: Position;
     result: Map<string, ComputedPortPosition>;
-  }>({ key: null, result: new Map() });
+  }>({ key: null, basePosition: { x: 0, y: 0 }, result: new Map() });
 
   // Pre-compute sets for O(1) lookup instead of O(n) includes/some
   const draggedNodeIdsSet = React.useMemo(() => {
@@ -160,6 +161,7 @@ export function useDynamicPortPosition(
         const defaultCompute = createDefaultPortCompute(effectiveNode, config);
         customComputeCache.current = {
           key: cacheKey,
+          basePosition: { x: effectivePosition.x, y: effectivePosition.y },
           result: customCompute({
             node: effectiveNode,
             ports: nodePorts,
@@ -171,11 +173,11 @@ export function useDynamicPortPosition(
 
       const cachedPos = customComputeCache.current.result.get(portId);
       if (cachedPos) {
-        // Adjust connection point based on current position offset
+        // Adjust connection point based on position change since cache was created
         // renderPosition is relative to node, so stays the same
-        // connectionPoint was calculated with the original node position, adjust for current position
-        const positionDeltaX = effectivePosition.x - currentNode.position.x;
-        const positionDeltaY = effectivePosition.y - currentNode.position.y;
+        // connectionPoint was calculated with basePosition, adjust for current effectivePosition
+        const positionDeltaX = effectivePosition.x - customComputeCache.current.basePosition.x;
+        const positionDeltaY = effectivePosition.y - customComputeCache.current.basePosition.y;
         return {
           portId,
           renderPosition: cachedPos.renderPosition,
