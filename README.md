@@ -7,7 +7,7 @@ React components for building node-based workflow editors with TypeScript suppor
 [![bundle size](https://img.shields.io/bundlephobia/minzip/react-wireflow?logo=rollup&label=min%2Bgzip)](https://bundlephobia.com/package/react-wireflow)
 [![status](https://img.shields.io/badge/status-experimental-f97316.svg)](#)
 
-Demo: https://trkbt10.github.io/react-node-editor/
+Demo: https://trkbt10.github.io/react-wireflow/
 
 Type-safe node definitions, customizable renderers, grid-based layouts, settings persistence, undo/redo, i18n.
 
@@ -134,7 +134,7 @@ Drawer for mobile:
 { id: "panel", component: <MyPanel />, drawer: { placement: "right", open: isOpen } }
 ```
 
-See [examples](https://github.com/trkbt10/react-node-editor/tree/main/src/examples/demos) for complete implementations.
+See [examples](https://github.com/trkbt10/react-wireflow/tree/main/src/examples/demos) for complete implementations.
 
 ## Custom Inspector Panels
 
@@ -301,4 +301,4 @@ Build consistent inspector UIs with these components:
 | `InspectorShortcutButton` | Compact button for shortcut settings |
 | `InspectorShortcutBindingValue` | Keyboard/pointer shortcut display |
 
-See the [Custom Inspector example](https://github.com/trkbt10/react-node-editor/tree/main/src/examples/demos/custom-inspector) for a complete implementation.
+See the [Custom Inspector example](https://github.com/trkbt10/react-wireflow/tree/main/src/examples/demos/custom-inspector) for a complete implementation.
