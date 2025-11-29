@@ -2,7 +2,7 @@
  * @file Core node definition types including render props, constraints, and external data handling
  */
 import React, { type ReactNode, type ReactElement } from "react";
-import type { Node, NodeId, Port, Connection, ConnectionId, NodeData, PortPlacement } from "./core";
+import type { Node, NodeId, Port, Connection, ConnectionId, NodeData, PortPlacement, Size, Position } from "./core";
 import type { NodeBehavior } from "./behaviors";
 
 /**
@@ -314,6 +314,35 @@ export type NodeConstraint = {
 };
 
 /**
+ * Position information for a single port
+ */
+export type ComputedPortPosition = {
+  /** Position relative to node for rendering the port element */
+  renderPosition: Position & { transform?: string };
+  /** Absolute canvas position where connections should attach */
+  connectionPoint: Position;
+};
+
+/**
+ * Context provided to the custom port position computation function
+ */
+export type ComputePortPositionsContext = {
+  /** The node for which ports are being positioned */
+  node: Node;
+  /** The ports to position */
+  ports: Port[];
+  /** The effective size of the node */
+  nodeSize: Size;
+  /** Default computation function for fallback or delegation */
+  defaultCompute: (ports: Port[]) => Map<string, ComputedPortPosition>;
+};
+
+/**
+ * Result of custom port position computation
+ */
+export type ComputePortPositionsResult = Map<string, ComputedPortPosition>;
+
+/**
  * Node type definition
  * @template TData - The node data type (defaults to Record<string, unknown>)
  */
@@ -376,6 +405,15 @@ export type NodeDefinition<TData extends Record<string, unknown> = Record<string
   visualState?: "info" | "success" | "warning" | "error" | "disabled";
   /** Node constraints */
   constraints?: NodeConstraint[];
+  /**
+   * Custom port position computation function.
+   * When provided, this function is called to compute the positions of all ports
+   * for nodes of this type, giving full control over port placement.
+   *
+   * @param context - Contains node, ports, and size information
+   * @returns Map of port ID to position information
+   */
+  computePortPositions?: (context: ComputePortPositionsContext) => ComputePortPositionsResult;
   /**
    * When true, disables framework-provided selection outline, shadows, and borders.
    * Use this when renderNode handles its own selection styling.

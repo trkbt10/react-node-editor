@@ -8,6 +8,7 @@ import type {
   EditorPortPositions,
   PortPositionConfig,
 } from "../../../types/portPosition";
+import type { ComputedPortPosition } from "../../../types/NodeDefinition";
 import { DEFAULT_PORT_POSITION_CONFIG } from "../../../types/portPosition";
 import { getNodeSize, getNodeBoundingBox } from "../../../utils/boundingBoxUtils";
 
@@ -29,7 +30,8 @@ const getPlacementForPort = (port: Port): PortPlacement => {
 };
 
 /**
- * Group ports by side and by their segment within that side
+ * Group ports by side and segment
+ * The key is the side (e.g., "left", "right", "top", "bottom")
  */
 function groupPortsByPosition(ports: Port[]): Map<string, PortSegmentGroup[]> {
   const grouped = new Map<string, Map<string, PortSegmentGroup>>();
@@ -237,19 +239,41 @@ function calculatePortConnectionPoint(
 }
 
 /**
+ * Options for computing node port positions
+ */
+export type ComputeNodePortPositionsOptions = {
+  /** Port position configuration */
+  config?: PortPositionConfig;
+  /** Optional explicit port array */
+  ports?: Port[];
+};
+
+/**
  * Compute all port positions for a single node
  * @param node - The node to compute port positions for (may include ports property from PortPositionNode)
- * @param config - Port position configuration
+ * @param configOrOptions - Port position configuration or options object
  * @param ports - Optional explicit port array (if not provided, uses node.ports, node._ports, or empty array)
  */
 export function computeNodePortPositions(
   node: Node & { ports?: Port[] },
-  config: PortPositionConfig = DEFAULT_PORT_POSITION_CONFIG,
+  configOrOptions: PortPositionConfig | ComputeNodePortPositionsOptions = DEFAULT_PORT_POSITION_CONFIG,
   ports?: Port[],
 ): NodePortPositions {
+  // Handle both legacy (config, ports) and new (options) signatures
+  let config: PortPositionConfig;
+  let effectivePorts: Port[];
+
+  if ("visualSize" in configOrOptions) {
+    // Legacy signature: (node, config, ports)
+    config = configOrOptions;
+    effectivePorts = ports || node.ports || node._ports || [];
+  } else {
+    // New signature: (node, options)
+    config = configOrOptions.config ?? DEFAULT_PORT_POSITION_CONFIG;
+    effectivePorts = configOrOptions.ports || node.ports || node._ports || [];
+  }
+
   const positions = new Map<string, PortPosition>();
-  // Priority: explicit ports parameter > node.ports (from PortPositionNode) > node._ports (legacy) > empty array
-  const effectivePorts = ports || node.ports || node._ports || [];
 
   if (effectivePorts.length === 0) {
     return positions;
@@ -258,8 +282,8 @@ export function computeNodePortPositions(
   const nodeSize = getNodeSize(node);
   const portsByPosition = groupPortsByPosition(effectivePorts);
 
-  // Calculate positions for each port
-  for (const [_position, segments] of portsByPosition) {
+  // Calculate positions for each port group (grouped by side)
+  for (const [_side, segments] of portsByPosition) {
     const totalSpan = segments.reduce((sum, segment) => {
       const span = segment.span && segment.span > 0 ? segment.span : 1;
       return sum + span;
@@ -292,6 +316,29 @@ export function computeNodePortPositions(
   }
 
   return positions;
+}
+
+/**
+ * Create a default compute function for use with custom computePortPositions in NodeDefinition
+ */
+export function createDefaultPortCompute(
+  node: Node,
+  config: PortPositionConfig = DEFAULT_PORT_POSITION_CONFIG,
+): (ports: Port[]) => Map<string, ComputedPortPosition> {
+  return (ports: Port[]) => {
+    const result = new Map<string, ComputedPortPosition>();
+    const nodeWithPorts = { ...node, ports };
+    const positions = computeNodePortPositions(nodeWithPorts, config, ports);
+
+    for (const [portId, pos] of positions) {
+      result.set(portId, {
+        renderPosition: pos.renderPosition,
+        connectionPoint: pos.connectionPoint,
+      });
+    }
+
+    return result;
+  };
 }
 
 /**

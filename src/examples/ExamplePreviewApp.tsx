@@ -35,6 +35,7 @@ import { DataBindingModesExample } from "./demos/DataBindingModesExample";
 import { ErrorNodeFallbackExample } from "./demos/ErrorNodeFallbackExample";
 import { CustomLayoutDemo } from "./demos/custom-layout-demo";
 import { DynamicPortPlaygroundExample } from "./demos/custom-port/DynamicPortPlaygroundExample";
+import { ComfyUILayoutExample } from "./demos/comfyui-layout/ComfyUILayoutExample";
 import { CustomInspectorExample } from "./demos/custom-inspector/CustomInspectorExample";
 import { NodeSearchMenuExample } from "./demos/node-search/NodeSearchMenuExample";
 import classes from "./ExamplePreviewApp.module.css";
@@ -138,6 +139,13 @@ const examples: ExampleEntry[] = [
     title: "Dynamic Port Playground",
     description: "Experiment with segmented port placement, multi-type validation, and dynamic port counts.",
     component: DynamicPortPlaygroundExample,
+    category: "custom",
+  },
+  {
+    id: "comfyui-layout",
+    title: "ComfyUI-Style Port Layout",
+    description: "Region-based port placement with header/body areas, similar to ComfyUI's node layout.",
+    component: ComfyUILayoutExample,
     category: "custom",
   },
   {

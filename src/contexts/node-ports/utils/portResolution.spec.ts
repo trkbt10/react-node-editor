@@ -24,7 +24,7 @@ describe("normalizePlacement", () => {
       segment: "main",
       segmentOrder: 1,
       segmentSpan: 2,
-      align: "center" as const,
+      align: 0.5,
     };
     const result = normalizePlacement(placement);
     expect(result).toEqual({
@@ -32,7 +32,7 @@ describe("normalizePlacement", () => {
       segment: "main",
       segmentOrder: 1,
       segmentSpan: 2,
-      align: "center",
+      align: 0.5,
     });
   });
 

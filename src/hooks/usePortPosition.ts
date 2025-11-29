@@ -2,16 +2,40 @@
  * @file Hooks for accessing dynamic port positions and connection points
  */
 import * as React from "react";
-import type { Position } from "../types/core";
+import type { Position, Size } from "../types/core";
 import type { PortPosition, PortPositionNode } from "../types/portPosition";
+import type { ComputedPortPosition } from "../types/NodeDefinition";
 import { useNodeEditor } from "../contexts/node-editor/context";
 import { usePortPositions } from "../contexts/node-ports/context";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
+import { useNodeDefinitions } from "../contexts/node-definitions/context";
+import { computeNodePortPositions, createDefaultPortCompute } from "../contexts/node-ports/utils/computePortPositions";
+import { getNodeSize } from "../utils/boundingBoxUtils";
 
 type PortPositionOptions = {
   positionOverride?: Position;
   sizeOverride?: { width: number; height: number };
   applyInteractionPreview?: boolean;
+};
+
+/**
+ * Cache key for custom port position computation
+ * Only recompute when size or ports change, not position
+ */
+type ComputeCacheKey = {
+  nodeId: string;
+  sizeWidth: number;
+  sizeHeight: number;
+  portsKey: string;
+};
+
+const computeCacheKeyEquals = (a: ComputeCacheKey | null, b: ComputeCacheKey): boolean => {
+  if (!a) {
+    return false;
+  }
+  return (
+    a.nodeId === b.nodeId && a.sizeWidth === b.sizeWidth && a.sizeHeight === b.sizeHeight && a.portsKey === b.portsKey
+  );
 };
 
 /**
@@ -23,10 +47,21 @@ export function useDynamicPortPosition(
   options?: PortPositionOptions,
 ): PortPosition | undefined {
   const { state, getNodePorts } = useNodeEditor();
-  const { calculateNodePortPositions } = usePortPositions();
+  const { config, behavior } = usePortPositions();
   const { state: actionState } = useEditorActionState();
+  const { registry } = useNodeDefinitions();
   const currentNode = React.useMemo(() => state.nodes[nodeId], [state.nodes, nodeId]);
   const nodePorts = React.useMemo(() => getNodePorts(nodeId), [getNodePorts, nodeId]);
+  const nodeDefinition = React.useMemo(
+    () => (currentNode ? registry.get(currentNode.type) : undefined),
+    [registry, currentNode],
+  );
+
+  // Cache for custom computePortPositions results (only recompute on size/ports change)
+  const customComputeCache = React.useRef<{
+    key: ComputeCacheKey | null;
+    result: Map<string, ComputedPortPosition>;
+  }>({ key: null, result: new Map() });
 
   // Pre-compute sets for O(1) lookup instead of O(n) includes/some
   const draggedNodeIdsSet = React.useMemo(() => {
@@ -44,59 +79,126 @@ export function useDynamicPortPosition(
     return set;
   }, [actionState.dragState]);
 
-  return React.useMemo(() => {
-    if (!currentNode) {
-      return undefined;
-    }
-
-    const { positionOverride, sizeOverride, applyInteractionPreview = true } = options ?? {};
-
-    const previewPosition = (() => {
-      if (!applyInteractionPreview) {
-        return null;
+  // Compute effective size (may change during resize)
+  const effectiveSize = React.useMemo((): Size | undefined => {
+    const { sizeOverride, applyInteractionPreview = true } = options ?? {};
+    if (sizeOverride) return sizeOverride;
+    if (applyInteractionPreview) {
+      const resizeState = actionState.resizeState;
+      if (resizeState?.nodeId === nodeId && resizeState.currentSize) {
+        return resizeState.currentSize;
       }
+    }
+    return currentNode?.size;
+  }, [currentNode?.size, nodeId, actionState.resizeState, options?.sizeOverride, options?.applyInteractionPreview]);
+
+  // Compute effective position (changes during drag/resize)
+  const effectivePosition = React.useMemo((): Position | undefined => {
+    if (!currentNode) return undefined;
+    const { positionOverride, applyInteractionPreview = true } = options ?? {};
+    if (positionOverride) return positionOverride;
+    if (applyInteractionPreview) {
       const dragState = actionState.dragState;
       if (dragState && draggedNodeIdsSet?.has(nodeId)) {
         return { x: currentNode.position.x + dragState.offset.x, y: currentNode.position.y + dragState.offset.y };
       }
       const resizeState = actionState.resizeState;
-      if (resizeState?.nodeId === nodeId) {
-        return resizeState.currentPosition ?? currentNode.position;
+      if (resizeState?.nodeId === nodeId && resizeState.currentPosition) {
+        return resizeState.currentPosition;
       }
-      return null;
-    })();
+    }
+    return currentNode.position;
+  }, [
+    currentNode,
+    nodeId,
+    actionState.dragState,
+    actionState.resizeState,
+    draggedNodeIdsSet,
+    options?.positionOverride,
+    options?.applyInteractionPreview,
+  ]);
 
-    const previewSize = (() => {
-      if (!applyInteractionPreview) {
-        return null;
-      }
-      const resizeState = actionState.resizeState;
-      if (resizeState?.nodeId === nodeId) {
-        return resizeState.currentSize;
-      }
-      return null;
-    })();
+  // Stable ports key for cache comparison
+  const portsKey = React.useMemo(() => nodePorts.map((p) => p.id).join(","), [nodePorts]);
+
+  return React.useMemo(() => {
+    if (!currentNode || !effectivePosition) {
+      return undefined;
+    }
 
     const effectiveNode: PortPositionNode = {
       ...currentNode,
-      position: positionOverride ?? previewPosition ?? currentNode.position,
-      size: sizeOverride ?? previewSize ?? currentNode.size,
+      position: effectivePosition,
+      size: effectiveSize,
       ports: nodePorts,
     };
 
-    return calculateNodePortPositions(effectiveNode).get(portId);
+    // Use behavior's computeNode if available
+    if (behavior?.computeNode) {
+      return behavior
+        .computeNode({
+          node: effectiveNode,
+          config,
+          defaultCompute: (node) => computeNodePortPositions(node, { config }),
+        })
+        .get(portId);
+    }
+
+    // Use custom computePortPositions from NodeDefinition if available
+    const customCompute = nodeDefinition?.computePortPositions;
+    if (customCompute) {
+      const nodeSize = getNodeSize(effectiveNode);
+      const cacheKey: ComputeCacheKey = {
+        nodeId,
+        sizeWidth: nodeSize.width,
+        sizeHeight: nodeSize.height,
+        portsKey,
+      };
+
+      // Check cache - only recompute if size or ports changed
+      if (!computeCacheKeyEquals(customComputeCache.current.key, cacheKey)) {
+        const defaultCompute = createDefaultPortCompute(effectiveNode, config);
+        customComputeCache.current = {
+          key: cacheKey,
+          result: customCompute({
+            node: effectiveNode,
+            ports: nodePorts,
+            nodeSize,
+            defaultCompute,
+          }),
+        };
+      }
+
+      const cachedPos = customComputeCache.current.result.get(portId);
+      if (cachedPos) {
+        // Adjust connection point based on current position offset
+        // renderPosition is relative to node, so stays the same
+        // connectionPoint was calculated with the original node position, adjust for current position
+        const positionDeltaX = effectivePosition.x - currentNode.position.x;
+        const positionDeltaY = effectivePosition.y - currentNode.position.y;
+        return {
+          portId,
+          renderPosition: cachedPos.renderPosition,
+          connectionPoint: {
+            x: cachedPos.connectionPoint.x + positionDeltaX,
+            y: cachedPos.connectionPoint.y + positionDeltaY,
+          },
+        };
+      }
+    }
+
+    return computeNodePortPositions(effectiveNode, { config, ports: nodePorts }).get(portId);
   }, [
     currentNode,
     nodeId,
     portId,
     nodePorts,
-    calculateNodePortPositions,
-    options?.positionOverride,
-    options?.sizeOverride,
-    options?.applyInteractionPreview,
-    actionState.dragState,
-    actionState.resizeState,
-    draggedNodeIdsSet,
+    portsKey,
+    config,
+    behavior,
+    nodeDefinition?.computePortPositions,
+    effectivePosition,
+    effectiveSize,
   ]);
 }
 
