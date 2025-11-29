@@ -143,8 +143,8 @@
   box-shadow: none;
 }
 
-/* Custom renderer nodes: set highlight colors to transparent */
-.nodeView[data-custom-renderer="true"] {
+/* Nodes with disabled outline: set highlight colors to transparent */
+.nodeView[data-disable-outline="true"] {
   --node-editor-accent-color: transparent;
   --node-editor-input-border: 1px solid transparent;
   --node-editor-shadow-sm: none;

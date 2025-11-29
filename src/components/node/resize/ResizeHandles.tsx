@@ -37,6 +37,21 @@ const resolveHandleCornerRadius = (): number => {
   return Number.isFinite(parsed) ? parsed : 0;
 };
 
+// Node border radius for handle position offset
+const resolveNodeBorderRadius = (): number => {
+  if (typeof window === "undefined") {
+    return 0;
+  }
+  const raw = getComputedStyle(document.documentElement).getPropertyValue("--node-editor-radius-sm").trim();
+
+  if (!raw) {
+    return 0;
+  }
+
+  const parsed = Number.parseFloat(raw);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
 const HANDLE_CURSORS: Record<ResizeHandleDirection, React.CSSProperties["cursor"]> = {
   n: "n-resize",
   s: "s-resize",
@@ -48,18 +63,23 @@ const HANDLE_CURSORS: Record<ResizeHandleDirection, React.CSSProperties["cursor"
   sw: "sw-resize",
 };
 
-const computeHandlePosition = (handle: ResizeHandleDirection, size: Size): Position => {
+const computeHandlePosition = (handle: ResizeHandleDirection, size: Size, borderRadius: number): Position => {
   const clampedWidth = Math.max(size.width, 0);
   const clampedHeight = Math.max(size.height, 0);
   const horizontal = handle.includes("w") ? "start" : handle.includes("e") ? "end" : "center";
   const vertical = handle.includes("n") ? "start" : handle.includes("s") ? "end" : "center";
 
+  // Corner handles need offset to align with rounded corners
+  const isCorner = handle.length === 2;
+  // Use a fraction of the border radius for a natural position on the curve
+  const offset = isCorner ? borderRadius * 0.3 : 0;
+
   const resolve = (mode: "start" | "center" | "end", total: number): number => {
     if (mode === "start") {
-      return 0;
+      return offset;
     }
     if (mode === "end") {
-      return total;
+      return total - offset;
     }
     return total / 2;
   };
@@ -92,13 +112,17 @@ const ResizeHandlesComponent: React.FC<ResizeHandlesProps> = ({
     });
   }
   const [handleCornerRadius, setHandleCornerRadius] = React.useState<number>(() => resolveHandleCornerRadius());
+  const [nodeBorderRadius, setNodeBorderRadius] = React.useState<number>(() => resolveNodeBorderRadius());
 
   React.useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
-    const updateRadius = () => setHandleCornerRadius(resolveHandleCornerRadius());
+    const updateRadius = () => {
+      setHandleCornerRadius(resolveHandleCornerRadius());
+      setNodeBorderRadius(resolveNodeBorderRadius());
+    };
     updateRadius();
 
     const observer = new MutationObserver(updateRadius);
@@ -138,7 +162,7 @@ const ResizeHandlesComponent: React.FC<ResizeHandlesProps> = ({
       >
         {handles.map((handle) => {
           const cursor = HANDLE_CURSORS[handle];
-          const { x, y } = computeHandlePosition(handle, size);
+          const { x, y } = computeHandlePosition(handle, size, nodeBorderRadius);
           const xPosition = x - HALF_HANDLE_SIZE;
           const yPosition = y - HALF_HANDLE_SIZE;
           return (

@@ -193,6 +193,7 @@ const NodeViewPresenterComponent: React.FC<NodeViewPresenterProps> = ({
   const { isGroup, isAppearance } = behaviorState;
   const { backgroundWithOpacity, groupBackground, groupTextColor } = appearance;
   const hasCustomRenderer = !!nodeDefinition?.renderNode;
+  const disableOutline = nodeDefinition?.disableOutline ?? false;
 
   return (
     <div
@@ -218,6 +219,7 @@ const NodeViewPresenterComponent: React.FC<NodeViewPresenterProps> = ({
       data-has-children={hasChildren}
       data-plain-node={isAppearance}
       data-custom-renderer={hasCustomRenderer || undefined}
+      data-disable-outline={disableOutline || undefined}
     >
       <NodeBodyRenderer
         node={node}

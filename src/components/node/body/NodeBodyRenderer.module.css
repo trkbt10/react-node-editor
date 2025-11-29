@@ -10,7 +10,7 @@
   font-weight: 500;
   border-bottom: var(--node-editor-input-border);
   background-color: var(--node-editor-table-header-background-color, #f0f0f0);
-  border-radius: 0.5em 0.5em 0 0;
+  border-radius: var(--node-editor-radius-sm) var(--node-editor-radius-sm) 0 0;
   height: 40px;
   display: flex;
   align-items: center;

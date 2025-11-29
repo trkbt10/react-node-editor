@@ -376,6 +376,12 @@ export type NodeDefinition<TData extends Record<string, unknown> = Record<string
   visualState?: "info" | "success" | "warning" | "error" | "disabled";
   /** Node constraints */
   constraints?: NodeConstraint[];
+  /**
+   * When true, disables framework-provided selection outline, shadows, and borders.
+   * Use this when renderNode handles its own selection styling.
+   * Defaults to false.
+   */
+  disableOutline?: boolean;
 };
 
 /**
