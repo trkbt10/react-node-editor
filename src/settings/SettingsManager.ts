@@ -11,7 +11,10 @@ import type {
   SettingsValidationResult,
   SettingsStorage,
   BuiltInCategories,
+  EditorSettings,
+  EditorSettingKey,
 } from "./types";
+import { defaultSettings } from "./defaultSettings";
 
 /**
  * Event emitter for settings
@@ -187,6 +190,17 @@ const builtInCategories: BuiltInCategories = {
 };
 
 /**
+ * Settings Manager constructor options
+ */
+export type SettingsManagerOptions = {
+  storage?: SettingsStorage;
+  /** Additional settings to register (merged with defaultSettings) */
+  additionalSettings?: SettingDefinition[];
+  /** Skip registering defaultSettings (default: false) */
+  skipDefaultSettings?: boolean;
+};
+
+/**
  * Settings Manager implementation
  */
 export class SettingsManager extends SettingsEventEmitter implements ISettingsManager {
@@ -195,14 +209,24 @@ export class SettingsManager extends SettingsEventEmitter implements ISettingsMa
   private values = new Map<string, SettingValue>();
   private storage: SettingsStorage;
 
-  constructor(storage?: SettingsStorage) {
+  constructor(options?: SettingsManagerOptions) {
     super();
-    this.storage = storage || new LocalSettingsStorage();
+    this.storage = options?.storage || new LocalSettingsStorage();
 
     // Register built-in categories
     Object.values(builtInCategories).forEach((category) => {
       this.registerCategory(category);
     });
+
+    // Register default settings unless skipped
+    if (!options?.skipDefaultSettings) {
+      this.registerSettings(defaultSettings);
+    }
+
+    // Register additional settings if provided
+    if (options?.additionalSettings) {
+      this.registerSettings(options.additionalSettings);
+    }
 
     // Load values from storage
     this.loadFromStorage();
@@ -235,6 +259,10 @@ export class SettingsManager extends SettingsEventEmitter implements ISettingsMa
     }
 
     this.emit("setting-registered", { setting });
+  }
+
+  registerSettings(settings: SettingDefinition[]): void {
+    settings.forEach((setting) => this.registerSetting(setting));
   }
 
   unregisterSetting(key: string): void {
@@ -276,11 +304,15 @@ export class SettingsManager extends SettingsEventEmitter implements ISettingsMa
     return Array.from(this.categories.values()).sort((a, b) => (a.order || 0) - (b.order || 0));
   }
 
-  // Values
-  getValue<T = SettingValue>(key: string): T | undefined {
-    return this.values.get(key) as T | undefined;
+  // Values - type-safe overloads
+  getValue<K extends EditorSettingKey>(key: K): EditorSettings[K] | undefined;
+  getValue<T = SettingValue>(key: string): T | undefined;
+  getValue(key: string): SettingValue | undefined {
+    return this.values.get(key);
   }
 
+  setValue<K extends EditorSettingKey>(key: K, value: EditorSettings[K]): void;
+  setValue(key: string, value: SettingValue): void;
   setValue(key: string, value: SettingValue): void {
     const setting = this.settings.get(key);
     if (!setting) {

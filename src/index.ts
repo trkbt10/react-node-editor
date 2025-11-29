@@ -76,6 +76,8 @@ export type {
 export { defaultEditorGridConfig, defaultEditorGridLayers } from "./config/defaultLayout";
 export { defaultSettings } from "./settings/defaultSettings";
 export { SettingsManager, LocalSettingsStorage } from "./settings/SettingsManager";
+export type { SettingsManagerOptions } from "./settings/SettingsManager";
+export type { EditorSettings, EditorSettingKey } from "./settings/types";
 export type {
   CanvasPanActivator,
   ContextMenuRequest,

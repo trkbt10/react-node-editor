@@ -127,6 +127,7 @@ export type SettingsValidationResult = {
 export type SettingsManager = {
   // Setting definitions
   registerSetting: (setting: SettingDefinition) => void;
+  registerSettings: (settings: SettingDefinition[]) => void;
   unregisterSetting: (key: string) => void;
   getSetting: (key: string) => SettingDefinition | undefined;
   getAllSettings: () => Record<string, SettingDefinition>;
@@ -138,9 +139,15 @@ export type SettingsManager = {
   getCategory: (key: string) => SettingCategory | undefined;
   getAllCategories: () => SettingCategory[];
 
-  // Values
-  getValue: <T = SettingValue>(key: string) => T | undefined;
-  setValue: (key: string, value: SettingValue) => void;
+  // Values - type-safe overloads for EditorSettings keys
+  getValue: {
+    <K extends EditorSettingKey>(key: K): EditorSettings[K] | undefined;
+    <T = SettingValue>(key: string): T | undefined;
+  };
+  setValue: {
+    <K extends EditorSettingKey>(key: K, value: EditorSettings[K]): void;
+    (key: string, value: SettingValue): void;
+  };
   setValues: (values: Partial<SettingsValues>) => void;
   getAllValues: () => SettingsValues;
   resetToDefaults: (keys?: string[]) => void;
@@ -181,7 +188,8 @@ export type BuiltInCategories = {
 };
 
 /**
- * Editor-specific settings
+ * Editor-specific settings with type-safe keys
+ * Keys match those defined in defaultSettings.ts
  */
 export type EditorSettings = {
   // General
@@ -191,8 +199,7 @@ export type EditorSettings = {
   "general.confirmBeforeExit": boolean;
 
   // Appearance
-  "appearance.theme": string;
-  "appearance.darkMode": boolean;
+  "appearance.theme": "light" | "dark" | "auto";
   "appearance.fontSize": number;
   "appearance.fontFamily": string;
   "appearance.showGrid": boolean;
@@ -207,12 +214,12 @@ export type EditorSettings = {
   // Behavior
   "behavior.doubleClickToEdit": boolean;
   "behavior.autoConnect": boolean;
-  "behavior.autoLayout": boolean;
   "behavior.smoothAnimations": boolean;
   "behavior.dragThreshold": number;
   "behavior.connectionStyle": "straight" | "curved" | "orthogonal";
   "behavior.selectionMode": "click" | "drag";
   "behavior.wheelZoomSensitivity": number;
+  "behavior.nodeSearchViewMode": "list" | "split";
 
   // Performance
   "performance.maxHistorySteps": number;
@@ -222,19 +229,15 @@ export type EditorSettings = {
   "performance.maxVisibleNodes": number;
 
   // Keyboard Shortcuts
-  "keyboard.undo": string[];
-  "keyboard.redo": string[];
-  "keyboard.selectAll": string[];
-  "keyboard.delete": string[];
-  "keyboard.copy": string[];
-  "keyboard.paste": string[];
-  "keyboard.duplicate": string[];
-  "keyboard.group": string[];
-  "keyboard.autoLayout": string[];
-  "keyboard.save": string[];
-  "keyboard.zoomIn": string[];
-  "keyboard.zoomOut": string[];
-  "keyboard.resetZoom": string[];
+  "keyboard.undo": string;
+  "keyboard.redo": string;
+  "keyboard.selectAll": string;
+  "keyboard.delete": string;
+  "keyboard.copy": string;
+  "keyboard.paste": string;
+  "keyboard.duplicate": string;
+  "keyboard.group": string;
+  "keyboard.save": string;
 
   // Plugins
   "plugins.autoUpdate": boolean;
@@ -248,6 +251,11 @@ export type EditorSettings = {
   "advanced.experimentalFeatures": boolean;
   "advanced.customCSS": string;
 };
+
+/**
+ * Type-safe setting key
+ */
+export type EditorSettingKey = keyof EditorSettings;
 
 /**
  * Settings preset
