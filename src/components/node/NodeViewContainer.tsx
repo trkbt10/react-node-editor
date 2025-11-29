@@ -99,7 +99,16 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
   const isVisuallyDragging = isDragging || dragOffset !== undefined;
   const hasChildren = groupChildren.length > 0;
 
-  const ports = React.useMemo(() => getNodePorts(node.id) || [], [getNodePorts, node.id]);
+  // Whether this node has an unknown/unregistered type
+  const isUnknownType = nodeDefinition === undefined;
+
+  const ports = React.useMemo(() => {
+    // Skip port resolution for unknown node types
+    if (isUnknownType) {
+      return [];
+    }
+    return getNodePorts(node.id) || [];
+  }, [getNodePorts, node.id, isUnknownType]);
 
   const isEditingTitle = isEditing(node.id, "title");
 
@@ -187,6 +196,7 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
       hasChildren={hasChildren}
       groupChildrenCount={groupChildren.length}
       nodeDefinition={nodeDefinition}
+      isUnknownType={isUnknownType}
       externalDataState={externalDataState}
       ports={ports}
       isEditingTitle={isEditingTitle}

@@ -32,6 +32,7 @@ import { AdobeThemeExample } from "./demos/adobe-theme/AdobeThemeExample";
 import { FigmaThemeExample } from "./demos/figma-theme/FigmaThemeExample";
 import { TradingAnalyticsDashboard } from "./demos/trading-analytics/TradingAnalyticsDashboard";
 import { DataBindingModesExample } from "./demos/DataBindingModesExample";
+import { ErrorNodeFallbackExample } from "./demos/ErrorNodeFallbackExample";
 import { CustomLayoutDemo } from "./demos/custom-layout-demo";
 import { DynamicPortPlaygroundExample } from "./demos/custom-port/DynamicPortPlaygroundExample";
 import { CustomInspectorExample } from "./demos/custom-inspector/CustomInspectorExample";
@@ -102,6 +103,13 @@ const examples: ExampleEntry[] = [
     title: "Constrained Node Definitions",
     description: "Highlights constraint helpers for placement and connection rules.",
     component: ConstrainedNodeExample,
+    category: "basic",
+  },
+  {
+    id: "error-node-fallback",
+    title: "Error Node Fallback",
+    description: "Shows how unknown node types are displayed as error nodes when fallbackDefinition is enabled.",
+    component: ErrorNodeFallbackExample,
     category: "basic",
   },
   {

@@ -24,6 +24,7 @@ import { enMessages } from "./i18n/en";
 import type { I18nMessages, I18nDictionaries, Locale } from "./i18n/types";
 import type { SettingsManager } from "./settings/SettingsManager";
 import type { ExternalDataReference, NodeDefinition } from "./types/NodeDefinition";
+import type { FallbackDefinition } from "./types/NodeDefinitionRegistry";
 import type { NodeEditorRendererOverrides } from "./types/renderers";
 import { InteractionSettingsProvider } from "./contexts/InteractionSettingsContext";
 import type { NodeEditorInteractionSettingsPatch } from "./types/interaction";
@@ -40,6 +41,14 @@ export type NodeEditorCoreProps = {
   nodeDefinitions?: NodeDefinition[];
   /** Whether to include default node definitions */
   includeDefaultDefinitions?: boolean;
+  /**
+   * Fallback definition for unknown node types.
+   * - `true`: Use the default error node definition factory
+   * - `false` or `undefined`: No fallback (returns undefined for unknown types)
+   * - `NodeDefinition`: Use a fixed definition for all unknown types
+   * - `(type: string) => NodeDefinition`: Use a factory function
+   */
+  fallbackDefinition?: FallbackDefinition | boolean;
   /** External data references for nodes */
   externalDataRefs?: Record<string, ExternalDataReference>;
   /** Settings manager instance */
@@ -79,6 +88,7 @@ export function NodeEditorCore({
   onLoad,
   nodeDefinitions,
   includeDefaultDefinitions = true,
+  fallbackDefinition = true,
   externalDataRefs,
   settingsManager,
   locale,
@@ -116,7 +126,7 @@ export function NodeEditorCore({
       messagesOverride={messagesOverride}
     >
       <RendererProvider renderers={mergedRenderers}>
-        <NodeDefinitionProvider nodeDefinitions={nodeDefinitions} includeDefaults={includeDefaultDefinitions}>
+        <NodeDefinitionProvider nodeDefinitions={nodeDefinitions} includeDefaults={includeDefaultDefinitions} fallbackDefinition={fallbackDefinition}>
           <ExternalDataProvider refs={externalDataRefs}>
             <NodeEditorProvider
               initialState={initialData}

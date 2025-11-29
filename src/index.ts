@@ -36,7 +36,18 @@ export type {
 
 // Node definition registry
 export { createNodeDefinitionRegistry } from "./types/NodeDefinitionRegistry";
-export type { NodeDefinitionRegistry } from "./types/NodeDefinitionRegistry";
+export type { NodeDefinitionRegistry, FallbackDefinition } from "./types/NodeDefinitionRegistry";
+
+// Error node definition for unknown types
+export {
+  createErrorNodeDefinition,
+  defaultFallbackFactory,
+  ErrorNodeRenderer,
+  ERROR_NODE_TYPE_PREFIX,
+  isErrorNodeType,
+  getOriginalTypeFromErrorType,
+} from "./node-definitions/error";
+export type { ErrorNodeData } from "./node-definitions/error";
 
 // Behavior configuration for nodes
 export type {

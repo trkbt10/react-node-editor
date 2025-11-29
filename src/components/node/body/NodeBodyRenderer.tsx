@@ -16,6 +16,8 @@ export type NodeBodyRendererProps = {
   node: Node;
   isSelected: boolean;
   nodeDefinition?: NodeDefinition;
+  /** Whether this node's type is not registered in the definition registry */
+  isUnknownType?: boolean;
   customRenderProps: CustomNodeRendererProps;
   isEditing: boolean;
   editingValue: string;
@@ -35,6 +37,7 @@ const NodeBodyRendererComponent: React.FC<NodeBodyRendererProps> = ({
   node,
   isSelected,
   nodeDefinition,
+  isUnknownType,
   customRenderProps,
   isEditing,
   editingValue,
@@ -47,6 +50,37 @@ const NodeBodyRendererComponent: React.FC<NodeBodyRendererProps> = ({
   onEditingBlur,
 }) => {
   const { t } = useI18n();
+
+  // Render broken/corrupted node for unknown types
+  if (isUnknownType) {
+    return (
+      <div className={styles.brokenNode}>
+        <div className={styles.brokenHeader}>
+          <span className={styles.brokenIcon}>&#x26A0;</span>
+          <span className={styles.brokenTitle}>CORRUPTED NODE</span>
+        </div>
+        <div className={styles.brokenContent}>
+          <div className={styles.brokenGlitch} data-text={node.type}>
+            {node.type}
+          </div>
+          <div className={styles.brokenMeta}>
+            <span className={styles.brokenLabel}>ID:</span>
+            <code className={styles.brokenCode}>{node.id}</code>
+          </div>
+          {node.data.title && (
+            <div className={styles.brokenMeta}>
+              <span className={styles.brokenLabel}>Title:</span>
+              <span className={styles.brokenValue}>{node.data.title}</span>
+            </div>
+          )}
+          <div className={styles.brokenError}>
+            Definition not found
+          </div>
+        </div>
+        <div className={styles.brokenNoise} />
+      </div>
+    );
+  }
 
   // Use component invocation to properly support React hooks
   if (nodeDefinition?.renderNode) {

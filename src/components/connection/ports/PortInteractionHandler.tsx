@@ -89,6 +89,11 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     if (!node) {
       return null;
     }
+    // Skip port resolution for unknown node types
+    const definition = registry.get(node.type);
+    if (!definition) {
+      return null;
+    }
     const ports = getNodePorts(nodeId);
     const targetPort = ports.find((candidate) => candidate.id === portId);
     if (!targetPort) {
@@ -160,6 +165,11 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     const resolveCurrentPort = (port: Port | null): Port | null => {
       if (!port) {
         return null;
+      }
+      // Skip port resolution for unknown node types
+      const node = nodeEditorState.nodes[port.nodeId];
+      if (!node || !registry.get(node.type)) {
+        return port;
       }
       const ports = getNodePorts(port.nodeId);
       const current = ports.find((candidate) => candidate.id === port.id);

@@ -48,6 +48,8 @@ export type NodeViewPresenterProps = {
   groupChildrenCount: number;
 
   nodeDefinition?: NodeDefinition;
+  /** Whether this node's type is not registered in the definition registry */
+  isUnknownType?: boolean;
   externalDataState: ExternalDataStateWithActions;
   ports: Port[];
 
@@ -92,6 +94,7 @@ const NodeViewPresenterComponent: React.FC<NodeViewPresenterProps> = ({
   hasChildren,
   groupChildrenCount,
   nodeDefinition,
+  isUnknownType,
   externalDataState,
   ports,
   isEditingTitle,
@@ -220,11 +223,13 @@ const NodeViewPresenterComponent: React.FC<NodeViewPresenterProps> = ({
       data-plain-node={isAppearance}
       data-custom-renderer={hasCustomRenderer || undefined}
       data-disable-outline={disableOutline || undefined}
+      data-unknown-type={isUnknownType || undefined}
     >
       <NodeBodyRenderer
         node={node}
         isSelected={isSelected}
         nodeDefinition={nodeDefinition}
+        isUnknownType={isUnknownType}
         customRenderProps={customRenderProps}
         isEditing={isEditingTitle}
         editingValue={editingValue}

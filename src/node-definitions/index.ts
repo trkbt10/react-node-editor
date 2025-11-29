@@ -11,6 +11,17 @@ export { StandardNodeRenderer } from "./standard/node";
 export { GroupNodeRenderer } from "./group/node";
 export { LabelNodeRenderer } from "./label/node";
 
+// Export error node definition and utilities
+export {
+  createErrorNodeDefinition,
+  defaultFallbackFactory,
+  ErrorNodeRenderer,
+  ERROR_NODE_TYPE_PREFIX,
+  isErrorNodeType,
+  getOriginalTypeFromErrorType,
+  type ErrorNodeData,
+} from "./error";
+
 // Inspector renderers are exported from components/inspector/renderers
 // export { StandardInspectorRenderer, GroupInspectorRenderer, LabelInspectorRenderer } from "../components/inspector/renderers";
 

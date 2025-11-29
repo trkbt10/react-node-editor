@@ -14,6 +14,7 @@ import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
+import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import { PortPositionProvider } from "../../contexts/node-ports/provider";
 import { useSettings } from "../../hooks/useSettings";
 import type { SettingsManager } from "../../settings/SettingsManager";
@@ -63,6 +64,7 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
   const { state: editorState, actions, getNodePorts } = useNodeEditor();
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
+  const { registry } = useNodeDefinitions();
   const settings = useSettings(settingsManager);
 
   const portPositionConfig = React.useMemo<PortPositionConfig>(
@@ -159,10 +161,12 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
     }
 
     if (shouldRecompute) {
-      const nodes = Object.values(editorState.nodes).map((node) => ({
-        ...node,
-        ports: getNodePorts(node.id),
-      })) as PortPositionNode[];
+      const nodes = Object.values(editorState.nodes).map((node) => {
+        // Skip port resolution for unknown node types
+        const definition = registry.get(node.type);
+        const ports: CorePort[] = definition ? getNodePorts(node.id) : [];
+        return { ...node, ports };
+      }) as PortPositionNode[];
 
       const newPortPositions = computePositionsForNodes(nodes, prevPortPositionsRef.current);
       setPortPositions(newPortPositions);

@@ -151,3 +151,49 @@
   --node-editor-shadow-md: none;
   background-color: transparent;
 }
+
+/* Unknown/Corrupted node type styling */
+.nodeView[data-unknown-type="true"] {
+  background: linear-gradient(135deg, #2a1010 0%, #1a0808 100%);
+  border: 1px solid rgba(200, 60, 60, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nodeView[data-unknown-type="true"]::before {
+  border: none;
+}
+
+.nodeView[data-unknown-type="true"][data-selected="true"] {
+  border-color: #c84040;
+  box-shadow: 0 2px 12px rgba(200, 64, 64, 0.3);
+}
+
+/* Override group node styles for unknown types */
+.nodeView[data-unknown-type="true"][data-is-group="true"],
+.nodeView[data-unknown-type="true"][data-is-group="true"][data-has-children="true"] {
+  background: linear-gradient(135deg, #2a1010 0%, #1a0808 100%);
+  border: 1px dashed rgba(200, 60, 60, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nodeView[data-unknown-type="true"][data-is-group="true"]::before,
+.nodeView[data-unknown-type="true"][data-is-group="true"][data-has-children="true"]::before {
+  border: none;
+}
+
+/* Override plain/label node styles for unknown types */
+.nodeView[data-unknown-type="true"][data-plain-node="true"] {
+  background: linear-gradient(135deg, #2a1010 0%, #1a0808 100%);
+  border: 1px solid rgba(200, 60, 60, 0.6);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  min-width: 150px;
+  min-height: 50px;
+}
+
+.nodeView[data-unknown-type="true"][data-plain-node="true"]::before {
+  border: none;
+}
+
+.nodeView[data-unknown-type="true"][data-plain-node="true"]:hover::before {
+  border: none;
+}
