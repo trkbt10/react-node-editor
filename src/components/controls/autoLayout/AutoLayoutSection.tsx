@@ -2,9 +2,9 @@
  * @file Auto-layout section
  */
 import * as React from "react";
-import { useI18n } from "../../../../i18n/context";
-import { InspectorButton } from "../../parts/InspectorButton";
-import { InspectorDefinitionItem } from "../../parts/InspectorDefinitionList";
+import { useI18n } from "../../../i18n/context";
+import { InspectorButton } from "../../inspector/parts/InspectorButton";
+import { InspectorDefinitionItem } from "../../inspector/parts/InspectorDefinitionList";
 
 type AutoLayoutSectionProps = {
   hasNodes: boolean;

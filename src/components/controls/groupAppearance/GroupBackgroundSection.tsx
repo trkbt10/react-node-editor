@@ -2,10 +2,10 @@
  * @file Group background color section
  */
 import * as React from "react";
-import { Input } from "../../../elements/Input";
-import { InspectorLabel } from "../../parts/InspectorLabel";
-import { InspectorButton } from "../../parts/InspectorButton";
-import { useI18n } from "../../../../i18n/context";
+import { Input } from "../../elements/Input";
+import { InspectorLabel } from "../../inspector/parts/InspectorLabel";
+import { InspectorButton } from "../../inspector/parts/InspectorButton";
+import { useI18n } from "../../../i18n/context";
 import styles from "./GroupBackgroundSection.module.css";
 
 type GroupBackgroundSectionProps = {

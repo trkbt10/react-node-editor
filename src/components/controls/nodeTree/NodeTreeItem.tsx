@@ -2,11 +2,11 @@
  * @file NodeTreeItem presentation component
  */
 import * as React from "react";
-import { hasGroupBehavior } from "../../../../types/behaviors";
-import { getNodeIcon } from "../../../../contexts/node-definitions/utils/iconUtils";
-import { CloseIcon, LockIcon, UnlockIcon } from "../../../elements/icons";
-import { useNodeDefinitionList } from "../../../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { useI18n } from "../../../../i18n/context";
+import { hasGroupBehavior } from "../../../types/behaviors";
+import { getNodeIcon } from "../../../contexts/node-definitions/utils/iconUtils";
+import { CloseIcon, LockIcon, UnlockIcon } from "../../elements/icons";
+import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
+import { useI18n } from "../../../i18n/context";
 import styles from "./NodeTreeItem.module.css";
 import type { NodeTreeItemProps } from "./types";
 import { ConnectedNodeTreeItem } from "./ConnectedNodeTreeItem";

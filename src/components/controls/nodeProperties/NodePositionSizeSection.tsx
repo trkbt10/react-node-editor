@@ -2,11 +2,11 @@
  * @file Node position and size section for inspector
  */
 import * as React from "react";
-import type { Node } from "../../../../types/core";
-import { InspectorLabel } from "../../parts/InspectorLabel";
-import { PositionInputsGrid } from "../../parts/PositionInputsGrid";
-import { Input } from "../../../elements/Input";
-import { useI18n } from "../../../../i18n/context";
+import type { Node } from "../../../types/core";
+import { InspectorLabel } from "../../inspector/parts/InspectorLabel";
+import { PositionInputsGrid } from "../../inspector/parts/PositionInputsGrid";
+import { Input } from "../../elements/Input";
+import { useI18n } from "../../../i18n/context";
 
 type NodePositionSizeSectionProps = {
   node: Node;

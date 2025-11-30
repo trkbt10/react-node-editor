@@ -8,12 +8,12 @@ import type { Node } from "../../../types/core";
 import { PropertySection } from "../parts/PropertySection";
 import { useI18n } from "../../../i18n/context";
 import type { AlignmentActionType } from "../../controls/alignments/types";
-import { NodeTitleSection } from "../sections/NodeBehaviorInspector/NodeTitleSection";
-import { NodeContentSection } from "../sections/NodeBehaviorInspector/NodeContentSection";
-import { NodeAlignmentSection } from "../sections/NodeBehaviorInspector/NodeAlignmentSection";
-import { NodePositionSizeSection } from "../sections/NodeBehaviorInspector/NodePositionSizeSection";
-import { NodeStateSection } from "../sections/NodeBehaviorInspector/NodeStateSection";
-import { NodeTypeSection } from "../sections/NodeBehaviorInspector/NodeTypeSection";
+import { NodeTitleSection } from "../../controls/nodeProperties/NodeTitleSection";
+import { NodeContentSection } from "../../controls/nodeProperties/NodeContentSection";
+import { NodeAlignmentSection } from "../../controls/nodeProperties/NodeAlignmentSection";
+import { NodePositionSizeSection } from "../../controls/nodeProperties/NodePositionSizeSection";
+import { NodeStateSection } from "../../controls/nodeProperties/NodeStateSection";
+import { NodeTypeSection } from "../../controls/nodeProperties/NodeTypeSection";
 
 // Extended props for supporting multiple selection alignment
 type ExtendedInspectorRenderProps = {

@@ -5,9 +5,9 @@ import * as React from "react";
 import type {
   NodeEditorPointerAction,
   NodeEditorShortcutAction,
-} from "../../../../types/interaction";
-import type { PointerShortcutDisplay } from "../../../../utils/pointerShortcuts";
-import { InspectorShortcutBindingValue } from "../../parts/InspectorShortcutBindingValue";
+} from "../../../types/interaction";
+import type { PointerShortcutDisplay } from "../../../utils/pointerShortcuts";
+import { InspectorShortcutBindingValue } from "../../inspector/parts/InspectorShortcutBindingValue";
 import styles from "./InteractionHelpItem.module.css";
 
 type PointerGesture = "click" | "drag" | "context-menu";

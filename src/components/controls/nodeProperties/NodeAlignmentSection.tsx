@@ -2,9 +2,9 @@
  * @file Node alignment section for inspector
  */
 import * as React from "react";
-import type { Node } from "../../../../types/core";
-import { AlignmentControls } from "../../../controls/alignments/AlignmentControls";
-import type { AlignmentActionType } from "../../../controls/alignments/types";
+import type { Node } from "../../../types/core";
+import { AlignmentControls } from "../alignments/AlignmentControls";
+import type { AlignmentActionType } from "../alignments/types";
 
 type NodeAlignmentSectionProps = {
   selectedNodes: Node[];

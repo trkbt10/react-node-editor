@@ -5,8 +5,8 @@ import * as React from "react";
 import type {
   NodeEditorPointerAction,
   NodeEditorShortcutAction,
-} from "../../../../types/interaction";
-import { InspectorShortcutButton } from "../../parts/InspectorShortcutButton";
+} from "../../../types/interaction";
+import { InspectorShortcutButton } from "../../inspector/parts/InspectorShortcutButton";
 import {
   InteractionHelpItem,
   type SectionItemView,

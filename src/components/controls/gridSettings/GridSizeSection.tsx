@@ -2,9 +2,9 @@
  * @file Grid size settings section
  */
 import * as React from "react";
-import { useI18n } from "../../../../i18n/context";
-import { InspectorField } from "../../parts/InspectorField";
-import { InspectorInput } from "../../parts/InspectorInput";
+import { useI18n } from "../../../i18n/context";
+import { InspectorField } from "../../inspector/parts/InspectorField";
+import { InspectorInput } from "../../inspector/parts/InspectorInput";
 
 type GridSizeSectionProps = {
   gridSize: number;

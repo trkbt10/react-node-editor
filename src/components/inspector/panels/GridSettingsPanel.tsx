@@ -4,8 +4,8 @@
  */
 import * as React from "react";
 import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
-import { GridVisibilitySection } from "../sections/GridSettingsPanel/GridVisibilitySection";
-import { GridSizeSection } from "../sections/GridSettingsPanel/GridSizeSection";
+import { GridVisibilitySection } from "../../controls/gridSettings/GridVisibilitySection";
+import { GridSizeSection } from "../../controls/gridSettings/GridSizeSection";
 
 /**
  * Grid settings component

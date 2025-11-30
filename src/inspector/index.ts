@@ -27,9 +27,9 @@ export { GeneralSettingsPanel } from "../components/inspector/panels/GeneralSett
 export { GridSettingsPanel } from "../components/inspector/panels/GridSettingsPanel";
 export { HistoryPanel } from "../components/inspector/panels/HistoryPanel";
 export { InspectorPropertiesTab } from "../components/inspector/panels/InspectorPropertiesTab";
-export { InteractionHelpPanel } from "../components/inspector/sections/InteractionHelpPanel/InteractionHelpPanel";
+export { InteractionHelpPanel } from "../components/inspector/panels/InteractionHelpPanel";
 export { NodePalettePanel } from "../components/inspector/panels/NodePalettePanel";
-export { NodeTreeListPanel } from "../components/inspector/sections/NodeTreeListPanel/NodeTreeListPanel";
+export { NodeTreeListPanel } from "../components/inspector/panels/NodeTreeListPanel";
 
 // Inspector part components (form controls and UI elements)
 export { InspectorSection } from "../components/inspector/parts/InspectorSection";

@@ -2,8 +2,8 @@
  * @file Group opacity section
  */
 import * as React from "react";
-import { InspectorLabel } from "../../parts/InspectorLabel";
-import { useI18n } from "../../../../i18n/context";
+import { InspectorLabel } from "../../inspector/parts/InspectorLabel";
+import { useI18n } from "../../../i18n/context";
 import styles from "./GroupOpacitySection.module.css";
 
 type GroupOpacitySectionProps = {

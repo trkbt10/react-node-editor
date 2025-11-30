@@ -2,10 +2,10 @@
  * @file Node content section for inspector
  */
 import * as React from "react";
-import type { Node } from "../../../../types/core";
-import { InspectorLabel } from "../../parts/InspectorLabel";
-import { InspectorTextarea } from "../../parts/InspectorTextarea";
-import { useI18n } from "../../../../i18n/context";
+import type { Node } from "../../../types/core";
+import { InspectorLabel } from "../../inspector/parts/InspectorLabel";
+import { InspectorTextarea } from "../../inspector/parts/InspectorTextarea";
+import { useI18n } from "../../../i18n/context";
 
 type NodeContentSectionProps = {
   node: Node;

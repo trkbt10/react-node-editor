@@ -2,9 +2,9 @@
  * @file Grid visibility settings section
  */
 import * as React from "react";
-import { SwitchInput } from "../../../elements/SwitchInput";
-import { useI18n } from "../../../../i18n/context";
-import { InspectorField } from "../../parts/InspectorField";
+import { SwitchInput } from "../../elements/SwitchInput";
+import { useI18n } from "../../../i18n/context";
+import { InspectorField } from "../../inspector/parts/InspectorField";
 
 type GridVisibilitySectionProps = {
   showGrid: boolean;

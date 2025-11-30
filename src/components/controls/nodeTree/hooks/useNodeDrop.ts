@@ -2,9 +2,9 @@
  * @file Custom hook for node drop logic in tree list
  */
 import * as React from "react";
-import type { NodeEditorData, NodeId } from "../../../../../types/core";
-import type { NodeDefinition } from "../../../../../types/NodeDefinition";
-import { hasGroupBehavior } from "../../../../../types/behaviors";
+import type { NodeEditorData, NodeId } from "../../../../types/core";
+import type { NodeDefinition } from "../../../../types/NodeDefinition";
+import { hasGroupBehavior } from "../../../../types/behaviors";
 
 type UseNodeDropParams = {
   nodes: NodeEditorData["nodes"];

@@ -2,10 +2,10 @@
  * @file Node title section for inspector
  */
 import * as React from "react";
-import type { Node } from "../../../../types/core";
-import { InspectorLabel } from "../../parts/InspectorLabel";
-import { InspectorInput } from "../../parts/InspectorInput";
-import { useI18n } from "../../../../i18n/context";
+import type { Node } from "../../../types/core";
+import { InspectorLabel } from "../../inspector/parts/InspectorLabel";
+import { InspectorInput } from "../../inspector/parts/InspectorInput";
+import { useI18n } from "../../../i18n/context";
 
 type NodeTitleSectionProps = {
   node: Node;

@@ -2,13 +2,13 @@
  * @file Node state section for inspector (locked/visible)
  */
 import * as React from "react";
-import type { Node } from "../../../../types/core";
+import type { Node } from "../../../types/core";
 import {
   InspectorDefinitionList,
   InspectorDefinitionItem,
-} from "../../parts/InspectorDefinitionList";
-import { SwitchInput } from "../../../elements/SwitchInput";
-import { useI18n } from "../../../../i18n/context";
+} from "../../inspector/parts/InspectorDefinitionList";
+import { SwitchInput } from "../../elements/SwitchInput";
+import { useI18n } from "../../../i18n/context";
 
 type NodeStateSectionProps = {
   node: Node;

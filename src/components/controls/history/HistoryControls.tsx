@@ -2,8 +2,8 @@
  * @file History undo/redo controls
  */
 import * as React from "react";
-import { Button } from "../../../elements/Button";
-import { useI18n } from "../../../../i18n/context";
+import { Button } from "../../elements/Button";
+import { useI18n } from "../../../i18n/context";
 import styles from "./HistoryControls.module.css";
 
 type HistoryControlsProps = {

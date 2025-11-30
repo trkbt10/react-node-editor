@@ -5,9 +5,9 @@
 import * as React from "react";
 import type { InspectorRenderProps } from "../../../types/NodeDefinition";
 import { useI18n } from "../../../i18n/context";
-import styles from "../sections/GroupBehaviorInspector/GroupBehaviorInspector.module.css";
-import { GroupBackgroundSection } from "../sections/GroupBehaviorInspector/GroupBackgroundSection";
-import { GroupOpacitySection } from "../sections/GroupBehaviorInspector/GroupOpacitySection";
+import styles from "../../controls/groupAppearance/GroupBehaviorInspector.module.css";
+import { GroupBackgroundSection } from "../../controls/groupAppearance/GroupBackgroundSection";
+import { GroupOpacitySection } from "../../controls/groupAppearance/GroupOpacitySection";
 
 /**
  * Inspector for "group" behavior

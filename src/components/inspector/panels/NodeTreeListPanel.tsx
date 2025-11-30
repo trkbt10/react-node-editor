@@ -2,15 +2,15 @@
  * @file Node tree list panel main component
  */
 import * as React from "react";
-import { useNodeEditor } from "../../../../contexts/node-editor/context";
-import { useEditorActionState } from "../../../../contexts/EditorActionStateContext";
-import { useNodeDefinitionList } from "../../../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { hasGroupBehavior } from "../../../../types/behaviors";
-import { PropertySection } from "../../parts/PropertySection";
-import { useI18n } from "../../../../i18n/context";
-import { ConnectedNodeTreeItem } from "./ConnectedNodeTreeItem";
-import { useNodeDrop } from "./hooks/useNodeDrop";
-import type { DragState } from "./types";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
+import { hasGroupBehavior } from "../../../types/behaviors";
+import { PropertySection } from "../parts/PropertySection";
+import { useI18n } from "../../../i18n/context";
+import { ConnectedNodeTreeItem } from "../../controls/nodeTree/ConnectedNodeTreeItem";
+import { useNodeDrop } from "../../controls/nodeTree/hooks/useNodeDrop";
+import type { DragState } from "../../controls/nodeTree/types";
 import styles from "./NodeTreeListPanel.module.css";
 
 export type NodeTreeListPanelProps = Record<string, never>;

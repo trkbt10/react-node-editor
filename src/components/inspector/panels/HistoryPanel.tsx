@@ -6,9 +6,9 @@ import * as React from "react";
 import { useHistory } from "../../../contexts/HistoryContext";
 import { useI18n } from "../../../i18n/context";
 import { PropertySection } from "../parts/PropertySection";
-import { HistoryControls } from "../sections/HistoryPanel/HistoryControls";
-import { HistoryList } from "../sections/HistoryPanel/HistoryList";
-import styles from "../sections/HistoryPanel/HistoryPanel.module.css";
+import { HistoryControls } from "../../controls/history/HistoryControls";
+import { HistoryList } from "../../controls/history/HistoryList";
+import styles from "../../controls/history/HistoryPanel.module.css";
 
 /**
  * History panel component

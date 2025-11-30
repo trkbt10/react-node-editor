@@ -5,30 +5,30 @@ import * as React from "react";
 import {
   useInteractionSettings,
   useInteractionSettingsUpdate,
-} from "../../../../contexts/InteractionSettingsContext";
-import { useI18n } from "../../../../i18n/context";
-import type { I18nKey } from "../../../../i18n/types";
+} from "../../../contexts/InteractionSettingsContext";
+import { useI18n } from "../../../i18n/context";
+import type { I18nKey } from "../../../i18n/types";
 import type {
   NodeEditorPointerAction,
   NodeEditorShortcutAction,
   PointerShortcutBinding,
   PointerType,
   ShortcutBinding,
-} from "../../../../types/interaction";
+} from "../../../types/interaction";
 import {
   detectShortcutDisplayPlatform,
   getShortcutLabelForAction,
-} from "../../../../utils/shortcutDisplay";
+} from "../../../utils/shortcutDisplay";
 import {
   describePointerShortcutDisplay,
   getPointerShortcutLabelForAction,
   pointerShortcutBindingFor,
-} from "../../../../utils/pointerShortcuts";
+} from "../../../utils/pointerShortcuts";
 import {
   InteractionHelpSection,
   type SectionView,
-} from "./InteractionHelpSection";
-import type { SectionItemView } from "./InteractionHelpItem";
+} from "../../controls/interactionHelp/InteractionHelpSection";
+import type { SectionItemView } from "../../controls/interactionHelp/InteractionHelpItem";
 import styles from "./InteractionHelpPanel.module.css";
 
 type PointerGesture = "click" | "drag" | "context-menu";

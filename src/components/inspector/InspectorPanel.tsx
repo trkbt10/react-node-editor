@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { NodeTreeListPanel } from "./sections/NodeTreeListPanel/NodeTreeListPanel";
+import { NodeTreeListPanel } from "./panels/NodeTreeListPanel";
 import { HistoryPanel } from "./panels/HistoryPanel";
 import { InspectorPropertiesTab } from "./panels/InspectorPropertiesTab";
 import { TabNav } from "../layout/TabNav";
@@ -13,7 +13,7 @@ import { useI18n } from "../../i18n/context";
 import { GeneralSettingsPanel } from "./panels/GeneralSettingsPanel";
 import { GridSettingsPanel } from "./panels/GridSettingsPanel";
 import { PropertySection } from "./parts/PropertySection";
-import { InteractionHelpPanel } from "./sections/InteractionHelpPanel/InteractionHelpPanel";
+import { InteractionHelpPanel } from "./panels/InteractionHelpPanel";
 
 export type InspectorPanelTabConfig = {
   id: string;

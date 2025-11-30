@@ -1,7 +1,7 @@
 /**
  * @file Shared types for NodeTreeListPanel components
  */
-import type { Node, NodeId } from "../../../../types/core";
+import type { Node, NodeId } from "../../../types/core";
 
 export type DragState = {
   draggingNodeId: NodeId | null;

@@ -10,8 +10,8 @@ import {
   calculateNodesBoundingBox,
 } from "../../../contexts/node-editor/utils/autoLayout";
 import { InspectorDefinitionList } from "../parts/InspectorDefinitionList";
-import { AutoSaveSection } from "../sections/GeneralSettingsPanel/AutoSaveSection";
-import { AutoLayoutSection } from "../sections/GeneralSettingsPanel/AutoLayoutSection";
+import { AutoSaveSection } from "../../controls/autoSave/AutoSaveSection";
+import { AutoLayoutSection } from "../../controls/autoLayout/AutoLayoutSection";
 
 /**
  * General editor settings component

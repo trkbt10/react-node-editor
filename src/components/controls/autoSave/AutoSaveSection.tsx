@@ -2,10 +2,10 @@
  * @file Auto-save settings section
  */
 import * as React from "react";
-import { SwitchInput } from "../../../elements/SwitchInput";
-import { useI18n } from "../../../../i18n/context";
-import { InspectorInput } from "../../parts/InspectorInput";
-import { InspectorDefinitionItem } from "../../parts/InspectorDefinitionList";
+import { SwitchInput } from "../../elements/SwitchInput";
+import { useI18n } from "../../../i18n/context";
+import { InspectorInput } from "../../inspector/parts/InspectorInput";
+import { InspectorDefinitionItem } from "../../inspector/parts/InspectorDefinitionList";
 
 type AutoSaveSectionProps = {
   autoSave: boolean;

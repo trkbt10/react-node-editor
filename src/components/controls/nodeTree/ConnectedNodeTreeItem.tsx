@@ -2,11 +2,11 @@
  * @file ConnectedNodeTreeItem container component
  */
 import * as React from "react";
-import { useNodeEditor } from "../../../../contexts/node-editor/context";
-import { useEditorActionState } from "../../../../contexts/EditorActionStateContext";
-import { useNodeDefinitionList } from "../../../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { hasGroupBehavior } from "../../../../types/behaviors";
-import type { NodeId } from "../../../../types/core";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
+import { hasGroupBehavior } from "../../../types/behaviors";
+import type { NodeId } from "../../../types/core";
 import { NodeTreeItem } from "./NodeTreeItem";
 import type { ConnectedNodeTreeItemProps } from "./types";
 
