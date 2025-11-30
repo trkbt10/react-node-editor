@@ -182,6 +182,29 @@
   --node-editor-segment-control-active-text-color: #ffffff;
   --node-editor-segment-control-segment-padding: 2px 6px;
 
+  /* Tab Navigation - Windows 98 classic button style */
+  --node-editor-tab-nav-gap: 0;
+  --node-editor-tab-nav-padding: 0;
+  --node-editor-tab-nav-border-radius: 0;
+  --node-editor-tab-nav-background: #c0c0c0;
+  --node-editor-tab-nav-box-shadow: inset -1px -1px #ffffff, inset 1px 1px rgba(0, 0, 0, 0.3);
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 22px;
+  --node-editor-tab-button-padding: 2px 8px;
+  --node-editor-tab-button-border-radius: 0;
+  --node-editor-tab-button-background: #c0c0c0;
+  --node-editor-tab-button-border: 2px outset #ffffff;
+  --node-editor-tab-button-color: #000000;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 400;
+  --node-editor-tab-button-active-background: #000080;
+  --node-editor-tab-button-active-color: #ffffff;
+  --node-editor-tab-button-active-font-weight: 700;
+  --node-editor-tab-button-active-border: 2px inset #808080;
+  --node-editor-tab-button-active-box-shadow: none;
+  --node-editor-tab-button-hover-background: #dcdcdc;
+  --node-editor-tab-button-hover-color: #000000;
+
   /* Connection styling - Window98 theme */
   --node-editor-connection-base-stroke-width: 2;
   --node-editor-connection-active-stroke-width: 3;

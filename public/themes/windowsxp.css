@@ -210,6 +210,27 @@
   --node-editor-segment-control-active-text-color: #ffffff;
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
 
+  /* Tab Navigation - Windows XP Luna style */
+  --node-editor-tab-nav-gap: 1px;
+  --node-editor-tab-nav-padding: 2px;
+  --node-editor-tab-nav-border-radius: var(--node-editor-radius-sm);
+  --node-editor-tab-nav-background: #dce8f8;
+  --node-editor-tab-nav-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -1px 0 rgba(27, 77, 165, 0.2);
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 26px;
+  --node-editor-tab-button-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+  --node-editor-tab-button-border-radius: var(--node-editor-radius-sm);
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-color: #000000;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 400;
+  --node-editor-tab-button-active-background: linear-gradient(180deg, #5b9bd5 0%, #1b4da5 100%);
+  --node-editor-tab-button-active-color: #ffffff;
+  --node-editor-tab-button-active-font-weight: 700;
+  --node-editor-tab-button-active-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 1px 3px rgba(27, 77, 165, 0.3);
+  --node-editor-tab-button-hover-background: linear-gradient(180deg, #ffeebf 0%, #ffe7a0 50%, #ffd95c 100%);
+  --node-editor-tab-button-hover-color: #000000;
+
   /* Connection styling - WindowsXP theme */
   --node-editor-connection-base-stroke-width: 2;
   --node-editor-connection-active-stroke-width: 3;

@@ -211,6 +211,30 @@
     --node-editor-segment-control-active-text-color: #000000;
     --node-editor-segment-control-segment-padding: 4px 8px;
 
+    /* Tab Navigation - Brutalist hard edge style */
+    --node-editor-tab-nav-gap: 0;
+    --node-editor-tab-nav-padding: 0;
+    --node-editor-tab-nav-border-radius: 0;
+    --node-editor-tab-nav-background: #ffffff;
+    --node-editor-tab-nav-border: 2px solid #000000;
+    --node-editor-tab-nav-box-shadow: 4px 4px 0 #000000;
+    --node-editor-tab-button-flex: 1;
+    --node-editor-tab-button-min-height: 32px;
+    --node-editor-tab-button-padding: 4px 12px;
+    --node-editor-tab-button-border-radius: 0;
+    --node-editor-tab-button-background: #ffffff;
+    --node-editor-tab-button-border: 2px solid #000000;
+    --node-editor-tab-button-color: #000000;
+    --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+    --node-editor-tab-button-font-weight: 700;
+    --node-editor-tab-button-text-transform: uppercase;
+    --node-editor-tab-button-active-background: #ff5e00;
+    --node-editor-tab-button-active-color: #000000;
+    --node-editor-tab-button-active-font-weight: 700;
+    --node-editor-tab-button-active-box-shadow: none;
+    --node-editor-tab-button-hover-background: #e0e0e0;
+    --node-editor-tab-button-hover-color: #000000;
+
     /* Connection styling - Brutalist theme */
     --node-editor-connection-base-stroke-width: 3;
     --node-editor-connection-active-stroke-width: 5;

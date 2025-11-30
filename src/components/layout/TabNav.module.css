@@ -1,62 +1,128 @@
 .tabNav {
-  display: flex;
-  border-radius: var(--node-editor-segment-control-border-radius);
-  overflow: hidden;
-  background: var(--node-editor-segment-control-background);
-  backdrop-filter: var(--node-editor-segment-backdrop-filter);
-  -webkit-backdrop-filter: var(--node-editor-segment-backdrop-filter);
-  box-shadow: var(--node-editor-segment-control-box-shadow);
-  padding: var(--node-editor-segment-control-padding);
-  color: var(--node-editor-segment-control-text-color);
+  display: var(--node-editor-tab-nav-display, flex);
+  flex-direction: var(--node-editor-tab-nav-direction, row);
+  align-items: var(--node-editor-tab-nav-align, center);
+  justify-content: var(--node-editor-tab-nav-justify, flex-start);
+  gap: var(--node-editor-tab-nav-gap, 0);
+  width: var(--node-editor-tab-nav-width, auto);
+  padding: var(--node-editor-tab-nav-padding, var(--node-editor-segment-control-padding, 2px));
+  border-radius: var(--node-editor-tab-nav-border-radius, var(--node-editor-segment-control-border-radius));
+  background: var(--node-editor-tab-nav-background, var(--node-editor-segment-control-background));
+  border: var(--node-editor-tab-nav-border, none);
+  box-shadow: var(--node-editor-tab-nav-box-shadow, var(--node-editor-segment-control-box-shadow, none));
+  backdrop-filter: var(--node-editor-tab-nav-backdrop-filter, var(--node-editor-segment-backdrop-filter, none));
+  -webkit-backdrop-filter: var(--node-editor-tab-nav-backdrop-filter, var(--node-editor-segment-backdrop-filter, none));
+  overflow: var(--node-editor-tab-nav-overflow, hidden);
+  box-sizing: border-box;
 }
 
 .tabButton {
   z-index: 2;
   appearance: none;
-  border: 0;
-  background: transparent;
-  color: var(--node-editor-segment-control-text-color);
-  flex: 1;
+  display: var(--node-editor-tab-button-display, flex);
+  align-items: var(--node-editor-tab-button-align, center);
+  justify-content: var(--node-editor-tab-button-justify, center);
+  flex: var(--node-editor-tab-button-flex, 1);
+  gap: var(--node-editor-tab-button-gap, 0);
+  min-width: var(--node-editor-tab-button-min-width, 2.5em);
+  min-height: var(--node-editor-tab-button-min-height, 28px);
+  padding: var(--node-editor-tab-button-padding, var(--node-editor-segment-control-segment-padding));
+  margin: var(--node-editor-tab-button-margin, 0);
+  border: var(--node-editor-tab-button-border, none);
+  border-radius: var(--node-editor-tab-button-border-radius, 0);
+  background: var(--node-editor-tab-button-background, var(--node-editor-segment-control-background-color, transparent));
+  color: var(--node-editor-tab-button-color, var(--node-editor-segment-control-text-color));
+  font-family: var(--node-editor-tab-button-font-family, inherit);
+  font-size: var(--node-editor-tab-button-font-size, var(--node-editor-inspector-font-size-meta));
+  font-weight: var(--node-editor-tab-button-font-weight, 500);
+  line-height: var(--node-editor-tab-button-line-height, var(--node-editor-inspector-line-height-meta));
+  letter-spacing: var(--node-editor-tab-button-letter-spacing, normal);
+  text-transform: var(--node-editor-tab-button-text-transform, none);
+  text-decoration: var(--node-editor-tab-button-text-decoration, none);
   white-space: nowrap;
-  padding: var(--node-editor-segment-control-segment-padding);
-  background: var(--node-editor-segment-control-background-color);
-  border: none;
-  font-size: var(--node-editor-inspector-font-size-meta);
-  line-height: var(--node-editor-inspector-line-height-meta);
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--node-editor-tab-button-transition, all 0.2s ease);
   position: relative;
-  min-height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   box-sizing: border-box;
-  min-width: 2.5em;
 }
 
+/* First child border radius - respects gap */
 .tabButton:first-child {
-  border-radius: var(--node-editor-segment-control-border-radius) 0 0 var(--node-editor-segment-control-border-radius);
+  border-top-left-radius: var(
+    --node-editor-tab-button-first-border-radius,
+    var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius))
+  );
+  border-bottom-left-radius: var(
+    --node-editor-tab-button-first-border-radius,
+    var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius))
+  );
 }
 
 .tabButton:last-child {
-  border-radius: 0 var(--node-editor-segment-control-border-radius) var(--node-editor-segment-control-border-radius) 0;
+  border-top-right-radius: var(
+    --node-editor-tab-button-last-border-radius,
+    var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius))
+  );
+  border-bottom-right-radius: var(
+    --node-editor-tab-button-last-border-radius,
+    var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius))
+  );
 }
 
 .tabButton:only-child {
-  border-radius: var(--node-editor-segment-control-border-radius);
+  border-radius: var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius));
 }
 
+/* Active state */
 .tabButton[data-active="true"] {
-  background: var(--node-editor-segment-control-active-background-color);
-  color: var(--node-editor-segment-control-active-text-color);
-  box-shadow: var(--node-editor-segment-control-indicator-box-shadow);
+  background: var(
+    --node-editor-tab-button-active-background,
+    var(--node-editor-segment-control-active-background-color)
+  );
+  color: var(--node-editor-tab-button-active-color, var(--node-editor-segment-control-active-text-color));
+  font-weight: var(--node-editor-tab-button-active-font-weight, var(--node-editor-tab-button-font-weight, 500));
+  border: var(--node-editor-tab-button-active-border, var(--node-editor-tab-button-border, none));
+  box-shadow: var(
+    --node-editor-tab-button-active-box-shadow,
+    var(--node-editor-segment-control-indicator-box-shadow, none)
+  );
 }
 
+/* Active indicator (underline, etc.) */
+.tabButton[data-active="true"]::after {
+  content: var(--node-editor-tab-button-active-indicator-content, none);
+  position: absolute;
+  bottom: var(--node-editor-tab-button-active-indicator-bottom, 0);
+  left: var(--node-editor-tab-button-active-indicator-left, 0);
+  right: var(--node-editor-tab-button-active-indicator-right, 0);
+  height: var(--node-editor-tab-button-active-indicator-height, 2px);
+  background: var(--node-editor-tab-button-active-indicator-background, var(--node-editor-accent-color));
+  border-radius: var(--node-editor-tab-button-active-indicator-border-radius, 0);
+}
+
+/* Hover state (non-active) */
 .tabButton:not([data-active="true"]):hover {
-  background: var(--node-editor-segment-control-hover-background-color);
+  background: var(
+    --node-editor-tab-button-hover-background,
+    var(--node-editor-segment-control-hover-background-color, rgba(0, 0, 0, 0.05))
+  );
+  color: var(--node-editor-tab-button-hover-color, var(--node-editor-tab-button-color));
 }
 
+/* Hover state (active) */
 .tabButton[data-active="true"]:hover {
-  opacity: 0.9;
+  opacity: var(--node-editor-tab-button-active-hover-opacity, 0.9);
+}
+
+/* Focus visible state */
+.tabButton:focus-visible {
+  outline: var(--node-editor-tab-button-focus-outline, 2px solid var(--node-editor-accent-color));
+  outline-offset: var(--node-editor-tab-button-focus-outline-offset, -2px);
+}
+
+/* Disabled state */
+.tabButton:disabled {
+  opacity: var(--node-editor-tab-button-disabled-opacity, 0.5);
+  cursor: not-allowed;
+  pointer-events: none;
 }

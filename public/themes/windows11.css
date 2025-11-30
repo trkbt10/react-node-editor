@@ -210,6 +210,28 @@
   --node-editor-segment-control-active-text-color: rgba(0, 0, 0, 0.9);
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
 
+  /* Tab Navigation - Windows 11 Fluent segment style (mica/acrylic) */
+  --node-editor-tab-nav-gap: 2px;
+  --node-editor-tab-nav-padding: 4px;
+  --node-editor-tab-nav-border-radius: var(--node-editor-radius-md);
+  --node-editor-tab-nav-background: rgba(243, 243, 243, 0.65);
+  --node-editor-tab-nav-backdrop-filter: blur(30px) saturate(180%);
+  --node-editor-tab-nav-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 30px;
+  --node-editor-tab-button-padding: var(--node-editor-space-xs) var(--node-editor-space-lg);
+  --node-editor-tab-button-border-radius: var(--node-editor-radius-sm);
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-color: rgba(0, 0, 0, 0.6);
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 400;
+  --node-editor-tab-button-active-background: rgba(255, 255, 255, 0.9);
+  --node-editor-tab-button-active-color: rgba(0, 0, 0, 0.9);
+  --node-editor-tab-button-active-font-weight: 600;
+  --node-editor-tab-button-active-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --node-editor-tab-button-hover-background: rgba(255, 255, 255, 0.5);
+  --node-editor-tab-button-hover-color: rgba(0, 0, 0, 0.8);
+
   /* Connection styling - Windows11 theme */
   --node-editor-connection-base-stroke-width: 2;
   --node-editor-connection-active-stroke-width: 3;

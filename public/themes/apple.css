@@ -211,6 +211,66 @@
   --node-editor-segment-control-active-background-color: #ffffff;
   --node-editor-segment-control-active-text-color: #000000;
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  --node-editor-segment-control-hover-background-color: rgba(0, 0, 0, 0.04);
+  --node-editor-segment-control-indicator-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+
+  /* Tab Navigation - Apple text tab style */
+  --node-editor-tab-nav-display: flex;
+  --node-editor-tab-nav-direction: row;
+  --node-editor-tab-nav-align: center;
+  --node-editor-tab-nav-justify: center;
+  --node-editor-tab-nav-gap: var(--node-editor-space-lg);
+  --node-editor-tab-nav-width: auto;
+  --node-editor-tab-nav-padding: 0;
+  --node-editor-tab-nav-border-radius: 0;
+  --node-editor-tab-nav-background: transparent;
+  --node-editor-tab-nav-border: none;
+  --node-editor-tab-nav-box-shadow: none;
+  --node-editor-tab-nav-backdrop-filter: none;
+  --node-editor-tab-nav-overflow: visible;
+
+  /* Tab Button - Apple text style */
+  --node-editor-tab-button-display: flex;
+  --node-editor-tab-button-align: center;
+  --node-editor-tab-button-justify: center;
+  --node-editor-tab-button-flex: 0 0 auto;
+  --node-editor-tab-button-gap: var(--node-editor-space-xs);
+  --node-editor-tab-button-min-width: auto;
+  --node-editor-tab-button-min-height: 32px;
+  --node-editor-tab-button-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  --node-editor-tab-button-margin: 0;
+  --node-editor-tab-button-border: none;
+  --node-editor-tab-button-border-radius: 0;
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-color: var(--node-editor-secondary-label-color);
+  --node-editor-tab-button-font-family: var(--node-editor-theme-control-font-family);
+  --node-editor-tab-button-font-size: 0.8125rem;
+  --node-editor-tab-button-font-weight: 400;
+  --node-editor-tab-button-line-height: 1.4;
+  --node-editor-tab-button-letter-spacing: normal;
+  --node-editor-tab-button-text-transform: none;
+  --node-editor-tab-button-transition: color 0.2s ease;
+  --node-editor-tab-button-first-border-radius: 0;
+  --node-editor-tab-button-last-border-radius: 0;
+
+  /* Tab Button Active State - Apple style */
+  --node-editor-tab-button-active-background: transparent;
+  --node-editor-tab-button-active-color: var(--node-editor-text-color);
+  --node-editor-tab-button-active-font-weight: 500;
+  --node-editor-tab-button-active-border: none;
+  --node-editor-tab-button-active-box-shadow: none;
+  --node-editor-tab-button-active-hover-opacity: 1;
+
+  /* Tab Button Hover State */
+  --node-editor-tab-button-hover-background: transparent;
+  --node-editor-tab-button-hover-color: var(--node-editor-text-color);
+
+  /* Tab Button Focus State */
+  --node-editor-tab-button-focus-outline: 2px solid var(--node-editor-keyboard-focus-indicator-color);
+  --node-editor-tab-button-focus-outline-offset: 2px;
+
+  /* Tab Button Disabled State */
+  --node-editor-tab-button-disabled-opacity: 0.4;
 
   /* Connection styling - Apple theme */
   --node-editor-connection-base-stroke-width: 2;

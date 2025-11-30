@@ -211,6 +211,75 @@
   --node-editor-segment-control-active-background-color: #21262d;
   --node-editor-segment-control-active-text-color: #c9d1d9;
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+  --node-editor-segment-control-hover-background-color: rgba(56, 62, 70, 0.6);
+  --node-editor-segment-control-indicator-box-shadow: none;
+
+  /* Tab Navigation - GitHub underline tab style */
+  --node-editor-tab-nav-display: flex;
+  --node-editor-tab-nav-direction: row;
+  --node-editor-tab-nav-align: stretch;
+  --node-editor-tab-nav-justify: flex-start;
+  --node-editor-tab-nav-gap: 0;
+  --node-editor-tab-nav-width: 100%;
+  --node-editor-tab-nav-padding: 0;
+  --node-editor-tab-nav-border-radius: 0;
+  --node-editor-tab-nav-background: transparent;
+  --node-editor-tab-nav-border: none;
+  --node-editor-tab-nav-box-shadow: inset 0 -1px 0 #30363d;
+  --node-editor-tab-nav-backdrop-filter: none;
+  --node-editor-tab-nav-overflow: visible;
+
+  /* Tab Button - GitHub underline style */
+  --node-editor-tab-button-display: flex;
+  --node-editor-tab-button-align: center;
+  --node-editor-tab-button-justify: center;
+  --node-editor-tab-button-flex: 0 0 auto;
+  --node-editor-tab-button-gap: var(--node-editor-space-xs);
+  --node-editor-tab-button-min-width: auto;
+  --node-editor-tab-button-min-height: 40px;
+  --node-editor-tab-button-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+  --node-editor-tab-button-margin: 0;
+  --node-editor-tab-button-border: none;
+  --node-editor-tab-button-border-radius: 0;
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-color: #8b949e;
+  --node-editor-tab-button-font-family: var(--node-editor-theme-control-font-family);
+  --node-editor-tab-button-font-size: 0.875rem;
+  --node-editor-tab-button-font-weight: 400;
+  --node-editor-tab-button-line-height: 1.5;
+  --node-editor-tab-button-letter-spacing: normal;
+  --node-editor-tab-button-text-transform: none;
+  --node-editor-tab-button-transition: color 0.2s ease;
+  --node-editor-tab-button-first-border-radius: 0;
+  --node-editor-tab-button-last-border-radius: 0;
+
+  /* Tab Button Active State - GitHub underline */
+  --node-editor-tab-button-active-background: transparent;
+  --node-editor-tab-button-active-color: #c9d1d9;
+  --node-editor-tab-button-active-font-weight: 600;
+  --node-editor-tab-button-active-border: none;
+  --node-editor-tab-button-active-box-shadow: none;
+  --node-editor-tab-button-active-hover-opacity: 1;
+
+  /* Tab Button Active Indicator - underline */
+  --node-editor-tab-button-active-indicator-content: "";
+  --node-editor-tab-button-active-indicator-bottom: 0;
+  --node-editor-tab-button-active-indicator-left: var(--node-editor-space-sm);
+  --node-editor-tab-button-active-indicator-right: var(--node-editor-space-sm);
+  --node-editor-tab-button-active-indicator-height: 2px;
+  --node-editor-tab-button-active-indicator-background: #f78166;
+  --node-editor-tab-button-active-indicator-border-radius: 2px 2px 0 0;
+
+  /* Tab Button Hover State */
+  --node-editor-tab-button-hover-background: transparent;
+  --node-editor-tab-button-hover-color: #c9d1d9;
+
+  /* Tab Button Focus State */
+  --node-editor-tab-button-focus-outline: 2px solid var(--node-editor-accent-color);
+  --node-editor-tab-button-focus-outline-offset: -2px;
+
+  /* Tab Button Disabled State */
+  --node-editor-tab-button-disabled-opacity: 0.4;
 
   /* Connection styling - GitHub theme */
   --node-editor-connection-base-stroke-width: 2;

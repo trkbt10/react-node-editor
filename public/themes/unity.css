@@ -209,6 +209,29 @@
   --node-editor-segment-control-active-text-color: #ffffff;
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
 
+  /* Tab Navigation - Unity segment style (toolbar buttons) */
+  --node-editor-tab-nav-gap: 1px;
+  --node-editor-tab-nav-padding: 0;
+  --node-editor-tab-nav-border-radius: var(--node-editor-radius-xs);
+  --node-editor-tab-nav-background: rgba(0, 0, 0, 0.3);
+  --node-editor-tab-nav-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 24px;
+  --node-editor-tab-button-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+  --node-editor-tab-button-border-radius: 0;
+  --node-editor-tab-button-first-border-radius: var(--node-editor-radius-xs);
+  --node-editor-tab-button-last-border-radius: var(--node-editor-radius-xs);
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-color: #9e9e9e;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 400;
+  --node-editor-tab-button-active-background: #3c3c3c;
+  --node-editor-tab-button-active-color: #ffffff;
+  --node-editor-tab-button-active-font-weight: 500;
+  --node-editor-tab-button-active-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --node-editor-tab-button-hover-background: rgba(255, 255, 255, 0.06);
+  --node-editor-tab-button-hover-color: #c8c8c8;
+
   /* Connection styling - Unity Shader Graph connections */
   --node-editor-connection-base-stroke-width: 2.5;
   --node-editor-connection-active-stroke-width: 3.5;

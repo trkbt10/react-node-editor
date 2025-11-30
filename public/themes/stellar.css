@@ -212,6 +212,27 @@
   --node-editor-segment-control-active-text-color: #ffffff;
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
 
+  /* Tab Navigation - Stellar warm pill style */
+  --node-editor-tab-nav-gap: var(--node-editor-space-xs);
+  --node-editor-tab-nav-padding: 4px;
+  --node-editor-tab-nav-border-radius: var(--node-editor-segment-control-border-radius);
+  --node-editor-tab-nav-background: rgba(0, 0, 0, 0.15);
+  --node-editor-tab-nav-box-shadow: none;
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 30px;
+  --node-editor-tab-button-padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  --node-editor-tab-button-border-radius: 16px;
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-color: #b0b0b0;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 500;
+  --node-editor-tab-button-active-background: #e8944a;
+  --node-editor-tab-button-active-color: #ffffff;
+  --node-editor-tab-button-active-font-weight: 500;
+  --node-editor-tab-button-active-box-shadow: 0 2px 8px rgba(232, 148, 74, 0.4);
+  --node-editor-tab-button-hover-background: rgba(232, 148, 74, 0.15);
+  --node-editor-tab-button-hover-color: #e8e8e8;
+
   /* Connection styling - Stellar theme */
   --node-editor-connection-base-stroke-width: 2.5;
   --node-editor-connection-active-stroke-width: 3.5;

@@ -211,6 +211,27 @@
     --node-editor-segment-control-active-text-color: #37352f;
     --node-editor-segment-control-segment-padding: 2px 8px;
 
+    /* Tab Navigation - Notion text tab style (clean, minimal) */
+    --node-editor-tab-nav-gap: var(--node-editor-space-md);
+    --node-editor-tab-nav-padding: 0;
+    --node-editor-tab-nav-border-radius: 0;
+    --node-editor-tab-nav-background: transparent;
+    --node-editor-tab-nav-box-shadow: none;
+    --node-editor-tab-button-flex: 0 0 auto;
+    --node-editor-tab-button-min-height: 28px;
+    --node-editor-tab-button-padding: var(--node-editor-space-xs) 0;
+    --node-editor-tab-button-border-radius: 0;
+    --node-editor-tab-button-background: transparent;
+    --node-editor-tab-button-color: rgba(55, 53, 47, 0.5);
+    --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+    --node-editor-tab-button-font-weight: 500;
+    --node-editor-tab-button-active-background: transparent;
+    --node-editor-tab-button-active-color: #37352f;
+    --node-editor-tab-button-active-font-weight: 600;
+    --node-editor-tab-button-active-box-shadow: none;
+    --node-editor-tab-button-hover-background: transparent;
+    --node-editor-tab-button-hover-color: rgba(55, 53, 47, 0.8);
+
     /* Connection styling - Notion theme */
     --node-editor-connection-base-stroke-width: 1.5;
     --node-editor-connection-active-stroke-width: 2.5;

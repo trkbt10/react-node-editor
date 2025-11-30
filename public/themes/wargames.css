@@ -209,6 +209,30 @@
   --node-editor-segment-control-active-text-color: #00ff41;
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
 
+  /* Tab Navigation - Wargames terminal style (CRT green) */
+  --node-editor-tab-nav-gap: 2px;
+  --node-editor-tab-nav-padding: 2px;
+  --node-editor-tab-nav-border-radius: 0;
+  --node-editor-tab-nav-background: rgba(0, 255, 65, 0.05);
+  --node-editor-tab-nav-border: 1px solid rgba(0, 255, 65, 0.4);
+  --node-editor-tab-nav-box-shadow: 0 0 6px rgba(0, 255, 65, 0.3);
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 24px;
+  --node-editor-tab-button-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+  --node-editor-tab-button-border-radius: 0;
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-color: #00ff41;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 400;
+  --node-editor-tab-button-text-transform: uppercase;
+  --node-editor-tab-button-letter-spacing: 1px;
+  --node-editor-tab-button-active-background: rgba(0, 255, 65, 0.25);
+  --node-editor-tab-button-active-color: #00ff41;
+  --node-editor-tab-button-active-font-weight: 700;
+  --node-editor-tab-button-active-box-shadow: 0 0 8px rgba(0, 255, 65, 0.5);
+  --node-editor-tab-button-hover-background: rgba(0, 255, 65, 0.12);
+  --node-editor-tab-button-hover-color: #00ff6e;
+
   /* Connection styling - Wargames theme */
   --node-editor-connection-base-stroke-width: 2;
   --node-editor-connection-active-stroke-width: 3;

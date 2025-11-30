@@ -209,6 +209,28 @@
   --node-editor-segment-control-active-text-color: #6b5a88;
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
 
+  /* Tab Navigation - Opal soft pill style (rounded, gentle) */
+  --node-editor-tab-nav-gap: var(--node-editor-space-xs);
+  --node-editor-tab-nav-padding: 4px;
+  --node-editor-tab-nav-border-radius: var(--node-editor-segment-control-border-radius);
+  --node-editor-tab-nav-background: rgba(186, 157, 237, 0.06);
+  --node-editor-tab-nav-backdrop-filter: blur(12px);
+  --node-editor-tab-nav-box-shadow: none;
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 30px;
+  --node-editor-tab-button-padding: var(--node-editor-space-xs) var(--node-editor-space-lg);
+  --node-editor-tab-button-border-radius: 100px;
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-color: #7a7088;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 500;
+  --node-editor-tab-button-active-background: rgba(255, 255, 255, 0.9);
+  --node-editor-tab-button-active-color: #6b5a88;
+  --node-editor-tab-button-active-font-weight: 500;
+  --node-editor-tab-button-active-box-shadow: 0 2px 8px rgba(186, 157, 237, 0.2);
+  --node-editor-tab-button-hover-background: rgba(186, 157, 237, 0.08);
+  --node-editor-tab-button-hover-color: #5a4a78;
+
   /* Connection styling - soft and flowing */
   --node-editor-connection-base-stroke-width: 2.5;
   --node-editor-connection-active-stroke-width: 3.5;

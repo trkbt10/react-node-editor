@@ -212,6 +212,32 @@
   --node-editor-segment-control-active-text-color: #1f2328;
   --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
 
+  /* Tab Navigation - GitHub Light underline tab style */
+  --node-editor-tab-nav-gap: 0;
+  --node-editor-tab-nav-padding: 0;
+  --node-editor-tab-nav-border-radius: 0;
+  --node-editor-tab-nav-background: transparent;
+  --node-editor-tab-nav-box-shadow: inset 0 -1px 0 #d0d7de;
+  --node-editor-tab-button-flex: 0 0 auto;
+  --node-editor-tab-button-min-height: 32px;
+  --node-editor-tab-button-padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+  --node-editor-tab-button-border-radius: 0;
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-color: #59636e;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 400;
+  --node-editor-tab-button-active-background: transparent;
+  --node-editor-tab-button-active-color: #1f2328;
+  --node-editor-tab-button-active-font-weight: 600;
+  --node-editor-tab-button-active-box-shadow: none;
+  --node-editor-tab-button-hover-background: rgba(208, 215, 222, 0.32);
+  --node-editor-tab-button-hover-color: #1f2328;
+  --node-editor-tab-button-active-indicator-content: "";
+  --node-editor-tab-button-active-indicator-bottom: 0;
+  --node-editor-tab-button-active-indicator-height: 2px;
+  --node-editor-tab-button-active-indicator-background: #fd8c73;
+  --node-editor-tab-button-active-indicator-border-radius: 2px 2px 0 0;
+
   /* Connection styling - GitHub Light theme */
   --node-editor-connection-base-stroke-width: 2;
   --node-editor-connection-active-stroke-width: 3;
