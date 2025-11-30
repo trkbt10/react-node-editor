@@ -7,6 +7,7 @@ import type { NestedNodeDefinitionCategory } from "../../../../contexts/node-def
 import { useI18n } from "../../../../i18n/context";
 import { CategoryTree } from "./CategoryTree";
 import { NodeListPane } from "./NodeListPane";
+import { PaneHeader } from "./PaneHeader";
 import styles from "./SplitPaneView.module.css";
 
 export type SplitPaneViewProps = {
@@ -99,7 +100,7 @@ export const SplitPaneView: React.FC<SplitPaneViewProps> = ({
   return (
     <div className={styles.splitPane}>
       <div className={styles.categoryPane}>
-        <div className={styles.categoryPaneHeader}>{t("nodeSearchCategoriesHeader")}</div>
+        <PaneHeader>{t("nodeSearchCategoriesHeader")}</PaneHeader>
         <CategoryTree
           categories={categories}
           selectedPath={selectedCategoryPath}

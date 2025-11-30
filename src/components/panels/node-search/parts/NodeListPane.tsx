@@ -5,6 +5,7 @@ import * as React from "react";
 import type { NodeDefinition } from "../../../../types/NodeDefinition";
 import { useI18n } from "../../../../i18n/context";
 import { NodeDefinitionCard } from "./NodeDefinitionCard";
+import { PaneHeader } from "./PaneHeader";
 import styles from "./NodeListPane.module.css";
 
 export type NodeListPaneProps = {
@@ -39,10 +40,10 @@ export const NodeListPane: React.FC<NodeListPaneProps> = ({
 
   return (
     <div className={styles.nodePane}>
-      <div className={styles.nodePaneHeader}>
+      <PaneHeader>
         {title}
         <span className={styles.nodeCountBadge}>{nodes.length}</span>
-      </div>
+      </PaneHeader>
       <div className={styles.nodeList}>
         {nodes.map((node) => {
           const globalIndex = nodeIndexByType.get(node.type) ?? -1;

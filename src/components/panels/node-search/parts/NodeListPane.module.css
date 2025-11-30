@@ -9,24 +9,6 @@
   overflow: hidden;
 }
 
-/* Shared pane header style */
-.nodePaneHeader {
-  padding: var(--node-editor-space-sm) var(--node-editor-space-md);
-  font-size: var(--node-editor-inspector-font-size-meta);
-  font-weight: var(--node-editor-inspector-font-weight-medium);
-  color: var(--node-editor-secondary-label-color);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  border-bottom: var(--node-editor-input-border);
-  flex-shrink: 0;
-  min-height: 32px;
-  display: flex;
-  align-items: center;
-  gap: var(--node-editor-space-sm);
-  box-sizing: border-box;
-  background: var(--node-editor-table-header-background-color);
-}
-
 .nodeCountBadge {
   font-size: var(--node-editor-inspector-font-size-meta);
   font-weight: normal;
@@ -34,6 +16,7 @@
   padding: var(--node-editor-space-xxs, 2px) var(--node-editor-space-xs);
   background: var(--node-editor-control-background);
   border-radius: var(--node-editor-control-border-radius);
+  line-height: 1;
 }
 
 /* Node list - self-contained scroll region */
