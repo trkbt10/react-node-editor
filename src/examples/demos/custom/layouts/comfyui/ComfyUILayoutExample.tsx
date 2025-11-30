@@ -15,6 +15,7 @@ import type { NodeEditorData, Port, Size } from "../../../../../types/core";
 import { ExampleLayout } from "../../../shared/parts/ExampleLayout";
 import { ExampleWrapper } from "../../../shared/parts/ExampleWrapper";
 import { getNodeBoundingBox } from "../../../../../utils/boundingBoxUtils";
+import { PropertySection } from "../../../../../components/inspector/parts/PropertySection";
 import styles from "./ComfyUILayoutExample.module.css";
 
 type ComfyNodeData = {
@@ -566,15 +567,32 @@ export const ComfyUILayoutExample: React.FC = () => {
     <ExampleLayout>
       <ExampleWrapper>
         <div className={styles.layout}>
-          <div className={styles.info}>
-            <h3>Custom Port Positioning</h3>
-            <ul>
-              <li><strong>computePortPositions:</strong> Custom function on NodeDefinition for full control over port placement</li>
-              <li><strong>Header/Body Regions:</strong> Use <code>segment: "header"</code> or <code>segment: "body"</code> in placement</li>
-              <li><strong>Custom Renderer:</strong> Position content based on known layout dimensions</li>
-            </ul>
-            <h3>Configuration</h3>
-            <pre className={styles.codeBlock}>
+          <div className={styles.sidebar}>
+            <PropertySection title="Custom Port Positioning">
+              <ul className={styles.featureList}>
+                <li>
+                  <code className={styles.code}>computePortPositions</code>
+                  <span className={styles.featureDescription}>
+                    Custom function on NodeDefinition for full control over port placement
+                  </span>
+                </li>
+                <li>
+                  <span className={styles.featureLabel}>Header/Body Regions</span>
+                  <span className={styles.featureDescription}>
+                    Use <code className={styles.code}>segment: "header"</code> or{" "}
+                    <code className={styles.code}>segment: "body"</code> in placement
+                  </span>
+                </li>
+                <li>
+                  <span className={styles.featureLabel}>Custom Renderer</span>
+                  <span className={styles.featureDescription}>
+                    Position content based on known layout dimensions
+                  </span>
+                </li>
+              </ul>
+            </PropertySection>
+            <PropertySection title="Configuration Example">
+              <pre className={styles.codeBlock}>
 {`// Define on NodeDefinition
 computePortPositions: (context) => {
   const { node, ports, nodeSize } = context;
@@ -590,7 +608,8 @@ computePortPositions: (context) => {
 
   return result;
 }`}
-            </pre>
+              </pre>
+            </PropertySection>
           </div>
           <div className={styles.editorPanel}>
             <NodeEditor

@@ -3,54 +3,55 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 12px;
+  gap: var(--node-editor-inspector-section-gap);
+  padding: var(--node-editor-inspector-space-sm);
   box-sizing: border-box;
-  background: var(--node-editor-background-color, #f5f5f5);
+  background: var(--node-editor-background-color);
 }
 
 .panelContainer {
   flex: 1;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: var(--node-editor-inspector-section-gap);
   min-height: 0;
 }
 
 .panel {
   display: flex;
   flex-direction: column;
-  background: var(--node-editor-control-background, #ffffff);
-  border-radius: 8px;
+  background: var(--node-editor-control-background);
+  border: var(--node-editor-card-border);
+  border-radius: var(--node-editor-card-border-radius);
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--node-editor-card-shadow);
 }
 
 .panelHeader {
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--node-editor-divider-color, rgba(0, 0, 0, 0.1));
-  background: var(--node-editor-surface-color, rgba(0, 0, 0, 0.02));
+  padding: var(--node-editor-inspector-space-sm) var(--node-editor-inspector-space-md);
+  border-bottom: 1px solid var(--node-editor-separator-color);
+  background: var(--node-editor-surface-secondary);
 }
 
 .panelTitle {
   margin: 0 0 4px;
-  font-size: 14px;
+  font-size: var(--node-editor-inspector-font-size-body);
   font-weight: 600;
-  color: var(--node-editor-text-color, #111);
+  color: var(--node-editor-text-color);
 }
 
 .panelDescription {
   margin: 0;
-  font-size: 12px;
-  color: var(--node-editor-secondary-text-color, #666);
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--node-editor-secondary-label-color);
 }
 
 .panelDescription code {
-  font-family: var(--node-editor-code-font, monospace);
-  background: var(--node-editor-surface-color, rgba(0, 0, 0, 0.05));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: var(--node-editor-surface-secondary);
   padding: 1px 4px;
-  border-radius: 3px;
-  font-size: 11px;
+  border-radius: var(--node-editor-control-border-radius);
+  font-size: var(--node-editor-inspector-font-size-meta);
 }
 
 .editorContainer {
@@ -60,43 +61,44 @@
 }
 
 .infoPanel {
-  background: var(--node-editor-control-background, #ffffff);
-  border-radius: 8px;
-  padding: 12px 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: var(--node-editor-control-background);
+  border: var(--node-editor-card-border);
+  border-radius: var(--node-editor-card-border-radius);
+  padding: var(--node-editor-inspector-space-sm) var(--node-editor-inspector-space-md);
+  box-shadow: var(--node-editor-card-shadow);
 }
 
 .infoTitle {
-  margin: 0 0 12px;
-  font-size: 13px;
+  margin: 0 0 var(--node-editor-inspector-space-sm);
+  font-size: var(--node-editor-inspector-font-size-body);
   font-weight: 600;
-  color: var(--node-editor-text-color, #111);
+  color: var(--node-editor-text-color);
 }
 
 .infoContent {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: var(--node-editor-inspector-section-gap);
 }
 
 .utilityDemo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--node-editor-inspector-inline-gap);
 }
 
 .codeBlock {
-  font-family: var(--node-editor-code-font, monospace);
-  font-size: 11px;
-  background: var(--node-editor-surface-color, rgba(0, 0, 0, 0.05));
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--node-editor-inspector-font-size-meta);
+  background: var(--node-editor-surface-secondary);
   padding: 4px 8px;
-  border-radius: 4px;
-  color: var(--node-editor-text-color, #111);
+  border-radius: var(--node-editor-control-border-radius);
+  color: var(--node-editor-input-text-color);
 }
 
 .result {
-  font-family: var(--node-editor-code-font, monospace);
-  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--node-editor-inspector-font-size-meta);
   font-weight: 600;
-  color: var(--node-editor-accent-color, #0066cc);
+  color: var(--node-editor-accent-color);
 }
