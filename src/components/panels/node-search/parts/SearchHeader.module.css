@@ -1,5 +1,5 @@
 .searchHeader {
-  padding: var(--node-editor-space-md) var(--node-editor-space-lg);
+  padding: var(--node-editor-space-sm) var(--node-editor-space-md);
   border-bottom: var(--node-editor-input-border);
   background: var(--node-editor-table-header-background-color);
   position: relative;

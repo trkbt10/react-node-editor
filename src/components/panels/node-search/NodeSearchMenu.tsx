@@ -55,16 +55,6 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
   const searchInputRef = React.useRef<HTMLInputElement>(null);
 
-  const keyboardHints = React.useMemo(
-    () => (
-      <>
-        <kbd>↑↓</kbd> {t("nodeSearchHintNavigate")} • <kbd>⏎</kbd> {t("nodeSearchHintCreate")} • <kbd>⇥</kbd>{" "}
-        {t("nodeSearchHintCategory")} • <kbd>⎋</kbd> {t("nodeSearchHintClose")}
-      </>
-    ),
-    [t],
-  );
-
   // Group node definitions based on view mode
   const groupedDefinitions = React.useMemo<NodeDefinitionCategory[]>(() => {
     return groupNodeDefinitions(nodeDefinitions);
@@ -217,7 +207,6 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
           inputRef={searchInputRef}
           placeholder={t("nodeSearchPlaceholder")}
           ariaLabel={t("nodeSearchAriaLabel")}
-          hints={keyboardHints}
         />
 
         <div className={styles.searchResults}>
