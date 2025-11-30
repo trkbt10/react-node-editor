@@ -10,7 +10,7 @@
     "dist/style.css",
     "public/themes/*.css"
   ],
-  "license": "UNLICENSED",
+  "license": "Unlicense",
   "files": [
     "dist",
     "public/themes"
