@@ -241,4 +241,4 @@ settingsManager.resetToDefaults();
 - `src/settings/types.ts` - Type definitions
 - `src/settings/defaultSettings.ts` - Default setting definitions
 - `src/hooks/useSettings.ts` - React hook for settings
-- `src/examples/demos/custom-layout-demo.tsx` - Usage example
+- `src/examples/demos/layout/custom-core/custom-layout-demo.tsx` - Usage example

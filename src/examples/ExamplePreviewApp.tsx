@@ -5,39 +5,39 @@ import * as React from "react";
 
 import { applyTheme, getStoredThemeId, listAvailableThemes } from "./themes/registry";
 import type { NodeEditorThemeId } from "./themes/registry";
-import { ConstrainedNodeExample } from "./demos/ConstrainedNodeExample";
-import { TypedNodesExample } from "./demos/TypedNodesExample";
-import { AdvancedNodeExample } from "./demos/AdvancedNodeExample";
-import { CustomPortRendererExample } from "./demos/CustomPortRendererExample";
-import { I18nPlaygroundExample } from "./demos/I18nPlaygroundExample";
+import { ConstrainedNodeExample } from "./demos/basic/constrained-nodes/ConstrainedNodeExample";
+import { TypedNodesExample } from "./demos/basic/typed-nodes/TypedNodesExample";
+import { AdvancedNodeExample } from "./demos/advanced/advanced-node/AdvancedNodeExample";
+import { CustomPortRendererExample } from "./demos/custom/ports/port-playground/CustomPortRendererExample";
+import { I18nPlaygroundExample } from "./demos/advanced/internationalization/i18n-playground/I18nPlaygroundExample";
 import {
   DefaultLayoutExample,
   CustomInspectorWidthExample,
   CanvasOnlyExample,
   WithToolbarExample,
-} from "./demos/ColumnLayoutExample";
-import { InspectorPaletteDnDExample } from "./demos/InspectorPaletteDnDExample";
-import { AdvancedLayoutExample } from "./demos/AdvancedLayoutExample";
-import { ResponsiveLayoutExample } from "./demos/ResponsiveLayoutExample";
-import { MobileDrawerExample } from "./demos/MobileDrawerExample";
-import { ThreeJsExample } from "./demos/threejs/ThreeJsExample";
-import CustomNodeExample from "./demos/CustomNodeExample";
-import { ThemeShowcaseExample } from "./demos/design/ThemeShowcaseExample";
-import { AdvancedNestedEditorExample } from "./demos/advanced/subeditor/AdvancedNestedEditorExample";
-import { InteractionCustomizationExample } from "./demos/interaction/InteractionCustomizationExample";
-import { CustomConnectorExample } from "./demos/CustomConnectorExample";
-import { OpalThemeExample } from "./demos/opal-theme/OpalThemeExample";
-import { UnityThemeExample } from "./demos/unity-theme/UnityThemeExample";
-import { AdobeThemeExample } from "./demos/adobe-theme/AdobeThemeExample";
-import { FigmaThemeExample } from "./demos/figma-theme/FigmaThemeExample";
-import { TradingAnalyticsDashboard } from "./demos/trading-analytics/TradingAnalyticsDashboard";
-import { DataBindingModesExample } from "./demos/DataBindingModesExample";
-import { ErrorNodeFallbackExample } from "./demos/ErrorNodeFallbackExample";
-import { CustomLayoutDemo } from "./demos/custom-layout-demo";
-import { DynamicPortPlaygroundExample } from "./demos/custom-port/DynamicPortPlaygroundExample";
-import { ComfyUILayoutExample } from "./demos/comfyui-layout/ComfyUILayoutExample";
-import { CustomInspectorExample } from "./demos/custom-inspector/CustomInspectorExample";
-import { NodeSearchMenuExample } from "./demos/node-search/NodeSearchMenuExample";
+} from "./demos/layout/column/ColumnLayoutExample";
+import { InspectorPaletteDnDExample } from "./demos/layout/inspector-palette-dnd/InspectorPaletteDnDExample";
+import { AdvancedLayoutExample } from "./demos/layout/advanced/AdvancedLayoutExample";
+import { ResponsiveLayoutExample } from "./demos/layout/responsive/ResponsiveLayoutExample";
+import { MobileDrawerExample } from "./demos/layout/mobile-drawer/MobileDrawerExample";
+import { ThreeJsExample } from "./demos/advanced/integrations/threejs/ThreeJsExample";
+import CustomNodeExample from "./demos/custom/nodes/custom-node/CustomNodeExample";
+import { ThemeShowcaseExample } from "./demos/design/theme-showcase/ThemeShowcaseExample";
+import { AdvancedNestedEditorExample } from "./demos/advanced/nested-editors/advanced-nested-editor/AdvancedNestedEditorExample";
+import { InteractionCustomizationExample } from "./demos/advanced/interaction/customization/InteractionCustomizationExample";
+import { CustomConnectorExample } from "./demos/custom/connections/custom-connector/CustomConnectorExample";
+import { OpalThemeExample } from "./demos/design/themes/opal/OpalThemeExample";
+import { UnityThemeExample } from "./demos/design/themes/unity/UnityThemeExample";
+import { AdobeThemeExample } from "./demos/design/themes/adobe/AdobeThemeExample";
+import { FigmaThemeExample } from "./demos/design/themes/figma/FigmaThemeExample";
+import { TradingAnalyticsDashboard } from "./demos/advanced/analytics/trading-analytics/TradingAnalyticsDashboard";
+import { DataBindingModesExample } from "./demos/data/binding-modes/DataBindingModesExample";
+import { ErrorNodeFallbackExample } from "./demos/basic/error-node-fallback/ErrorNodeFallbackExample";
+import { CustomLayoutDemo } from "./demos/layout/custom-core/custom-layout-demo";
+import { DynamicPortPlaygroundExample } from "./demos/custom/ports/port-playground/DynamicPortPlaygroundExample";
+import { ComfyUILayoutExample } from "./demos/custom/layouts/comfyui/ComfyUILayoutExample";
+import { CustomInspectorExample } from "./demos/custom/inspector/custom-inspector/CustomInspectorExample";
+import { NodeSearchMenuExample } from "./demos/custom/search/node-search-menu/NodeSearchMenuExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {

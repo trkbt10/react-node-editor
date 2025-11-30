@@ -85,7 +85,7 @@ const CustomPorts = createNodeDefinition({
 });
 ```
 
-`PortRenderContext` includes `port`, `node`, `allNodes`, `allConnections`, booleans (`isConnecting`, `isConnectable`, `isCandidate`, `isHovered`, `isConnected`), optional `position`, and pointer handlers you must preserve. `ConnectionRenderContext` provides `phase`, `fromPort`, `toPort`, their positions, selection/hover flags, and handlers for pointer/cxtmenu; use it to add badges or halos while keeping hit-testing intact. For dynamic ports, set `instances`, `createPortId`, and `createPortLabel` on the port definition (see `src/examples/demos/custom-port` for a complete playground).
+`PortRenderContext` includes `port`, `node`, `allNodes`, `allConnections`, booleans (`isConnecting`, `isConnectable`, `isCandidate`, `isHovered`, `isConnected`), optional `position`, and pointer handlers you must preserve. `ConnectionRenderContext` provides `phase`, `fromPort`, `toPort`, their positions, selection/hover flags, and handlers for pointer/cxtmenu; use it to add badges or halos while keeping hit-testing intact. For dynamic ports, set `instances`, `createPortId`, and `createPortLabel` on the port definition (see `src/examples/demos/custom/ports/port-playground` for a complete playground).
 
 ## Panels
 
@@ -301,4 +301,4 @@ Build consistent inspector UIs with these components:
 | `InspectorShortcutButton` | Compact button for shortcut settings |
 | `InspectorShortcutBindingValue` | Keyboard/pointer shortcut display |
 
-See the [Custom Inspector example](https://github.com/trkbt10/react-wireflow/tree/main/src/examples/demos/custom-inspector) for a complete implementation.
+See the [Custom Inspector example](https://github.com/trkbt10/react-wireflow/tree/main/src/examples/demos/custom/inspector/custom-inspector) for a complete implementation.

@@ -544,5 +544,5 @@ import { defaultEditorGridConfig, defaultEditorGridLayers } from "react-wireflow
 - `src/components/canvas/NodeEditorCanvas.tsx` - Canvas wrapper component
 - `src/types/panels.tsx` - Type definitions
 - `src/config/defaultLayout.tsx` - Default configuration
-- `src/examples/demos/custom-layout-demo.tsx` - Full custom example
-- `src/examples/demos/AdvancedLayoutExample.tsx` - GridLayout example
+- `src/examples/demos/layout/custom-core/custom-layout-demo.tsx` - Full custom example
+- `src/examples/demos/layout/advanced/AdvancedLayoutExample.tsx` - GridLayout example
