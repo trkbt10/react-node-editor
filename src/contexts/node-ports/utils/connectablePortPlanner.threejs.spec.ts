@@ -2,17 +2,18 @@
  * @file Three.js node definition connection compatibility tests.
  */
 import type { Connection, Node } from "../../../types/core";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { createNodeDefinitionRegistry } from "../../../types/NodeDefinitionRegistry";
 import { getNodePorts } from "./portResolution";
 import { computeConnectablePortIds } from "./connectablePortPlanner";
 import { planConnectionChange, ConnectionSwitchBehavior } from "./connectionSwitchBehavior";
-import { createThreeJsNodeDefinitions } from "../../../examples/demos/threejs/createThreeJsNodeDefinitions";
+import { createThreeJsNodeDefinitions } from "../../../examples/demos/advanced/integrations/threejs/createThreeJsNodeDefinitions";
 import { canConnectPorts } from "../../../core/connection/validation";
 
 const registerThreeJsDefinitions = () => {
   const registry = createNodeDefinitionRegistry();
   const definitions = createThreeJsNodeDefinitions();
-  definitions.forEach((definition) => registry.register(definition));
+  definitions.forEach((definition: NodeDefinition) => registry.register(definition));
   return registry;
 };
 

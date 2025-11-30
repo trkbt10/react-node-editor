@@ -1,0 +1,11 @@
+.colorInputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-inspector-space-xs);
+}
+
+.colorInput {
+  width: 40px;
+  padding: 0;
+  height: 24px;
+}

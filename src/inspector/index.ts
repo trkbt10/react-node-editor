@@ -18,18 +18,18 @@ export type {
 } from "../components/inspector/InspectorPanel";
 
 // Inspector renderer components
-export { NodeInspector } from "../components/inspector/renderers/NodeInspector";
-export type { NodeInspectorProps } from "../components/inspector/renderers/NodeInspector";
-export { NodeBehaviorInspector } from "../components/inspector/renderers/NodeBehaviorInspector";
-export { NodeActionsBehaviorInspector } from "../components/inspector/renderers/NodeActionsBehaviorInspector";
-export { GroupBehaviorInspector } from "../components/inspector/renderers/GroupBehaviorInspector";
-export { GeneralSettingsPanel } from "../components/inspector/renderers/GeneralSettingsPanel";
-export { GridSettingsPanel } from "../components/inspector/renderers/GridSettingsPanel";
-export { HistoryPanel } from "../components/inspector/renderers/HistoryPanel";
-export { InspectorPropertiesTab } from "../components/inspector/renderers/InspectorPropertiesTab";
-export { InteractionHelpPanel } from "../components/inspector/renderers/InteractionHelpPanel/InteractionHelpPanel";
-export { NodePalettePanel } from "../components/inspector/renderers/NodePalettePanel";
-export { NodeTreeListPanel } from "../components/inspector/renderers/NodeTreeListPanel/NodeTreeListPanel";
+export { NodeInspector } from "../components/inspector/panels/NodeInspector";
+export type { NodeInspectorProps } from "../components/inspector/panels/NodeInspector";
+export { NodeBehaviorInspector } from "../components/inspector/panels/NodeBehaviorInspector";
+export { NodeActionsBehaviorInspector } from "../components/inspector/panels/NodeActionsBehaviorInspector";
+export { GroupBehaviorInspector } from "../components/inspector/panels/GroupBehaviorInspector";
+export { GeneralSettingsPanel } from "../components/inspector/panels/GeneralSettingsPanel";
+export { GridSettingsPanel } from "../components/inspector/panels/GridSettingsPanel";
+export { HistoryPanel } from "../components/inspector/panels/HistoryPanel";
+export { InspectorPropertiesTab } from "../components/inspector/panels/InspectorPropertiesTab";
+export { InteractionHelpPanel } from "../components/inspector/sections/InteractionHelpPanel/InteractionHelpPanel";
+export { NodePalettePanel } from "../components/inspector/panels/NodePalettePanel";
+export { NodeTreeListPanel } from "../components/inspector/sections/NodeTreeListPanel/NodeTreeListPanel";
 
 // Inspector part components (form controls and UI elements)
 export { InspectorSection } from "../components/inspector/parts/InspectorSection";

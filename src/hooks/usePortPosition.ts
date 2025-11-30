@@ -83,7 +83,9 @@ export function useDynamicPortPosition(
   // Compute effective size (may change during resize)
   const effectiveSize = React.useMemo((): Size | undefined => {
     const { sizeOverride, applyInteractionPreview = true } = options ?? {};
-    if (sizeOverride) return sizeOverride;
+    if (sizeOverride) {
+      return sizeOverride;
+    }
     if (applyInteractionPreview) {
       const resizeState = actionState.resizeState;
       if (resizeState?.nodeId === nodeId && resizeState.currentSize) {
@@ -95,9 +97,13 @@ export function useDynamicPortPosition(
 
   // Compute effective position (changes during drag/resize)
   const effectivePosition = React.useMemo((): Position | undefined => {
-    if (!currentNode) return undefined;
+    if (!currentNode) {
+      return undefined;
+    }
     const { positionOverride, applyInteractionPreview = true } = options ?? {};
-    if (positionOverride) return positionOverride;
+    if (positionOverride) {
+      return positionOverride;
+    }
     if (applyInteractionPreview) {
       const dragState = actionState.dragState;
       if (dragState && draggedNodeIdsSet?.has(nodeId)) {

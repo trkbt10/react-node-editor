@@ -1,0 +1,12 @@
+.opacityRow {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--node-editor-inspector-space-xs);
+}
+
+.opacityValue {
+  min-width: 36px;
+  text-align: right;
+  font-size: var(--node-editor-inspector-font-size-body);
+}

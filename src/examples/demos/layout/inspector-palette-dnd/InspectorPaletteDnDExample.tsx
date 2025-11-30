@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import { NodeEditor, type GridLayoutConfig, type LayerDefinition } from "../../../../index";
-import { NodePalettePanel } from "../../../../components/inspector/renderers/NodePalettePanel";
+import { NodePalettePanel } from "../../../../components/inspector/panels/NodePalettePanel";
 import { defaultEditorGridConfig, defaultEditorGridLayers } from "../../../../config/defaultLayout";
 
 export const InspectorPaletteDnDExample: React.FC = () => {

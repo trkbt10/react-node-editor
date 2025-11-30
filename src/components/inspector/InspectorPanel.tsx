@@ -3,17 +3,17 @@
  */
 import * as React from "react";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { NodeTreeListPanel } from "./renderers/NodeTreeListPanel/NodeTreeListPanel";
-import { HistoryPanel } from "./renderers/HistoryPanel";
-import { InspectorPropertiesTab } from "./renderers/InspectorPropertiesTab";
+import { NodeTreeListPanel } from "./sections/NodeTreeListPanel/NodeTreeListPanel";
+import { HistoryPanel } from "./panels/HistoryPanel";
+import { InspectorPropertiesTab } from "./panels/InspectorPropertiesTab";
 import { TabNav } from "../layout/TabNav";
 import { InspectorSection } from "./parts/InspectorSection";
 import styles from "./InspectorPanel.module.css";
 import { useI18n } from "../../i18n/context";
-import { GeneralSettingsPanel } from "./renderers/GeneralSettingsPanel";
-import { GridSettingsPanel } from "./renderers/GridSettingsPanel";
+import { GeneralSettingsPanel } from "./panels/GeneralSettingsPanel";
+import { GridSettingsPanel } from "./panels/GridSettingsPanel";
 import { PropertySection } from "./parts/PropertySection";
-import { InteractionHelpPanel } from "./renderers/InteractionHelpPanel/InteractionHelpPanel";
+import { InteractionHelpPanel } from "./sections/InteractionHelpPanel/InteractionHelpPanel";
 
 export type InspectorPanelTabConfig = {
   id: string;

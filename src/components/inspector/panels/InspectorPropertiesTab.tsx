@@ -4,7 +4,7 @@
 import * as React from "react";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
-import { NodeInspector } from "./NodeInspector";
+import { NodeInspector } from "../panels/NodeInspector";
 import { H4 } from "../../elements/Heading";
 import { InspectorField } from "../parts/InspectorField";
 import { InspectorSection } from "../parts/InspectorSection";

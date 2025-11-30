@@ -1,0 +1,5 @@
+.historyHeaderActions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--node-editor-inspector-inline-gap);
+}
