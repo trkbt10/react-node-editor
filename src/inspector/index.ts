@@ -73,3 +73,8 @@ export { PositionInputsGrid } from "../components/inspector/parts/PositionInputs
 export type { PositionInputsGridProps } from "../components/inspector/parts/PositionInputsGrid";
 export { ReadOnlyField } from "../components/inspector/parts/ReadOnlyField";
 export type { ReadOnlyFieldProps } from "../components/inspector/parts/ReadOnlyField";
+export { InspectorTabbedContainer } from "../components/inspector/parts/InspectorTabbedContainer";
+export type {
+  InspectorTabbedContainerProps,
+  InspectorTabConfig,
+} from "../components/inspector/parts/InspectorTabbedContainer";

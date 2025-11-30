@@ -6,25 +6,7 @@
   height: 100%;
   background-color: var(--node-editor-control-background);
   border-left: var(--node-editor-input-border);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
   box-shadow: var(--node-editor-inspector-shadow);
-  box-sizing: border-box;
-}
-
-.inspectorHeader {
-  padding: var(--node-editor-inspector-space-sm) 0;
-  display: grid;
-  justify-content: center;
-  box-sizing: border-box;
-  box-shadow: var(--node-editor-inspector-header-shadow);
-}
-
-.inspectorContent {
-  flex: 1;
-  overflow-y: auto;
-  padding: var(--node-editor-inspector-content-padding);
   box-sizing: border-box;
 }
 

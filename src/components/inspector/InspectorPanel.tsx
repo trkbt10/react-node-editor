@@ -6,8 +6,11 @@ import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { NodeTreeListPanel } from "./panels/NodeTreeListPanel";
 import { HistoryPanel } from "./panels/HistoryPanel";
 import { InspectorPropertiesTab } from "./panels/InspectorPropertiesTab";
-import { TabNav } from "../layout/TabNav";
 import { InspectorSection } from "./parts/InspectorSection";
+import {
+  InspectorTabbedContainer,
+  type InspectorTabConfig,
+} from "./parts/InspectorTabbedContainer";
 import styles from "./InspectorPanel.module.css";
 import { useI18n } from "../../i18n/context";
 import { GeneralSettingsPanel } from "./panels/GeneralSettingsPanel";
@@ -15,12 +18,7 @@ import { GridSettingsPanel } from "./panels/GridSettingsPanel";
 import { PropertySection } from "./parts/PropertySection";
 import { InteractionHelpPanel } from "./panels/InteractionHelpPanel";
 
-export type InspectorPanelTabConfig = {
-  id: string;
-  label: string;
-  render: () => React.ReactNode;
-  contentClassName?: string;
-};
+export type InspectorPanelTabConfig = InspectorTabConfig;
 
 export type InspectorPanelProps = {
   tabs?: InspectorPanelTabConfig[];
@@ -54,7 +52,6 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({ tabs: providedTa
 
   const tabs = providedTabs ?? defaultTabs;
   const rawActiveTabIndex = actionState.inspectorActiveTab ?? 0;
-  const boundedActiveTabIndex = tabs.length === 0 ? -1 : Math.min(Math.max(rawActiveTabIndex, 0), tabs.length - 1);
 
   React.useEffect(() => {
     if (tabs.length === 0) {
@@ -65,34 +62,20 @@ export const InspectorPanel: React.FC<InspectorPanelProps> = ({ tabs: providedTa
     }
   }, [tabs.length, rawActiveTabIndex, actionActions]);
 
-  const setActiveTabIndex = React.useCallback(
+  const handleTabChange = React.useCallback(
     (index: number) => {
       actionActions.setInspectorActiveTab(index);
     },
     [actionActions],
   );
 
-  const activeTab = boundedActiveTabIndex >= 0 ? tabs[boundedActiveTabIndex] : undefined;
-  const contentClassName = [styles.inspectorContent, activeTab?.contentClassName]
-    .filter((value): value is string => Boolean(value))
-    .join(" ");
-
   return (
-    <div className={styles.inspectorPanel}>
-      {tabs.length > 0 && (
-        <div className={styles.inspectorHeader}>
-          <TabNav
-            tabs={tabs.map((tab) => tab.label)}
-            activeTabIndex={boundedActiveTabIndex}
-            onTabChange={setActiveTabIndex}
-          />
-        </div>
-      )}
-
-      <div className={contentClassName}>
-        {activeTab ? activeTab.render() : null}
-      </div>
-    </div>
+    <InspectorTabbedContainer
+      className={styles.inspectorPanel}
+      tabs={tabs}
+      activeTabIndex={rawActiveTabIndex}
+      onTabChange={handleTabChange}
+    />
   );
 };
 
