@@ -3,12 +3,12 @@
  */
 import * as React from "react";
 
-import { Button } from "../../../../../components/elements/Button";
-import { H2, H3, H4 } from "../../../../../components/elements/Heading";
-import { Label } from "../../../../../components/elements/Label";
-import { PropertySection } from "../../../../../components/inspector/parts/PropertySection";
-import { InspectorField } from "../../../../../components/inspector/parts/InspectorField";
-import { ReadOnlyField } from "../../../../../components/inspector/parts/ReadOnlyField";
+import { Button } from "../../../../components/elements/Button";
+import { H2, H3, H4 } from "../../../../components/elements/Heading";
+import { Label } from "../../../../components/elements/Label";
+import { PropertySection } from "../../../../components/inspector/parts/PropertySection";
+import { InspectorField } from "../../../../components/inspector/parts/InspectorField";
+import { ReadOnlyField } from "../../../../components/inspector/parts/ReadOnlyField";
 import classes from "./ThemeShowcaseExample.module.css";
 
 type TokenGroup = {

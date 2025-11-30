@@ -10,7 +10,7 @@ import {
   type NodeDefinition,
   type NodeRenderProps,
   type ConnectionRenderContext,
-} from "../../../types/NodeDefinition";
+} from "../../../../../types/NodeDefinition";
 import { ThreeSceneCanvas } from "./ThreeSceneCanvas";
 import {
   getMaterialPreset,
@@ -18,11 +18,11 @@ import {
   type MaterialConfig,
   type MaterialMode,
 } from "./materialConfig";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useNodeEditor } from "../../../../../contexts/node-editor/context";
 import classes from "./ThreeJsNodes.module.css";
-import { calculateConnectionPath } from "../../../core/connection/path";
-import { getOppositePortPosition } from "../../../core/port/position";
-import { NodeResizer } from "../../../components/node/resize/NodeResizer";
+import { calculateConnectionPath } from "../../../../../core/connection/path";
+import { getOppositePortPosition } from "../../../../../core/port/position";
+import { NodeResizer } from "../../../../../components/node/resize/NodeResizer";
 
 type ColorControlData = {
   title: string;
