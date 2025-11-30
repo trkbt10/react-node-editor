@@ -5,7 +5,6 @@ import * as React from "react";
 import { NodeEditor } from "../../../../../NodeEditor";
 import type { NodeEditorData } from "../../../../../types/core";
 import { ExampleLayout } from "../../../shared/parts/ExampleLayout";
-import { ExampleHeader } from "../../../shared/parts/ExampleHeader";
 import { ExampleWrapper } from "../../../shared/parts/ExampleWrapper";
 import { createInitialData, getUntypedNodeDefinitions } from "./nodes";
 import styles from "./CustomConnectorExample.module.css";
@@ -14,14 +13,7 @@ export const CustomConnectorExample: React.FC = () => {
   const [data, setData] = React.useState<NodeEditorData>(() => createInitialData());
 
   return (
-    <ExampleLayout
-      header={
-        <ExampleHeader
-          title="Volumetric Connector Playground"
-          description="Drive a Three.js conduit overlay that turns every connection into a luminous volumetric transport line."
-        />
-      }
-    >
+    <ExampleLayout>
       <ExampleWrapper>
         <div className={styles.content}>
           <aside className={styles.summaryPanel}>

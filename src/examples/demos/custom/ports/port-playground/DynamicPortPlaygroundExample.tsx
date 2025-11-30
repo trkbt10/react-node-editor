@@ -16,7 +16,6 @@ import type {
 } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData, PortPlacement, PortPosition } from "../../../../../types/core";
 import { ExampleLayout } from "../../../shared/parts/ExampleLayout";
-import { ExampleHeader } from "../../../shared/parts/ExampleHeader";
 import { ExampleWrapper } from "../../../shared/parts/ExampleWrapper";
 import styles from "./DynamicPortPlaygroundExample.module.css";
 import { InspectorSection } from "../../../../../components/inspector/parts/InspectorSection";
@@ -714,14 +713,7 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
   };
 
   return (
-    <ExampleLayout
-      header={
-        <ExampleHeader
-          title="Dynamic Port Playground"
-          description="Interactively tune port placement, data types, and instance counts to validate compatibility rules."
-        />
-      }
-    >
+    <ExampleLayout>
       <ExampleWrapper>
         <div className={styles.layout}>
           <div className={styles.controls}>

@@ -13,7 +13,6 @@ import type {
 } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData, Port, Size } from "../../../../../types/core";
 import { ExampleLayout } from "../../../shared/parts/ExampleLayout";
-import { ExampleHeader } from "../../../shared/parts/ExampleHeader";
 import { ExampleWrapper } from "../../../shared/parts/ExampleWrapper";
 import { getNodeBoundingBox } from "../../../../../utils/boundingBoxUtils";
 import styles from "./ComfyUILayoutExample.module.css";
@@ -564,14 +563,7 @@ export const ComfyUILayoutExample: React.FC = () => {
   const [data, setData] = React.useState<NodeEditorData>(initialData);
 
   return (
-    <ExampleLayout
-      header={
-        <ExampleHeader
-          title="ComfyUI-Style Port Layout"
-          description="Demonstrates custom port position computation where ports are grouped in header/body regions using computePortPositions."
-        />
-      }
-    >
+    <ExampleLayout>
       <ExampleWrapper>
         <div className={styles.layout}>
           <div className={styles.info}>

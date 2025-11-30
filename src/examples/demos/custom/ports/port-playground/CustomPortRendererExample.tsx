@@ -6,7 +6,6 @@ import { NodeEditor } from "../../../../../NodeEditor";
 import type { NodeEditorData } from "../../../../../types/core";
 import { createInitialData, getUntypedNodeDefinitions } from "./nodes";
 import { ExampleLayout } from "../../../shared/parts/ExampleLayout";
-import { ExampleHeader } from "../../../shared/parts/ExampleHeader";
 import { ExampleWrapper } from "../../../shared/parts/ExampleWrapper";
 import styles from "./CustomPortRendererExample.module.css";
 
@@ -14,14 +13,7 @@ export const CustomPortRendererExample: React.FC = () => {
   const [data, setData] = React.useState<NodeEditorData>(() => createInitialData());
 
   return (
-    <ExampleLayout
-      header={
-        <ExampleHeader
-          title="Custom Port Renderer"
-          description="Layered SVG and canvas affordances highlight connection state while staying synchronized with node motion."
-        />
-      }
-    >
+    <ExampleLayout>
       <ExampleWrapper>
         <div className={styles.content}>
           <aside className={styles.summaryPanel}>
