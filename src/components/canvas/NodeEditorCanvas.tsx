@@ -8,7 +8,7 @@
  */
 import * as React from "react";
 import { NodeEditorBase } from "../layout/NodeEditorBase";
-import { ContextActionMenu } from "../shared/ContextActionMenu";
+import { ContextActionMenu } from "../menus/ContextActionMenu";
 import { NodeSearchMenu } from "../panels/node-search/NodeSearchMenu";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
@@ -27,8 +27,7 @@ import {
   type PortPositionNode,
 } from "../../types/portPosition";
 import { computeAllPortPositions, computeNodePortPositions } from "../../contexts/node-ports/utils/computePortPositions";
-import { canConnectPorts } from "../../core/connection/validation";
-import { normalizePlacement } from "../../contexts/node-ports/utils/portResolution";
+import { findConnectablePortDefinition } from "../../contexts/node-ports/utils/portConnectability";
 import {
   canAddNodeType,
   countNodesByType,
@@ -218,48 +217,24 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
       if (fromPort) {
         const fromNode = editorState.nodes[fromPort.nodeId];
         const fromDef = fromNode ? nodeDefinitions.find((d) => d.type === fromNode.type) : undefined;
-        const toDef = nodeDefinition;
-        const toPorts = toDef.ports || [];
-        const targetPortDef = toPorts.find((p) => {
-          if (p.type === fromPort.type) {
-            return false;
-          }
-          const placement = normalizePlacement(p.position);
-          const tempPort: CorePort = {
-            id: p.id,
-            definitionId: p.id,
-            type: p.type,
-            label: p.label,
-            nodeId: newNode.id,
-            position: placement.side,
-            placement,
-          };
-          return canConnectPorts(
-            fromPort.type === "output" ? fromPort : tempPort,
-            fromPort.type === "output" ? tempPort : fromPort,
-            fromDef,
-            toDef,
-            editorState.connections,
-            { nodes: editorState.nodes },
-          );
+
+        const connectableResult = findConnectablePortDefinition({
+          fromPort,
+          fromNodeDefinition: fromDef,
+          targetNodeDefinition: nodeDefinition,
+          targetNodeId: newNode.id,
+          connections: editorState.connections,
+          nodes: editorState.nodes,
         });
-        if (targetPortDef) {
-          const targetPlacement = normalizePlacement(targetPortDef.position);
-          const tempPort: CorePort = {
-            id: targetPortDef.id,
-            definitionId: targetPortDef.id,
-            type: targetPortDef.type,
-            label: targetPortDef.label,
-            nodeId: newNode.id,
-            position: targetPlacement.side,
-            placement: targetPlacement,
-          };
+
+        if (connectableResult) {
+          const { port: targetPort } = connectableResult;
           const connection =
             fromPort.type === "output"
-              ? { fromNodeId: fromPort.nodeId, fromPortId: fromPort.id, toNodeId: newNode.id, toPortId: tempPort.id }
+              ? { fromNodeId: fromPort.nodeId, fromPortId: fromPort.id, toNodeId: newNode.id, toPortId: targetPort.id }
               : {
                   fromNodeId: newNode.id,
-                  fromPortId: tempPort.id,
+                  fromPortId: targetPort.id,
                   toNodeId: fromPort.nodeId,
                   toPortId: fromPort.id,
                 };

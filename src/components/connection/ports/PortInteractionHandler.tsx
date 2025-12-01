@@ -9,6 +9,7 @@ import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import { usePointerDrag } from "../../../hooks/usePointerDrag";
 import { usePortPositions } from "../../../contexts/node-ports/context";
+import { createActionPort } from "../../../core/port/factory";
 import { isPortConnectable } from "../../../contexts/node-ports/utils/portConnectability";
 import {
   planConnectionChange,
@@ -60,25 +61,8 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
   const isCandidate = actionState.connectionDragState?.candidatePort?.id === port.id;
   const isConnected = actionState.connectedPorts.has(port.id);
 
-  // Convert to Port for actions
-  const actionPort = React.useMemo<Port>(
-    () => ({
-      id: port.id,
-      definitionId: port.definitionId,
-      nodeId: port.nodeId,
-      type: port.type,
-      label: port.label,
-      position: port.position,
-      placement: port.placement,
-      dataType: port.dataType,
-      maxConnections: port.maxConnections,
-      allowedNodeTypes: port.allowedNodeTypes,
-      allowedPortTypes: port.allowedPortTypes,
-      instanceIndex: port.instanceIndex,
-      instanceTotal: port.instanceTotal,
-    }),
-    [port],
-  );
+  // Convert to Port for actions using factory to ensure all properties are copied
+  const actionPort = React.useMemo<Port>(() => createActionPort(port), [port]);
 
   const resolveConnectionPoint = React.useEffectEvent((nodeId: string, portId: string) => {
     const stored = getPortPosition(nodeId, portId);
