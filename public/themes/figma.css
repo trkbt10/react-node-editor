@@ -98,7 +98,7 @@
   --node-editor-control-text-color-secondary: var(--node-editor-text-color);
   --node-editor-control-hover-text-color-primary: #ffffff;
   --node-editor-input-text-color: var(--node-editor-text-color);
-  --node-editor-selected-control-text-color: #ffffff;
+  --node-editor-selected-control-text-color: #0d8de0;
   --node-editor-selected-menu-item-text-color: #ffffff;
 
   /* Status & accent colors - Figma's signature blue (#18a0fb) */
