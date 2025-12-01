@@ -61,11 +61,12 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
   portPositionBehavior,
   children,
 }) => {
-  const { state: editorState, actions, getNodePorts } = useNodeEditor();
+  const { state: editorState, actions, getNodePorts, settingsManager: contextSettingsManager } = useNodeEditor();
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
   const { registry } = useNodeDefinitions();
-  const settings = useSettings(settingsManager);
+  const effectiveSettingsManager = settingsManager ?? contextSettingsManager;
+  const settings = useSettings(effectiveSettingsManager);
 
   const portPositionConfig = React.useMemo<PortPositionConfig>(
     () => ({ ...DEFAULT_PORT_POSITION_CONFIG, ...portPositionBehavior?.config }),
