@@ -2,8 +2,9 @@
  * @file Node actions list component
  */
 import * as React from "react";
-import styles from "./NodeActionsList.module.css";
 import { DuplicateIcon, CopyIcon, CutIcon, PasteIcon, DeleteIcon } from "../elements/icons";
+import { MenuItem } from "./MenuItem";
+import { MenuSeparator } from "./MenuSeparator";
 import { useI18n } from "../../i18n/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeEditor, useNodeEditorActions } from "../../contexts/node-editor/context";
@@ -125,36 +126,47 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
   return (
     <>
       {includeDuplicate && (
-        <li className={styles.actionItem} onClick={handleDuplicate}>
-          <DuplicateIcon size={14} /> {t("contextMenuDuplicateNode")}
-          {duplicateShortcut ? <span className={styles.actionShortcut}>{duplicateShortcut}</span> : null}
-        </li>
+        <MenuItem
+          icon={<DuplicateIcon size={14} />}
+          label={t("contextMenuDuplicateNode")}
+          shortcutHint={duplicateShortcut}
+          onClick={handleDuplicate}
+        />
       )}
       {includeCopy && (
-        <li className={styles.actionItem} onClick={handleCopy}>
-          <CopyIcon size={14} /> {t("copy")}
-          {copyShortcut ? <span className={styles.actionShortcut}>{copyShortcut}</span> : null}
-        </li>
+        <MenuItem
+          icon={<CopyIcon size={14} />}
+          label={t("copy")}
+          shortcutHint={copyShortcut}
+          onClick={handleCopy}
+        />
       )}
       {includeCut && (
-        <li className={styles.actionItem} onClick={handleCut}>
-          <CutIcon size={14} /> {t("cut")}
-          {cutShortcut ? <span className={styles.actionShortcut}>{cutShortcut}</span> : null}
-        </li>
+        <MenuItem
+          icon={<CutIcon size={14} />}
+          label={t("cut")}
+          shortcutHint={cutShortcut}
+          onClick={handleCut}
+        />
       )}
       {includePaste && (
-        <li className={styles.actionItem} onClick={handlePaste}>
-          <PasteIcon size={14} /> {t("paste")}
-          {pasteShortcut ? <span className={styles.actionShortcut}>{pasteShortcut}</span> : null}
-        </li>
+        <MenuItem
+          icon={<PasteIcon size={14} />}
+          label={t("paste")}
+          shortcutHint={pasteShortcut}
+          onClick={handlePaste}
+        />
       )}
       {includeDelete && (
         <>
-          <li className={styles.separator} aria-hidden="true" />
-          <li className={[styles.actionItem, styles.actionItemDanger].join(" ")} onClick={handleDelete}>
-            <DeleteIcon size={14} /> {t("contextMenuDeleteNode")}
-            {deleteShortcut ? <span className={styles.actionShortcut}>{deleteShortcut}</span> : null}
-          </li>
+          <MenuSeparator />
+          <MenuItem
+            icon={<DeleteIcon size={14} />}
+            label={t("contextMenuDeleteNode")}
+            shortcutHint={deleteShortcut}
+            danger
+            onClick={handleDelete}
+          />
         </>
       )}
     </>

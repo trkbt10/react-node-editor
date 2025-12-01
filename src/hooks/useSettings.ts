@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import type { SettingsManager } from "../settings/SettingsManager";
-import type { NodeSearchViewMode } from "../types/interaction";
+import type { NodeSearchViewMode, NodeSearchFilterMode } from "../types/interaction";
 
 type ThemeValue = "light" | "dark" | "auto";
 
@@ -21,6 +21,8 @@ type Settings = {
   gridOpacity: number;
   canvasBackground: string;
   nodeSearchViewMode: NodeSearchViewMode;
+  nodeSearchFilterMode: NodeSearchFilterMode;
+  nodeSearchMenuWidth: number;
 };
 
 const defaultSettings: Settings = {
@@ -37,6 +39,8 @@ const defaultSettings: Settings = {
   gridOpacity: 0.3,
   canvasBackground: "#ffffff",
   nodeSearchViewMode: "list",
+  nodeSearchFilterMode: "filter",
+  nodeSearchMenuWidth: 360,
 };
 
 function isValidTheme(value: unknown): value is ThemeValue {
@@ -45,6 +49,10 @@ function isValidTheme(value: unknown): value is ThemeValue {
 
 function isValidNodeSearchViewMode(value: unknown): value is NodeSearchViewMode {
   return typeof value === "string" && ["list", "split"].includes(value);
+}
+
+function isValidNodeSearchFilterMode(value: unknown): value is NodeSearchFilterMode {
+  return typeof value === "string" && ["filter", "highlight"].includes(value);
 }
 
 function getBooleanSetting(settingsManager: SettingsManager, key: string, defaultValue: boolean): boolean {
@@ -74,6 +82,15 @@ function getNodeSearchViewModeSetting(
 ): NodeSearchViewMode {
   const value = settingsManager.getValue(key);
   return isValidNodeSearchViewMode(value) ? value : defaultValue;
+}
+
+function getNodeSearchFilterModeSetting(
+  settingsManager: SettingsManager,
+  key: string,
+  defaultValue: NodeSearchFilterMode,
+): NodeSearchFilterMode {
+  const value = settingsManager.getValue(key);
+  return isValidNodeSearchFilterMode(value) ? value : defaultValue;
 }
 
 export type { Settings };
@@ -133,6 +150,16 @@ export function useSettings(settingsManager?: SettingsManager): Settings {
         settingsManager,
         "behavior.nodeSearchViewMode",
         defaultSettings.nodeSearchViewMode,
+      ),
+      nodeSearchFilterMode: getNodeSearchFilterModeSetting(
+        settingsManager,
+        "behavior.nodeSearchFilterMode",
+        defaultSettings.nodeSearchFilterMode,
+      ),
+      nodeSearchMenuWidth: getNumberSetting(
+        settingsManager,
+        "behavior.nodeSearchMenuWidth",
+        defaultSettings.nodeSearchMenuWidth,
       ),
     };
   }, [settingsManager, settingsVersion]);

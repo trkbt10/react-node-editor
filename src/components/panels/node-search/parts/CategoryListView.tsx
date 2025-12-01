@@ -16,6 +16,8 @@ export type CategoryListViewProps = {
   onNodeHover: (index: number) => void;
   disabledNodeTypes: Set<string>;
   nodeIndexByType: Map<string, number>;
+  /** When provided, nodes NOT in this set are shown as non-matching (dimmed) */
+  matchingNodeTypes?: Set<string>;
 };
 
 export const CategoryListView: React.FC<CategoryListViewProps> = ({
@@ -27,6 +29,7 @@ export const CategoryListView: React.FC<CategoryListViewProps> = ({
   onNodeHover,
   disabledNodeTypes,
   nodeIndexByType,
+  matchingNodeTypes,
 }) => {
   const handleCategoryHeaderClick = React.useCallback(
     (categoryName: string) => {
@@ -62,6 +65,7 @@ export const CategoryListView: React.FC<CategoryListViewProps> = ({
               const globalIndex = nodeIndexByType.get(node.type) ?? -1;
               const isSelected = globalIndex === selectedIndex;
               const isDisabled = disabledNodeTypes.has(node.type);
+              const isNonMatching = matchingNodeTypes !== undefined && !matchingNodeTypes.has(node.type);
 
               return (
                 <NodeDefinitionCard
@@ -70,6 +74,7 @@ export const CategoryListView: React.FC<CategoryListViewProps> = ({
                   variant="list"
                   isSelected={isSelected}
                   disabled={isDisabled}
+                  isNonMatching={isNonMatching}
                   onClick={() => handleNodeClick(node)}
                   onPointerEnter={() => {
                     if (globalIndex >= 0) {

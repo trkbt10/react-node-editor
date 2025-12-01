@@ -1,0 +1,8 @@
+/* MenuSeparator - Menu separator line styles */
+
+.separator {
+  height: 1px;
+  background-color: var(--node-editor-separator-color, rgba(0, 0, 0, 0.1));
+  margin: 4px 0;
+  list-style: none;
+}

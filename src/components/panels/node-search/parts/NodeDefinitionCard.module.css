@@ -68,6 +68,15 @@
   cursor: not-allowed;
 }
 
+/* Non-matching nodes in highlight filter mode - dimmed but still interactive */
+.card[data-is-non-matching="true"] {
+  opacity: 0.4;
+}
+
+.card[data-is-non-matching="true"]:hover:not([data-is-disabled="true"]) {
+  opacity: 0.65;
+}
+
 .icon {
   display: flex;
   align-items: center;

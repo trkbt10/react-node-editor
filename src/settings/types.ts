@@ -220,6 +220,8 @@ export type EditorSettings = {
   "behavior.selectionMode": "click" | "drag";
   "behavior.wheelZoomSensitivity": number;
   "behavior.nodeSearchViewMode": "list" | "split";
+  "behavior.nodeSearchFilterMode": "filter" | "highlight";
+  "behavior.nodeSearchMenuWidth": number;
 
   // Performance
   "performance.maxHistorySteps": number;

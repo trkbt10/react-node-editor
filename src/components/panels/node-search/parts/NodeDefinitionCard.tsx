@@ -13,6 +13,8 @@ export type NodeDefinitionCardProps = {
   variant?: NodeDefinitionCardVariant;
   disabled?: boolean;
   isSelected?: boolean;
+  /** Node does not match current search query (used in highlight filter mode) */
+  isNonMatching?: boolean;
   className?: string;
   showDescription?: boolean;
   titleSuffix?: React.ReactNode;
@@ -27,6 +29,7 @@ export const NodeDefinitionCard: React.FC<NodeDefinitionCardProps> = ({
   variant = "list",
   disabled = false,
   isSelected = false,
+  isNonMatching = false,
   className,
   showDescription = true,
   titleSuffix,
@@ -43,6 +46,7 @@ export const NodeDefinitionCard: React.FC<NodeDefinitionCardProps> = ({
       data-variant={variant}
       data-is-disabled={disabled ? "true" : undefined}
       data-is-selected={isSelected ? "true" : undefined}
+      data-is-non-matching={isNonMatching ? "true" : undefined}
       aria-disabled={disabled}
     >
       <div className={styles.icon} aria-hidden="true">

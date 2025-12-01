@@ -19,6 +19,8 @@ export type SplitPaneViewProps = {
   onNodeHover: (index: number) => void;
   disabledNodeTypes: Set<string>;
   nodeIndexByType: Map<string, number>;
+  /** When provided, nodes NOT in this set are shown as non-matching (dimmed) */
+  matchingNodeTypes?: Set<string>;
 };
 
 /**
@@ -60,6 +62,7 @@ export const SplitPaneView: React.FC<SplitPaneViewProps> = ({
   onNodeHover,
   disabledNodeTypes,
   nodeIndexByType,
+  matchingNodeTypes,
 }) => {
   const { t } = useI18n();
   const [expandedPaths, setExpandedPaths] = React.useState<Set<string>>(() => {
@@ -118,6 +121,7 @@ export const SplitPaneView: React.FC<SplitPaneViewProps> = ({
         onNodeHover={onNodeHover}
         disabledNodeTypes={disabledNodeTypes}
         nodeIndexByType={nodeIndexByType}
+        matchingNodeTypes={matchingNodeTypes}
       />
     </div>
   );

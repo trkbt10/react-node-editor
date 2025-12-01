@@ -16,6 +16,8 @@ export type NodeListPaneProps = {
   onNodeHover: (index: number) => void;
   disabledNodeTypes: Set<string>;
   nodeIndexByType: Map<string, number>;
+  /** When provided, nodes NOT in this set are shown as non-matching (dimmed) */
+  matchingNodeTypes?: Set<string>;
 };
 
 export const NodeListPane: React.FC<NodeListPaneProps> = ({
@@ -26,6 +28,7 @@ export const NodeListPane: React.FC<NodeListPaneProps> = ({
   onNodeHover,
   disabledNodeTypes,
   nodeIndexByType,
+  matchingNodeTypes,
 }) => {
   const { t } = useI18n();
 
@@ -49,6 +52,7 @@ export const NodeListPane: React.FC<NodeListPaneProps> = ({
           const globalIndex = nodeIndexByType.get(node.type) ?? -1;
           const isSelected = globalIndex === selectedNodeIndex;
           const isDisabled = disabledNodeTypes.has(node.type);
+          const isNonMatching = matchingNodeTypes !== undefined && !matchingNodeTypes.has(node.type);
 
           return (
             <NodeDefinitionCard
@@ -57,6 +61,7 @@ export const NodeListPane: React.FC<NodeListPaneProps> = ({
               variant="list"
               isSelected={isSelected}
               disabled={isDisabled}
+              isNonMatching={isNonMatching}
               onClick={() => handleNodeClick(node)}
               onPointerEnter={() => {
                 if (globalIndex >= 0) {

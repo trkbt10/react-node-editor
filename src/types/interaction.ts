@@ -9,6 +9,13 @@ import type { Position } from "./core";
 export type NodeSearchViewMode = "list" | "split";
 
 /**
+ * Filter mode for the node search menu.
+ * - "filter": Hide non-matching nodes (only show matches)
+ * - "highlight": Show all nodes, but emphasize matching ones
+ */
+export type NodeSearchFilterMode = "filter" | "highlight";
+
+/**
  * Supported pointer input types for editor interactions.
  */
 export type PointerType = "mouse" | "pen" | "touch";

@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import { EditIcon, PlusIcon, PasteIcon } from "../elements/icons";
+import { MenuItem } from "./MenuItem";
 import styles from "./ContextActionMenu.module.css";
 import alignmentStyles from "../controls/alignments/AlignmentControls.module.css";
 import { ALIGNMENT_ACTIONS, ALIGNMENT_GROUPS } from "../controls/alignments/constants";
@@ -155,8 +156,9 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
         {target.type === "node" && (
           <>
             <li className={styles.menuSectionTitle}>{t("inspectorNodeProperties")}</li>
-            <li
-              className={styles.menuItem}
+            <MenuItem
+              icon={<EditIcon size={14} />}
+              label={t("contextMenuEditNode")}
               onClick={() => {
                 if (target.type !== "node") {
                   return;
@@ -167,36 +169,37 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
                 actionActions.setInspectorActiveTab(1);
                 onClose();
               }}
-            >
-              <EditIcon size={14} /> {t("contextMenuEditNode")}
-            </li>
+            />
             <NodeActionsList targetNodeId={target.type === "node" ? target.id : ""} onAction={onClose} />
           </>
         )}
         {target.type === "connection" && (
           <>
             <li className={styles.menuSectionTitle}>{t("inspectorConnectionProperties")}</li>
-            <li className={`${styles.menuItem} ${styles.menuItemDanger}`} onClick={handleDeleteConnection}>
-              {t("contextMenuDeleteConnection")}
-            </li>
+            <MenuItem
+              label={t("contextMenuDeleteConnection")}
+              danger
+              onClick={handleDeleteConnection}
+            />
           </>
         )}
         {target.type === "canvas" && (
           <>
-            <li
-              className={styles.menuItem}
+            <MenuItem
+              icon={<PlusIcon size={14} />}
+              label={t("addConnection") || "Add Connection…"}
               onClick={() => {
                 // Close this menu then open NodeSearch at the same screen position
                 onClose();
                 actionActions.showContextMenu(resolvedPosition, undefined, undefined, undefined, "search");
               }}
-            >
-              <PlusIcon size={14} /> {t("addConnection") || "Add Connection…"}
-            </li>
-            <li className={styles.menuItem} onClick={() => handlePasteFromClipboard()}>
-              <PasteIcon size={14} /> {t("paste")}{" "}
-              {pasteShortcut ? <span className={styles.shortcutHint}>{pasteShortcut}</span> : null}
-            </li>
+            />
+            <MenuItem
+              icon={<PasteIcon size={14} />}
+              label={t("paste")}
+              shortcutHint={pasteShortcut}
+              onClick={handlePasteFromClipboard}
+            />
           </>
         )}
         </ul>

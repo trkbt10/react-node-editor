@@ -24,6 +24,7 @@ import {
 } from "../../../contexts/node-definitions/category/nodeDefinitionCatalog";
 
 export type NodeSearchMenuViewMode = "list" | "split";
+export type NodeSearchMenuFilterMode = "filter" | "highlight";
 
 export type NodeSearchMenuProps = {
   position: Position;
@@ -35,6 +36,10 @@ export type NodeSearchMenuProps = {
   disabledNodeTypes?: string[];
   /** View mode: "list" (default vertical list) or "split" (split pane) */
   viewMode?: NodeSearchMenuViewMode;
+  /** Filter mode: "filter" hides non-matching, "highlight" shows all with matches emphasized */
+  filterMode?: NodeSearchMenuFilterMode;
+  /** Minimum width of the menu in pixels */
+  menuWidth?: number;
 };
 
 /**
@@ -48,6 +53,8 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
   visible,
   disabledNodeTypes = [],
   viewMode = "list",
+  filterMode = "filter",
+  menuWidth,
 }) => {
   const { t } = useI18n();
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -64,22 +71,47 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
     return groupNodeDefinitionsNested(nodeDefinitions);
   }, [nodeDefinitions]);
 
-  // Filter nodes based on search query and view mode
+  // Get matching node types for highlight mode
+  const matchingNodeTypes = React.useMemo<Set<string>>(() => {
+    if (!searchQuery.trim()) {
+      return new Set<string>();
+    }
+    const filtered = filterGroupedNodeDefinitions(groupedDefinitions, searchQuery);
+    const matchedTypes = new Set<string>();
+    for (const category of filtered) {
+      for (const node of category.nodes) {
+        matchedTypes.add(node.type);
+      }
+    }
+    return matchedTypes;
+  }, [groupedDefinitions, searchQuery]);
+
+  // Filter nodes based on search query, view mode, and filter mode
   const filteredListResults = React.useMemo<NodeDefinitionCategory[]>(() => {
     if (!searchQuery.trim()) {
       return selectedCategory && viewMode === "list"
         ? groupedDefinitions.filter((category) => category.name === selectedCategory)
         : groupedDefinitions;
     }
+    // In highlight mode, show all nodes (filtered only by selected category)
+    if (filterMode === "highlight") {
+      return selectedCategory && viewMode === "list"
+        ? groupedDefinitions.filter((category) => category.name === selectedCategory)
+        : groupedDefinitions;
+    }
     return filterGroupedNodeDefinitions(groupedDefinitions, searchQuery);
-  }, [groupedDefinitions, searchQuery, selectedCategory, viewMode]);
+  }, [groupedDefinitions, searchQuery, selectedCategory, viewMode, filterMode]);
 
   const filteredNestedResults = React.useMemo<NestedNodeDefinitionCategory[]>(() => {
     if (!searchQuery.trim()) {
       return nestedDefinitions;
     }
+    // In highlight mode, show all nodes
+    if (filterMode === "highlight") {
+      return nestedDefinitions;
+    }
     return filterNestedNodeDefinitions(nestedDefinitions, searchQuery);
-  }, [nestedDefinitions, searchQuery]);
+  }, [nestedDefinitions, searchQuery, filterMode]);
 
   // Get all nodes in flat list for keyboard navigation
   const allNodes = React.useMemo(() => {
@@ -191,6 +223,19 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
 
   const hasResults = viewMode === "split" ? filteredNestedResults.length > 0 : filteredListResults.length > 0;
   const categoryCount = viewMode === "split" ? filteredNestedResults.length : filteredListResults.length;
+  // In highlight mode, show no results only if there are no matching nodes
+  const showNoResults =
+    filterMode === "filter"
+      ? !hasResults && searchQuery.trim()
+      : searchQuery.trim() && matchingNodeTypes.size === 0;
+
+  // Build custom style for menu width
+  const menuStyle = React.useMemo(() => {
+    if (menuWidth === undefined) {
+      return undefined;
+    }
+    return { "--_menu-min-width": `${menuWidth}px` } as React.CSSProperties;
+  }, [menuWidth]);
 
   return (
     <ContextMenuOverlay
@@ -200,7 +245,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
       onKeyDown={handleKeyDown}
       dataAttributes={{ "node-search-menu": true }}
     >
-      <div className={styles.nodeSearchMenu} data-view-mode={viewMode}>
+      <div className={styles.nodeSearchMenu} data-view-mode={viewMode} style={menuStyle}>
         <SearchHeader
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
@@ -210,7 +255,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
         />
 
         <div className={styles.searchResults}>
-          {!hasResults && searchQuery.trim() ? (
+          {showNoResults ? (
             <NoResults searchQuery={searchQuery} />
           ) : viewMode === "split" ? (
             <SplitPaneView
@@ -222,6 +267,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
               onNodeHover={handleNodeHover}
               disabledNodeTypes={disabledSet}
               nodeIndexByType={nodeIndexByType}
+              matchingNodeTypes={searchQuery.trim() ? matchingNodeTypes : undefined}
             />
           ) : (
             <CategoryListView
@@ -233,6 +279,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
               onNodeHover={handleNodeHover}
               disabledNodeTypes={disabledSet}
               nodeIndexByType={nodeIndexByType}
+              matchingNodeTypes={searchQuery.trim() ? matchingNodeTypes : undefined}
             />
           )}
         </div>

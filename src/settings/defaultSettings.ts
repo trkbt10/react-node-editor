@@ -274,6 +274,30 @@ export const defaultSettings: SettingDefinition[] = [
     ],
     order: 8,
   },
+  {
+    key: "behavior.nodeSearchFilterMode",
+    label: "Node Search Filter Mode",
+    description: "How to display search results: filter hides non-matching nodes, highlight shows all with matches emphasized",
+    category: "behavior",
+    type: "select",
+    defaultValue: "filter",
+    options: [
+      { value: "filter", label: "Filter (hide non-matching)" },
+      { value: "highlight", label: "Highlight (show all, emphasize matches)" },
+    ],
+    order: 9,
+  },
+  {
+    key: "behavior.nodeSearchMenuWidth",
+    label: "Node Search Menu Width",
+    description: "Minimum width of the node search menu in pixels",
+    category: "behavior",
+    type: "number",
+    defaultValue: 360,
+    min: 280,
+    max: 800,
+    order: 10,
+  },
 
   // Performance settings
   {

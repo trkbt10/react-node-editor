@@ -1,6 +1,6 @@
-/* NodeActionsList - Menu item styles using design tokens */
+/* MenuItem - Shared menu item styles using design tokens */
 
-.actionItem {
+.menuItem {
   display: flex;
   align-items: center;
   gap: var(--node-editor-space-sm, 8px);
@@ -15,25 +15,19 @@
   transition: background-color 0.1s ease;
 }
 
-.actionItem:hover {
+.menuItem:hover {
   background: var(--node-editor-control-hover-background, #f5f5f5);
 }
 
-.actionItemDanger {
+.menuItemDanger {
   color: var(--node-editor-caution-color, #ff3b30);
 }
 
-.actionItemDanger:hover {
+.menuItemDanger:hover {
   background: var(--node-editor-caution-hover-background, rgba(255, 59, 48, 0.1));
 }
 
-.separator {
-  height: 1px;
-  background-color: var(--node-editor-separator-color, rgba(0, 0, 0, 0.1));
-  margin: 4px 0;
-}
-
-.actionShortcut {
+.shortcutHint {
   margin-left: auto;
   font-size: 11px;
   font-variant-numeric: tabular-nums;

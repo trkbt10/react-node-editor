@@ -283,6 +283,8 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
           onClose={() => actionActions.hideContextMenu()}
           visible={true}
           viewMode={settings.nodeSearchViewMode}
+          filterMode={settings.nodeSearchFilterMode}
+          menuWidth={settings.nodeSearchMenuWidth}
         />
       )}
 
