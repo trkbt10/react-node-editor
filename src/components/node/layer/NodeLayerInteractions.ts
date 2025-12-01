@@ -14,10 +14,9 @@ import {
 } from "../../../contexts/node-ports/utils/connectablePortPlanner";
 import { getOtherPortInfo, isValidReconnection } from "../../../contexts/node-ports/utils/portConnectionQueries";
 import { getPortConnections } from "../../../core/port/queries";
-import { createActionPort, createPortFromDefinition } from "../../../core/port/factory";
+import { createActionPort } from "../../../core/port/factory";
 import { createValidatedConnection } from "../../../contexts/node-ports/utils/connectionOperations";
-import { normalizePlacement } from "../../../contexts/node-ports/utils/portResolution";
-import { canConnectPorts } from "../../../core/connection/validation";
+import { getConnectableNodeTypes } from "../../../contexts/node-ports/utils/portConnectability";
 import {
   planConnectionChange,
   ConnectionSwitchBehavior,
@@ -588,30 +587,12 @@ export const useNodeLayerConnections = () => {
 
       if (!candidatePort || fromPort.id === candidatePort.id) {
         const screen = utils.canvasToScreen(toPosition.x, toPosition.y);
-        const defs = registry.getAll();
-        const fromNode = nodeEditorState.nodes[fromPort.nodeId];
-        const fromDef = fromNode ? registry.get(fromNode.type) : undefined;
-        const allowed: string[] = [];
-        defs.forEach((def) => {
-          const ports = def.ports || [];
-          const ok = ports.some((p) => {
-            if (p.type === fromPort.type) {
-              return false;
-            }
-            const placement = normalizePlacement(p.position);
-            const tempPort = createPortFromDefinition(p, "new", placement);
-            return canConnectPorts(
-              fromPort.type === "output" ? fromPort : tempPort,
-              fromPort.type === "output" ? tempPort : fromPort,
-              fromDef,
-              def,
-              nodeEditorState.connections,
-              { nodes: nodeEditorState.nodes },
-            );
-          });
-          if (ok) {
-            allowed.push(def.type);
-          }
+        const allowed = getConnectableNodeTypes({
+          fromPort,
+          nodes: nodeEditorState.nodes,
+          connections: nodeEditorState.connections,
+          getNodeDefinition: (type: string) => registry.get(type),
+          getAllNodeDefinitions: () => registry.getAll(),
         });
         actionActions.showContextMenu(
           { x: screen.x, y: screen.y },
