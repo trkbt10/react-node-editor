@@ -147,3 +147,57 @@ export const getConnectableNodeTypes = ({
 
   return connectableTypes;
 }
+
+/**
+ * Parameters for finding a connectable port definition
+ */
+export type FindConnectablePortDefinitionParams = {
+  /** The source port to connect from */
+  fromPort: Port;
+  /** Definition of the source port's node (optional) */
+  fromNodeDefinition?: NodeDefinition;
+  /** Definition of the target node */
+  targetNodeDefinition: NodeDefinition;
+  /** ID of the new target node */
+  targetNodeId: string;
+  /** All connections currently in the editor */
+  connections: Record<string, Connection>;
+  /** All nodes currently in the editor */
+  nodes: Record<string, Node>;
+};
+
+/**
+ * Result of finding a connectable port definition
+ */
+export type ConnectablePortDefinitionResult = {
+  /** The port definition that can connect */
+  portDefinition: PortDefinition;
+  /** The resolved Port instance for the connection */
+  port: Port;
+} | null;
+
+/**
+ * Find the first port definition on a target node that can connect to the source port.
+ * Returns both the definition and a properly constructed Port instance.
+ * Used when creating a new node and auto-connecting to an existing port.
+ */
+export const findConnectablePortDefinition = ({
+  fromPort,
+  fromNodeDefinition,
+  targetNodeDefinition,
+  targetNodeId,
+  connections,
+  nodes,
+}: FindConnectablePortDefinitionParams): ConnectablePortDefinitionResult => {
+  const targetPorts = targetNodeDefinition.ports || [];
+
+  for (const portDef of targetPorts) {
+    if (canDefinitionConnectToPort(portDef, fromPort, fromNodeDefinition, targetNodeDefinition, connections, nodes)) {
+      const placement = normalizePlacement(portDef.position);
+      const port = createPortFromDefinition(portDef, targetNodeId, placement);
+      return { portDefinition: portDef, port };
+    }
+  }
+
+  return null;
+}

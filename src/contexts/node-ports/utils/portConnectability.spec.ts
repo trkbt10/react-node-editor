@@ -3,7 +3,12 @@
  */
 import type { Port, Node, Connection } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { getConnectablePortIds, isPortConnectable, getConnectableNodeTypes } from "./portConnectability";
+import {
+  getConnectablePortIds,
+  isPortConnectable,
+  getConnectableNodeTypes,
+  findConnectablePortDefinition,
+} from "./portConnectability";
 
 const createPort = (overrides: Partial<Port> = {}): Port => ({
   id: "port-1",
@@ -281,5 +286,151 @@ describe("getConnectableNodeTypes", () => {
     });
 
     expect(result).toEqual([]);
+  });
+});
+
+describe("findConnectablePortDefinition", () => {
+  const createDefinitionWithPorts = (
+    type: string,
+    ports: NodeDefinition["ports"],
+  ): NodeDefinition => ({
+    type,
+    displayName: type,
+    ports,
+  });
+
+  it("finds first compatible port definition", () => {
+    const fromPort = createPort({ id: "out", type: "output", nodeId: "node-1", dataType: "text" });
+
+    const targetDef = createDefinitionWithPorts("target", [
+      { id: "input", type: "input", label: "Input", position: "left", dataType: "text" },
+    ]);
+
+    const nodes: Record<string, Node> = {
+      "node-1": createNode({ id: "node-1", type: "source" }),
+    };
+
+    const connections: Record<string, Connection> = {};
+
+    const result = findConnectablePortDefinition({
+      fromPort,
+      fromNodeDefinition: undefined,
+      targetNodeDefinition: targetDef,
+      targetNodeId: "new-node",
+      connections,
+      nodes,
+    });
+
+    expect(result).not.toBeNull();
+    expect(result?.portDefinition.id).toBe("input");
+    expect(result?.port.id).toBe("input");
+    expect(result?.port.nodeId).toBe("new-node");
+    expect(result?.port.dataType).toBe("text");
+  });
+
+  it("returns null when no compatible port exists", () => {
+    const fromPort = createPort({ id: "out", type: "output", nodeId: "node-1", dataType: "text" });
+
+    const targetDef = createDefinitionWithPorts("target", [
+      { id: "output", type: "output", label: "Output", position: "right" },
+    ]);
+
+    const nodes: Record<string, Node> = {
+      "node-1": createNode({ id: "node-1", type: "source" }),
+    };
+
+    const connections: Record<string, Connection> = {};
+
+    const result = findConnectablePortDefinition({
+      fromPort,
+      fromNodeDefinition: undefined,
+      targetNodeDefinition: targetDef,
+      targetNodeId: "new-node",
+      connections,
+      nodes,
+    });
+
+    expect(result).toBeNull();
+  });
+
+  it("respects dataType compatibility", () => {
+    const fromPort = createPort({ id: "out", type: "output", nodeId: "node-1", dataType: "image" });
+
+    const targetDef = createDefinitionWithPorts("target", [
+      { id: "text-input", type: "input", label: "Text Input", position: "left", dataType: "text" },
+      { id: "image-input", type: "input", label: "Image Input", position: "left", dataType: "image" },
+    ]);
+
+    const nodes: Record<string, Node> = {
+      "node-1": createNode({ id: "node-1", type: "source" }),
+    };
+
+    const connections: Record<string, Connection> = {};
+
+    const result = findConnectablePortDefinition({
+      fromPort,
+      fromNodeDefinition: undefined,
+      targetNodeDefinition: targetDef,
+      targetNodeId: "new-node",
+      connections,
+      nodes,
+    });
+
+    expect(result).not.toBeNull();
+    expect(result?.portDefinition.id).toBe("image-input");
+    expect(result?.port.dataType).toBe("image");
+  });
+
+  it("returns port with properly merged dataTypes", () => {
+    const fromPort = createPort({ id: "out", type: "output", nodeId: "node-1" });
+
+    const targetDef = createDefinitionWithPorts("target", [
+      { id: "multi-input", type: "input", label: "Multi Input", position: "left", dataType: "text", dataTypes: ["html", "markdown"] },
+    ]);
+
+    const nodes: Record<string, Node> = {
+      "node-1": createNode({ id: "node-1", type: "source" }),
+    };
+
+    const connections: Record<string, Connection> = {};
+
+    const result = findConnectablePortDefinition({
+      fromPort,
+      fromNodeDefinition: undefined,
+      targetNodeDefinition: targetDef,
+      targetNodeId: "new-node",
+      connections,
+      nodes,
+    });
+
+    expect(result).not.toBeNull();
+    expect(result?.port.dataType).toEqual(["text", "html", "markdown"]);
+  });
+
+  it("handles input port as source", () => {
+    const fromPort = createPort({ id: "in", type: "input", nodeId: "node-1", position: "left" });
+
+    const targetDef = createDefinitionWithPorts("target", [
+      { id: "output", type: "output", label: "Output", position: "right" },
+    ]);
+
+    const nodes: Record<string, Node> = {
+      "node-1": createNode({ id: "node-1", type: "source" }),
+    };
+
+    const connections: Record<string, Connection> = {};
+
+    const result = findConnectablePortDefinition({
+      fromPort,
+      fromNodeDefinition: undefined,
+      targetNodeDefinition: targetDef,
+      targetNodeId: "new-node",
+      connections,
+      nodes,
+    });
+
+    expect(result).not.toBeNull();
+    expect(result?.portDefinition.id).toBe("output");
+    expect(result?.port.type).toBe("output");
   });
 });
