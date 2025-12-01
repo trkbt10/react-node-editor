@@ -25,6 +25,9 @@ export function getViewportInfo(): ViewportInfo {
   };
 }
 
+/** Padding from viewport edges in pixels */
+const VIEWPORT_PADDING = 8;
+
 /**
  * Calculate optimal position for a context menu to avoid viewport overflow
  */
@@ -38,24 +41,28 @@ export function calculateContextMenuPosition(
   let adjustedX = x;
   let adjustedY = y;
 
+  // Calculate available space with padding
+  const maxX = viewport.width - menuWidth - VIEWPORT_PADDING;
+  const maxY = viewport.height - menuHeight - VIEWPORT_PADDING;
+
   // Check if menu overflows right edge
-  if (x + menuWidth > viewport.width) {
-    adjustedX = Math.max(0, viewport.width - menuWidth);
+  if (x + menuWidth + VIEWPORT_PADDING > viewport.width) {
+    adjustedX = Math.max(VIEWPORT_PADDING, maxX);
   }
 
   // Check if menu overflows bottom edge
-  if (y + menuHeight > viewport.height) {
-    adjustedY = Math.max(0, viewport.height - menuHeight);
+  if (y + menuHeight + VIEWPORT_PADDING > viewport.height) {
+    adjustedY = Math.max(VIEWPORT_PADDING, maxY);
   }
 
-  // Ensure menu doesn't go off left edge
-  if (adjustedX < 0) {
-    adjustedX = 0;
+  // Ensure menu doesn't go off left edge (with padding)
+  if (adjustedX < VIEWPORT_PADDING) {
+    adjustedX = VIEWPORT_PADDING;
   }
 
-  // Ensure menu doesn't go off top edge
-  if (adjustedY < 0) {
-    adjustedY = 0;
+  // Ensure menu doesn't go off top edge (with padding)
+  if (adjustedY < VIEWPORT_PADDING) {
+    adjustedY = VIEWPORT_PADDING;
   }
 
   return {

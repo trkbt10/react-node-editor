@@ -36,6 +36,8 @@ export const ContextMenuOverlay: React.FC<ContextMenuOverlayProps> = React.memo(
   const dialogRef = React.useRef<HTMLDialogElement>(null);
   const internalContentRef = React.useRef<HTMLDivElement>(null);
   const [computedPosition, setComputedPosition] = React.useState<Position>(anchor);
+  // Track current anchor to detect changes
+  const anchorRef = React.useRef<Position>(anchor);
 
   // Use useEffectEvent to avoid re-registering listeners when callbacks change
   const handleClose = React.useEffectEvent(() => {
@@ -73,17 +75,34 @@ export const ContextMenuOverlay: React.FC<ContextMenuOverlayProps> = React.memo(
     };
   }, [visible]);
 
-  React.useEffect(() => {
-    if (visible) {
-      setComputedPosition(anchor);
-    }
-  }, [visible, anchor.x, anchor.y, anchor]);
-
+  // Reset position when anchor changes, then immediately recalculate
   React.useLayoutEffect(() => {
     if (!visible) {
       return;
     }
+    // Only reset if anchor actually changed
+    if (anchorRef.current.x !== anchor.x || anchorRef.current.y !== anchor.y) {
+      anchorRef.current = anchor;
+    }
+    // Always recalculate position after content renders
     updatePosition();
+  }, [visible, anchor.x, anchor.y, updatePosition]);
+
+  // Use ResizeObserver to recalculate position when content size changes
+  React.useLayoutEffect(() => {
+    if (!visible || !isBrowser || !internalContentRef.current) {
+      return;
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      updatePosition();
+    });
+
+    resizeObserver.observe(internalContentRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
   }, [visible, updatePosition]);
 
   React.useEffect(() => {
