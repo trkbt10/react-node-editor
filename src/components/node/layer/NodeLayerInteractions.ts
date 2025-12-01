@@ -14,6 +14,7 @@ import {
 } from "../../../contexts/node-ports/utils/connectablePortPlanner";
 import { getOtherPortInfo, isValidReconnection } from "../../../contexts/node-ports/utils/portConnectionQueries";
 import { getPortConnections } from "../../../core/port/queries";
+import { createActionPort, createPortFromDefinition } from "../../../core/port/factory";
 import { createValidatedConnection } from "../../../contexts/node-ports/utils/connectionOperations";
 import { normalizePlacement } from "../../../contexts/node-ports/utils/portResolution";
 import { canConnectPorts } from "../../../core/connection/validation";
@@ -279,17 +280,7 @@ export const useNodeLayerPorts = () => {
       }
 
       if (existingConnections.length === 0 || port.type === "output") {
-        const actionPort: Port = {
-          id: port.id,
-          nodeId: port.nodeId,
-          type: port.type,
-          label: port.label,
-          position: port.position,
-          dataType: port.dataType,
-          maxConnections: port.maxConnections,
-          allowedNodeTypes: port.allowedNodeTypes,
-          allowedPortTypes: port.allowedPortTypes,
-        };
+        const actionPort = createActionPort(port);
         actionActions.startConnectionDrag(actionPort);
         actionActions.updateConnectionDrag(portPosition, null);
         const connectable = computeConnectablePortIds({
@@ -311,14 +302,8 @@ export const useNodeLayerPorts = () => {
           return;
         }
 
-        const { otherNode, otherPort, isFromPort } = portInfo;
-        const fixedPort: Port = {
-          id: otherPort.id,
-          nodeId: otherNode.id,
-          type: otherPort.type,
-          label: otherPort.label,
-          position: otherPort.position,
-        };
+        const { otherPort, isFromPort } = portInfo;
+        const fixedPort = createActionPort(otherPort);
         const disconnectedEnd = isFromPort ? "from" : "to";
         const originalConnectionSnapshot = {
           id: connection.id,
@@ -614,15 +599,7 @@ export const useNodeLayerConnections = () => {
               return false;
             }
             const placement = normalizePlacement(p.position);
-            const tempPort: Port = {
-              id: p.id,
-              definitionId: p.id,
-              type: p.type,
-              label: p.label,
-              nodeId: "new",
-              position: placement.side,
-              placement,
-            };
+            const tempPort = createPortFromDefinition(p, "new", placement);
             return canConnectPorts(
               fromPort.type === "output" ? fromPort : tempPort,
               fromPort.type === "output" ? tempPort : fromPort,

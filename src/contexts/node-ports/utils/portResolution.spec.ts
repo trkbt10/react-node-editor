@@ -372,4 +372,147 @@ describe("getNodePorts", () => {
 
     expect(ports).toHaveLength(0);
   });
+
+  describe("dataType copying", () => {
+    it("should copy dataType from definition to port instance", () => {
+      const node: Node = {
+        id: "node-1",
+        type: "test",
+        position: { x: 0, y: 0 },
+        data: {},
+      };
+
+      const definition: NodeDefinition = {
+        type: "test",
+        displayName: "Test Node",
+        ports: [
+          { id: "input", type: "input", label: "Input", position: "left", dataType: "string" },
+          { id: "output", type: "output", label: "Output", position: "right", dataType: "number" },
+        ],
+      };
+
+      const ports = getNodePorts(node, definition);
+
+      expect(ports).toHaveLength(2);
+      expect(ports[0].dataType).toBe("string");
+      expect(ports[1].dataType).toBe("number");
+    });
+
+    it("should copy array dataType from definition to port instance", () => {
+      const node: Node = {
+        id: "node-1",
+        type: "test",
+        position: { x: 0, y: 0 },
+        data: {},
+      };
+
+      const definition: NodeDefinition = {
+        type: "test",
+        displayName: "Test Node",
+        ports: [{ id: "input", type: "input", label: "Input", position: "left", dataType: ["text", "html"] }],
+      };
+
+      const ports = getNodePorts(node, definition);
+
+      expect(ports).toHaveLength(1);
+      expect(ports[0].dataType).toEqual(["text", "html"]);
+    });
+
+    it("should merge dataType and dataTypes from definition", () => {
+      const node: Node = {
+        id: "node-1",
+        type: "test",
+        position: { x: 0, y: 0 },
+        data: {},
+      };
+
+      const definition: NodeDefinition = {
+        type: "test",
+        displayName: "Test Node",
+        ports: [{ id: "input", type: "input", label: "Input", position: "left", dataType: "text", dataTypes: ["html", "markdown"] }],
+      };
+
+      const ports = getNodePorts(node, definition);
+
+      expect(ports).toHaveLength(1);
+      expect(ports[0].dataType).toEqual(["text", "html", "markdown"]);
+    });
+
+    it("should copy dataType to all dynamic port instances", () => {
+      const node: Node = {
+        id: "node-1",
+        type: "test",
+        position: { x: 0, y: 0 },
+        data: {},
+      };
+
+      const definition: NodeDefinition = {
+        type: "test",
+        displayName: "Test Node",
+        ports: [{ id: "input", type: "input", label: "Input", position: "left", dataType: "string", instances: 3 }],
+      };
+
+      const ports = getNodePorts(node, definition);
+
+      expect(ports).toHaveLength(3);
+      expect(ports[0].dataType).toBe("string");
+      expect(ports[1].dataType).toBe("string");
+      expect(ports[2].dataType).toBe("string");
+    });
+
+    it("should copy dataTypes array to all dynamic port instances", () => {
+      const node: Node = {
+        id: "node-1",
+        type: "test",
+        position: { x: 0, y: 0 },
+        data: {},
+      };
+
+      const definition: NodeDefinition = {
+        type: "test",
+        displayName: "Test Node",
+        ports: [{ id: "input", type: "input", label: "Input", position: "left", dataTypes: ["image", "audio"], instances: 2 }],
+      };
+
+      const ports = getNodePorts(node, definition);
+
+      expect(ports).toHaveLength(2);
+      expect(ports[0].dataType).toEqual(["image", "audio"]);
+      expect(ports[1].dataType).toEqual(["image", "audio"]);
+    });
+
+    it("should set correct definitionId for each dynamic port instance", () => {
+      const node: Node = {
+        id: "node-1",
+        type: "test",
+        position: { x: 0, y: 0 },
+        data: {},
+      };
+
+      const definition: NodeDefinition = {
+        type: "test",
+        displayName: "Test Node",
+        ports: [
+          { id: "main-output", type: "output", label: "Main", position: "right", dataType: "text", instances: 2 },
+          { id: "optional-output", type: "output", label: "Optional", position: "right", dataType: "image", instances: 2 },
+        ],
+      };
+
+      const ports = getNodePorts(node, definition);
+
+      expect(ports).toHaveLength(4);
+      expect(ports[0].id).toBe("main-output-1");
+      expect(ports[0].definitionId).toBe("main-output");
+      expect(ports[0].dataType).toBe("text");
+      expect(ports[1].id).toBe("main-output-2");
+      expect(ports[1].definitionId).toBe("main-output");
+      expect(ports[1].dataType).toBe("text");
+      expect(ports[2].id).toBe("optional-output-1");
+      expect(ports[2].definitionId).toBe("optional-output");
+      expect(ports[2].dataType).toBe("image");
+      expect(ports[3].id).toBe("optional-output-2");
+      expect(ports[3].definitionId).toBe("optional-output");
+      expect(ports[3].dataType).toBe("image");
+    });
+  });
 });

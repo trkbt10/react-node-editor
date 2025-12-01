@@ -117,6 +117,64 @@ describe("getPortDefinition", () => {
       expect(getPortDefinition(port, nodeDef)).toBe(exactDef);
     });
   });
+
+  describe("resolution with multiple dynamic port definitions", () => {
+    it("resolves correct definition using definitionId for multiple port groups", () => {
+      const mainOutputDef = createPortDefinition({ id: "main-output", dataType: "text" });
+      const optionalOutputDef = createPortDefinition({ id: "optional-output", dataType: "image" });
+      const nodeDef = createNodeDefinition([mainOutputDef, optionalOutputDef]);
+
+      const mainPort1 = createPort({ id: "main-output-1", definitionId: "main-output" });
+      const mainPort2 = createPort({ id: "main-output-2", definitionId: "main-output" });
+      const optPort1 = createPort({ id: "optional-output-1", definitionId: "optional-output" });
+      const optPort2 = createPort({ id: "optional-output-2", definitionId: "optional-output" });
+
+      expect(getPortDefinition(mainPort1, nodeDef)).toBe(mainOutputDef);
+      expect(getPortDefinition(mainPort2, nodeDef)).toBe(mainOutputDef);
+      expect(getPortDefinition(optPort1, nodeDef)).toBe(optionalOutputDef);
+      expect(getPortDefinition(optPort2, nodeDef)).toBe(optionalOutputDef);
+    });
+
+    it("falls back to suffix stripping when definitionId is missing", () => {
+      const mainOutputDef = createPortDefinition({ id: "main-output", dataType: "text" });
+      const optionalOutputDef = createPortDefinition({ id: "optional-output", dataType: "image" });
+      const nodeDef = createNodeDefinition([mainOutputDef, optionalOutputDef]);
+
+      const mainPort = createPort({ id: "main-output-1" });
+      const optPort = createPort({ id: "optional-output-1" });
+
+      expect(getPortDefinition(mainPort, nodeDef)).toBe(mainOutputDef);
+      expect(getPortDefinition(optPort, nodeDef)).toBe(optionalOutputDef);
+    });
+
+    it("definitionId takes priority over numeric suffix pattern", () => {
+      const mainOutputDef = createPortDefinition({ id: "main-output", dataType: "text" });
+      const optionalOutputDef = createPortDefinition({ id: "optional-output", dataType: "image" });
+      const nodeDef = createNodeDefinition([mainOutputDef, optionalOutputDef]);
+
+      // Port ID looks like it belongs to main-output, but definitionId says optional-output
+      const port = createPort({ id: "main-output-1", definitionId: "optional-output" });
+
+      expect(getPortDefinition(port, nodeDef)).toBe(optionalOutputDef);
+    });
+
+    it("resolves definitions with dataType correctly", () => {
+      const mainDef = createPortDefinition({ id: "main-input", dataType: ["text", "html"] });
+      const auxDef = createPortDefinition({ id: "aux-input", dataType: ["image", "audio"] });
+      const nodeDef = createNodeDefinition([mainDef, auxDef]);
+
+      const mainPort = createPort({ id: "main-input-1", definitionId: "main-input" });
+      const auxPort = createPort({ id: "aux-input-1", definitionId: "aux-input" });
+
+      const resolvedMain = getPortDefinition(mainPort, nodeDef);
+      const resolvedAux = getPortDefinition(auxPort, nodeDef);
+
+      expect(resolvedMain).toBe(mainDef);
+      expect(resolvedMain?.dataType).toEqual(["text", "html"]);
+      expect(resolvedAux).toBe(auxDef);
+      expect(resolvedAux?.dataType).toEqual(["image", "audio"]);
+    });
+  });
 });
 
 describe("createPortDefinitionResolver", () => {

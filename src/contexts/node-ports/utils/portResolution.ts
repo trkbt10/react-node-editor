@@ -8,6 +8,7 @@ import type {
   PortInstanceContext,
   PortInstanceFactoryContext,
 } from "../../../types/NodeDefinition";
+import { createPortInstance } from "../../../core/port/factory";
 import { mergePortDataTypes, toPortDataTypeValue } from "../../../utils/portDataTypeUtils";
 
 /**
@@ -79,21 +80,14 @@ const createPortInstances = (definition: PortDefinition, node: Node): Port[] => 
       definition.createPortLabel?.(factoryContext) ??
       (total > 1 ? `${definition.label} ${index + 1}` : definition.label);
 
-    const port: Port = {
+    return createPortInstance(definition, {
       id,
-      definitionId: definition.id,
-      type: definition.type,
       label,
       nodeId: node.id,
-      position: placement.side,
       placement,
-      dataType: resolvedDataType,
-      maxConnections: definition.maxConnections,
       instanceIndex: index,
       instanceTotal: total,
-    };
-
-    return port;
+    }, resolvedDataType);
   });
 };
 
