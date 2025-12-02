@@ -1,32 +1,86 @@
 /**
- * @file Inspector select styles using input design tokens
+ * @file Inspector select styles
+ * Consistent styling with InspectorInput for visual harmony
  */
 
 .select {
   width: 100%;
   padding: var(--node-editor-inspector-input-padding);
-  border: var(--node-editor-input-border);
   border-radius: var(--node-editor-control-border-radius);
-  font: var(--node-editor-input-font);
-  background: var(--node-editor-input-background);
-  color: var(--node-editor-input-text-color);
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-family: var(--node-editor-theme-default-font-family);
+  line-height: var(--node-editor-inspector-line-height-body);
+  color: var(--node-editor-text-color);
+  background: var(--node-editor-control-background);
   box-sizing: border-box;
   cursor: pointer;
-  transition: border-color var(--node-editor-transition-duration) ease;
+  transition:
+    border-color var(--node-editor-transition-duration) ease,
+    box-shadow var(--node-editor-transition-duration) ease,
+    background-color var(--node-editor-transition-duration) ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 28px;
 }
 
+/* Variant: default */
+.select[data-variant="default"] {
+  border: var(--node-editor-input-border);
+  box-shadow: var(--node-editor-input-box-shadow);
+}
+
+/* Variant: outline */
+.select[data-variant="outline"] {
+  border: var(--node-editor-card-border);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* Variant: filled */
+.select[data-variant="filled"] {
+  border: 1px solid transparent;
+  background-color: var(--node-editor-card-filled-background);
+  box-shadow: none;
+}
+
+/* Hover states */
+.select:hover:not(:focus):not(:disabled):not([data-error="true"]) {
+  border-color: var(--node-editor-separator-color);
+}
+
+.select[data-variant="filled"]:hover:not(:focus):not(:disabled):not([data-error="true"]) {
+  background-color: var(--node-editor-card-filled-hover-background);
+  border-color: transparent;
+}
+
+/* Focus state */
 .select:focus {
   outline: none;
   border-color: var(--node-editor-accent-color);
-  box-shadow: var(--node-editor-card-focus-box-shadow);
+  box-shadow: 0 0 0 2px var(--node-editor-keyboard-focus-indicator-color);
 }
 
-.select:hover:not(:focus) {
-  border-color: var(--node-editor-input-border-hover);
+.select[data-variant="filled"]:focus {
+  background-color: var(--node-editor-control-background);
+  border-color: var(--node-editor-accent-color);
 }
 
+/* Error state */
+.select[data-error="true"] {
+  border-color: var(--node-editor-caution-color);
+}
+
+.select[data-error="true"]:focus {
+  border-color: var(--node-editor-caution-color);
+  box-shadow: 0 0 0 2px rgba(255, 59, 48, 0.2);
+}
+
+/* Disabled state */
 .select:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
+  background-color: var(--node-editor-card-disabled-background);
   color: var(--node-editor-disabled-control-text-color);
+  cursor: not-allowed;
+  opacity: 0.6;
 }

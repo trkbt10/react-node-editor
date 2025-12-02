@@ -1,6 +1,6 @@
 /**
- * @file Inspector button group styles using inspector segment design tokens
- * Provides a segmented control appearance similar to Figma's inspector panels
+ * @file Inspector toggle group styles
+ * Uses same segment control appearance as InspectorButtonGroup for consistency
  */
 
 .group {
