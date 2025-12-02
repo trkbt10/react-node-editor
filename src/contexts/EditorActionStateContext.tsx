@@ -17,6 +17,19 @@ import {
   ConnectionDisconnectState,
   ContextMenuState,
 } from "../types/core";
+
+/**
+ * Options for showing a context menu
+ */
+export type ShowContextMenuOptions = {
+  position: Position;
+  nodeId?: NodeId;
+  canvasPosition?: Position;
+  connectionId?: ConnectionId;
+  mode?: "menu" | "search";
+  allowedNodeTypes?: string[];
+  fromPort?: BasePort;
+};
 import type { ConnectablePortsResult } from "./node-ports/utils/connectablePortPlanner";
 
 const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
@@ -139,15 +152,7 @@ export const editorActionStateActions = {
   endNodeResize: createAction("END_NODE_RESIZE"),
   showContextMenu: createAction(
     "SHOW_CONTEXT_MENU",
-    (
-      position: Position,
-      nodeId?: NodeId,
-      canvasPosition?: Position,
-      connectionId?: ConnectionId,
-      mode?: "menu" | "search",
-      allowedNodeTypes?: string[],
-      fromPort?: BasePort,
-    ) => ({ position, nodeId, canvasPosition, connectionId, mode, allowedNodeTypes, fromPort }),
+    (options: ShowContextMenuOptions) => options,
   ),
   hideContextMenu: createAction("HIDE_CONTEXT_MENU"),
   setInspectorActiveTab: createAction("SET_INSPECTOR_ACTIVE_TAB", (index: number) => ({ index })),

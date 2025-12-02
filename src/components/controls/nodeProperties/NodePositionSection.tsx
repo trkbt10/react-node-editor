@@ -2,20 +2,16 @@
  * @file Node position section for inspector (alignment + X/Y coordinates)
  */
 import * as React from "react";
+import { useI18n } from "../../../i18n/context";
 import type { Node } from "../../../types/core";
+import { Input } from "../../elements/Input";
 import { InspectorLabel } from "../../inspector/parts/InspectorLabel";
 import { PositionInputsGrid } from "../../inspector/parts/PositionInputsGrid";
-import { Input } from "../../elements/Input";
-import { AlignmentControls } from "../alignments/AlignmentControls";
-import type { AlignmentActionType } from "../alignments/types";
-import { useI18n } from "../../../i18n/context";
 
 type NodePositionSectionProps = {
   node: Node;
-  selectedNodes: Node[];
   onPositionXChange: (x: number) => void;
   onPositionYChange: (y: number) => void;
-  onAlignNodes?: (alignmentType: AlignmentActionType, nodes: Node[]) => void;
 };
 
 /**
@@ -23,10 +19,8 @@ type NodePositionSectionProps = {
  */
 export function NodePositionSection({
   node,
-  selectedNodes,
   onPositionXChange,
   onPositionYChange,
-  onAlignNodes,
 }: NodePositionSectionProps): React.ReactElement {
   const { t } = useI18n();
 
@@ -38,16 +32,8 @@ export function NodePositionSection({
     onPositionYChange(Number(e.target.value));
   });
 
-  const handleAlignment = React.useEffectEvent((alignmentType: AlignmentActionType) => {
-    if (!onAlignNodes || selectedNodes.length < 2) {
-      return;
-    }
-    onAlignNodes(alignmentType, selectedNodes);
-  });
-
   return (
     <div>
-      <AlignmentControls selectedNodes={selectedNodes} onAlign={handleAlignment} />
       <InspectorLabel>{t("inspectorPosition")}</InspectorLabel>
       <PositionInputsGrid>
         <Input

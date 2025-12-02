@@ -39,6 +39,7 @@ import { DynamicPortPlaygroundExample } from "./demos/custom/ports/port-playgrou
 import { ComfyUILayoutExample } from "./demos/custom/layouts/comfyui/ComfyUILayoutExample";
 import { CustomInspectorExample } from "./demos/custom/inspector/custom-inspector/CustomInspectorExample";
 import { NodeSearchMenuExample } from "./demos/custom/search/node-search-menu/NodeSearchMenuExample";
+import { NodeAddMenuExample } from "./demos/custom/menus/node-add-menu/NodeAddMenuExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -168,6 +169,13 @@ const examples: ExampleEntry[] = [
     title: "Node Search Menu (Split Pane)",
     description: "split pane view with nested category tree for node creation menu.",
     component: NodeSearchMenuExample,
+    category: "custom",
+  },
+  {
+    id: "node-add-menu",
+    title: "Node Add Menu (Hierarchical)",
+    description: "Hierarchical submenu for adding nodes via right-click context menu.",
+    component: NodeAddMenuExample,
     category: "custom",
   },
   {

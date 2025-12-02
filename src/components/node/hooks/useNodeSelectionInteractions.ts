@@ -55,7 +55,7 @@ export const useNodeSelectionInteractions = (
       const screenPosition = { x: event.clientX, y: event.clientY };
       const canvasPosition = utils.screenToCanvas(event.clientX, event.clientY);
 
-      const defaultShow = () => actionActions.showContextMenu(screenPosition, nodeId, canvasPosition);
+      const defaultShow = () => actionActions.showContextMenu({ position: screenPosition, nodeId, canvasPosition });
 
       const handler = interactionSettings.contextMenu.handleRequest;
       if (handler) {

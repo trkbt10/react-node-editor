@@ -1,0 +1,108 @@
+/* NodeAddMenu - Hierarchical submenu styles */
+
+.menuItemWrapper {
+  position: relative;
+  list-style: none;
+}
+
+.submenu {
+  position: fixed;
+  z-index: calc(var(--node-editor-dialog-level-elevation, 1000) + 1);
+  min-width: 180px;
+  max-width: 240px;
+  max-height: calc(100vh - 16px);
+  overflow-y: auto;
+  background: var(--node-editor-control-background, #ffffff);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius, 12px);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.15),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+  font-family: var(--node-editor-system-font, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+  color: var(--node-editor-text-color, #000000);
+}
+
+.submenuList {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-space-sm, 8px);
+  padding: var(--node-editor-space-sm, 8px) var(--node-editor-space-md, 12px);
+  margin: 2px 4px;
+  border-radius: var(--node-editor-control-border-radius, 6px);
+  cursor: pointer;
+  user-select: none;
+  font-size: var(--node-editor-font-size-sm, 13px);
+  color: var(--node-editor-text-color);
+  transition: background-color 0.1s ease;
+}
+
+.menuItem:hover,
+.menuItem[data-focused="true"] {
+  background: var(--node-editor-control-hover-background, #f5f5f5);
+}
+
+.menuItem[data-has-submenu="true"] {
+  justify-content: space-between;
+}
+
+.menuItem[data-has-submenu="true"]::after {
+  content: "";
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 4px 0 4px 5px;
+  border-color: transparent transparent transparent var(--node-editor-tertiary-label-color, #9ca3af);
+  flex-shrink: 0;
+}
+
+.menuItem[data-has-submenu="true"]:hover::after,
+.menuItem[data-has-submenu="true"][data-focused="true"]::after {
+  border-left-color: var(--node-editor-text-color, #000000);
+}
+
+.menuItemDisabled {
+  composes: menuItem;
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.menuItemIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--node-editor-secondary-label-color, #666666);
+}
+
+.menuItem:hover .menuItemIcon,
+.menuItem[data-focused="true"] .menuItemIcon {
+  color: var(--node-editor-text-color, #000000);
+}
+
+.menuItemLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.menuItemBadge {
+  flex-shrink: 0;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--node-editor-tertiary-label-color, #9ca3af);
+  background: var(--node-editor-control-hover-background, #f5f5f5);
+  border-radius: 8px;
+}

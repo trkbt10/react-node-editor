@@ -568,7 +568,7 @@ const ConnectionRendererContainerComponent: React.FC<ConnectionRendererContainer
     const position = { x: e.clientX, y: e.clientY };
     const canvasPos = utils.screenToCanvas(e.clientX, e.clientY);
 
-    const defaultShow = () => actionActions.showContextMenu(position, undefined, canvasPos, connectionId);
+    const defaultShow = () => actionActions.showContextMenu({ position, canvasPosition: canvasPos, connectionId });
 
     const handler = interactionSettings.contextMenu.handleRequest;
     if (handler) {

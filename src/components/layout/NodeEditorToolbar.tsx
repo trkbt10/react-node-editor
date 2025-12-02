@@ -73,7 +73,7 @@ export const NodeEditorToolbar: React.FC<NodeEditorToolbarProps> = React.memo(({
     const canvasX = (-viewport.offset.x + centerScreenX) / viewport.scale;
     const canvasY = (-viewport.offset.y + centerScreenY) / viewport.scale;
 
-    actionActions.showContextMenu({ x: centerScreenX, y: centerScreenY }, undefined, { x: canvasX, y: canvasY });
+    actionActions.showContextMenu({ position: { x: centerScreenX, y: centerScreenY }, canvasPosition: { x: canvasX, y: canvasY } });
   }, [canvasState.viewport, actionActions]);
 
   const toolbarContent = (

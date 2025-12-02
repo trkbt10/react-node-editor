@@ -2,13 +2,16 @@
  * @file Context action menu component
  */
 import * as React from "react";
-import { EditIcon, PlusIcon, PasteIcon } from "../elements/icons";
+import { EditIcon, PasteIcon } from "../elements/icons";
 import { MenuItem } from "./MenuItem";
+import { NodeAddMenu } from "./NodeAddMenu";
+import { SearchIcon } from "../elements/icons";
 import styles from "./ContextActionMenu.module.css";
 import { ALIGNMENT_ACTIONS, ALIGNMENT_GROUPS } from "../controls/alignments/constants";
 import { calculateAlignmentPositions } from "../controls/alignments/utils";
 import type { AlignmentActionConfig, AlignmentActionGroup, AlignmentActionType } from "../controls/alignments/types";
 import type { Position, Node } from "../../types/core";
+import type { NodeDefinition } from "../../types/NodeDefinition";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useI18n } from "../../i18n/context";
 import { useNodeEditor, useNodeEditorActions } from "../../contexts/node-editor/context";
@@ -16,10 +19,7 @@ import { useNodeOperations } from "../../contexts/NodeOperationsContext";
 import { NodeActionsList } from "./NodeActionsList";
 import { ContextMenuOverlay } from "../layout/ContextMenuOverlay";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
-import {
-  detectShortcutDisplayPlatform,
-  getShortcutLabelForAction,
-} from "../../utils/shortcutDisplay";
+import { detectShortcutDisplayPlatform, getShortcutLabelForAction } from "../../utils/shortcutDisplay";
 
 export type ContextTarget = { type: "node"; id: string } | { type: "connection"; id: string } | { type: "canvas" };
 
@@ -28,9 +28,22 @@ export type ContextActionMenuProps = {
   target: ContextTarget;
   visible: boolean;
   onClose: () => void;
+  nodeDefinitions?: NodeDefinition[];
+  onCreateNode?: (nodeType: string, position: Position) => void;
+  canvasPosition?: Position;
+  disabledNodeTypes?: string[];
 };
 
-export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, target, visible, onClose }) => {
+export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({
+  position,
+  target,
+  visible,
+  onClose,
+  nodeDefinitions,
+  onCreateNode,
+  canvasPosition,
+  disabledNodeTypes,
+}) => {
   const { t } = useI18n();
   const editorActions = useNodeEditorActions();
   const { state: actionState, actions: actionActions } = useEditorActionState();
@@ -112,81 +125,88 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
     >
       <div className={styles.menu}>
         <ul className={styles.menuList}>
-        {showAlignmentControls && (
-          <li className={styles.alignmentControlsItem}>
-            <div className={styles.alignmentLabel}>Alignment ({selectedNodes.length} nodes)</div>
-            <div className={styles.alignmentGrid}>
-              {ALIGNMENT_GROUPS.map((group) => (
-                <div key={group} className={styles.alignmentRow}>
-                  {groupedAlignmentActions[group]?.map((action) => {
-                    const IconComponent = action.icon;
-                    return (
-                      <button
-                        key={action.type}
-                        type="button"
-                        onClick={() => handleAlignFromMenu(action.type)}
-                        className={styles.alignmentButton}
-                        title={action.title}
-                        aria-label={action.title}
-                      >
-                        <IconComponent size={14} />
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
-          </li>
-        )}
-        {target.type === "node" && (
-          <>
-            <li className={styles.menuSectionTitle}>{t("inspectorNodeProperties")}</li>
-            <MenuItem
-              icon={<EditIcon size={14} />}
-              label={t("contextMenuEditNode")}
-              onClick={() => {
-                if (target.type !== "node") {
-                  return;
-                }
-                // Ensure node is selected and switch inspector to Properties tab
-                actionActions.setInteractionSelection([target.id]);
-                actionActions.setEditingSelection([target.id]);
-                actionActions.setInspectorActiveTab(1);
-                onClose();
-              }}
-            />
-            <NodeActionsList targetNodeId={target.type === "node" ? target.id : ""} onAction={onClose} />
-          </>
-        )}
-        {target.type === "connection" && (
-          <>
-            <li className={styles.menuSectionTitle}>{t("inspectorConnectionProperties")}</li>
-            <MenuItem
-              label={t("contextMenuDeleteConnection")}
-              danger
-              onClick={handleDeleteConnection}
-            />
-          </>
-        )}
-        {target.type === "canvas" && (
-          <>
-            <MenuItem
-              icon={<PlusIcon size={14} />}
-              label={t("addConnection") || "Add Connection…"}
-              onClick={() => {
-                // Close this menu then open NodeSearch at the same screen position
-                onClose();
-                actionActions.showContextMenu(resolvedPosition, undefined, undefined, undefined, "search");
-              }}
-            />
-            <MenuItem
-              icon={<PasteIcon size={14} />}
-              label={t("paste")}
-              shortcutHint={pasteShortcut}
-              onClick={handlePasteFromClipboard}
-            />
-          </>
-        )}
+          {showAlignmentControls && (
+            <li className={styles.alignmentControlsItem}>
+              <div className={styles.alignmentLabel}>Alignment ({selectedNodes.length} nodes)</div>
+              <div className={styles.alignmentGrid}>
+                {ALIGNMENT_GROUPS.map((group) => (
+                  <div key={group} className={styles.alignmentRow}>
+                    {groupedAlignmentActions[group]?.map((action) => {
+                      const IconComponent = action.icon;
+                      return (
+                        <button
+                          key={action.type}
+                          type="button"
+                          onClick={() => handleAlignFromMenu(action.type)}
+                          className={styles.alignmentButton}
+                          title={action.title}
+                          aria-label={action.title}
+                        >
+                          <IconComponent size={14} />
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </li>
+          )}
+          {target.type === "node" && (
+            <>
+              <li className={styles.menuSectionTitle}>{t("inspectorNodeProperties")}</li>
+              <MenuItem
+                icon={<EditIcon size={14} />}
+                label={t("contextMenuEditNode")}
+                onClick={() => {
+                  if (target.type !== "node") {
+                    return;
+                  }
+                  // Ensure node is selected and switch inspector to Properties tab
+                  actionActions.setInteractionSelection([target.id]);
+                  actionActions.setEditingSelection([target.id]);
+                  actionActions.setInspectorActiveTab(1);
+                  onClose();
+                }}
+              />
+              <NodeActionsList targetNodeId={target.type === "node" ? target.id : ""} onAction={onClose} />
+            </>
+          )}
+          {target.type === "connection" && (
+            <>
+              <li className={styles.menuSectionTitle}>{t("inspectorConnectionProperties")}</li>
+              <MenuItem label={t("contextMenuDeleteConnection")} danger onClick={handleDeleteConnection} />
+            </>
+          )}
+          {target.type === "canvas" && (
+            <>
+              {nodeDefinitions && nodeDefinitions.length > 0 && onCreateNode && canvasPosition && (
+                <>
+                  <NodeAddMenu
+                    label={t("addNode") || "Add Node"}
+                    nodeDefinitions={nodeDefinitions}
+                    onSelectNode={onCreateNode}
+                    canvasPosition={canvasPosition}
+                    disabledNodeTypes={disabledNodeTypes}
+                    onClose={onClose}
+                  />
+                  <MenuItem
+                    icon={<SearchIcon size={14} />}
+                    label={t("nodeSearchPlaceholder") || "Search Nodes…"}
+                    onClick={() => {
+                      onClose();
+                      actionActions.showContextMenu({ position: resolvedPosition, canvasPosition, mode: "search" });
+                    }}
+                  />
+                </>
+              )}
+              <MenuItem
+                icon={<PasteIcon size={14} />}
+                label={t("paste")}
+                shortcutHint={pasteShortcut}
+                onClick={handlePasteFromClipboard}
+              />
+            </>
+          )}
         </ul>
       </div>
     </ContextMenuOverlay>

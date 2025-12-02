@@ -601,15 +601,13 @@ export const useNodeLayerConnections = () => {
           getNodeDefinition: (type: string) => registry.get(type),
           getAllNodeDefinitions: () => registry.getAll(),
         });
-        actionActions.showContextMenu(
-          { x: screen.x, y: screen.y },
-          undefined,
-          { x: toPosition.x, y: toPosition.y },
-          undefined,
-          "search",
-          allowed,
+        actionActions.showContextMenu({
+          position: { x: screen.x, y: screen.y },
+          canvasPosition: { x: toPosition.x, y: toPosition.y },
+          mode: "search",
+          allowedNodeTypes: allowed,
           fromPort,
-        );
+        });
       }
       endConnectionDrag();
     },

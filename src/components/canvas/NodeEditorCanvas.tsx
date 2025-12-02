@@ -300,6 +300,10 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
           }
           visible={true}
           onClose={() => actionActions.hideContextMenu()}
+          nodeDefinitions={nodeDefinitions}
+          onCreateNode={handleCreateNode}
+          canvasPosition={actionState.contextMenu.canvasPosition ?? actionState.contextMenu.position}
+          disabledNodeTypes={disabledNodeTypes}
         />
       )}
     </NodeEditorBase>

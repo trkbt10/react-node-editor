@@ -15,6 +15,7 @@ import { NodeContentSection } from "../../controls/nodeProperties/NodeContentSec
 import { NodePositionSection } from "../../controls/nodeProperties/NodePositionSection";
 import { NodeLayoutSection } from "../../controls/nodeProperties/NodeLayoutSection";
 import { NodeTypeSection } from "../../controls/nodeProperties/NodeTypeSection";
+import { AlignmentControls } from "../../controls/alignments/AlignmentControls";
 
 // Extended props for supporting multiple selection alignment
 type ExtendedInspectorRenderProps = {
@@ -82,6 +83,13 @@ export function NodeBehaviorInspector({
   const isLocked = Boolean(node.locked);
   const isVisible = node.visible !== false;
 
+  const handleAlignment = React.useEffectEvent((alignmentType: AlignmentActionType) => {
+    if (!onAlignNodes || selectedNodes.length < 2) {
+      return;
+    }
+    onAlignNodes(alignmentType, selectedNodes);
+  });
+
   return (
     <PropertySection
       title={t("inspectorNodeProperties")}
@@ -108,12 +116,11 @@ export function NodeBehaviorInspector({
 
       <NodeContentSection node={node} onContentChange={handleContentChange} />
 
+      <AlignmentControls selectedNodes={selectedNodes} onAlign={handleAlignment} />
       <NodePositionSection
         node={node}
-        selectedNodes={selectedNodes}
         onPositionXChange={handlePositionXChange}
         onPositionYChange={handlePositionYChange}
-        onAlignNodes={onAlignNodes}
       />
 
       <NodeLayoutSection node={node} onWidthChange={handleWidthChange} onHeightChange={handleHeightChange} />

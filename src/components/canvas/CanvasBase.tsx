@@ -199,7 +199,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className, onN
       const screenPosition = { x: e.clientX, y: e.clientY };
       const canvasPosition = utils.screenToCanvas(e.clientX, e.clientY);
 
-      const defaultShow = () => actionActions.showContextMenu(screenPosition, undefined, canvasPosition);
+      const defaultShow = () => actionActions.showContextMenu({ position: screenPosition, canvasPosition });
 
       const handler = interactionSettings.contextMenu.handleRequest;
       if (handler) {
@@ -233,7 +233,7 @@ export const CanvasBase: React.FC<CanvasBaseProps> = ({ children, className, onN
       // Convert screen coordinates to canvas coordinates using utils
       const canvasPosition = utils.screenToCanvas(e.clientX, e.clientY);
       const position = { x: e.clientX, y: e.clientY };
-      actionActions.showContextMenu(position, undefined, canvasPosition, undefined, "search");
+      actionActions.showContextMenu({ position, canvasPosition, mode: "search" });
     },
     [actionActions, utils],
   );

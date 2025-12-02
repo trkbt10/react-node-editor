@@ -1,7 +1,3 @@
-.alignmentControls {
-  /* Layout is controlled by parent container using gap */
-}
-
 .alignmentGroupsContainer {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -37,7 +33,7 @@
     color var(--node-editor-transition-duration) ease;
 }
 
-.alignmentButton > svg {
+.alignmentButton>svg {
   width: 12px;
   height: 12px;
   flex-shrink: 0;

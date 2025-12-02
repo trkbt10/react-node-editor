@@ -32,13 +32,11 @@ export const AlignmentControls = React.memo<AlignmentControlsProps>(({ selectedN
   }, []);
 
   const alignmentSuffix =
-    selectedNodes.length > 1
-      ? t("alignmentCountLabel", { count: selectedNodes.length })
-      : t("alignmentSelectPrompt");
+    selectedNodes.length > 1 ? t("alignmentCountLabel", { count: selectedNodes.length }) : t("alignmentSelectPrompt");
   const alignmentLabel = `${t("alignmentTitle")} (${alignmentSuffix})`;
 
   return (
-    <div className={styles.alignmentControls}>
+    <div>
       <InspectorLabel>{alignmentLabel}</InspectorLabel>
       <div className={styles.alignmentGroupsContainer}>
         {ALIGNMENT_GROUPS.map((group) => (
