@@ -31,14 +31,47 @@
   /* Inspector typography */
   --node-editor-inspector-font-size-title: 0.6875rem;
   --node-editor-inspector-line-height-title: 1.429;
-  --node-editor-inspector-font-size-body: 0.875rem;
-  --node-editor-inspector-line-height-body: 1.429;
-  --node-editor-inspector-font-size-meta: 0.75rem;
-  --node-editor-inspector-line-height-meta: 1.333;
+  --node-editor-inspector-font-size-body: 0.75rem;
+  --node-editor-inspector-line-height-body: 1.333;
+  --node-editor-inspector-font-size-meta: 0.6875rem;
+  --node-editor-inspector-line-height-meta: 1.273;
   --node-editor-inspector-font-weight-medium: 500;
-  --node-editor-inspector-font-size-heading: 0.875rem;
+  --node-editor-inspector-font-size-heading: 0.8125rem;
   --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
   --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+  /* Inspector icon button tokens - Figma style */
+  --node-editor-inspector-icon-button-size: 28px;
+  --node-editor-inspector-icon-button-size-sm: 24px;
+  --node-editor-inspector-icon-button-icon-size: 16px;
+  --node-editor-inspector-icon-button-icon-size-sm: 14px;
+  --node-editor-inspector-icon-button-color: #999999;
+  --node-editor-inspector-icon-button-color-hover: #1d1d1d;
+  --node-editor-inspector-icon-button-color-active: #18a0fb;
+  --node-editor-inspector-icon-button-color-disabled: rgba(29, 29, 29, 0.3);
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: rgba(0, 0, 0, 0.06);
+  --node-editor-inspector-icon-button-background-active: rgba(24, 160, 251, 0.12);
+
+  /* Inspector input with label tokens - Figma style */
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 14px;
+  --node-editor-inspector-input-label-color: #999999;
+  --node-editor-inspector-input-label-font-size: 0.6875rem;
+  --node-editor-inspector-input-label-font-weight: 400;
+
+  /* Inspector segment control tokens - Figma style */
+  --node-editor-inspector-segment-border-radius: 6px;
+  --node-editor-inspector-segment-gap: 0;
+  --node-editor-inspector-segment-padding: 6px 10px;
+  --node-editor-inspector-segment-background: rgba(0, 0, 0, 0.06);
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(0, 0, 0, 0.04);
+  --node-editor-inspector-segment-button-background-active: #ffffff;
+  --node-editor-inspector-segment-button-color: #666666;
+  --node-editor-inspector-segment-button-color-hover: #333333;
+  --node-editor-inspector-segment-button-color-active: #1d1d1d;
+  --node-editor-inspector-segment-button-shadow-active: 0 1px 2px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
 
   /* Font families & typography - Figma uses Inter */
   --node-editor-theme-default-font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -136,10 +169,10 @@
 
   /* Input surfaces - Figma input field styling */
   --node-editor-input-background: #ffffff;
-  --node-editor-input-border: 1px solid #e3e3e3;
-  --node-editor-input-border-hover: #18a0fb;
-  --node-editor-input-box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-  --node-editor-input-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+  --node-editor-input-border: 1px solid #e5e5e5;
+  --node-editor-input-border-hover: #cccccc;
+  --node-editor-input-box-shadow: none;
+  --node-editor-input-padding: 6px 8px;
 
   /* Card & panel styling - Figma property panel design */
   --node-editor-card-border-color: rgba(0, 0, 0, 0.1);
