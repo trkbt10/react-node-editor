@@ -54,3 +54,55 @@
   font-weight: 600;
   letter-spacing: 0.02em;
 }
+
+/* Alignment section in context menu */
+.alignmentLabel {
+  font-size: 11px;
+  color: var(--node-editor-secondary-label-color, #666666);
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.alignmentGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--node-editor-space-xs, 4px);
+}
+
+.alignmentRow {
+  display: flex;
+  gap: 1px;
+  padding: 1px;
+  background: var(--node-editor-inspector-segment-background, rgba(0, 0, 0, 0.06));
+  border-radius: var(--node-editor-inspector-segment-border-radius, 6px);
+}
+
+.alignmentButton {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 4px;
+  border: none;
+  border-radius: calc(var(--node-editor-inspector-segment-border-radius, 6px) - 1px);
+  background: transparent;
+  color: var(--node-editor-inspector-segment-button-color, #666666);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition:
+    background-color var(--node-editor-transition-duration, 0.15s) ease,
+    color var(--node-editor-transition-duration, 0.15s) ease;
+}
+
+.alignmentButton > svg {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.alignmentButton:hover {
+  background: var(--node-editor-inspector-segment-button-background-hover, rgba(0, 0, 0, 0.08));
+  color: var(--node-editor-inspector-segment-button-color-hover, #333333);
+}

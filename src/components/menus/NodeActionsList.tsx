@@ -6,14 +6,7 @@ import { DuplicateIcon, CopyIcon, CutIcon, PasteIcon, DeleteIcon } from "../elem
 import { MenuItem } from "./MenuItem";
 import { MenuSeparator } from "./MenuSeparator";
 import { useI18n } from "../../i18n/context";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeEditor, useNodeEditorActions } from "../../contexts/node-editor/context";
-import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { canAddNodeType, countNodesByType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
-import {
-  copyNodesToClipboard,
-  pasteNodesFromClipboard,
-} from "../../contexts/node-editor/utils/nodeClipboardOperations";
+import { useNodeOperations } from "../../contexts/NodeOperationsContext";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
 import {
   detectShortcutDisplayPlatform,
@@ -42,10 +35,7 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
   includeDelete = true,
 }) => {
   const { t } = useI18n();
-  const editorActions = useNodeEditorActions();
-  const { state: actionState, actions: actionActions } = useEditorActionState();
-  const { state: editorState } = useNodeEditor();
-  const nodeDefinitions = useNodeDefinitionList();
+  const nodeOperations = useNodeOperations();
   const interactionSettings = useInteractionSettings();
   const platform = React.useMemo(() => detectShortcutDisplayPlatform(), []);
 
@@ -63,65 +53,29 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
   const deleteShortcut = shortcutFor("delete-selection");
 
   const handleDuplicate = React.useCallback(() => {
-    const node = editorState.nodes[targetNodeId];
-    if (!node) {
-      return;
-    }
-    const counts = countNodesByType(editorState);
-    if (!canAddNodeType(node.type, nodeDefinitions, counts)) {
-      return;
-    }
-    editorActions.duplicateNodes([targetNodeId]);
+    nodeOperations.duplicateNodes(targetNodeId);
     onAction?.();
-  }, [editorActions, editorState, nodeDefinitions, targetNodeId, onAction]);
+  }, [nodeOperations, targetNodeId, onAction]);
 
   const handleCopy = React.useCallback(() => {
-    const selected =
-      actionState.selectedNodeIds.includes(targetNodeId) && actionState.selectedNodeIds.length > 0
-        ? actionState.selectedNodeIds
-        : [targetNodeId];
-    copyNodesToClipboard(selected, editorState);
+    nodeOperations.copyNodes(targetNodeId);
     onAction?.();
-  }, [actionState.selectedNodeIds, editorState, targetNodeId, onAction]);
+  }, [nodeOperations, targetNodeId, onAction]);
 
   const handleCut = React.useCallback(() => {
-    const selected =
-      actionState.selectedNodeIds.includes(targetNodeId) && actionState.selectedNodeIds.length > 0
-        ? actionState.selectedNodeIds
-        : [targetNodeId];
-    copyNodesToClipboard(selected, editorState);
-    selected.forEach((nodeId) => editorActions.deleteNode(nodeId));
-    actionActions.clearSelection();
+    nodeOperations.cutNodes(targetNodeId);
     onAction?.();
-  }, [actionState.selectedNodeIds, editorActions, editorState, actionActions, targetNodeId, onAction]);
+  }, [nodeOperations, targetNodeId, onAction]);
 
   const handlePaste = React.useCallback(() => {
-    const result = pasteNodesFromClipboard();
-    if (!result) {
-      return;
-    }
-
-    // Add nodes
-    result.nodes.forEach((node) => {
-      editorActions.addNodeWithId(node);
-    });
-
-    // Add connections
-    result.connections.forEach((conn) => {
-      editorActions.addConnection(conn);
-    });
-
-    // Select pasted nodes
-    const newIds = Array.from(result.idMap.values());
-    actionActions.setInteractionSelection(newIds);
-    actionActions.setEditingSelection(newIds);
+    nodeOperations.pasteNodes();
     onAction?.();
-  }, [editorActions, actionActions, onAction]);
+  }, [nodeOperations, onAction]);
 
   const handleDelete = React.useCallback(() => {
-    editorActions.deleteNode(targetNodeId);
+    nodeOperations.deleteNodes(targetNodeId);
     onAction?.();
-  }, [editorActions, targetNodeId, onAction]);
+  }, [nodeOperations, targetNodeId, onAction]);
 
   return (
     <>

@@ -5,7 +5,6 @@ import * as React from "react";
 import { EditIcon, PlusIcon, PasteIcon } from "../elements/icons";
 import { MenuItem } from "./MenuItem";
 import styles from "./ContextActionMenu.module.css";
-import alignmentStyles from "../controls/alignments/AlignmentControls.module.css";
 import { ALIGNMENT_ACTIONS, ALIGNMENT_GROUPS } from "../controls/alignments/constants";
 import { calculateAlignmentPositions } from "../controls/alignments/utils";
 import type { AlignmentActionConfig, AlignmentActionGroup, AlignmentActionType } from "../controls/alignments/types";
@@ -13,7 +12,7 @@ import type { Position, Node } from "../../types/core";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useI18n } from "../../i18n/context";
 import { useNodeEditor, useNodeEditorActions } from "../../contexts/node-editor/context";
-import { pasteNodesFromClipboard } from "../../contexts/node-editor/utils/nodeClipboardOperations";
+import { useNodeOperations } from "../../contexts/NodeOperationsContext";
 import { NodeActionsList } from "./NodeActionsList";
 import { ContextMenuOverlay } from "../layout/ContextMenuOverlay";
 import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
@@ -36,6 +35,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
   const editorActions = useNodeEditorActions();
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: editorState } = useNodeEditor();
+  const nodeOperations = useNodeOperations();
   const interactionSettings = useInteractionSettings();
   const platform = React.useMemo(() => detectShortcutDisplayPlatform(), []);
   const [resolvedPosition, setResolvedPosition] = React.useState({ x: position.x, y: position.y });
@@ -86,24 +86,9 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
   );
 
   const handlePasteFromClipboard = React.useCallback(() => {
-    const result = pasteNodesFromClipboard();
-    if (!result) {
-      return;
-    }
-
-    result.nodes.forEach((node) => {
-      editorActions.addNodeWithId(node);
-    });
-
-    result.connections.forEach((connection) => {
-      editorActions.addConnection(connection);
-    });
-
-    const newIds = Array.from(result.idMap.values());
-    actionActions.setInteractionSelection(newIds);
-    actionActions.setEditingSelection(newIds);
+    nodeOperations.pasteNodes();
     onClose();
-  }, [editorActions, actionActions, onClose]);
+  }, [nodeOperations, onClose]);
 
   const handleDeleteConnection = React.useCallback(() => {
     if (target.type !== "connection") {
@@ -129,10 +114,10 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
         <ul className={styles.menuList}>
         {showAlignmentControls && (
           <li className={styles.alignmentControlsItem}>
-            <div className={alignmentStyles.alignmentLabel}>Alignment ({selectedNodes.length} nodes)</div>
-            <div className={alignmentStyles.alignmentGrid}>
+            <div className={styles.alignmentLabel}>Alignment ({selectedNodes.length} nodes)</div>
+            <div className={styles.alignmentGrid}>
               {ALIGNMENT_GROUPS.map((group) => (
-                <div key={group} className={alignmentStyles.alignmentRow}>
+                <div key={group} className={styles.alignmentRow}>
                   {groupedAlignmentActions[group]?.map((action) => {
                     const IconComponent = action.icon;
                     return (
@@ -140,7 +125,7 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
                         key={action.type}
                         type="button"
                         onClick={() => handleAlignFromMenu(action.type)}
-                        className={alignmentStyles.alignmentButton}
+                        className={styles.alignmentButton}
                         title={action.title}
                         aria-label={action.title}
                       >
