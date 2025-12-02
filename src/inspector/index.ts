@@ -50,11 +50,18 @@ export { InspectorTextarea } from "../components/inspector/parts/InspectorTextar
 export type { InspectorTextareaProps } from "../components/inspector/parts/InspectorTextarea";
 export { InspectorButton } from "../components/inspector/parts/InspectorButton";
 export type { InspectorButtonProps } from "../components/inspector/parts/InspectorButton";
+export { InspectorIconButton } from "../components/inspector/parts/InspectorIconButton";
+export type { InspectorIconButtonProps } from "../components/inspector/parts/InspectorIconButton";
 export { InspectorButtonGroup } from "../components/inspector/parts/InspectorButtonGroup";
 export type {
   InspectorButtonGroupProps,
   InspectorButtonGroupOption,
 } from "../components/inspector/parts/InspectorButtonGroup";
+export { InspectorToggleGroup } from "../components/inspector/parts/InspectorToggleGroup";
+export type {
+  InspectorToggleGroupProps,
+  InspectorToggleGroupOption,
+} from "../components/inspector/parts/InspectorToggleGroup";
 export { InspectorSelect } from "../components/inspector/parts/InspectorSelect";
 export type { InspectorSelectProps } from "../components/inspector/parts/InspectorSelect";
 export {

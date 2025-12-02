@@ -40,6 +40,39 @@
   --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
   --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
 
+  /* Inspector icon button tokens */
+  --node-editor-inspector-icon-button-size: 24px;
+  --node-editor-inspector-icon-button-size-sm: 20px;
+  --node-editor-inspector-icon-button-icon-size: 14px;
+  --node-editor-inspector-icon-button-icon-size-sm: 12px;
+  --node-editor-inspector-icon-button-color: var(--node-editor-secondary-label-color);
+  --node-editor-inspector-icon-button-color-hover: var(--node-editor-text-color);
+  --node-editor-inspector-icon-button-color-active: var(--node-editor-accent-color);
+  --node-editor-inspector-icon-button-color-disabled: var(--node-editor-disabled-control-text-color);
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: var(--node-editor-control-hover-background);
+  --node-editor-inspector-icon-button-background-active: var(--node-editor-selected-control-color);
+
+  /* Inspector input with label tokens */
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 16px;
+  --node-editor-inspector-input-label-color: var(--node-editor-secondary-label-color);
+  --node-editor-inspector-input-label-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-inspector-input-label-font-weight: 500;
+
+  /* Inspector segment control tokens (extends base segment control) */
+  --node-editor-inspector-segment-border-radius: var(--node-editor-radius-sm);
+  --node-editor-inspector-segment-gap: 1px;
+  --node-editor-inspector-segment-padding: 6px 8px;
+  --node-editor-inspector-segment-background: var(--node-editor-card-filled-background);
+  --node-editor-inspector-segment-button-background: var(--node-editor-control-background);
+  --node-editor-inspector-segment-button-background-hover: var(--node-editor-card-filled-hover-background);
+  --node-editor-inspector-segment-button-background-active: var(--node-editor-control-background);
+  --node-editor-inspector-segment-button-color: var(--node-editor-secondary-label-color);
+  --node-editor-inspector-segment-button-color-hover: var(--node-editor-text-color);
+  --node-editor-inspector-segment-button-color-active: var(--node-editor-text-color);
+  --node-editor-inspector-segment-button-shadow-active: var(--node-editor-shadow-sm);
+
   /* Font families & typography */
   --node-editor-theme-default-font-family: "Inter", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
   --node-editor-theme-control-font-family: "Inter", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;

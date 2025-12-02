@@ -30,6 +30,7 @@ import { OpalThemeExample } from "./demos/design/themes/opal/OpalThemeExample";
 import { UnityThemeExample } from "./demos/design/themes/unity/UnityThemeExample";
 import { AdobeThemeExample } from "./demos/design/themes/adobe/AdobeThemeExample";
 import { FigmaThemeExample } from "./demos/design/themes/figma/FigmaThemeExample";
+import { InspectorComponentsExample } from "./demos/design/inspector-components/InspectorComponentsExample";
 import { TradingAnalyticsDashboard } from "./demos/advanced/analytics/trading-analytics/TradingAnalyticsDashboard";
 import { DataBindingModesExample } from "./demos/data/binding-modes/DataBindingModesExample";
 import { ErrorNodeFallbackExample } from "./demos/basic/error-node-fallback/ErrorNodeFallbackExample";
@@ -237,6 +238,13 @@ const examples: ExampleEntry[] = [
     title: "Design: Theme Showcase",
     description: "Preview core design tokens and UI components under the active theme.",
     component: ThemeShowcaseExample,
+    category: "design",
+  },
+  {
+    id: "design-inspector-components",
+    title: "Design: Inspector Components",
+    description: "Interactive preview of inspector form controls: inputs, selects, button groups, and icon buttons.",
+    component: InspectorComponentsExample,
     category: "design",
   },
   {
