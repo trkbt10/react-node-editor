@@ -217,6 +217,14 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
     setSelectedIndex(index);
   }, []);
 
+  // Build custom style for menu width (must be before early return to maintain hook order)
+  const menuStyle = React.useMemo(() => {
+    if (menuWidth === undefined) {
+      return undefined;
+    }
+    return { "--_menu-min-width": `${menuWidth}px` } as React.CSSProperties;
+  }, [menuWidth]);
+
   if (!visible) {
     return null;
   }
@@ -228,14 +236,6 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
     filterMode === "filter"
       ? !hasResults && searchQuery.trim()
       : searchQuery.trim() && matchingNodeTypes.size === 0;
-
-  // Build custom style for menu width
-  const menuStyle = React.useMemo(() => {
-    if (menuWidth === undefined) {
-      return undefined;
-    }
-    return { "--_menu-min-width": `${menuWidth}px` } as React.CSSProperties;
-  }, [menuWidth]);
 
   return (
     <ContextMenuOverlay
