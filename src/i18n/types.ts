@@ -88,6 +88,10 @@ export type I18nMessages = {
   inspectorData: string;
   inspectorVisible: string;
   inspectorLocked: string;
+  inspectorLock: string;
+  inspectorUnlock: string;
+  inspectorShow: string;
+  inspectorHide: string;
   inspectorExpanded: string;
   inspectorGridSettings?: string;
   inspectorShowGrid?: string;

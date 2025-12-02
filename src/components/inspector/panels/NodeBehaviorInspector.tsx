@@ -6,13 +6,14 @@ import * as React from "react";
 import type { InspectorRenderProps } from "../../../types/NodeDefinition";
 import type { Node } from "../../../types/core";
 import { PropertySection } from "../parts/PropertySection";
+import { InspectorIconButton } from "../parts/InspectorIconButton";
+import { LockIcon, UnlockIcon, EyeIcon, EyeOffIcon } from "../../elements/icons";
 import { useI18n } from "../../../i18n/context";
 import type { AlignmentActionType } from "../../controls/alignments/types";
 import { NodeTitleSection } from "../../controls/nodeProperties/NodeTitleSection";
 import { NodeContentSection } from "../../controls/nodeProperties/NodeContentSection";
 import { NodePositionSection } from "../../controls/nodeProperties/NodePositionSection";
 import { NodeLayoutSection } from "../../controls/nodeProperties/NodeLayoutSection";
-import { NodeStateSection } from "../../controls/nodeProperties/NodeStateSection";
 import { NodeTypeSection } from "../../controls/nodeProperties/NodeTypeSection";
 
 // Extended props for supporting multiple selection alignment
@@ -70,16 +71,39 @@ export function NodeBehaviorInspector({
     });
   });
 
-  const handleLockedChange = React.useEffectEvent((locked: boolean) => {
-    onUpdateNode({ locked });
+  const handleToggleLocked = React.useEffectEvent(() => {
+    onUpdateNode({ locked: !node.locked });
   });
 
-  const handleVisibleChange = React.useEffectEvent((visible: boolean) => {
-    onUpdateNode({ visible });
+  const handleToggleVisible = React.useEffectEvent(() => {
+    onUpdateNode({ visible: node.visible === false });
   });
+
+  const isLocked = Boolean(node.locked);
+  const isVisible = node.visible !== false;
 
   return (
-    <PropertySection title={t("inspectorNodeProperties")}>
+    <PropertySection
+      title={t("inspectorNodeProperties")}
+      headerRight={
+        <>
+          <InspectorIconButton
+            icon={isLocked ? <LockIcon size={14} /> : <UnlockIcon size={14} />}
+            aria-label={isLocked ? t("inspectorUnlock") : t("inspectorLock")}
+            variant="ghost"
+            active={isLocked}
+            onClick={handleToggleLocked}
+          />
+          <InspectorIconButton
+            icon={isVisible ? <EyeIcon size={14} /> : <EyeOffIcon size={14} />}
+            aria-label={isVisible ? t("inspectorHide") : t("inspectorShow")}
+            variant="ghost"
+            active={!isVisible}
+            onClick={handleToggleVisible}
+          />
+        </>
+      }
+    >
       <NodeTitleSection node={node} onTitleChange={handleTitleChange} />
 
       <NodeContentSection node={node} onContentChange={handleContentChange} />
@@ -93,12 +117,6 @@ export function NodeBehaviorInspector({
       />
 
       <NodeLayoutSection node={node} onWidthChange={handleWidthChange} onHeightChange={handleHeightChange} />
-
-      <NodeStateSection
-        node={node}
-        onLockedChange={handleLockedChange}
-        onVisibleChange={handleVisibleChange}
-      />
 
       <NodeTypeSection node={node} />
     </PropertySection>

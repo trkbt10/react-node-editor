@@ -11,6 +11,7 @@ export type PropertySectionProps = {
   bodyClassName?: string;
   headerRight?: React.ReactNode;
   children: React.ReactNode;
+  "data-testid"?: string;
 };
 
 /**
@@ -24,9 +25,10 @@ export const PropertySection: React.FC<PropertySectionProps> = ({
   bodyClassName,
   headerRight,
   children,
+  "data-testid": dataTestId,
 }) => {
   return (
-    <section className={[styles.section, className].filter(Boolean).join(" ")}>
+    <section className={[styles.section, className].filter(Boolean).join(" ")} data-testid={dataTestId}>
       <div className={styles.sectionHeader}>
         <H4 size="compact" weight="semibold" className={styles.sectionTitle}>
           {title}

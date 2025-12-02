@@ -27,6 +27,7 @@ import type { ExternalDataReference, NodeDefinition } from "./types/NodeDefiniti
 import type { FallbackDefinition } from "./types/NodeDefinitionRegistry";
 import type { NodeEditorRendererOverrides } from "./types/renderers";
 import { InteractionSettingsProvider } from "./contexts/InteractionSettingsContext";
+import { NodeOperationsProvider } from "./contexts/NodeOperationsContext";
 import type { NodeEditorInteractionSettingsPatch } from "./types/interaction";
 
 export type NodeEditorCoreProps = {
@@ -143,7 +144,9 @@ export function NodeEditorCore({
                   <HistoryProvider maxEntries={historyMaxEntries}>
                     <InlineEditingProvider>
                       <KeyboardShortcutProvider>
-                        <InteractionSettingsProvider value={interactionSettings}>{children}</InteractionSettingsProvider>
+                        <InteractionSettingsProvider value={interactionSettings}>
+                          <NodeOperationsProvider>{children}</NodeOperationsProvider>
+                        </InteractionSettingsProvider>
                       </KeyboardShortcutProvider>
                     </InlineEditingProvider>
                   </HistoryProvider>

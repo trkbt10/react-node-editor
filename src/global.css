@@ -21,6 +21,7 @@
   --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
   --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-xs);
   --node-editor-inspector-header-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-section-header-height: 42px;
   --node-editor-inspector-section-gap: var(--node-editor-inspector-space-md);
   --node-editor-inspector-field-gap: var(--node-editor-inspector-space-sm);
   --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);

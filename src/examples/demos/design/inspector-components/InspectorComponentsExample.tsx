@@ -107,7 +107,6 @@ export function InspectorComponentsExample(): React.ReactElement {
   const [inputValue, setInputValue] = React.useState("100");
   const [selectValue, setSelectValue] = React.useState("montserrat");
   const [variant, setVariant] = React.useState<"default" | "outline" | "filled">("default");
-  const [iconButtonActive, setIconButtonActive] = React.useState(false);
 
   return (
     <div className={classes.container}>
@@ -163,15 +162,10 @@ export function InspectorComponentsExample(): React.ReactElement {
           <PropertySection
             title="Appearance"
             headerRight={
-              <div className={classes.headerActions}>
-                <InspectorIconButton
-                  icon={<EyeIcon />}
-                  aria-label="Toggle visibility"
-                  active={iconButtonActive}
-                  onClick={() => setIconButtonActive(!iconButtonActive)}
-                />
-                <InspectorIconButton icon={<LockIcon />} aria-label="Toggle lock" />
-              </div>
+              <>
+                <InspectorIconButton icon={<LockIcon />} aria-label="Lock" variant="ghost" />
+                <InspectorIconButton icon={<EyeIcon />} aria-label="Visible" variant="ghost" />
+              </>
             }
           >
             <div className={classes.sectionContent}>
@@ -187,7 +181,7 @@ export function InspectorComponentsExample(): React.ReactElement {
           <PropertySection
             title="Typography"
             headerRight={
-              <InspectorIconButton icon={<SettingsIcon />} aria-label="Typography settings" size="small" />
+              <InspectorIconButton icon={<SettingsIcon />} aria-label="Typography settings" variant="ghost" />
             }
           >
             <div className={classes.sectionContent}>
@@ -228,6 +222,24 @@ export function InspectorComponentsExample(): React.ReactElement {
                 aria-label="Input variant"
               />
             </InspectorFieldRow>
+          </div>
+        </PropertySection>
+
+        <PropertySection title="Input Height Comparison" data-testid="input-height-comparison-section">
+          <div className={classes.sectionContent}>
+            <span className={classes.stateLabel}>
+              These inputs should have identical heights
+            </span>
+            <div className={classes.heightComparisonRow} data-testid="input-height-comparison">
+              <div className={classes.heightComparisonItem}>
+                <span className={classes.stateLabel}>Normal (no label)</span>
+                <InspectorInput variant={variant} value="100" onChange={() => {}} data-testid="input-normal" />
+              </div>
+              <div className={classes.heightComparisonItem}>
+                <span className={classes.stateLabel}>With Label</span>
+                <InspectorInput variant={variant} label="X" value="100" onChange={() => {}} data-testid="input-with-label" />
+              </div>
+            </div>
           </div>
         </PropertySection>
 

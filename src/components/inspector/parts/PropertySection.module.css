@@ -3,21 +3,22 @@
 }
 
 .sectionHeader {
-  display: grid;
-  grid-template-columns: auto minmax(auto, max-content);
-  align-items: baseline;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--node-editor-inspector-inline-gap);
+  min-height: var(--node-editor-inspector-section-header-height);
   margin-bottom: var(--node-editor-inspector-space-sm);
-  padding-bottom: var(--node-editor-inspector-space-xs);
+  padding: 0 var(--node-editor-inspector-space-xs);
   border-bottom: 1px solid var(--node-editor-separator-color);
+  box-sizing: border-box;
 }
 
 .sectionHeaderMeta {
-  justify-self: end;
   display: flex;
   align-items: center;
-  gap: var(--node-editor-inspector-inline-gap);
-  text-transform: none;
+  gap: var(--node-editor-inspector-space-xs);
+  flex-shrink: 0;
 }
 
 .sectionTitle {
@@ -26,7 +27,7 @@
   text-transform: uppercase;
   font-size: var(--node-editor-inspector-font-size-title);
   font-weight: 600;
-  line-height: var(--node-editor-inspector-line-height-title);
+  line-height: 1;
   letter-spacing: 0.08em;
 }
 

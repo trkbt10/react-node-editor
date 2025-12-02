@@ -38,6 +38,11 @@ test.describe("Inspector Components - Interaction Tests", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(`/?example=design-inspector-components`);
     await page.waitForLoadState("networkidle");
+
+    // Apply Apple theme for consistent testing
+    const themeSelector = page.locator('select[aria-label="Select theme"]');
+    await themeSelector.selectOption("apple");
+    await page.waitForTimeout(300);
   });
 
   test("Input variants - all states", async ({ page }) => {
@@ -80,6 +85,31 @@ test.describe("Inspector Components - Interaction Tests", () => {
 
     await expect(page).toHaveScreenshot("icon-button-toggled.png", {
       fullPage: true,
+      animations: "disabled",
+    });
+  });
+
+  test("Input height consistency - normal vs labeled", async ({ page }) => {
+    // Get input elements
+    const normalInput = page.getByTestId("input-normal");
+    const labeledInput = page.getByTestId("input-with-label");
+
+    // Get bounding boxes
+    const normalBox = await normalInput.boundingBox();
+    const labeledBox = await labeledInput.boundingBox();
+
+    // Log heights for debugging
+    console.log(`Normal input height: ${normalBox?.height}px`);
+    console.log(`Labeled input height: ${labeledBox?.height}px`);
+
+    // Heights should be equal (within 1px tolerance)
+    expect(normalBox?.height).toBeDefined();
+    expect(labeledBox?.height).toBeDefined();
+    expect(Math.abs((normalBox?.height || 0) - (labeledBox?.height || 0))).toBeLessThanOrEqual(1);
+
+    // Take screenshot of the comparison section
+    const comparisonSection = page.getByTestId("input-height-comparison");
+    await expect(comparisonSection).toHaveScreenshot("input-height-comparison.png", {
       animations: "disabled",
     });
   });

@@ -69,11 +69,6 @@
   flex: 1;
 }
 
-.headerActions {
-  display: flex;
-  gap: var(--node-editor-space-xs, 4px);
-}
-
 .stateGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -113,4 +108,34 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--node-editor-space-sm, 8px);
+}
+
+.heightComparisonRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--node-editor-space-sm, 8px);
+}
+
+.heightComparisonItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-xs, 4px);
+}
+
+.heightIndicator {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-space-xs, 4px);
+}
+
+.heightIndicatorLine {
+  width: 2px;
+  background-color: var(--node-editor-caution-color, #ef4444);
+}
+
+.heightIndicatorLabel {
+  font-size: var(--node-editor-inspector-font-size-meta, 0.6875rem);
+  color: var(--node-editor-caution-color, #ef4444);
+  font-family: monospace;
 }

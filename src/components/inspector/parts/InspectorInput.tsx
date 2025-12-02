@@ -11,6 +11,8 @@ export type InspectorInputProps = {
   error?: boolean;
   /** Visual variant */
   variant?: "default" | "outline" | "filled";
+  /** Test ID for testing */
+  "data-testid"?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "label">;
 
 /**
@@ -19,7 +21,7 @@ export type InspectorInputProps = {
  * Does not include external layout - layout should be controlled externally.
  */
 export const InspectorInput = React.forwardRef<HTMLInputElement, InspectorInputProps>(
-  ({ label, error = false, variant = "default", className, disabled, ...props }, ref) => {
+  ({ label, error = false, variant = "default", className, disabled, "data-testid": dataTestId, ...props }, ref) => {
     const hasLabel = label !== undefined;
     const containerClasses = [hasLabel ? styles.inputWithLabel : styles.input, className].filter(Boolean).join(" ");
 
@@ -30,6 +32,7 @@ export const InspectorInput = React.forwardRef<HTMLInputElement, InspectorInputP
           data-variant={variant}
           data-error={error ? "true" : undefined}
           data-disabled={disabled ? "true" : undefined}
+          data-testid={dataTestId}
         >
           <span className={styles.label}>{label}</span>
           <input ref={ref} className={styles.inputElement} disabled={disabled} {...props} />
@@ -44,6 +47,7 @@ export const InspectorInput = React.forwardRef<HTMLInputElement, InspectorInputP
         data-variant={variant}
         data-error={error ? "true" : undefined}
         disabled={disabled}
+        data-testid={dataTestId}
         {...props}
       />
     );

@@ -9,6 +9,8 @@ export type InspectorIconButtonProps = {
   icon: React.ReactNode;
   /** Size variant */
   size?: "default" | "small";
+  /** Visual variant - ghost has no background */
+  variant?: "default" | "ghost";
   /** Whether button is in active/pressed state */
   active?: boolean;
   /** Accessible label for the button */
@@ -20,7 +22,7 @@ export type InspectorIconButtonProps = {
  * Does not include layout styling - layout should be controlled externally.
  */
 export const InspectorIconButton = React.forwardRef<HTMLButtonElement, InspectorIconButtonProps>(
-  ({ icon, size = "default", active = false, className, disabled, ...props }, ref) => {
+  ({ icon, size = "default", variant = "default", active = false, className, disabled, ...props }, ref) => {
     const classes = [styles.button, className].filter(Boolean).join(" ");
 
     return (
@@ -29,6 +31,7 @@ export const InspectorIconButton = React.forwardRef<HTMLButtonElement, Inspector
         type="button"
         className={classes}
         data-size={size}
+        data-variant={variant}
         data-active={active ? "true" : undefined}
         disabled={disabled}
         {...props}
