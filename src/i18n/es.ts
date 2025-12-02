@@ -79,6 +79,8 @@ export const esMessages: I18nMessages = {
   inspectorTitle: "Inspector",
   inspectorNodeProperties: "Propiedades del nodo",
   inspectorConnectionProperties: "Propiedades de la conexión",
+  connectionFrom: "Desde",
+  connectionTo: "Hasta",
   inspectorPosition: "Posición",
   inspectorSize: "Tamaño",
   inspectorData: "Datos",

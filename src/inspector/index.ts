@@ -38,6 +38,8 @@ export { PropertySection } from "../components/inspector/parts/PropertySection";
 export type { PropertySectionProps } from "../components/inspector/parts/PropertySection";
 export { InspectorField } from "../components/inspector/parts/InspectorField";
 export type { InspectorFieldProps } from "../components/inspector/parts/InspectorField";
+export { InspectorFieldRow } from "../components/inspector/parts/InspectorFieldRow";
+export type { InspectorFieldRowProps } from "../components/inspector/parts/InspectorFieldRow";
 export { InspectorSectionTitle } from "../components/inspector/parts/InspectorSectionTitle";
 export type { InspectorSectionTitleProps } from "../components/inspector/parts/InspectorSectionTitle";
 export { InspectorLabel } from "../components/inspector/parts/InspectorLabel";

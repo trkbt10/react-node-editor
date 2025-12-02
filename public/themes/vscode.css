@@ -121,6 +121,7 @@
   --node-editor-surface-primary: #1e1e1e;
   --node-editor-surface-secondary: #252526;
   --node-editor-surface-tertiary: #2d2d30;
+  --node-editor-background-surface: #252526;
   --node-editor-selected-content-background-color: rgba(0, 122, 204, 0.15);
   --node-editor-selected-control-color: rgba(0, 122, 204, 0.2);
   --node-editor-under-page-background-color: #1e1e1e;
@@ -263,4 +264,37 @@
   --node-editor-connection-drag-dash-array-disconnecting: 8 4;
   --node-editor-connection-drag-animation-duration: 0.5s;
   --node-editor-connection-drag-animation-distance: -10;
+
+  /* Inspector icon button - VS Code style */
+  --node-editor-inspector-icon-button-size: 26px;
+  --node-editor-inspector-icon-button-size-sm: 22px;
+  --node-editor-inspector-icon-button-icon-size: 16px;
+  --node-editor-inspector-icon-button-icon-size-sm: 14px;
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: rgba(255, 255, 255, 0.1);
+  --node-editor-inspector-icon-button-background-active: rgba(0, 122, 204, 0.2);
+  --node-editor-inspector-icon-button-color: #858585;
+  --node-editor-inspector-icon-button-color-hover: #cccccc;
+  --node-editor-inspector-icon-button-color-active: #007acc;
+  --node-editor-inspector-icon-button-color-disabled: rgba(204, 204, 204, 0.3);
+
+  /* Inspector input label - VS Code typography */
+  --node-editor-inspector-input-label-color: #9d9d9d;
+  --node-editor-inspector-input-label-font-size: 0.6875rem;
+  --node-editor-inspector-input-label-font-weight: 400;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 48px;
+
+  /* Inspector segment control - VS Code style */
+  --node-editor-inspector-segment-background: rgba(255, 255, 255, 0.06);
+  --node-editor-inspector-segment-border-radius: 2px;
+  --node-editor-inspector-segment-padding: 0;
+  --node-editor-inspector-segment-gap: 1px;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(255, 255, 255, 0.08);
+  --node-editor-inspector-segment-button-background-active: #007acc;
+  --node-editor-inspector-segment-button-color: #cccccc;
+  --node-editor-inspector-segment-button-color-hover: #ffffff;
+  --node-editor-inspector-segment-button-color-active: #ffffff;
+  --node-editor-inspector-segment-button-shadow-active: none;
 }

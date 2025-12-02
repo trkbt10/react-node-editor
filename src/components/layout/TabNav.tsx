@@ -24,6 +24,7 @@ const TabButton: React.FC<{
     <button
       className={styles.tabButton}
       data-active={isActive || undefined}
+      data-text={tab}
       onClick={handleClick}
       type="button"
     >

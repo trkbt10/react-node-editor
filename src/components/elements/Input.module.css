@@ -19,7 +19,6 @@
   grid-template-columns: auto 1fr;
   align-items: center;
   gap: var(--node-editor-inspector-space-xs);
-  padding: calc(var(--node-editor-inspector-space-xs) + 2px) var(--node-editor-inspector-space-sm);
 }
 
 .inputLabel {
@@ -70,7 +69,7 @@
 }
 
 .inputWithLabel[data-variant="default"] {
-  padding: calc(var(--node-editor-inspector-space-xs) + 2px) var(--node-editor-inspector-space-sm);
+  padding: var(--node-editor-input-padding);
 }
 
 .input[data-variant="default"]:hover:not(:disabled),
@@ -91,7 +90,7 @@
 }
 
 .inputWithLabel[data-variant="outline"] {
-  padding: calc(var(--node-editor-inspector-space-xs) + 2px) var(--node-editor-inspector-space-sm);
+  padding: var(--node-editor-input-padding);
 }
 
 .input[data-variant="outline"]:hover:not(:disabled),
@@ -112,7 +111,7 @@
 }
 
 .inputWithLabel[data-variant="filled"] {
-  padding: calc(var(--node-editor-inspector-space-xs) + 2px) var(--node-editor-inspector-space-sm);
+  padding: var(--node-editor-input-padding);
 }
 
 .input[data-variant="filled"]:hover:not(:disabled),

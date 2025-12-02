@@ -103,6 +103,7 @@
   --node-editor-surface-primary: #c0c0c0;
   --node-editor-surface-secondary: #dcdcdc;
   --node-editor-surface-tertiary: #a0a0a0;
+  --node-editor-background-surface: #008080;
   --node-editor-selected-content-background-color: rgba(0, 0, 128, 0.35);
   --node-editor-selected-control-color: rgba(0, 0, 128, 0.25);
   --node-editor-under-page-background-color: #008080;
@@ -231,4 +232,37 @@
   --node-editor-connection-drag-dash-array-disconnecting: 6 3;
   --node-editor-connection-drag-animation-duration: 0.5s;
   --node-editor-connection-drag-animation-distance: -8;
+
+  /* Inspector icon button - Windows 98 bevel style */
+  --node-editor-inspector-icon-button-size: 22px;
+  --node-editor-inspector-icon-button-size-sm: 18px;
+  --node-editor-inspector-icon-button-icon-size: 12px;
+  --node-editor-inspector-icon-button-icon-size-sm: 10px;
+  --node-editor-inspector-icon-button-background: #c0c0c0;
+  --node-editor-inspector-icon-button-background-hover: #d4d0c8;
+  --node-editor-inspector-icon-button-background-active: #808080;
+  --node-editor-inspector-icon-button-color: #000000;
+  --node-editor-inspector-icon-button-color-hover: #000000;
+  --node-editor-inspector-icon-button-color-active: #000080;
+  --node-editor-inspector-icon-button-color-disabled: #6c6c6c;
+
+  /* Inspector input label - Windows 98 typography */
+  --node-editor-inspector-input-label-color: #000000;
+  --node-editor-inspector-input-label-font-size: 0.625rem;
+  --node-editor-inspector-input-label-font-weight: 600;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 40px;
+
+  /* Inspector segment control - Windows 98 button bar */
+  --node-editor-inspector-segment-background: #c0c0c0;
+  --node-editor-inspector-segment-border-radius: 0;
+  --node-editor-inspector-segment-padding: 0;
+  --node-editor-inspector-segment-gap: 0;
+  --node-editor-inspector-segment-button-background: #c0c0c0;
+  --node-editor-inspector-segment-button-background-hover: #d4d0c8;
+  --node-editor-inspector-segment-button-background-active: #000080;
+  --node-editor-inspector-segment-button-color: #000000;
+  --node-editor-inspector-segment-button-color-hover: #000000;
+  --node-editor-inspector-segment-button-color-active: #ffffff;
+  --node-editor-inspector-segment-button-shadow-active: inset -1px -1px #ffffff, inset 1px 1px rgba(0, 0, 0, 0.6);
 }

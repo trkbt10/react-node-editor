@@ -79,6 +79,8 @@ export const jaMessages: I18nMessages = {
   inspectorTitle: "インスペクター",
   inspectorNodeProperties: "ノードのプロパティ",
   inspectorConnectionProperties: "接続のプロパティ",
+  connectionFrom: "接続元",
+  connectionTo: "接続先",
   inspectorPosition: "位置",
   inspectorSize: "サイズ",
   inspectorData: "データ",

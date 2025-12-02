@@ -1,0 +1,524 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+:root {
+  /* ========================================
+     Macintosh System 1.0 Theme
+     Pure 1-bit black & white aesthetic
+     with authentic retro patterns
+     ======================================== */
+
+  /* Core spacing scale - ultra compact classic Mac style */
+  --node-editor-space-xs: 1px;
+  --node-editor-space-sm: 2px;
+  --node-editor-space-md: 3px;
+  --node-editor-space-lg: 6px;
+  --node-editor-space-xl: 10px;
+  --node-editor-space-xxl: 14px;
+
+  /* Layout spacing */
+  --node-editor-control-padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+
+  /* Inspector spacing system */
+  --node-editor-inspector-space-xs: var(--node-editor-space-xs);
+  --node-editor-inspector-space-sm: var(--node-editor-space-sm);
+  --node-editor-inspector-space-md: var(--node-editor-space-md);
+  --node-editor-inspector-space-lg: var(--node-editor-space-lg);
+  --node-editor-inspector-space-xl: var(--node-editor-space-xl);
+  --node-editor-inspector-space-xxl: var(--node-editor-space-xxl);
+  --node-editor-inspector-content-padding: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-xs);
+  --node-editor-inspector-header-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-section-gap: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-field-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
+  --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+  --node-editor-inspector-input-padding: 1px 3px;
+
+  /* Inspector typography - chunky bitmap feel */
+  --node-editor-inspector-font-size-title: 1rem;
+  --node-editor-inspector-line-height-title: 1;
+  --node-editor-inspector-font-size-body: 1rem;
+  --node-editor-inspector-line-height-body: 1;
+  --node-editor-inspector-font-size-meta: 0.875rem;
+  --node-editor-inspector-line-height-meta: 1;
+  --node-editor-inspector-font-weight-medium: 400;
+  --node-editor-inspector-font-size-heading: 1rem;
+  --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
+  --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+  /* Font families - VT323 bitmap-style monospace */
+  --node-editor-theme-default-font-family: "VT323", "Chicago", "Monaco", monospace;
+  --node-editor-theme-control-font-family: "VT323", "Chicago", "Monaco", monospace;
+  --node-editor-theme-label-font-family: "VT323", "Chicago", "Monaco", monospace;
+  --node-editor-system-font: "VT323", "Chicago", "Monaco", monospace;
+  --node-editor-font-mono: "VT323", "Monaco", "Courier", monospace;
+  --node-editor-title-font: 400 1rem/1 var(--node-editor-theme-label-font-family);
+  --node-editor-subtitle-font: 400 1rem/1 var(--node-editor-theme-label-font-family);
+  --node-editor-caption-font: 400 0.875rem/1 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 400 1rem/1 var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 1rem/1 var(--node-editor-theme-default-font-family);
+  --node-editor-font-size-lg: 1.125rem;
+  --node-editor-font-size-sm: 0.875rem;
+  --node-editor-font-size-xs: 0.75rem;
+
+  /* Canvas grid - classic Mac desktop dot pattern */
+  --node-editor-grid-color: #000000;
+  --node-editor-grid-opacity: 0.15;
+
+  /* Shadow system - No shadows in classic Mac (1-bit display) */
+  --node-editor-shadow-sm: none;
+  --node-editor-shadow-md: none;
+  --node-editor-shadow-lg: none;
+
+  /* Transition system - Instant, no animations */
+  --node-editor-transition-duration: 0s;
+
+  /* Inspector shadows - Single pixel border style */
+  --node-editor-inspector-shadow: -1px 0 0 0 #000000;
+  --node-editor-inspector-header-shadow: 0 1px 0 #000000;
+
+  /* Tree & List Components - tight spacing */
+  --node-editor-tree-item-height: 16px;
+  --node-editor-tree-indent: 10px;
+
+  /* Control Buttons - Compact classic style */
+  --node-editor-control-button-size-sm: 14px;
+  --node-editor-control-button-size: 18px;
+
+  /* Icons */
+  --node-editor-icon-size-sm: 10px;
+  --node-editor-icon-selected-brightness: 1;
+
+  /* Text colors - Pure black */
+  --node-editor-text-color: #000000;
+  --node-editor-text-secondary: #000000;
+  --node-editor-header-text-color: #000000;
+  --node-editor-label-color: #000000;
+  --node-editor-secondary-label-color: #000000;
+  --node-editor-tertiary-label-color: #000000;
+  --node-editor-quaternary-label-color: #000000;
+  --node-editor-control-text-color: #000000;
+  --node-editor-control-text-color-primary: #ffffff;
+  --node-editor-control-text-color-secondary: #000000;
+  --node-editor-control-hover-text-color-primary: #ffffff;
+  --node-editor-input-text-color: #000000;
+  --node-editor-selected-control-text-color: #ffffff;
+  --node-editor-selected-menu-item-text-color: #ffffff;
+
+  /* Status & accent colors - Black only (1-bit) */
+  --node-editor-accent-color: #000000;
+  --node-editor-accent-color-hover: #000000;
+  --node-editor-color-primary: #000000;
+  --node-editor-keyboard-focus-indicator-color: #000000;
+  --node-editor-success-color: #000000;
+  --node-editor-warning-color: #000000;
+  --node-editor-caution-color: #000000;
+  --node-editor-caution-hover-background: #000000;
+  --node-editor-system-orange-color: #000000;
+  --node-editor-system-red-color: #000000;
+  --node-editor-connection-color: #000000;
+
+  /* Surface colors - Pure white */
+  --node-editor-surface-primary: #ffffff;
+  --node-editor-surface-secondary: #ffffff;
+  --node-editor-surface-tertiary: #ffffff;
+  --node-editor-selected-content-background-color: #000000;
+  --node-editor-selected-control-color: #000000;
+  --node-editor-under-page-background-color: #ffffff;
+  --node-editor-window-background-color: #ffffff;
+  --node-editor-background-surface: #ffffff;
+
+  /* Control surfaces */
+  --node-editor-control-background: #ffffff;
+  --node-editor-control-background-primary: #000000;
+  --node-editor-control-background-secondary: #ffffff;
+  --node-editor-control-hover-background: #000000;
+  --node-editor-control-hover-background-primary: #000000;
+  --node-editor-hover-background: #000000;
+  --node-editor-control-box-shadow-primary: inset 0 0 0 1px #000000;
+  --node-editor-control-box-shadow-secondary: inset 0 0 0 1px #000000;
+  --node-editor-disabled-control-text-color: #000000;
+
+  /* Input surfaces */
+  --node-editor-input-background: #ffffff;
+  --node-editor-input-border: 1px solid #000000;
+  --node-editor-input-border-hover: 2px solid #000000;
+  --node-editor-input-box-shadow: none;
+  --node-editor-input-padding: 1px 3px;
+
+  /* Card & panel styling - Classic Mac window chrome */
+  --node-editor-card-border-color: #000000;
+  --node-editor-card-border: 1px solid #000000;
+  --node-editor-card-border-radius: 0px;
+  --node-editor-card-box-shadow: 1px 1px 0 #000000;
+  --node-editor-card-hover-box-shadow: 1px 1px 0 #000000;
+  --node-editor-card-elevated-box-shadow: 2px 2px 0 #000000;
+  --node-editor-card-focus-box-shadow: 0 0 0 2px #000000;
+  --node-editor-card-disabled-background: #ffffff;
+  --node-editor-card-filled-background: #ffffff;
+  --node-editor-card-filled-hover-background: #ffffff;
+  --node-editor-card-hover-border-color: #000000;
+
+  /* Dialogs & overlays */
+  --node-editor-dialog-background: #ffffff;
+  --node-editor-dialog-box-shadow: 2px 2px 0 #000000;
+  --node-editor-dialog-level-elevation: 1000;
+
+  /* Scrollbars */
+  --node-editor-scroll-bar-thumb-color: #000000;
+  --node-editor-active-scroll-bar-thumb-color: #000000;
+
+  /* Selected State Colors - Inverted (white on black) */
+  --node-editor-selected-secondary-color: #ffffff;
+  --node-editor-selected-hover-background: #000000;
+
+  /* Tables & list accents */
+  --node-editor-table-header-background-color: #ffffff;
+  --node-editor-table-header-background-color-hover: #000000;
+  --node-editor-table-header-background-color-active: #000000;
+
+  /* Node-specific colors */
+  --node-editor-group-node-background: #ffffff;
+  --node-editor-group-node-border: #000000;
+  --node-editor-group-node-active-background: #000000;
+  --node-editor-group-node-active-color: #ffffff;
+  --node-editor-node-port-input-color: #000000;
+  --node-editor-node-port-output-color: #000000;
+
+  /* System fills */
+  --node-editor-tertiary-system-background: #ffffff;
+  --node-editor-tertiary-system-fill-color: #ffffff;
+  --node-editor-quaternary-system-fill-color: #ffffff;
+
+  /* Border Radii - Mac buttons had subtle rounding */
+  --node-editor-border-radius-xxs: 2px;
+  --node-editor-border-radius-xs: 2px;
+  --node-editor-radius-xs: 2px;
+  --node-editor-radius-sm: 3px;
+  --node-editor-radius-md: 3px;
+  --node-editor-control-border-radius: 3px;
+  --node-editor-segment-control-border-radius: 2px;
+
+  /* Borders - Single pixel black */
+  --node-editor-border-width: 1px;
+  --node-editor-border-color: #000000;
+  --node-editor-divider-color: #000000;
+  --node-editor-separator-color: #000000;
+
+  /* Segment controls - Classic Mac radio button style */
+  --node-editor-segment-backdrop-filter: none;
+  --node-editor-segment-control-background: #ffffff;
+  --node-editor-segment-control-background-color: #ffffff;
+  --node-editor-segment-control-text-color: #000000;
+  --node-editor-segment-control-active-background-color: #000000;
+  --node-editor-segment-control-active-text-color: #ffffff;
+  --node-editor-segment-control-segment-padding: 1px 4px;
+
+  /* Tab Navigation - Classic Mac folder tab style */
+  --node-editor-tab-nav-gap: 0;
+  --node-editor-tab-nav-padding: 0;
+  --node-editor-tab-nav-border-radius: 0;
+  --node-editor-tab-nav-background: #ffffff;
+  --node-editor-tab-nav-border: 1px solid #000000;
+  --node-editor-tab-nav-box-shadow: none;
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 16px;
+  --node-editor-tab-button-padding: 1px 6px;
+  --node-editor-tab-button-border-radius: 0;
+  --node-editor-tab-button-background: #ffffff;
+  --node-editor-tab-button-border: 1px solid #000000;
+  --node-editor-tab-button-color: #000000;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 400;
+  --node-editor-tab-button-text-transform: none;
+  --node-editor-tab-button-active-background: #000000;
+  --node-editor-tab-button-active-color: #ffffff;
+  --node-editor-tab-button-active-font-weight: 400;
+  --node-editor-tab-button-active-box-shadow: none;
+  --node-editor-tab-button-hover-background: #000000;
+  --node-editor-tab-button-hover-color: #ffffff;
+
+  /* Connection styling - Classic Mac 1-bit lines */
+  --node-editor-connection-base-stroke-width: 1;
+  --node-editor-connection-active-stroke-width: 2;
+  --node-editor-connection-flow-stripe-stroke-width: 1;
+  --node-editor-connection-flow-stripe-active-stroke-width: 2;
+  --node-editor-connection-direction-stroke-width: 1;
+  --node-editor-connection-hover-shadow: none;
+  --node-editor-connection-selected-shadow: none;
+  --node-editor-connection-hover-opacity: 1;
+  --node-editor-connection-dragging-opacity: 1;
+  --node-editor-connection-stripe-dash-array: 4 4;
+  --node-editor-connection-stripe-dash-offset-bg: 0;
+  --node-editor-connection-stripe-opacity-accent: 1;
+  --node-editor-connection-stripe-opacity-background: 1;
+  --node-editor-connection-flow-animation-duration: 0s;
+  --node-editor-connection-flow-animation-distance: 0;
+  --node-editor-connection-base-transition: none;
+  --node-editor-connection-arrow-transition: none;
+
+  /* Connection drag styling - Classic Mac marching ants */
+  --node-editor-connection-drag-stroke-width-connecting: 1;
+  --node-editor-connection-drag-stroke-width-disconnecting: 1;
+  --node-editor-connection-drag-dash-array-connecting: 1 1;
+  --node-editor-connection-drag-dash-array-disconnecting: 1 1;
+  --node-editor-connection-drag-animation-duration: 0.15s;
+  --node-editor-connection-drag-animation-distance: -2;
+
+  /* Inspector icon button - Classic Mac 1-bit style */
+  --node-editor-inspector-icon-button-size: 18px;
+  --node-editor-inspector-icon-button-size-sm: 14px;
+  --node-editor-inspector-icon-button-icon-size: 10px;
+  --node-editor-inspector-icon-button-icon-size-sm: 8px;
+  --node-editor-inspector-icon-button-background: #ffffff;
+  --node-editor-inspector-icon-button-background-hover: #000000;
+  --node-editor-inspector-icon-button-background-active: #000000;
+  --node-editor-inspector-icon-button-color: #000000;
+  --node-editor-inspector-icon-button-color-hover: #ffffff;
+  --node-editor-inspector-icon-button-color-active: #ffffff;
+  --node-editor-inspector-icon-button-color-disabled: #000000;
+
+  /* Inspector input label - Classic Mac Chicago style */
+  --node-editor-inspector-input-label-color: #000000;
+  --node-editor-inspector-input-label-font-size: 0.875rem;
+  --node-editor-inspector-input-label-font-weight: 400;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 36px;
+
+  /* Inspector segment control - Classic Mac button bar */
+  --node-editor-inspector-segment-background: #ffffff;
+  --node-editor-inspector-segment-border-radius: 0;
+  --node-editor-inspector-segment-padding: 0;
+  --node-editor-inspector-segment-gap: 0;
+  --node-editor-inspector-segment-button-background: #ffffff;
+  --node-editor-inspector-segment-button-background-hover: #000000;
+  --node-editor-inspector-segment-button-background-active: #000000;
+  --node-editor-inspector-segment-button-color: #000000;
+  --node-editor-inspector-segment-button-color-hover: #ffffff;
+  --node-editor-inspector-segment-button-color-active: #ffffff;
+  --node-editor-inspector-segment-button-shadow-active: none;
+}
+
+/* ========================================
+   Classic Mac Desktop Dot Pattern
+   ======================================== */
+[data-node-editor-theme="macintosh"] [data-testid="node-editor-canvas"],
+[data-node-editor-theme="macintosh"] .node-editor-canvas {
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(#000000 1px, transparent 1px);
+  background-size: 4px 4px;
+  background-position: 0 0;
+}
+
+/* ========================================
+   Window Title Bar Stripes (Susan Kare style)
+   ======================================== */
+[data-node-editor-theme="macintosh"] [data-testid="node-card-header"],
+[data-node-editor-theme="macintosh"] .node-card-header,
+[data-node-editor-theme="macintosh"] [class*="CardHeader"] {
+  background: repeating-linear-gradient(
+    0deg,
+    #ffffff 0px,
+    #ffffff 1px,
+    #000000 1px,
+    #000000 2px
+  ) !important;
+  background-size: 100% 2px !important;
+  border-bottom: 1px solid #000000 !important;
+  padding: 2px 4px !important;
+}
+
+/* Header text needs to be readable on stripes */
+[data-node-editor-theme="macintosh"] [data-testid="node-card-header"] *,
+[data-node-editor-theme="macintosh"] .node-card-header *,
+[data-node-editor-theme="macintosh"] [class*="CardHeader"] * {
+  background: #ffffff !important;
+  padding: 0 2px !important;
+}
+
+/* ========================================
+   Inspector Panel Title Stripes
+   ======================================== */
+[data-node-editor-theme="macintosh"] [class*="InspectorHeader"],
+[data-node-editor-theme="macintosh"] [data-testid="inspector-header"] {
+  background: repeating-linear-gradient(
+    0deg,
+    #ffffff 0px,
+    #ffffff 1px,
+    #000000 1px,
+    #000000 2px
+  ) !important;
+  border-bottom: 1px solid #000000 !important;
+}
+
+[data-node-editor-theme="macintosh"] [class*="InspectorHeader"] *,
+[data-node-editor-theme="macintosh"] [data-testid="inspector-header"] * {
+  background: #ffffff !important;
+  padding: 0 2px !important;
+}
+
+/* ========================================
+   Dialog/Menu Title Stripes
+   ======================================== */
+[data-node-editor-theme="macintosh"] [role="dialog"] > header,
+[data-node-editor-theme="macintosh"] [role="menu"] > header {
+  background: repeating-linear-gradient(
+    0deg,
+    #ffffff 0px,
+    #ffffff 1px,
+    #000000 1px,
+    #000000 2px
+  ) !important;
+  border-bottom: 1px solid #000000 !important;
+}
+
+/* ========================================
+   Classic Mac Scrollbars with Pattern
+   ======================================== */
+[data-node-editor-theme="macintosh"] ::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+  background: repeating-linear-gradient(
+    45deg,
+    #ffffff 0px,
+    #ffffff 2px,
+    #000000 2px,
+    #000000 3px,
+    #ffffff 3px,
+    #ffffff 5px
+  );
+}
+
+[data-node-editor-theme="macintosh"] ::-webkit-scrollbar-thumb {
+  background: #ffffff;
+  border: 1px solid #000000;
+  box-shadow: inset -1px -1px 0 #000000;
+}
+
+[data-node-editor-theme="macintosh"] ::-webkit-scrollbar-button {
+  background: #ffffff;
+  border: 1px solid #000000;
+  width: 16px;
+  height: 16px;
+}
+
+[data-node-editor-theme="macintosh"] ::-webkit-scrollbar-corner {
+  background: #ffffff;
+  border: 1px solid #000000;
+}
+
+/* ========================================
+   Classic Mac Buttons - Rounded with Border
+   ======================================== */
+[data-node-editor-theme="macintosh"] button,
+[data-node-editor-theme="macintosh"] [role="button"] {
+  border-radius: 3px !important;
+  border: 1px solid #000000 !important;
+  box-shadow: none !important;
+  font-family: "VT323", "Chicago", "Monaco", monospace !important;
+}
+
+[data-node-editor-theme="macintosh"] button:active,
+[data-node-editor-theme="macintosh"] [role="button"]:active {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* ========================================
+   Selection Marquee - Marching Ants
+   ======================================== */
+@keyframes marching-ants {
+  0% { background-position: 0 0, 100% 100%, 0 100%, 100% 0; }
+  100% { background-position: 8px 0, calc(100% - 8px) 100%, 0 calc(100% - 8px), 100% 8px; }
+}
+
+[data-node-editor-theme="macintosh"] [data-selected="true"],
+[data-node-editor-theme="macintosh"] .selected {
+  background-image:
+    linear-gradient(90deg, #000 50%, transparent 50%),
+    linear-gradient(90deg, #000 50%, transparent 50%),
+    linear-gradient(0deg, #000 50%, transparent 50%),
+    linear-gradient(0deg, #000 50%, transparent 50%);
+  background-size: 4px 1px, 4px 1px, 1px 4px, 1px 4px;
+  background-position: 0 0, 100% 100%, 0 100%, 100% 0;
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  animation: marching-ants 0.4s linear infinite;
+}
+
+/* ========================================
+   Menu Items - Inverted on Hover
+   ======================================== */
+[data-node-editor-theme="macintosh"] [role="menuitem"]:hover,
+[data-node-editor-theme="macintosh"] [role="option"]:hover {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+/* ========================================
+   Input Fields - Inset Border Style
+   ======================================== */
+[data-node-editor-theme="macintosh"] input,
+[data-node-editor-theme="macintosh"] textarea,
+[data-node-editor-theme="macintosh"] select {
+  border: 1px solid #000000 !important;
+  box-shadow: inset 1px 1px 0 #000000 !important;
+  font-family: "VT323", "Chicago", "Monaco", monospace !important;
+  font-size: 1rem !important;
+  padding: 1px 3px !important;
+}
+
+[data-node-editor-theme="macintosh"] input:focus,
+[data-node-editor-theme="macintosh"] textarea:focus,
+[data-node-editor-theme="macintosh"] select:focus {
+  outline: 2px solid #000000 !important;
+  outline-offset: 1px !important;
+}
+
+/* ========================================
+   Checkboxes and Radio Buttons
+   ======================================== */
+[data-node-editor-theme="macintosh"] input[type="checkbox"],
+[data-node-editor-theme="macintosh"] input[type="radio"] {
+  appearance: none;
+  width: 12px !important;
+  height: 12px !important;
+  border: 1px solid #000000 !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+[data-node-editor-theme="macintosh"] input[type="radio"] {
+  border-radius: 50% !important;
+}
+
+[data-node-editor-theme="macintosh"] input[type="checkbox"]:checked {
+  background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%23000' d='M2 6l3 3 5-6-1-1-4 5-2-2z'/%3E%3C/svg%3E") center/contain no-repeat !important;
+}
+
+[data-node-editor-theme="macintosh"] input[type="radio"]:checked {
+  background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Ccircle cx='6' cy='6' r='3' fill='%23000'/%3E%3C/svg%3E") center/contain no-repeat !important;
+}
+
+/* ========================================
+   Tooltips
+   ======================================== */
+[data-node-editor-theme="macintosh"] [role="tooltip"] {
+  background: #ffffff !important;
+  border: 1px solid #000000 !important;
+  box-shadow: 1px 1px 0 #000000 !important;
+  font-family: "VT323", "Chicago", "Monaco", monospace !important;
+  padding: 2px 4px !important;
+}
+
+/* ========================================
+   Disable smooth rendering for pixelated feel
+   ======================================== */
+[data-node-editor-theme="macintosh"] * {
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: unset;
+  text-rendering: optimizeSpeed;
+}

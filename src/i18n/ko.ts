@@ -79,6 +79,8 @@ export const koMessages: I18nMessages = {
   inspectorTitle: "인스펙터",
   inspectorNodeProperties: "노드 속성",
   inspectorConnectionProperties: "연결 속성",
+  connectionFrom: "시작",
+  connectionTo: "끝",
   inspectorPosition: "위치",
   inspectorSize: "크기",
   inspectorData: "데이터",

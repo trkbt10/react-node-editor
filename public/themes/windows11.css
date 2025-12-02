@@ -118,6 +118,7 @@
   --node-editor-surface-primary: rgba(255, 255, 255, 0.92);
   --node-editor-surface-secondary: rgba(255, 255, 255, 0.86);
   --node-editor-surface-tertiary: rgba(255, 255, 255, 0.78);
+  --node-editor-background-surface: linear-gradient(135deg, #e8f1ff 0%, #d7e6ff 35%, #fdfdff 100%);
   --node-editor-selected-content-background-color: rgba(11, 108, 240, 0.16);
   --node-editor-selected-control-color: rgba(11, 108, 240, 0.22);
   --node-editor-under-page-background-color: linear-gradient(135deg, #e8f1ff 0%, #d7e6ff 35%, #fdfdff 100%);
@@ -259,4 +260,37 @@
   --node-editor-connection-drag-dash-array-disconnecting: 8 4;
   --node-editor-connection-drag-animation-duration: 0.5s;
   --node-editor-connection-drag-animation-distance: -10;
+
+  /* Inspector icon button - Windows 11 Fluent style */
+  --node-editor-inspector-icon-button-size: 28px;
+  --node-editor-inspector-icon-button-size-sm: 24px;
+  --node-editor-inspector-icon-button-icon-size: 16px;
+  --node-editor-inspector-icon-button-icon-size-sm: 14px;
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: rgba(0, 0, 0, 0.04);
+  --node-editor-inspector-icon-button-background-active: rgba(11, 108, 240, 0.12);
+  --node-editor-inspector-icon-button-color: #5f6b7b;
+  --node-editor-inspector-icon-button-color-hover: #1f1f27;
+  --node-editor-inspector-icon-button-color-active: #0b6cf0;
+  --node-editor-inspector-icon-button-color-disabled: rgba(31, 31, 39, 0.3);
+
+  /* Inspector input label - Windows 11 Segoe UI Variable */
+  --node-editor-inspector-input-label-color: #5f6b7b;
+  --node-editor-inspector-input-label-font-size: 0.6875rem;
+  --node-editor-inspector-input-label-font-weight: 400;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 48px;
+
+  /* Inspector segment control - Windows 11 pill style */
+  --node-editor-inspector-segment-background: rgba(0, 0, 0, 0.03);
+  --node-editor-inspector-segment-border-radius: 8px;
+  --node-editor-inspector-segment-padding: 3px;
+  --node-editor-inspector-segment-gap: 0;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(0, 0, 0, 0.03);
+  --node-editor-inspector-segment-button-background-active: rgba(255, 255, 255, 0.9);
+  --node-editor-inspector-segment-button-color: #5f6b7b;
+  --node-editor-inspector-segment-button-color-hover: #1f1f27;
+  --node-editor-inspector-segment-button-color-active: #1f1f27;
+  --node-editor-inspector-segment-button-shadow-active: 0 1px 3px rgba(0, 0, 0, 0.1);
 }

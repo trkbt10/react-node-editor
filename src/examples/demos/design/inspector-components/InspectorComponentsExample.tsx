@@ -5,6 +5,7 @@ import * as React from "react";
 
 import { H2 } from "../../../../components/elements/Heading";
 import { PropertySection } from "../../../../components/inspector/parts/PropertySection";
+import { InspectorFieldRow } from "../../../../components/inspector/parts/InspectorFieldRow";
 import { InspectorInput } from "../../../../components/inspector/parts/InspectorInput";
 import { InspectorSelect } from "../../../../components/inspector/parts/InspectorSelect";
 import { InspectorButtonGroup } from "../../../../components/inspector/parts/InspectorButtonGroup";
@@ -123,43 +124,39 @@ export function InspectorComponentsExample(): React.ReactElement {
         <div className={classes.previewContent}>
           <PropertySection title="Position">
             <div className={classes.sectionContent}>
-              <div className={classes.fieldRow}>
-                <span className={classes.fieldLabel}>Alignment</span>
+              <InspectorFieldRow label="Alignment">
                 <InspectorButtonGroup
                   options={alignmentOptions}
                   value={alignment}
                   onChange={setAlignment}
                   aria-label="Text alignment"
                 />
-              </div>
-              <div className={classes.fieldRow}>
-                <span className={classes.fieldLabel}>Position</span>
+              </InspectorFieldRow>
+              <InspectorFieldRow label="Position">
                 <div className={classes.inputGrid}>
                   <InspectorInput label="X" type="number" value="2044.94" onChange={() => {}} />
                   <InspectorInput label="Y" type="number" value="307.7" onChange={() => {}} />
                 </div>
-              </div>
+              </InspectorFieldRow>
             </div>
           </PropertySection>
 
           <PropertySection title="Layout">
             <div className={classes.sectionContent}>
-              <div className={classes.fieldRow}>
-                <span className={classes.fieldLabel}>Resizing</span>
+              <InspectorFieldRow label="Resizing">
                 <InspectorButtonGroup
                   options={resizingOptions}
                   value={resizing}
                   onChange={setResizing}
                   aria-label="Resizing mode"
                 />
-              </div>
-              <div className={classes.fieldRow}>
-                <span className={classes.fieldLabel}>Dimensions</span>
+              </InspectorFieldRow>
+              <InspectorFieldRow label="Dimensions">
                 <div className={classes.inputGrid}>
                   <InspectorInput label="W" type="number" value="91" onChange={() => {}} />
                   <InspectorInput label="H" type="number" value="15" onChange={() => {}} />
                 </div>
-              </div>
+              </InspectorFieldRow>
             </div>
           </PropertySection>
 
@@ -178,14 +175,12 @@ export function InspectorComponentsExample(): React.ReactElement {
             }
           >
             <div className={classes.sectionContent}>
-              <div className={classes.fieldRow}>
-                <span className={classes.fieldLabel}>Opacity</span>
+              <InspectorFieldRow label="Opacity">
                 <InspectorInput type="text" value="100%" onChange={() => {}} />
-              </div>
-              <div className={classes.fieldRow}>
-                <span className={classes.fieldLabel}>Corner radius</span>
+              </InspectorFieldRow>
+              <InspectorFieldRow label="Corner radius">
                 <InspectorInput type="number" value="0" onChange={() => {}} />
-              </div>
+              </InspectorFieldRow>
             </div>
           </PropertySection>
 
@@ -221,8 +216,7 @@ export function InspectorComponentsExample(): React.ReactElement {
       <div className={classes.controls}>
         <PropertySection title="Component Variants">
           <div className={classes.sectionContent}>
-            <div className={classes.fieldRow}>
-              <span className={classes.fieldLabel}>Input Variant</span>
+            <InspectorFieldRow label="Input Variant">
               <InspectorButtonGroup
                 options={[
                   { value: "default", label: "Default" },
@@ -233,7 +227,7 @@ export function InspectorComponentsExample(): React.ReactElement {
                 onChange={(v) => setVariant(v as typeof variant)}
                 aria-label="Input variant"
               />
-            </div>
+            </InspectorFieldRow>
           </div>
         </PropertySection>
 
@@ -284,14 +278,12 @@ export function InspectorComponentsExample(): React.ReactElement {
 
         <PropertySection title="Button Group">
           <div className={classes.sectionContent}>
-            <div className={classes.fieldRow}>
-              <span className={classes.fieldLabel}>Default Size</span>
+            <InspectorFieldRow label="Default Size">
               <InspectorButtonGroup options={alignmentOptions} value={alignment} onChange={setAlignment} aria-label="Alignment" />
-            </div>
-            <div className={classes.fieldRow}>
-              <span className={classes.fieldLabel}>Compact Size</span>
+            </InspectorFieldRow>
+            <InspectorFieldRow label="Compact Size">
               <InspectorButtonGroup options={alignmentOptions} value={alignment} onChange={setAlignment} size="compact" aria-label="Alignment compact" />
-            </div>
+            </InspectorFieldRow>
           </div>
         </PropertySection>
 

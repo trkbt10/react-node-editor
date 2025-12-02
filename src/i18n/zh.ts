@@ -79,6 +79,8 @@ export const zhMessages: I18nMessages = {
   inspectorTitle: "檢查器",
   inspectorNodeProperties: "節點屬性",
   inspectorConnectionProperties: "連線屬性",
+  connectionFrom: "來源",
+  connectionTo: "目標",
   inspectorPosition: "位置",
   inspectorSize: "大小",
   inspectorData: "資料",

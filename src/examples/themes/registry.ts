@@ -1,38 +1,17 @@
 /**
  * @file Runtime helpers for loading and switching example themes.
+ *
+ * Theme definitions are imported from the generated file.
+ * To add/modify themes, edit scripts/themes-catalog.json and run:
+ *   bun run generate:theme-registry
  */
+import {
+  GENERATED_THEMES,
+  type NodeEditorTheme,
+  type NodeEditorThemeId,
+} from "./generated-themes";
 
-export type NodeEditorThemeId =
-  | "default"
-  | "window98"
-  | "google"
-  | "apple"
-  | "xcorp"
-  | "github"
-  | "github-light"
-  | "vscode"
-  | "windowsxp"
-  | "windows11"
-  | "minecraft"
-  | "wargames"
-  | "stellar"
-  | "opal"
-  | "unity"
-  | "adobe"
-  | "figma"
-  | "antigravity"
-  | "notion"
-  | "brutalist"
-  | "constructivist"
-  | "russian-avant-garde"
-  | "akzidenz-grotesk";
-
-export type NodeEditorTheme = {
-  id: NodeEditorThemeId;
-  label: string;
-  description: string;
-  cssPath: string;
-};
+export type { NodeEditorTheme, NodeEditorThemeId };
 
 const NODE_EDITOR_THEME_STYLE_ELEMENT_ID = "node-editor-theme-style";
 const NODE_EDITOR_THEME_STORAGE_KEY = "node-editor-example-theme";
@@ -45,159 +24,18 @@ function resolveThemeCssHref(cssPath: string): string {
   return `${normalizedBaseUrl}${normalizedCssPath}`;
 }
 
-const AVAILABLE_THEMES: NodeEditorTheme[] = [
-  {
-    id: "default",
-    label: "Default",
-    description: "Modern defaults with rounded cards and soft shadows.",
-    cssPath: "",
-  },
-  {
-    id: "window98",
-    label: "Windows 98",
-    description: "Pixel-perfect nostalgia with flat widgets and crisp blue chrome.",
-    cssPath: "/themes/window98.css",
-  },
-  {
-    id: "google",
-    label: "Google",
-    description: "Light, friendly surfaces with bold primary accent and Material-inspired shapes.",
-    cssPath: "/themes/google.css",
-  },
-  {
-    id: "apple",
-    label: "Apple",
-    description: "Translucent layers, spacious typography, and vibrant blue accent inspired by apple.com.",
-    cssPath: "/themes/apple.css",
-  },
-  {
-    id: "xcorp",
-    label: "X",
-    description: "High-contrast dark theme with electric blue highlights and glassy surfaces.",
-    cssPath: "/themes/xcorp.css",
-  },
-  {
-    id: "github",
-    label: "GitHub Dark",
-    description: "Dark dimmed look with desaturated neutrals and punchy blue call-to-action.",
-    cssPath: "/themes/github.css",
-  },
-  {
-    id: "github-light",
-    label: "GitHub Light",
-    description: "Clean light theme with GitHub's signature blue and subtle shadows.",
-    cssPath: "/themes/github-light.css",
-  },
-  {
-    id: "vscode",
-    label: "VS Code",
-    description: "Dark code editor theme with precise geometry and VS Code's signature blue.",
-    cssPath: "/themes/vscode.css",
-  },
-  {
-    id: "windowsxp",
-    label: "Windows XP",
-    description: "Blissful gradients, bold blues, and playful glass buttons from the XP era.",
-    cssPath: "/themes/windowsxp.css",
-  },
-  {
-    id: "windows11",
-    label: "Windows 11",
-    description: "Soft acrylic surfaces, centered layouts, and fluent blue accent of modern Windows.",
-    cssPath: "/themes/windows11.css",
-  },
-  {
-    id: "minecraft",
-    label: "Minecraft",
-    description: "Pixel-crafted UI with earthy neutrals and vibrant emerald highlight.",
-    cssPath: "/themes/minecraft.css",
-  },
-  {
-    id: "wargames",
-    label: "WarGames",
-    description: "CRT terminal with glowing green phosphor wireframes inspired by WOPR and DEFCON.",
-    cssPath: "/themes/wargames.css",
-  },
-  {
-    id: "stellar",
-    label: "Stellar",
-    description: "Gray background with dark cards, warm orange accents, and clean flat design.",
-    cssPath: "/themes/stellar.css",
-  },
-  {
-    id: "opal",
-    label: "Opal",
-    description: "Soft pastel aesthetic with gentle purples, warm cream surfaces, and flowing connections.",
-    cssPath: "/themes/opal.css",
-  },
-  {
-    id: "unity",
-    label: "Unity",
-    description: "Professional dark theme with Unity's signature blue accent and flat panel design.",
-    cssPath: "/themes/unity.css",
-  },
-  {
-    id: "adobe",
-    label: "Adobe",
-    description: "Sleek dark interface inspired by Adobe Creative Cloud with refined blue accents.",
-    cssPath: "/themes/adobe.css",
-  },
-  {
-    id: "figma",
-    label: "Figma",
-    description: "Clean light interface with Figma's signature blue and minimal design language.",
-    cssPath: "/themes/figma.css",
-  },
-  {
-    id: "antigravity",
-    label: "Antigravity",
-    description: "Deep space aesthetic with neon accents and glassmorphism effects.",
-    cssPath: "/themes/antigravity.css",
-  },
-  {
-    id: "notion",
-    label: "Notion",
-    description: "Clean, minimalist workspace with crisp typography and subtle borders.",
-    cssPath: "/themes/notion.css",
-  },
-  {
-    id: "brutalist",
-    label: "Brutalist",
-    description: "Raw, bold aesthetic with hard shadows and high contrast.",
-    cssPath: "/themes/brutalist.css",
-  },
-  {
-    id: "constructivist",
-    label: "Constructivist",
-    description: "Avant-garde Russian art style with bold geometry and revolutionary red.",
-    cssPath: "/themes/constructivist.css",
-  },
-  {
-    id: "russian-avant-garde",
-    label: "Russian Avant-Garde",
-    description: "Suprematist composition with floating geometry and primary colors.",
-    cssPath: "/themes/russian-avant-garde.css",
-  },
-  {
-    id: "akzidenz-grotesk",
-    label: "Akzidenz-Grotesk",
-    description: "Swiss Style minimalism with strict grids and neutral typography.",
-    cssPath: "/themes/akzidenz-grotesk.css",
-  },
-];
-
 /**
  * List all themes that can be selected within the example shell.
  */
 export function listAvailableThemes(): NodeEditorTheme[] {
-  return AVAILABLE_THEMES;
+  return GENERATED_THEMES;
 }
 
 /**
  * Resolve a theme definition by its identifier.
  */
 export function resolveTheme(themeId: NodeEditorThemeId): NodeEditorTheme {
-  const theme = AVAILABLE_THEMES.find((candidate) => candidate.id === themeId);
+  const theme = GENERATED_THEMES.find((candidate) => candidate.id === themeId);
 
   if (theme === undefined) {
     throw new Error(`Unknown node editor theme "${themeId}".`);

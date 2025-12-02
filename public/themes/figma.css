@@ -155,6 +155,7 @@
   --node-editor-selected-control-color: rgba(24, 160, 251, 0.15);
   --node-editor-under-page-background-color: #e8e8e8;
   --node-editor-window-background-color: #e8e8e8;
+  --node-editor-background-surface: var(--node-editor-window-background-color);
 
   /* Control surfaces - Figma button components */
   --node-editor-control-background: #ffffff;

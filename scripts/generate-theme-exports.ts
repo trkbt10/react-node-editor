@@ -1,20 +1,32 @@
 /**
  * @file Script to automatically generate theme exports in package.json
+ *
+ * Reads from themes-catalog.json as the single source of truth.
  */
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { basename } from "node:path";
+import { readFileSync, writeFileSync } from "node:fs";
 
-const THEMES_DIR = "public/themes";
+import themesCatalog from "./themes-catalog.json";
+
 const PACKAGE_JSON_PATH = "package.json";
 
+type ThemeCatalogEntry = {
+  id: string;
+  label: string;
+  description: string;
+  cssFile: string | null;
+};
+
 function generateThemeExports(): void {
-  // Read theme files
-  const themeFiles = readdirSync(THEMES_DIR).filter((file) =>
-    file.endsWith(".css"),
+  const themes = themesCatalog.themes as ThemeCatalogEntry[];
+
+  // Filter themes that have CSS files (exclude default)
+  const themesWithCss = themes.filter(
+    (theme): theme is ThemeCatalogEntry & { cssFile: string } =>
+      theme.cssFile !== null
   );
 
-  if (themeFiles.length === 0) {
-    throw new Error(`No theme files found in ${THEMES_DIR}`);
+  if (themesWithCss.length === 0) {
+    throw new Error("No themes with CSS files found in catalog");
   }
 
   // Read package.json
@@ -33,12 +45,13 @@ function generateThemeExports(): void {
     }
   }
 
-  // Generate new theme exports
+  // Generate new theme exports from catalog
   const themeExports: Record<string, string> = {};
-  for (const themeFile of themeFiles.sort()) {
-    const themeName = basename(themeFile, ".css");
-    const exportKey = `./themes/${themeName}.css`;
-    const exportPath = `./public/themes/${themeFile}`;
+  for (const theme of themesWithCss.sort((a, b) =>
+    a.cssFile.localeCompare(b.cssFile)
+  )) {
+    const exportKey = `./themes/${theme.cssFile}`;
+    const exportPath = `./public/themes/${theme.cssFile}`;
     themeExports[exportKey] = exportPath;
   }
 
@@ -59,15 +72,17 @@ function generateThemeExports(): void {
   writeFileSync(
     PACKAGE_JSON_PATH,
     JSON.stringify(packageJson, null, 2) + "\n",
-    "utf-8",
+    "utf-8"
   );
 
   console.log(
-    `✅ Generated ${themeFiles.length} theme exports in package.json`,
+    `✅ Generated ${themesWithCss.length} theme exports in package.json`
   );
-  console.log("\nTheme files processed:");
-  for (const themeFile of themeFiles.sort()) {
-    console.log(`  - ${themeFile}`);
+  console.log("\nThemes processed (from catalog):");
+  for (const theme of themesWithCss.sort((a, b) =>
+    a.cssFile.localeCompare(b.cssFile)
+  )) {
+    console.log(`  - ${theme.cssFile} (${theme.label})`);
   }
 }
 

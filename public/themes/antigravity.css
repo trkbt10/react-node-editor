@@ -265,4 +265,37 @@
   --node-editor-connection-drag-dash-array-disconnecting: 8 4;
   --node-editor-connection-drag-animation-duration: 0.4s;
   --node-editor-connection-drag-animation-distance: -20;
+
+  /* Inspector icon button - Antigravity neon cyberpunk style */
+  --node-editor-inspector-icon-button-size: 28px;
+  --node-editor-inspector-icon-button-size-sm: 22px;
+  --node-editor-inspector-icon-button-icon-size: 16px;
+  --node-editor-inspector-icon-button-icon-size-sm: 14px;
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: rgba(188, 19, 254, 0.15);
+  --node-editor-inspector-icon-button-background-active: rgba(0, 243, 255, 0.2);
+  --node-editor-inspector-icon-button-color: #707070;
+  --node-editor-inspector-icon-button-color-hover: #e0e0e0;
+  --node-editor-inspector-icon-button-color-active: #00f3ff;
+  --node-editor-inspector-icon-button-color-disabled: rgba(224, 224, 224, 0.25);
+
+  /* Inspector input label - Antigravity Inter typography */
+  --node-editor-inspector-input-label-color: #a0a0a0;
+  --node-editor-inspector-input-label-font-size: 0.75rem;
+  --node-editor-inspector-input-label-font-weight: 500;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 48px;
+
+  /* Inspector segment control - Antigravity neon pill style */
+  --node-editor-inspector-segment-background: rgba(188, 19, 254, 0.08);
+  --node-editor-inspector-segment-border-radius: 100px;
+  --node-editor-inspector-segment-padding: 4px;
+  --node-editor-inspector-segment-gap: 4px;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(188, 19, 254, 0.12);
+  --node-editor-inspector-segment-button-background-active: linear-gradient(135deg, #bc13fe 0%, #00f3ff 100%);
+  --node-editor-inspector-segment-button-color: #a0a0a0;
+  --node-editor-inspector-segment-button-color-hover: #e0e0e0;
+  --node-editor-inspector-segment-button-color-active: #ffffff;
+  --node-editor-inspector-segment-button-shadow-active: 0 0 20px rgba(0, 243, 255, 0.4);
 }

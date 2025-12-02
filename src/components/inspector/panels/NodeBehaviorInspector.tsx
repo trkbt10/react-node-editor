@@ -10,8 +10,8 @@ import { useI18n } from "../../../i18n/context";
 import type { AlignmentActionType } from "../../controls/alignments/types";
 import { NodeTitleSection } from "../../controls/nodeProperties/NodeTitleSection";
 import { NodeContentSection } from "../../controls/nodeProperties/NodeContentSection";
-import { NodeAlignmentSection } from "../../controls/nodeProperties/NodeAlignmentSection";
-import { NodePositionSizeSection } from "../../controls/nodeProperties/NodePositionSizeSection";
+import { NodePositionSection } from "../../controls/nodeProperties/NodePositionSection";
+import { NodeLayoutSection } from "../../controls/nodeProperties/NodeLayoutSection";
 import { NodeStateSection } from "../../controls/nodeProperties/NodeStateSection";
 import { NodeTypeSection } from "../../controls/nodeProperties/NodeTypeSection";
 
@@ -84,15 +84,15 @@ export function NodeBehaviorInspector({
 
       <NodeContentSection node={node} onContentChange={handleContentChange} />
 
-      <NodeAlignmentSection selectedNodes={selectedNodes} onAlignNodes={onAlignNodes} />
-
-      <NodePositionSizeSection
+      <NodePositionSection
         node={node}
+        selectedNodes={selectedNodes}
         onPositionXChange={handlePositionXChange}
         onPositionYChange={handlePositionYChange}
-        onWidthChange={handleWidthChange}
-        onHeightChange={handleHeightChange}
+        onAlignNodes={onAlignNodes}
       />
+
+      <NodeLayoutSection node={node} onWidthChange={handleWidthChange} onHeightChange={handleHeightChange} />
 
       <NodeStateSection
         node={node}

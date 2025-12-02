@@ -258,4 +258,37 @@
     --node-editor-connection-drag-dash-array-disconnecting: 6 3;
     --node-editor-connection-drag-animation-duration: 1s;
     --node-editor-connection-drag-animation-distance: -8;
+
+    /* Inspector icon button - Notion minimal style */
+    --node-editor-inspector-icon-button-size: 26px;
+    --node-editor-inspector-icon-button-size-sm: 22px;
+    --node-editor-inspector-icon-button-icon-size: 16px;
+    --node-editor-inspector-icon-button-icon-size-sm: 14px;
+    --node-editor-inspector-icon-button-background: transparent;
+    --node-editor-inspector-icon-button-background-hover: rgba(55, 53, 47, 0.08);
+    --node-editor-inspector-icon-button-background-active: rgba(46, 170, 220, 0.1);
+    --node-editor-inspector-icon-button-color: rgba(55, 53, 47, 0.5);
+    --node-editor-inspector-icon-button-color-hover: #37352f;
+    --node-editor-inspector-icon-button-color-active: #2eaadc;
+    --node-editor-inspector-icon-button-color-disabled: rgba(55, 53, 47, 0.25);
+
+    /* Inspector input label - Notion typography */
+    --node-editor-inspector-input-label-color: rgba(55, 53, 47, 0.65);
+    --node-editor-inspector-input-label-font-size: 0.75rem;
+    --node-editor-inspector-input-label-font-weight: 500;
+    --node-editor-inspector-input-label-width: auto;
+    --node-editor-inspector-input-label-min-width: 48px;
+
+    /* Inspector segment control - Notion pill style */
+    --node-editor-inspector-segment-background: rgba(55, 53, 47, 0.06);
+    --node-editor-inspector-segment-border-radius: 4px;
+    --node-editor-inspector-segment-padding: 2px;
+    --node-editor-inspector-segment-gap: 0;
+    --node-editor-inspector-segment-button-background: transparent;
+    --node-editor-inspector-segment-button-background-hover: rgba(55, 53, 47, 0.04);
+    --node-editor-inspector-segment-button-background-active: #ffffff;
+    --node-editor-inspector-segment-button-color: rgba(55, 53, 47, 0.6);
+    --node-editor-inspector-segment-button-color-hover: #37352f;
+    --node-editor-inspector-segment-button-color-active: #37352f;
+    --node-editor-inspector-segment-button-shadow-active: rgba(15, 15, 15, 0.1) 0px 0px 0px 1px, rgba(15, 15, 15, 0.1) 0px 2px 4px;
 }

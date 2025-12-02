@@ -79,6 +79,8 @@ export const deMessages: I18nMessages = {
   inspectorTitle: "Inspektor",
   inspectorNodeProperties: "Knoteneigenschaften",
   inspectorConnectionProperties: "Verbindungseigenschaften",
+  connectionFrom: "Von",
+  connectionTo: "Nach",
   inspectorPosition: "Position",
   inspectorSize: "Größe",
   inspectorData: "Daten",

@@ -81,6 +81,8 @@ export type I18nMessages = {
   inspectorTitle: string;
   inspectorNodeProperties: string;
   inspectorConnectionProperties: string;
+  connectionFrom: string;
+  connectionTo: string;
   inspectorPosition: string;
   inspectorSize: string;
   inspectorData: string;

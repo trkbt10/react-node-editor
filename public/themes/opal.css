@@ -118,6 +118,7 @@
   --node-editor-surface-primary: #ffffff;
   --node-editor-surface-secondary: #f7f9fa;
   --node-editor-surface-tertiary: #edf2f7;
+  --node-editor-background-surface: linear-gradient(135deg, #f7f9fa 0%, #edf2f7 50%, #e2e8f0 100%);
   --node-editor-selected-content-background-color: rgba(66, 153, 225, 0.08);
   --node-editor-selected-control-color: rgba(66, 153, 225, 0.12);
   --node-editor-under-page-background-color: #f0ebe5;
@@ -257,4 +258,37 @@
   --node-editor-connection-drag-dash-array-disconnecting: 10 5;
   --node-editor-connection-drag-animation-duration: 0.6s;
   --node-editor-connection-drag-animation-distance: -12;
+
+  /* Inspector icon button - Opal soft style */
+  --node-editor-inspector-icon-button-size: 28px;
+  --node-editor-inspector-icon-button-size-sm: 22px;
+  --node-editor-inspector-icon-button-icon-size: 14px;
+  --node-editor-inspector-icon-button-icon-size-sm: 12px;
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: rgba(186, 157, 237, 0.12);
+  --node-editor-inspector-icon-button-background-active: rgba(66, 153, 225, 0.15);
+  --node-editor-inspector-icon-button-color: #a0aec0;
+  --node-editor-inspector-icon-button-color-hover: #4a5568;
+  --node-editor-inspector-icon-button-color-active: #4299e1;
+  --node-editor-inspector-icon-button-color-disabled: rgba(74, 85, 104, 0.3);
+
+  /* Inspector input label - Opal soft typography */
+  --node-editor-inspector-input-label-color: #718096;
+  --node-editor-inspector-input-label-font-size: 0.6875rem;
+  --node-editor-inspector-input-label-font-weight: 500;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 48px;
+
+  /* Inspector segment control - Opal soft pill style */
+  --node-editor-inspector-segment-background: rgba(186, 157, 237, 0.08);
+  --node-editor-inspector-segment-border-radius: 12px;
+  --node-editor-inspector-segment-padding: 3px;
+  --node-editor-inspector-segment-gap: 0;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(186, 157, 237, 0.1);
+  --node-editor-inspector-segment-button-background-active: #ffffff;
+  --node-editor-inspector-segment-button-color: #718096;
+  --node-editor-inspector-segment-button-color-hover: #4a5568;
+  --node-editor-inspector-segment-button-color-active: #4a5568;
+  --node-editor-inspector-segment-button-shadow-active: 0 2px 8px rgba(186, 157, 237, 0.18);
 }

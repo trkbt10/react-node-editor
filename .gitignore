@@ -169,3 +169,9 @@ dist
 
 .code_styles
 AGENTS.md
+
+# Playwright
+playwright-report/
+playwright/.cache/
+test-results/
+e2e/__screenshots__/

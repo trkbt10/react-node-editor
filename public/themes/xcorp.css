@@ -266,4 +266,37 @@
   --node-editor-connection-drag-dash-array-disconnecting: 8 4;
   --node-editor-connection-drag-animation-duration: 0.5s;
   --node-editor-connection-drag-animation-distance: -10;
+
+  /* Inspector icon button - X/Twitter dark style */
+  --node-editor-inspector-icon-button-size: 28px;
+  --node-editor-inspector-icon-button-size-sm: 24px;
+  --node-editor-inspector-icon-button-icon-size: 18px;
+  --node-editor-inspector-icon-button-icon-size-sm: 16px;
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: rgba(231, 233, 234, 0.1);
+  --node-editor-inspector-icon-button-background-active: rgba(29, 155, 240, 0.18);
+  --node-editor-inspector-icon-button-color: rgb(113, 118, 123);
+  --node-editor-inspector-icon-button-color-hover: #e7e9ea;
+  --node-editor-inspector-icon-button-color-active: #1d9bf0;
+  --node-editor-inspector-icon-button-color-disabled: rgba(231, 233, 234, 0.25);
+
+  /* Inspector input label - X/Twitter typography */
+  --node-editor-inspector-input-label-color: #8b98a5;
+  --node-editor-inspector-input-label-font-size: 0.8125rem;
+  --node-editor-inspector-input-label-font-weight: 700;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 48px;
+
+  /* Inspector segment control - X/Twitter pill style */
+  --node-editor-inspector-segment-background: rgba(255, 255, 255, 0.06);
+  --node-editor-inspector-segment-border-radius: 100px;
+  --node-editor-inspector-segment-padding: 4px;
+  --node-editor-inspector-segment-gap: 4px;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(231, 233, 234, 0.1);
+  --node-editor-inspector-segment-button-background-active: rgb(239, 243, 244);
+  --node-editor-inspector-segment-button-color: rgb(113, 118, 123);
+  --node-editor-inspector-segment-button-color-hover: #e7e9ea;
+  --node-editor-inspector-segment-button-color-active: rgb(15, 20, 25);
+  --node-editor-inspector-segment-button-shadow-active: none;
 }

@@ -241,4 +241,37 @@
     --node-editor-connection-drag-dash-array-disconnecting: 10 10;
     --node-editor-connection-drag-animation-duration: 0s;
     --node-editor-connection-drag-animation-distance: 0;
+
+    /* Inspector icon button - Constructivist bold style */
+    --node-editor-inspector-icon-button-size: 32px;
+    --node-editor-inspector-icon-button-size-sm: 24px;
+    --node-editor-inspector-icon-button-icon-size: 16px;
+    --node-editor-inspector-icon-button-icon-size-sm: 12px;
+    --node-editor-inspector-icon-button-background: transparent;
+    --node-editor-inspector-icon-button-background-hover: #1a1a1a;
+    --node-editor-inspector-icon-button-background-active: #cc3333;
+    --node-editor-inspector-icon-button-color: #1a1a1a;
+    --node-editor-inspector-icon-button-color-hover: #e3dac9;
+    --node-editor-inspector-icon-button-color-active: #e3dac9;
+    --node-editor-inspector-icon-button-color-disabled: rgba(26, 26, 26, 0.4);
+
+    /* Inspector input label - Constructivist Impact typography */
+    --node-editor-inspector-input-label-color: #1a1a1a;
+    --node-editor-inspector-input-label-font-size: 0.75rem;
+    --node-editor-inspector-input-label-font-weight: 900;
+    --node-editor-inspector-input-label-width: auto;
+    --node-editor-inspector-input-label-min-width: 48px;
+
+    /* Inspector segment control - Constructivist geometric */
+    --node-editor-inspector-segment-background: transparent;
+    --node-editor-inspector-segment-border-radius: 0;
+    --node-editor-inspector-segment-padding: 0;
+    --node-editor-inspector-segment-gap: 4px;
+    --node-editor-inspector-segment-button-background: #e3dac9;
+    --node-editor-inspector-segment-button-background-hover: #1a1a1a;
+    --node-editor-inspector-segment-button-background-active: #cc3333;
+    --node-editor-inspector-segment-button-color: #1a1a1a;
+    --node-editor-inspector-segment-button-color-hover: #e3dac9;
+    --node-editor-inspector-segment-button-color-active: #e3dac9;
+    --node-editor-inspector-segment-button-shadow-active: 8px 8px 0px rgba(0, 0, 0, 0.2);
 }

@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Themes Catalog",
+  "description": "Single source of truth for theme definitions",
+  "type": "object",
+  "required": ["themes"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "themes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "description", "cssFile"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique theme identifier (kebab-case)",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable display name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Brief description of the theme's visual style"
+          },
+          "cssFile": {
+            "type": ["string", "null"],
+            "description": "CSS filename in public/themes/ (null for default theme)"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

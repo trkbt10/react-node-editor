@@ -118,6 +118,7 @@
   --node-editor-surface-primary: #ecf3fd;
   --node-editor-surface-secondary: #dce8f8;
   --node-editor-surface-tertiary: #ccdff3;
+  --node-editor-background-surface: linear-gradient(180deg, #9cd36d 0%, #5da631 35%, #3b77c3 100%);
   --node-editor-selected-content-background-color: linear-gradient(180deg, #316ac5 0%, #c2e0ff 100%);
   --node-editor-selected-control-color: linear-gradient(180deg, #316ac5 0%, #c2e0ff 100%);
   --node-editor-under-page-background-color: linear-gradient(180deg, #9cd36d 0%, #5da631 35%, #3b77c3 100%);
@@ -257,4 +258,37 @@
   --node-editor-connection-drag-dash-array-disconnecting: 8 4;
   --node-editor-connection-drag-animation-duration: 0.5s;
   --node-editor-connection-drag-animation-distance: -10;
+
+  /* Inspector icon button - Windows XP Luna style */
+  --node-editor-inspector-icon-button-size: 24px;
+  --node-editor-inspector-icon-button-size-sm: 20px;
+  --node-editor-inspector-icon-button-icon-size: 14px;
+  --node-editor-inspector-icon-button-icon-size-sm: 12px;
+  --node-editor-inspector-icon-button-background: #ecf3fd;
+  --node-editor-inspector-icon-button-background-hover: linear-gradient(180deg, #ffeebf 0%, #ffe7a0 50%, #ffd95c 100%);
+  --node-editor-inspector-icon-button-background-active: linear-gradient(180deg, #5b9bd5 0%, #1b4da5 100%);
+  --node-editor-inspector-icon-button-color: #000000;
+  --node-editor-inspector-icon-button-color-hover: #000000;
+  --node-editor-inspector-icon-button-color-active: #ffffff;
+  --node-editor-inspector-icon-button-color-disabled: rgba(27, 42, 74, 0.35);
+
+  /* Inspector input label - Windows XP Tahoma style */
+  --node-editor-inspector-input-label-color: #000000;
+  --node-editor-inspector-input-label-font-size: 0.6875rem;
+  --node-editor-inspector-input-label-font-weight: 700;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 44px;
+
+  /* Inspector segment control - Windows XP aqua buttons */
+  --node-editor-inspector-segment-background: #ecf3fd;
+  --node-editor-inspector-segment-border-radius: 4px;
+  --node-editor-inspector-segment-padding: 1px;
+  --node-editor-inspector-segment-gap: 0;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: linear-gradient(180deg, #ffeebf 0%, #ffe7a0 50%, #ffd95c 100%);
+  --node-editor-inspector-segment-button-background-active: linear-gradient(180deg, #5b9bd5 0%, #1b4da5 100%);
+  --node-editor-inspector-segment-button-color: #000000;
+  --node-editor-inspector-segment-button-color-hover: #000000;
+  --node-editor-inspector-segment-button-color-active: #ffffff;
+  --node-editor-inspector-segment-button-shadow-active: inset 0 1px 0 rgba(255, 255, 255, 0.75), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
 }

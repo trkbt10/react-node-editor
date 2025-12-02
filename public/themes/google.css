@@ -40,6 +40,39 @@
   --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
   --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
 
+  /* Inspector icon button tokens - Material Design style */
+  --node-editor-inspector-icon-button-size: 28px;
+  --node-editor-inspector-icon-button-size-sm: 24px;
+  --node-editor-inspector-icon-button-icon-size: 18px;
+  --node-editor-inspector-icon-button-icon-size-sm: 16px;
+  --node-editor-inspector-icon-button-color: #5f6368;
+  --node-editor-inspector-icon-button-color-hover: #202124;
+  --node-editor-inspector-icon-button-color-active: #1a73e8;
+  --node-editor-inspector-icon-button-color-disabled: rgba(32, 33, 36, 0.38);
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: rgba(32, 33, 36, 0.08);
+  --node-editor-inspector-icon-button-background-active: rgba(26, 115, 232, 0.12);
+
+  /* Inspector input label tokens - Material Design style */
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 16px;
+  --node-editor-inspector-input-label-color: #5f6368;
+  --node-editor-inspector-input-label-font-size: 0.75rem;
+  --node-editor-inspector-input-label-font-weight: 500;
+
+  /* Inspector segment control tokens - Material Design chips */
+  --node-editor-inspector-segment-border-radius: 8px;
+  --node-editor-inspector-segment-gap: 0;
+  --node-editor-inspector-segment-padding: 6px 12px;
+  --node-editor-inspector-segment-background: #e8eaed;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(32, 33, 36, 0.08);
+  --node-editor-inspector-segment-button-background-active: #ffffff;
+  --node-editor-inspector-segment-button-color: #5f6368;
+  --node-editor-inspector-segment-button-color-hover: #202124;
+  --node-editor-inspector-segment-button-color-active: #1a73e8;
+  --node-editor-inspector-segment-button-shadow-active: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+
   /* Font families & typography */
   --node-editor-theme-default-font-family: "Roboto", "Noto Sans", "Helvetica Neue", Arial, sans-serif;
   --node-editor-theme-control-font-family: "Google Sans", "Roboto", "Noto Sans", Arial, sans-serif;
@@ -122,6 +155,7 @@
   --node-editor-selected-control-color: rgba(26, 115, 232, 0.16);
   --node-editor-under-page-background-color: #f1f3f4;
   --node-editor-window-background-color: #ffffff;
+  --node-editor-background-surface: var(--node-editor-window-background-color);
 
   /* Control surfaces */
   --node-editor-control-background: #ffffff;

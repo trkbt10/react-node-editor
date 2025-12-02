@@ -62,20 +62,6 @@
   gap: var(--node-editor-space-sm, 8px);
 }
 
-.fieldRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--node-editor-space-md, 12px);
-}
-
-.fieldLabel {
-  color: var(--node-editor-secondary-label-color, #6b7280);
-  font-size: var(--node-editor-inspector-font-size-body, 0.75rem);
-  font-weight: 500;
-  flex-shrink: 0;
-}
-
 .inputGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;

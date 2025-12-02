@@ -1,0 +1,18 @@
+.fieldRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--node-editor-inspector-inline-gap);
+}
+
+.label {
+  color: var(--node-editor-secondary-label-color);
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.control {
+  flex: 1;
+  min-width: 0;
+}

@@ -1,0 +1,149 @@
+{
+  "$schema": "./themes-catalog.schema.json",
+  "themes": [
+    {
+      "id": "default",
+      "label": "Default",
+      "description": "Modern defaults with rounded cards and soft shadows.",
+      "cssFile": null
+    },
+    {
+      "id": "adobe",
+      "label": "Adobe",
+      "description": "Sleek dark interface inspired by Adobe Creative Cloud with refined blue accents.",
+      "cssFile": "adobe.css"
+    },
+    {
+      "id": "akzidenz-grotesk",
+      "label": "Akzidenz-Grotesk",
+      "description": "Swiss Style minimalism with strict grids and neutral typography.",
+      "cssFile": "akzidenz-grotesk.css"
+    },
+    {
+      "id": "antigravity",
+      "label": "Antigravity",
+      "description": "Deep space aesthetic with neon accents and glassmorphism effects.",
+      "cssFile": "antigravity.css"
+    },
+    {
+      "id": "apple",
+      "label": "Apple",
+      "description": "Translucent layers, spacious typography, and vibrant blue accent inspired by apple.com.",
+      "cssFile": "apple.css"
+    },
+    {
+      "id": "brutalist",
+      "label": "Brutalist",
+      "description": "Raw, bold aesthetic with hard shadows and high contrast.",
+      "cssFile": "brutalist.css"
+    },
+    {
+      "id": "constructivist",
+      "label": "Constructivist",
+      "description": "Avant-garde Russian art style with bold geometry and revolutionary red.",
+      "cssFile": "constructivist.css"
+    },
+    {
+      "id": "figma",
+      "label": "Figma",
+      "description": "Clean light interface with Figma's signature blue and minimal design language.",
+      "cssFile": "figma.css"
+    },
+    {
+      "id": "github",
+      "label": "GitHub Dark",
+      "description": "Dark dimmed look with desaturated neutrals and punchy blue call-to-action.",
+      "cssFile": "github.css"
+    },
+    {
+      "id": "github-light",
+      "label": "GitHub Light",
+      "description": "Clean light theme with GitHub's signature blue and subtle shadows.",
+      "cssFile": "github-light.css"
+    },
+    {
+      "id": "google",
+      "label": "Google",
+      "description": "Light, friendly surfaces with bold primary accent and Material-inspired shapes.",
+      "cssFile": "google.css"
+    },
+    {
+      "id": "macintosh",
+      "label": "Macintosh",
+      "description": "Classic 1984 Macintosh System 1.0 with pure black & white 1-bit aesthetic.",
+      "cssFile": "macintosh.css"
+    },
+    {
+      "id": "minecraft",
+      "label": "Minecraft",
+      "description": "Pixel-crafted UI with earthy neutrals and vibrant emerald highlight.",
+      "cssFile": "minecraft.css"
+    },
+    {
+      "id": "notion",
+      "label": "Notion",
+      "description": "Clean, minimalist workspace with crisp typography and subtle borders.",
+      "cssFile": "notion.css"
+    },
+    {
+      "id": "opal",
+      "label": "Opal",
+      "description": "Soft pastel aesthetic with gentle purples, warm cream surfaces, and flowing connections.",
+      "cssFile": "opal.css"
+    },
+    {
+      "id": "russian-avant-garde",
+      "label": "Russian Avant-Garde",
+      "description": "Suprematist composition with floating geometry and primary colors.",
+      "cssFile": "russian-avant-garde.css"
+    },
+    {
+      "id": "stellar",
+      "label": "Stellar",
+      "description": "Gray background with dark cards, warm orange accents, and clean flat design.",
+      "cssFile": "stellar.css"
+    },
+    {
+      "id": "unity",
+      "label": "Unity",
+      "description": "Professional dark theme with Unity's signature blue accent and flat panel design.",
+      "cssFile": "unity.css"
+    },
+    {
+      "id": "vscode",
+      "label": "VS Code",
+      "description": "Dark code editor theme with precise geometry and VS Code's signature blue.",
+      "cssFile": "vscode.css"
+    },
+    {
+      "id": "wargames",
+      "label": "WarGames",
+      "description": "CRT terminal with glowing green phosphor wireframes inspired by WOPR and DEFCON.",
+      "cssFile": "wargames.css"
+    },
+    {
+      "id": "window98",
+      "label": "Windows 98",
+      "description": "Pixel-perfect nostalgia with flat widgets and crisp blue chrome.",
+      "cssFile": "window98.css"
+    },
+    {
+      "id": "windows11",
+      "label": "Windows 11",
+      "description": "Soft acrylic surfaces, centered layouts, and fluent blue accent of modern Windows.",
+      "cssFile": "windows11.css"
+    },
+    {
+      "id": "windowsxp",
+      "label": "Windows XP",
+      "description": "Blissful gradients, bold blues, and playful glass buttons from the XP era.",
+      "cssFile": "windowsxp.css"
+    },
+    {
+      "id": "xcorp",
+      "label": "X",
+      "description": "High-contrast dark theme with electric blue highlights and glassy surfaces.",
+      "cssFile": "xcorp.css"
+    }
+  ]
+}

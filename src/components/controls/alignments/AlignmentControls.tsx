@@ -40,9 +40,9 @@ export const AlignmentControls = React.memo<AlignmentControlsProps>(({ selectedN
   return (
     <div className={styles.alignmentControls}>
       <InspectorLabel>{alignmentLabel}</InspectorLabel>
-      <div className={styles.alignmentGrid}>
+      <div className={styles.alignmentGroupsContainer}>
         {ALIGNMENT_GROUPS.map((group) => (
-          <div key={group} className={styles.alignmentRow}>
+          <div key={group} className={styles.alignmentGroup} role="group" aria-label={`${group} alignment`}>
             {groupedActions[group]?.map((button) => {
               const IconComponent = button.icon;
               return (

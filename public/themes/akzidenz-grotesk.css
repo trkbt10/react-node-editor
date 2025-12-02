@@ -237,4 +237,37 @@
     --node-editor-connection-drag-dash-array-disconnecting: 4 4;
     --node-editor-connection-drag-animation-duration: 0s;
     --node-editor-connection-drag-animation-distance: 0;
+
+    /* Inspector icon button - Swiss typography minimal style */
+    --node-editor-inspector-icon-button-size: 24px;
+    --node-editor-inspector-icon-button-size-sm: 20px;
+    --node-editor-inspector-icon-button-icon-size: 14px;
+    --node-editor-inspector-icon-button-icon-size-sm: 12px;
+    --node-editor-inspector-icon-button-background: transparent;
+    --node-editor-inspector-icon-button-background-hover: #f5f5f5;
+    --node-editor-inspector-icon-button-background-active: #ff0000;
+    --node-editor-inspector-icon-button-color: #666666;
+    --node-editor-inspector-icon-button-color-hover: #000000;
+    --node-editor-inspector-icon-button-color-active: #ffffff;
+    --node-editor-inspector-icon-button-color-disabled: #cccccc;
+
+    /* Inspector input label - Swiss typography */
+    --node-editor-inspector-input-label-color: #666666;
+    --node-editor-inspector-input-label-font-size: 0.75rem;
+    --node-editor-inspector-input-label-font-weight: 400;
+    --node-editor-inspector-input-label-width: auto;
+    --node-editor-inspector-input-label-min-width: 48px;
+
+    /* Inspector segment control - Swiss minimal style */
+    --node-editor-inspector-segment-background: #f5f5f5;
+    --node-editor-inspector-segment-border-radius: 0;
+    --node-editor-inspector-segment-padding: 0;
+    --node-editor-inspector-segment-gap: 1px;
+    --node-editor-inspector-segment-button-background: transparent;
+    --node-editor-inspector-segment-button-background-hover: #e0e0e0;
+    --node-editor-inspector-segment-button-background-active: #000000;
+    --node-editor-inspector-segment-button-color: #666666;
+    --node-editor-inspector-segment-button-color-hover: #000000;
+    --node-editor-inspector-segment-button-color-active: #ffffff;
+    --node-editor-inspector-segment-button-shadow-active: none;
 }

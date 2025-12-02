@@ -118,6 +118,7 @@
   --node-editor-surface-primary: #2d2d30;
   --node-editor-surface-secondary: #252526;
   --node-editor-surface-tertiary: #1e1e1e;
+  --node-editor-background-surface: #252526;
   --node-editor-selected-content-background-color: rgba(38, 128, 235, 0.15);
   --node-editor-selected-control-color: rgba(38, 128, 235, 0.22);
   --node-editor-under-page-background-color: #1a1a1a;
@@ -256,4 +257,37 @@
   --node-editor-connection-drag-dash-array-disconnecting: 8 4;
   --node-editor-connection-drag-animation-duration: 0.45s;
   --node-editor-connection-drag-animation-distance: -8;
+
+  /* Inspector icon button - Adobe Spectrum dark style */
+  --node-editor-inspector-icon-button-size: 26px;
+  --node-editor-inspector-icon-button-size-sm: 22px;
+  --node-editor-inspector-icon-button-icon-size: 14px;
+  --node-editor-inspector-icon-button-icon-size-sm: 12px;
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: rgba(255, 255, 255, 0.05);
+  --node-editor-inspector-icon-button-background-active: rgba(38, 128, 235, 0.15);
+  --node-editor-inspector-icon-button-color: #8f8f8f;
+  --node-editor-inspector-icon-button-color-hover: #b9b9b9;
+  --node-editor-inspector-icon-button-color-active: #2680eb;
+  --node-editor-inspector-icon-button-color-disabled: rgba(185, 185, 185, 0.25);
+
+  /* Inspector input label - Adobe Spectrum typography */
+  --node-editor-inspector-input-label-color: #8f8f8f;
+  --node-editor-inspector-input-label-font-size: 0.75rem;
+  --node-editor-inspector-input-label-font-weight: 400;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 48px;
+
+  /* Inspector segment control - Adobe Spectrum pill style */
+  --node-editor-inspector-segment-background: rgba(0, 0, 0, 0.25);
+  --node-editor-inspector-segment-border-radius: 16px;
+  --node-editor-inspector-segment-padding: 2px;
+  --node-editor-inspector-segment-gap: 0;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(255, 255, 255, 0.05);
+  --node-editor-inspector-segment-button-background-active: #3e3e42;
+  --node-editor-inspector-segment-button-color: #8e8e8e;
+  --node-editor-inspector-segment-button-color-hover: #b9b9b9;
+  --node-editor-inspector-segment-button-color-active: #ffffff;
+  --node-editor-inspector-segment-button-shadow-active: 0 1px 3px rgba(0, 0, 0, 0.5);
 }
