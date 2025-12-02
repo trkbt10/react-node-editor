@@ -1,0 +1,620 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&family=Roboto+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ========================================
+     B L U E P R I N T   T H E M E
+     Technical Drawing / Architectural Plans
+     ======================================== */
+
+  /* Core spacing scale */
+  --node-editor-space-xs: 2px;
+  --node-editor-space-sm: 4px;
+  --node-editor-space-md: 8px;
+  --node-editor-space-lg: 12px;
+  --node-editor-space-xl: 16px;
+  --node-editor-space-xxl: 24px;
+
+  /* Layout spacing */
+  --node-editor-control-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  /* Inspector spacing system */
+  --node-editor-inspector-space-xs: var(--node-editor-space-xs);
+  --node-editor-inspector-space-sm: var(--node-editor-space-sm);
+  --node-editor-inspector-space-md: var(--node-editor-space-md);
+  --node-editor-inspector-space-lg: var(--node-editor-space-lg);
+  --node-editor-inspector-space-xl: var(--node-editor-space-xl);
+  --node-editor-inspector-space-xxl: var(--node-editor-space-xxl);
+  --node-editor-inspector-content-padding: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-header-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-section-gap: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-field-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
+  --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+  --node-editor-inspector-input-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+
+  /* Inspector typography - technical drawing style */
+  --node-editor-inspector-font-size-title: 0.75rem;
+  --node-editor-inspector-line-height-title: 1.3;
+  --node-editor-inspector-font-size-body: 0.75rem;
+  --node-editor-inspector-line-height-body: 1.4;
+  --node-editor-inspector-font-size-meta: 0.625rem;
+  --node-editor-inspector-line-height-meta: 1.3;
+  --node-editor-inspector-font-weight-medium: 500;
+  --node-editor-inspector-font-size-heading: 0.8125rem;
+  --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
+  --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+  /* Font families - technical/engineering fonts */
+  --node-editor-theme-default-font-family: "Archivo Narrow", "DIN", "Eurostile", Arial Narrow, sans-serif;
+  --node-editor-theme-control-font-family: "Roboto Mono", "Consolas", monospace;
+  --node-editor-theme-label-font-family: "Archivo Narrow", "DIN", "Eurostile", Arial Narrow, sans-serif;
+  --node-editor-system-font: "Archivo Narrow", "DIN", sans-serif;
+  --node-editor-font-mono: "Roboto Mono", "Consolas", "Courier New", monospace;
+  --node-editor-title-font: 700 0.875rem/1.2 var(--node-editor-theme-label-font-family);
+  --node-editor-subtitle-font: 400 0.75rem/1.3 var(--node-editor-theme-label-font-family);
+  --node-editor-caption-font: 400 0.625rem/1.3 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 500 0.6875rem/1.2 var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 0.75rem/1.3 var(--node-editor-font-mono);
+  --node-editor-font-size-lg: 0.875rem;
+  --node-editor-font-size-sm: 0.6875rem;
+  --node-editor-font-size-xs: 0.5625rem;
+
+  /* Canvas grid */
+  --node-editor-grid-color: #7cb9e8;
+  --node-editor-grid-opacity: 0.4;
+
+  /* Shadow system - none, flat technical drawing */
+  --node-editor-shadow-sm: none;
+  --node-editor-shadow-md: none;
+  --node-editor-shadow-lg: none;
+
+  /* Transition system */
+  --node-editor-transition-duration: 0.15s;
+
+  /* Inspector shadows */
+  --node-editor-inspector-shadow: -1px 0 0 #7cb9e8;
+  --node-editor-inspector-header-shadow: 0 1px 0 #7cb9e8;
+
+  /* Tree & List Components */
+  --node-editor-tree-item-height: 22px;
+  --node-editor-tree-indent: 14px;
+
+  /* Control Buttons */
+  --node-editor-control-button-size-sm: 18px;
+  --node-editor-control-button-size: 24px;
+
+  /* Icons */
+  --node-editor-icon-size-sm: 12px;
+  --node-editor-icon-selected-brightness: 1.1;
+
+  /* Text colors - white/light blue on dark blue */
+  --node-editor-text-color: #ffffff;
+  --node-editor-text-secondary: #c5dff8;
+  --node-editor-header-text-color: #ffffff;
+  --node-editor-label-color: #ffffff;
+  --node-editor-secondary-label-color: #a8d0f0;
+  --node-editor-tertiary-label-color: #7cb9e8;
+  --node-editor-quaternary-label-color: #5a9bd4;
+  --node-editor-control-text-color: #ffffff;
+  --node-editor-control-text-color-primary: #003366;
+  --node-editor-control-text-color-secondary: #ffffff;
+  --node-editor-control-hover-text-color-primary: #003366;
+  --node-editor-input-text-color: #ffffff;
+  --node-editor-selected-control-text-color: #003366;
+  --node-editor-selected-menu-item-text-color: #003366;
+
+  /* Accent colors - blueprint palette */
+  --node-editor-accent-color: #ffffff;
+  --node-editor-accent-color-hover: #c5dff8;
+  --node-editor-color-primary: #ffffff;
+  --node-editor-keyboard-focus-indicator-color: #ffcc00;
+  --node-editor-success-color: #7cb9e8;
+  --node-editor-warning-color: #ffcc00;
+  --node-editor-caution-color: #ff6666;
+  --node-editor-caution-hover-background: rgba(255, 102, 102, 0.2);
+  --node-editor-system-orange-color: #ffcc00;
+  --node-editor-system-red-color: #ff6666;
+  --node-editor-connection-color: #ffffff;
+
+  /* Surface colors - blueprint blue */
+  --node-editor-surface-primary: #003366;
+  --node-editor-surface-secondary: #004080;
+  --node-editor-surface-tertiary: #004d99;
+  --node-editor-selected-content-background-color: rgba(255, 255, 255, 0.15);
+  --node-editor-selected-control-color: rgba(255, 255, 255, 0.2);
+  --node-editor-under-page-background-color: #002244;
+  --node-editor-window-background-color: #003366;
+  --node-editor-background-surface: #002244;
+
+  /* Control surfaces */
+  --node-editor-control-background: transparent;
+  --node-editor-control-background-primary: #ffffff;
+  --node-editor-control-background-secondary: rgba(255, 255, 255, 0.1);
+  --node-editor-control-hover-background: rgba(255, 255, 255, 0.15);
+  --node-editor-control-hover-background-primary: #c5dff8;
+  --node-editor-hover-background: rgba(255, 255, 255, 0.1);
+  --node-editor-control-box-shadow-primary: none;
+  --node-editor-control-box-shadow-secondary: none;
+  --node-editor-disabled-control-text-color: #5a7a9a;
+
+  /* Input surfaces */
+  --node-editor-input-background: rgba(0, 20, 50, 0.6);
+  --node-editor-input-border: 1px solid #7cb9e8;
+  --node-editor-input-border-hover: 1px solid #ffffff;
+  --node-editor-input-box-shadow: none;
+  --node-editor-input-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+
+  /* Card & panel styling - technical drawing boxes */
+  --node-editor-card-border-color: #7cb9e8;
+  --node-editor-card-border: 1px solid #7cb9e8;
+  --node-editor-card-border-radius: 0;
+  --node-editor-card-box-shadow: none;
+  --node-editor-card-hover-box-shadow: 0 0 0 1px #ffffff;
+  --node-editor-card-elevated-box-shadow: none;
+  --node-editor-card-focus-box-shadow: 0 0 0 2px #ffcc00;
+  --node-editor-card-disabled-background: rgba(0, 51, 102, 0.5);
+  --node-editor-card-filled-background: rgba(0, 64, 128, 0.8);
+  --node-editor-card-filled-hover-background: rgba(0, 77, 153, 0.8);
+  --node-editor-card-hover-border-color: #ffffff;
+
+  /* Dialogs & overlays */
+  --node-editor-dialog-background: #003366;
+  --node-editor-dialog-box-shadow: 0 0 0 2px #7cb9e8;
+  --node-editor-dialog-level-elevation: 1000;
+
+  /* Scrollbars */
+  --node-editor-scroll-bar-thumb-color: #7cb9e8;
+  --node-editor-active-scroll-bar-thumb-color: #ffffff;
+
+  /* Selected State Colors */
+  --node-editor-selected-secondary-color: #ffcc00;
+  --node-editor-selected-hover-background: rgba(255, 255, 255, 0.15);
+
+  /* Tables & list accents */
+  --node-editor-table-header-background-color: rgba(124, 185, 232, 0.3);
+  --node-editor-table-header-background-color-hover: rgba(124, 185, 232, 0.5);
+  --node-editor-table-header-background-color-active: rgba(255, 255, 255, 0.2);
+
+  /* Node-specific colors */
+  --node-editor-group-node-background: rgba(0, 51, 102, 0.6);
+  --node-editor-group-node-border: #7cb9e8;
+  --node-editor-group-node-active-background: rgba(255, 255, 255, 0.1);
+  --node-editor-group-node-active-color: #ffffff;
+  --node-editor-node-port-input-color: #7cb9e8;
+  --node-editor-node-port-output-color: #ffffff;
+
+  /* System fills */
+  --node-editor-tertiary-system-background: rgba(0, 77, 153, 0.6);
+  --node-editor-tertiary-system-fill-color: rgba(124, 185, 232, 0.3);
+  --node-editor-quaternary-system-fill-color: rgba(124, 185, 232, 0.15);
+
+  /* Border Radii - sharp corners for technical drawings */
+  --node-editor-border-radius-xxs: 0;
+  --node-editor-border-radius-xs: 0;
+  --node-editor-radius-xs: 0;
+  --node-editor-radius-sm: 0;
+  --node-editor-radius-md: 0;
+  --node-editor-control-border-radius: 0;
+  --node-editor-segment-control-border-radius: 0;
+
+  /* Borders */
+  --node-editor-border-width: 1px;
+  --node-editor-border-color: #7cb9e8;
+  --node-editor-divider-color: #5a9bd4;
+  --node-editor-separator-color: #4080bf;
+
+  /* Segment controls */
+  --node-editor-segment-backdrop-filter: none;
+  --node-editor-segment-control-background: transparent;
+  --node-editor-segment-control-background-color: rgba(255, 255, 255, 0.1);
+  --node-editor-segment-control-text-color: #ffffff;
+  --node-editor-segment-control-active-background-color: #ffffff;
+  --node-editor-segment-control-active-text-color: #003366;
+  --node-editor-segment-control-segment-padding: 2px 8px;
+
+  /* Tab Navigation */
+  --node-editor-tab-nav-gap: 0;
+  --node-editor-tab-nav-padding: 0;
+  --node-editor-tab-nav-border-radius: 0;
+  --node-editor-tab-nav-background: transparent;
+  --node-editor-tab-nav-border: 1px solid #7cb9e8;
+  --node-editor-tab-nav-box-shadow: none;
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 24px;
+  --node-editor-tab-button-padding: 4px 12px;
+  --node-editor-tab-button-border-radius: 0;
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-border: 1px solid #7cb9e8;
+  --node-editor-tab-button-color: #7cb9e8;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 500;
+  --node-editor-tab-button-text-transform: uppercase;
+  --node-editor-tab-button-active-background: #ffffff;
+  --node-editor-tab-button-active-color: #003366;
+  --node-editor-tab-button-active-font-weight: 700;
+  --node-editor-tab-button-active-box-shadow: none;
+  --node-editor-tab-button-hover-background: rgba(255, 255, 255, 0.1);
+  --node-editor-tab-button-hover-color: #ffffff;
+
+  /* Connection styling - technical line drawing */
+  --node-editor-connection-base-stroke-width: 1;
+  --node-editor-connection-active-stroke-width: 2;
+  --node-editor-connection-flow-stripe-stroke-width: 1;
+  --node-editor-connection-flow-stripe-active-stroke-width: 2;
+  --node-editor-connection-direction-stroke-width: 1;
+  --node-editor-connection-hover-shadow: none;
+  --node-editor-connection-selected-shadow: drop-shadow(0 0 3px #ffcc00);
+  --node-editor-connection-hover-opacity: 1;
+  --node-editor-connection-dragging-opacity: 0.7;
+  --node-editor-connection-stripe-dash-array: 8 4;
+  --node-editor-connection-stripe-dash-offset-bg: 0;
+  --node-editor-connection-stripe-opacity-accent: 1;
+  --node-editor-connection-stripe-opacity-background: 0.5;
+  --node-editor-connection-flow-animation-duration: 0s;
+  --node-editor-connection-flow-animation-distance: 0;
+  --node-editor-connection-base-transition: stroke 0.15s ease;
+  --node-editor-connection-arrow-transition: fill 0.15s ease;
+
+  /* Connection drag styling */
+  --node-editor-connection-drag-stroke-width-connecting: 1;
+  --node-editor-connection-drag-stroke-width-disconnecting: 1;
+  --node-editor-connection-drag-dash-array-connecting: 4 4;
+  --node-editor-connection-drag-dash-array-disconnecting: 8 4;
+  --node-editor-connection-drag-animation-duration: 0s;
+  --node-editor-connection-drag-animation-distance: 0;
+
+  /* Inspector icon button */
+  --node-editor-inspector-icon-button-size: 20px;
+  --node-editor-inspector-icon-button-size-sm: 16px;
+  --node-editor-inspector-icon-button-icon-size: 12px;
+  --node-editor-inspector-icon-button-icon-size-sm: 10px;
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: rgba(255, 255, 255, 0.15);
+  --node-editor-inspector-icon-button-background-active: rgba(255, 255, 255, 0.2);
+  --node-editor-inspector-icon-button-color: #7cb9e8;
+  --node-editor-inspector-icon-button-color-hover: #ffffff;
+  --node-editor-inspector-icon-button-color-active: #ffffff;
+  --node-editor-inspector-icon-button-color-disabled: #4080bf;
+
+  /* Inspector input label */
+  --node-editor-inspector-input-label-color: #7cb9e8;
+  --node-editor-inspector-input-label-font-size: 0.5625rem;
+  --node-editor-inspector-input-label-font-weight: 500;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 36px;
+
+  /* Inspector segment control */
+  --node-editor-inspector-segment-background: transparent;
+  --node-editor-inspector-segment-border-radius: 0;
+  --node-editor-inspector-segment-padding: 0;
+  --node-editor-inspector-segment-gap: 0;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(255, 255, 255, 0.1);
+  --node-editor-inspector-segment-button-background-active: #ffffff;
+  --node-editor-inspector-segment-button-color: #7cb9e8;
+  --node-editor-inspector-segment-button-color-hover: #ffffff;
+  --node-editor-inspector-segment-button-color-active: #003366;
+  --node-editor-inspector-segment-button-shadow-active: none;
+}
+
+/* ========================================
+   Blueprint Grid Background
+   ======================================== */
+[data-node-editor-theme="blueprint"] [data-testid="node-editor-canvas"],
+[data-node-editor-theme="blueprint"] .node-editor-canvas {
+  background-color: #002244;
+  background-image:
+    /* Major grid lines */
+    linear-gradient(rgba(124, 185, 232, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 185, 232, 0.3) 1px, transparent 1px),
+    /* Minor grid lines */
+    linear-gradient(rgba(124, 185, 232, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 185, 232, 0.1) 1px, transparent 1px);
+  background-size:
+    100px 100px,
+    100px 100px,
+    20px 20px,
+    20px 20px;
+  background-position: -1px -1px;
+}
+
+/* ========================================
+   Title Block Style Header
+   ======================================== */
+[data-node-editor-theme="blueprint"] [data-testid="node-card-header"],
+[data-node-editor-theme="blueprint"] .node-card-header,
+[data-node-editor-theme="blueprint"] [class*="CardHeader"] {
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid #7cb9e8 !important;
+  padding: 4px 8px !important;
+}
+
+[data-node-editor-theme="blueprint"] [data-testid="node-card-header"]::before,
+[data-node-editor-theme="blueprint"] .node-card-header::before,
+[data-node-editor-theme="blueprint"] [class*="CardHeader"]::before {
+  content: "▷ ";
+  color: #7cb9e8;
+  font-size: 0.625rem;
+}
+
+[data-node-editor-theme="blueprint"] [data-testid="node-card-header"] *,
+[data-node-editor-theme="blueprint"] .node-card-header *,
+[data-node-editor-theme="blueprint"] [class*="CardHeader"] * {
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  font-size: 0.6875rem !important;
+}
+
+/* ========================================
+   Node Cards - Technical Drawing Boxes
+   ======================================== */
+[data-node-editor-theme="blueprint"] [class*="NodeCard"],
+[data-node-editor-theme="blueprint"] [class*="Card"] {
+  background: rgba(0, 34, 68, 0.9) !important;
+  border: 1px solid #7cb9e8 !important;
+}
+
+/* Corner marks */
+[data-node-editor-theme="blueprint"] [class*="NodeCard"]::before,
+[data-node-editor-theme="blueprint"] [class*="Card"]::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid #7cb9e8;
+  border-left: 1px solid #7cb9e8;
+  pointer-events: none;
+}
+
+[data-node-editor-theme="blueprint"] [class*="NodeCard"]::after,
+[data-node-editor-theme="blueprint"] [class*="Card"]::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  border-bottom: 1px solid #7cb9e8;
+  border-right: 1px solid #7cb9e8;
+  pointer-events: none;
+}
+
+/* ========================================
+   Inspector Panel - Title Block Style
+   ======================================== */
+[data-node-editor-theme="blueprint"] [class*="InspectorHeader"],
+[data-node-editor-theme="blueprint"] [data-testid="inspector-header"] {
+  background: transparent !important;
+  border-bottom: 2px solid #7cb9e8 !important;
+  padding: 8px !important;
+}
+
+[data-node-editor-theme="blueprint"] [class*="InspectorHeader"]::after,
+[data-node-editor-theme="blueprint"] [data-testid="inspector-header"]::after {
+  content: "PROPERTIES";
+  display: block;
+  font-size: 0.5rem;
+  color: #5a9bd4;
+  letter-spacing: 0.2em;
+  margin-top: 2px;
+}
+
+[data-node-editor-theme="blueprint"] [class*="InspectorHeader"] *,
+[data-node-editor-theme="blueprint"] [data-testid="inspector-header"] * {
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.15em !important;
+}
+
+/* ========================================
+   Buttons - Technical Style
+   ======================================== */
+[data-node-editor-theme="blueprint"] button,
+[data-node-editor-theme="blueprint"] [role="button"] {
+  background: transparent !important;
+  border: 1px solid #7cb9e8 !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.625rem !important;
+}
+
+[data-node-editor-theme="blueprint"] button:hover,
+[data-node-editor-theme="blueprint"] [role="button"]:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: #ffffff !important;
+}
+
+[data-node-editor-theme="blueprint"] button:active,
+[data-node-editor-theme="blueprint"] [role="button"]:active {
+  background: #ffffff !important;
+  color: #003366 !important;
+}
+
+/* Primary buttons */
+[data-node-editor-theme="blueprint"] button[data-variant="primary"],
+[data-node-editor-theme="blueprint"] [role="button"][data-variant="primary"] {
+  background: #ffffff !important;
+  color: #003366 !important;
+  border-color: #ffffff !important;
+}
+
+/* ========================================
+   Scrollbars
+   ======================================== */
+[data-node-editor-theme="blueprint"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  background: #002244;
+}
+
+[data-node-editor-theme="blueprint"] ::-webkit-scrollbar-track {
+  background: rgba(124, 185, 232, 0.1);
+}
+
+[data-node-editor-theme="blueprint"] ::-webkit-scrollbar-thumb {
+  background: #7cb9e8;
+}
+
+[data-node-editor-theme="blueprint"] ::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+
+/* ========================================
+   Input Fields
+   ======================================== */
+[data-node-editor-theme="blueprint"] input,
+[data-node-editor-theme="blueprint"] textarea,
+[data-node-editor-theme="blueprint"] select {
+  background: rgba(0, 20, 50, 0.6) !important;
+  border: 1px solid #7cb9e8 !important;
+  color: #ffffff !important;
+  font-family: "Roboto Mono", monospace !important;
+  font-size: 0.75rem !important;
+}
+
+[data-node-editor-theme="blueprint"] input:focus,
+[data-node-editor-theme="blueprint"] textarea:focus,
+[data-node-editor-theme="blueprint"] select:focus {
+  border-color: #ffffff !important;
+  outline: none !important;
+}
+
+[data-node-editor-theme="blueprint"] input::placeholder,
+[data-node-editor-theme="blueprint"] textarea::placeholder {
+  color: #5a9bd4 !important;
+}
+
+/* ========================================
+   Labels with Dimension Line Style
+   ======================================== */
+[data-node-editor-theme="blueprint"] label {
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  font-size: 0.5625rem !important;
+  color: #7cb9e8 !important;
+}
+
+/* ========================================
+   Checkboxes and Radio Buttons
+   ======================================== */
+[data-node-editor-theme="blueprint"] input[type="checkbox"],
+[data-node-editor-theme="blueprint"] input[type="radio"] {
+  appearance: none;
+  width: 14px !important;
+  height: 14px !important;
+  background: transparent !important;
+  border: 1px solid #7cb9e8 !important;
+}
+
+[data-node-editor-theme="blueprint"] input[type="radio"] {
+  border-radius: 50% !important;
+}
+
+[data-node-editor-theme="blueprint"] input[type="checkbox"]:checked {
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-width='2' d='M2 7l4 4 6-8'/%3E%3C/svg%3E") center/contain no-repeat !important;
+}
+
+[data-node-editor-theme="blueprint"] input[type="radio"]:checked {
+  background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Ccircle cx='7' cy='7' r='4' fill='%23ffffff'/%3E%3C/svg%3E") center/contain no-repeat !important;
+}
+
+/* ========================================
+   Menu Items
+   ======================================== */
+[data-node-editor-theme="blueprint"] [role="menuitem"],
+[data-node-editor-theme="blueprint"] [role="option"] {
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.6875rem !important;
+}
+
+[data-node-editor-theme="blueprint"] [role="menuitem"]:hover,
+[data-node-editor-theme="blueprint"] [role="option"]:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ========================================
+   Tooltips - Annotation Style
+   ======================================== */
+[data-node-editor-theme="blueprint"] [role="tooltip"] {
+  background: #003366 !important;
+  border: 1px solid #7cb9e8 !important;
+  color: #ffffff !important;
+  font-size: 0.625rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+[data-node-editor-theme="blueprint"] [role="tooltip"]::before {
+  content: "NOTE: ";
+  color: #ffcc00 !important;
+}
+
+/* ========================================
+   Selection - Yellow Highlight
+   ======================================== */
+[data-node-editor-theme="blueprint"] [aria-selected="true"],
+[data-node-editor-theme="blueprint"] [data-selected="true"] {
+  background: rgba(255, 204, 0, 0.15) !important;
+  border-color: #ffcc00 !important;
+}
+
+/* ========================================
+   Dialog Windows - Drawing Frame
+   ======================================== */
+[data-node-editor-theme="blueprint"] [role="dialog"] {
+  background: #003366 !important;
+  border: 2px solid #7cb9e8 !important;
+}
+
+[data-node-editor-theme="blueprint"] [role="dialog"]::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(124, 185, 232, 0.5);
+  pointer-events: none;
+}
+
+/* ========================================
+   Revision Cloud Style for Groups
+   ======================================== */
+[data-node-editor-theme="blueprint"] [class*="group-node"],
+[data-node-editor-theme="blueprint"] [class*="GroupNode"] {
+  border: 2px dashed #ffcc00 !important;
+  background: rgba(255, 204, 0, 0.05) !important;
+}
+
+/* ========================================
+   Section Dividers - Fold Lines
+   ======================================== */
+[data-node-editor-theme="blueprint"] hr,
+[data-node-editor-theme="blueprint"] [class*="divider"],
+[data-node-editor-theme="blueprint"] [class*="Divider"] {
+  border: none !important;
+  border-top: 1px dashed #5a9bd4 !important;
+  position: relative;
+}
+
+/* ========================================
+   Scale Reference in Footer
+   ======================================== */
+[data-node-editor-theme="blueprint"] [class*="footer"],
+[data-node-editor-theme="blueprint"] [class*="Footer"] {
+  font-size: 0.5rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.15em !important;
+  color: #5a9bd4 !important;
+}
+
+[data-node-editor-theme="blueprint"] [class*="footer"]::before,
+[data-node-editor-theme="blueprint"] [class*="Footer"]::before {
+  content: "SCALE: NTS • ";
+}

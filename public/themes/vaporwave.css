@@ -1,0 +1,602 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+:root {
+  /* ========================================
+     V A P O R W A V E   T H E M E
+     A E S T H E T I C   2 0 1 X
+     ======================================== */
+
+  /* Core spacing scale */
+  --node-editor-space-xs: 2px;
+  --node-editor-space-sm: 4px;
+  --node-editor-space-md: 8px;
+  --node-editor-space-lg: 12px;
+  --node-editor-space-xl: 18px;
+  --node-editor-space-xxl: 24px;
+
+  /* Layout spacing */
+  --node-editor-control-padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+
+  /* Inspector spacing system */
+  --node-editor-inspector-space-xs: var(--node-editor-space-xs);
+  --node-editor-inspector-space-sm: var(--node-editor-space-sm);
+  --node-editor-inspector-space-md: var(--node-editor-space-md);
+  --node-editor-inspector-space-lg: var(--node-editor-space-lg);
+  --node-editor-inspector-space-xl: var(--node-editor-space-xl);
+  --node-editor-inspector-space-xxl: var(--node-editor-space-xxl);
+  --node-editor-inspector-content-padding: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-header-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-section-gap: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-field-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
+  --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+  --node-editor-inspector-input-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  /* Inspector typography */
+  --node-editor-inspector-font-size-title: 0.75rem;
+  --node-editor-inspector-line-height-title: 1.3;
+  --node-editor-inspector-font-size-body: 0.8125rem;
+  --node-editor-inspector-line-height-body: 1.4;
+  --node-editor-inspector-font-size-meta: 0.6875rem;
+  --node-editor-inspector-line-height-meta: 1.3;
+  --node-editor-inspector-font-weight-medium: 700;
+  --node-editor-inspector-font-size-heading: 0.875rem;
+  --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
+  --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+  /* Font families - Orbitron for that retro-futuristic vibe */
+  --node-editor-theme-default-font-family: "Orbitron", "Eurostile", "Century Gothic", sans-serif;
+  --node-editor-theme-control-font-family: "Orbitron", "Eurostile", "Century Gothic", sans-serif;
+  --node-editor-theme-label-font-family: "Orbitron", "Eurostile", "Century Gothic", sans-serif;
+  --node-editor-system-font: "Orbitron", "Eurostile", "Century Gothic", sans-serif;
+  --node-editor-font-mono: "Orbitron", "VT323", monospace;
+  --node-editor-title-font: 700 0.875rem/1.2 var(--node-editor-theme-label-font-family);
+  --node-editor-subtitle-font: 400 0.8125rem/1.3 var(--node-editor-theme-label-font-family);
+  --node-editor-caption-font: 400 0.75rem/1.3 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 700 0.75rem/1.2 var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 0.8125rem/1.3 var(--node-editor-theme-default-font-family);
+  --node-editor-font-size-lg: 1rem;
+  --node-editor-font-size-sm: 0.75rem;
+  --node-editor-font-size-xs: 0.6875rem;
+
+  /* Canvas grid - neon grid */
+  --node-editor-grid-color: #ff00ff;
+  --node-editor-grid-opacity: 0.15;
+
+  /* Shadow system - neon glow */
+  --node-editor-shadow-sm: 0 0 5px rgba(255, 0, 255, 0.3), 0 0 10px rgba(0, 255, 255, 0.2);
+  --node-editor-shadow-md: 0 0 10px rgba(255, 0, 255, 0.4), 0 0 20px rgba(0, 255, 255, 0.3);
+  --node-editor-shadow-lg: 0 0 20px rgba(255, 0, 255, 0.5), 0 0 40px rgba(0, 255, 255, 0.4);
+
+  /* Transition system */
+  --node-editor-transition-duration: 0.3s;
+
+  /* Inspector shadows */
+  --node-editor-inspector-shadow: -1px 0 0 #ff00ff, 0 0 15px rgba(255, 0, 255, 0.3);
+  --node-editor-inspector-header-shadow: 0 1px 0 #00ffff, 0 0 10px rgba(0, 255, 255, 0.3);
+
+  /* Tree & List Components */
+  --node-editor-tree-item-height: 26px;
+  --node-editor-tree-indent: 16px;
+
+  /* Control Buttons */
+  --node-editor-control-button-size-sm: 20px;
+  --node-editor-control-button-size: 26px;
+
+  /* Icons */
+  --node-editor-icon-size-sm: 14px;
+  --node-editor-icon-selected-brightness: 1.2;
+
+  /* Text colors - neon palette */
+  --node-editor-text-color: #ffffff;
+  --node-editor-text-secondary: #e0e0ff;
+  --node-editor-header-text-color: #00ffff;
+  --node-editor-label-color: #ffffff;
+  --node-editor-secondary-label-color: #ff99ff;
+  --node-editor-tertiary-label-color: #99ffff;
+  --node-editor-quaternary-label-color: #cc99ff;
+  --node-editor-control-text-color: #ffffff;
+  --node-editor-control-text-color-primary: #0a0a1a;
+  --node-editor-control-text-color-secondary: #ffffff;
+  --node-editor-control-hover-text-color-primary: #0a0a1a;
+  --node-editor-input-text-color: #ffffff;
+  --node-editor-selected-control-text-color: #0a0a1a;
+  --node-editor-selected-menu-item-text-color: #0a0a1a;
+
+  /* Accent colors - hot pink & cyan */
+  --node-editor-accent-color: #ff00ff;
+  --node-editor-accent-color-hover: #ff66ff;
+  --node-editor-color-primary: #00ffff;
+  --node-editor-keyboard-focus-indicator-color: #ff00ff;
+  --node-editor-success-color: #00ff99;
+  --node-editor-warning-color: #ffff00;
+  --node-editor-caution-color: #ff3366;
+  --node-editor-caution-hover-background: rgba(255, 51, 102, 0.3);
+  --node-editor-system-orange-color: #ff9900;
+  --node-editor-system-red-color: #ff3366;
+  --node-editor-connection-color: #ff00ff;
+
+  /* Surface colors - deep purple/blue */
+  --node-editor-surface-primary: rgba(20, 10, 40, 0.95);
+  --node-editor-surface-secondary: rgba(30, 15, 60, 0.9);
+  --node-editor-surface-tertiary: rgba(40, 20, 80, 0.85);
+  --node-editor-selected-content-background-color: rgba(255, 0, 255, 0.3);
+  --node-editor-selected-control-color: rgba(0, 255, 255, 0.3);
+  --node-editor-under-page-background-color: #0a0a1a;
+  --node-editor-window-background-color: rgba(20, 10, 40, 0.95);
+  --node-editor-background-surface: #0a0a1a;
+
+  /* Control surfaces */
+  --node-editor-control-background: rgba(40, 20, 80, 0.8);
+  --node-editor-control-background-primary: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%);
+  --node-editor-control-background-secondary: rgba(60, 30, 100, 0.8);
+  --node-editor-control-hover-background: rgba(80, 40, 120, 0.9);
+  --node-editor-control-hover-background-primary: linear-gradient(135deg, #ff66ff 0%, #66ffff 100%);
+  --node-editor-hover-background: rgba(255, 0, 255, 0.2);
+  --node-editor-control-box-shadow-primary: 0 0 10px rgba(255, 0, 255, 0.5), 0 0 20px rgba(0, 255, 255, 0.3);
+  --node-editor-control-box-shadow-secondary: 0 0 5px rgba(255, 0, 255, 0.3);
+  --node-editor-disabled-control-text-color: #666688;
+
+  /* Input surfaces */
+  --node-editor-input-background: rgba(10, 5, 30, 0.9);
+  --node-editor-input-border: 1px solid #ff00ff;
+  --node-editor-input-border-hover: 1px solid #00ffff;
+  --node-editor-input-box-shadow: 0 0 5px rgba(255, 0, 255, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.5);
+  --node-editor-input-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  /* Card & panel styling */
+  --node-editor-card-border-color: #ff00ff;
+  --node-editor-card-border: 1px solid #ff00ff;
+  --node-editor-card-border-radius: 4px;
+  --node-editor-card-box-shadow: 0 0 15px rgba(255, 0, 255, 0.4), 0 0 30px rgba(0, 255, 255, 0.2);
+  --node-editor-card-hover-box-shadow: 0 0 20px rgba(255, 0, 255, 0.6), 0 0 40px rgba(0, 255, 255, 0.4);
+  --node-editor-card-elevated-box-shadow: 0 0 30px rgba(255, 0, 255, 0.7), 0 0 60px rgba(0, 255, 255, 0.5);
+  --node-editor-card-focus-box-shadow: 0 0 0 2px #00ffff, 0 0 20px rgba(0, 255, 255, 0.5);
+  --node-editor-card-disabled-background: rgba(30, 15, 45, 0.5);
+  --node-editor-card-filled-background: rgba(40, 20, 60, 0.9);
+  --node-editor-card-filled-hover-background: rgba(60, 30, 90, 0.9);
+  --node-editor-card-hover-border-color: #00ffff;
+
+  /* Dialogs & overlays */
+  --node-editor-dialog-background: rgba(20, 10, 40, 0.98);
+  --node-editor-dialog-box-shadow: 0 0 40px rgba(255, 0, 255, 0.6), 0 0 80px rgba(0, 255, 255, 0.4);
+  --node-editor-dialog-level-elevation: 1000;
+
+  /* Scrollbars */
+  --node-editor-scroll-bar-thumb-color: #ff00ff;
+  --node-editor-active-scroll-bar-thumb-color: #00ffff;
+
+  /* Selected State Colors */
+  --node-editor-selected-secondary-color: #00ffff;
+  --node-editor-selected-hover-background: rgba(0, 255, 255, 0.2);
+
+  /* Tables & list accents */
+  --node-editor-table-header-background-color: rgba(255, 0, 255, 0.3);
+  --node-editor-table-header-background-color-hover: rgba(255, 0, 255, 0.5);
+  --node-editor-table-header-background-color-active: rgba(0, 255, 255, 0.5);
+
+  /* Node-specific colors */
+  --node-editor-group-node-background: rgba(40, 20, 80, 0.6);
+  --node-editor-group-node-border: #ff00ff;
+  --node-editor-group-node-active-background: rgba(255, 0, 255, 0.3);
+  --node-editor-group-node-active-color: #00ffff;
+  --node-editor-node-port-input-color: #00ff99;
+  --node-editor-node-port-output-color: #ff3366;
+
+  /* System fills */
+  --node-editor-tertiary-system-background: rgba(60, 30, 100, 0.8);
+  --node-editor-tertiary-system-fill-color: rgba(80, 40, 120, 0.8);
+  --node-editor-quaternary-system-fill-color: rgba(100, 50, 150, 0.8);
+
+  /* Border Radii */
+  --node-editor-border-radius-xxs: 2px;
+  --node-editor-border-radius-xs: 3px;
+  --node-editor-radius-xs: 3px;
+  --node-editor-radius-sm: 4px;
+  --node-editor-radius-md: 6px;
+  --node-editor-control-border-radius: 4px;
+  --node-editor-segment-control-border-radius: 4px;
+
+  /* Borders */
+  --node-editor-border-width: 1px;
+  --node-editor-border-color: #ff00ff;
+  --node-editor-divider-color: rgba(255, 0, 255, 0.5);
+  --node-editor-separator-color: rgba(0, 255, 255, 0.3);
+
+  /* Segment controls */
+  --node-editor-segment-backdrop-filter: blur(10px);
+  --node-editor-segment-control-background: rgba(40, 20, 80, 0.8);
+  --node-editor-segment-control-background-color: rgba(60, 30, 100, 0.8);
+  --node-editor-segment-control-text-color: #ffffff;
+  --node-editor-segment-control-active-background-color: linear-gradient(135deg, #ff00ff, #00ffff);
+  --node-editor-segment-control-active-text-color: #0a0a1a;
+  --node-editor-segment-control-segment-padding: 4px 10px;
+
+  /* Tab Navigation */
+  --node-editor-tab-nav-gap: 2px;
+  --node-editor-tab-nav-padding: 2px;
+  --node-editor-tab-nav-border-radius: 4px;
+  --node-editor-tab-nav-background: rgba(20, 10, 40, 0.8);
+  --node-editor-tab-nav-border: 1px solid #ff00ff;
+  --node-editor-tab-nav-box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 26px;
+  --node-editor-tab-button-padding: 4px 12px;
+  --node-editor-tab-button-border-radius: 3px;
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-border: none;
+  --node-editor-tab-button-color: #ff99ff;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 400;
+  --node-editor-tab-button-text-transform: uppercase;
+  --node-editor-tab-button-active-background: linear-gradient(135deg, #ff00ff, #00ffff);
+  --node-editor-tab-button-active-color: #0a0a1a;
+  --node-editor-tab-button-active-font-weight: 700;
+  --node-editor-tab-button-active-box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+  --node-editor-tab-button-hover-background: rgba(255, 0, 255, 0.2);
+  --node-editor-tab-button-hover-color: #00ffff;
+
+  /* Connection styling - neon glow */
+  --node-editor-connection-base-stroke-width: 2;
+  --node-editor-connection-active-stroke-width: 3;
+  --node-editor-connection-flow-stripe-stroke-width: 2;
+  --node-editor-connection-flow-stripe-active-stroke-width: 3;
+  --node-editor-connection-direction-stroke-width: 2;
+  --node-editor-connection-hover-shadow: drop-shadow(0 0 8px rgba(255, 0, 255, 0.8));
+  --node-editor-connection-selected-shadow: drop-shadow(0 0 12px rgba(0, 255, 255, 0.9));
+  --node-editor-connection-hover-opacity: 1;
+  --node-editor-connection-dragging-opacity: 0.8;
+  --node-editor-connection-stripe-dash-array: 8 8;
+  --node-editor-connection-stripe-dash-offset-bg: 0;
+  --node-editor-connection-stripe-opacity-accent: 1;
+  --node-editor-connection-stripe-opacity-background: 0.5;
+  --node-editor-connection-flow-animation-duration: 1s;
+  --node-editor-connection-flow-animation-distance: -16;
+  --node-editor-connection-base-transition: all 0.3s ease;
+  --node-editor-connection-arrow-transition: all 0.3s ease;
+
+  /* Connection drag styling */
+  --node-editor-connection-drag-stroke-width-connecting: 2;
+  --node-editor-connection-drag-stroke-width-disconnecting: 3;
+  --node-editor-connection-drag-dash-array-connecting: 6 6;
+  --node-editor-connection-drag-dash-array-disconnecting: 8 4;
+  --node-editor-connection-drag-animation-duration: 0.5s;
+  --node-editor-connection-drag-animation-distance: -12;
+
+  /* Inspector icon button */
+  --node-editor-inspector-icon-button-size: 22px;
+  --node-editor-inspector-icon-button-size-sm: 18px;
+  --node-editor-inspector-icon-button-icon-size: 14px;
+  --node-editor-inspector-icon-button-icon-size-sm: 12px;
+  --node-editor-inspector-icon-button-background: rgba(40, 20, 80, 0.8);
+  --node-editor-inspector-icon-button-background-hover: rgba(255, 0, 255, 0.3);
+  --node-editor-inspector-icon-button-background-active: rgba(0, 255, 255, 0.3);
+  --node-editor-inspector-icon-button-color: #ff99ff;
+  --node-editor-inspector-icon-button-color-hover: #00ffff;
+  --node-editor-inspector-icon-button-color-active: #ffffff;
+  --node-editor-inspector-icon-button-color-disabled: #444466;
+
+  /* Inspector input label */
+  --node-editor-inspector-input-label-color: #ff99ff;
+  --node-editor-inspector-input-label-font-size: 0.6875rem;
+  --node-editor-inspector-input-label-font-weight: 400;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 40px;
+
+  /* Inspector segment control */
+  --node-editor-inspector-segment-background: rgba(40, 20, 80, 0.8);
+  --node-editor-inspector-segment-border-radius: 4px;
+  --node-editor-inspector-segment-padding: 2px;
+  --node-editor-inspector-segment-gap: 2px;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(255, 0, 255, 0.2);
+  --node-editor-inspector-segment-button-background-active: linear-gradient(135deg, #ff00ff, #00ffff);
+  --node-editor-inspector-segment-button-color: #ff99ff;
+  --node-editor-inspector-segment-button-color-hover: #00ffff;
+  --node-editor-inspector-segment-button-color-active: #0a0a1a;
+  --node-editor-inspector-segment-button-shadow-active: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+/* ========================================
+   Synthwave Sunset Grid Background
+   ======================================== */
+[data-node-editor-theme="vaporwave"] [data-testid="node-editor-canvas"],
+[data-node-editor-theme="vaporwave"] .node-editor-canvas {
+  background:
+    linear-gradient(180deg,
+      #1a0033 0%,
+      #330066 30%,
+      #660066 50%,
+      #ff6600 80%,
+      #ff9900 100%
+    );
+  background-attachment: fixed;
+}
+
+/* Perspective Grid Overlay */
+[data-node-editor-theme="vaporwave"] [data-testid="node-editor-canvas"]::before,
+[data-node-editor-theme="vaporwave"] .node-editor-canvas::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 49px,
+      rgba(255, 0, 255, 0.3) 49px,
+      rgba(255, 0, 255, 0.3) 50px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 49px,
+      rgba(0, 255, 255, 0.2) 49px,
+      rgba(0, 255, 255, 0.2) 50px
+    );
+  pointer-events: none;
+  mask-image: linear-gradient(180deg, transparent 0%, black 40%, black 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, black 40%, black 100%);
+}
+
+/* ========================================
+   Scanline Effect
+   ======================================== */
+[data-node-editor-theme="vaporwave"]::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.1) 0px,
+    rgba(0, 0, 0, 0.1) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ========================================
+   Neon Glow Headers
+   ======================================== */
+[data-node-editor-theme="vaporwave"] [data-testid="node-card-header"],
+[data-node-editor-theme="vaporwave"] .node-card-header,
+[data-node-editor-theme="vaporwave"] [class*="CardHeader"] {
+  background: linear-gradient(90deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.3)) !important;
+  border-bottom: 1px solid #00ffff !important;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4), inset 0 0 20px rgba(255, 0, 255, 0.2) !important;
+}
+
+[data-node-editor-theme="vaporwave"] [data-testid="node-card-header"] *,
+[data-node-editor-theme="vaporwave"] .node-card-header *,
+[data-node-editor-theme="vaporwave"] [class*="CardHeader"] * {
+  color: #00ffff !important;
+  text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff !important;
+}
+
+/* ========================================
+   Inspector Panel
+   ======================================== */
+[data-node-editor-theme="vaporwave"] [class*="InspectorHeader"],
+[data-node-editor-theme="vaporwave"] [data-testid="inspector-header"] {
+  background: linear-gradient(90deg, rgba(255, 0, 255, 0.4), rgba(0, 255, 255, 0.2)) !important;
+  border-bottom: 1px solid #ff00ff !important;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.5) !important;
+}
+
+[data-node-editor-theme="vaporwave"] [class*="InspectorHeader"] *,
+[data-node-editor-theme="vaporwave"] [data-testid="inspector-header"] * {
+  color: #ff00ff !important;
+  text-shadow: 0 0 8px #ff00ff !important;
+}
+
+/* ========================================
+   Neon Buttons
+   ======================================== */
+[data-node-editor-theme="vaporwave"] button,
+[data-node-editor-theme="vaporwave"] [role="button"] {
+  background: rgba(40, 20, 80, 0.8) !important;
+  border: 1px solid #ff00ff !important;
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.4), inset 0 0 10px rgba(255, 0, 255, 0.1) !important;
+  color: #ff99ff !important;
+  text-shadow: 0 0 5px #ff00ff !important;
+  transition: all 0.3s ease !important;
+}
+
+[data-node-editor-theme="vaporwave"] button:hover,
+[data-node-editor-theme="vaporwave"] [role="button"]:hover {
+  background: rgba(60, 30, 100, 0.9) !important;
+  border-color: #00ffff !important;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.6), inset 0 0 15px rgba(0, 255, 255, 0.2) !important;
+  color: #00ffff !important;
+  text-shadow: 0 0 10px #00ffff !important;
+}
+
+[data-node-editor-theme="vaporwave"] button:active,
+[data-node-editor-theme="vaporwave"] [role="button"]:active {
+  background: linear-gradient(135deg, #ff00ff, #00ffff) !important;
+  color: #0a0a1a !important;
+  text-shadow: none !important;
+}
+
+/* Primary buttons - full neon gradient */
+[data-node-editor-theme="vaporwave"] button[data-variant="primary"],
+[data-node-editor-theme="vaporwave"] [role="button"][data-variant="primary"] {
+  background: linear-gradient(135deg, #ff00ff, #00ffff) !important;
+  border: none !important;
+  color: #0a0a1a !important;
+  text-shadow: none !important;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.6), 0 0 40px rgba(0, 255, 255, 0.4) !important;
+}
+
+/* ========================================
+   Neon Scrollbars
+   ======================================== */
+[data-node-editor-theme="vaporwave"] ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: rgba(10, 10, 26, 0.8);
+}
+
+[data-node-editor-theme="vaporwave"] ::-webkit-scrollbar-track {
+  background: rgba(20, 10, 40, 0.5);
+  border: 1px solid rgba(255, 0, 255, 0.3);
+}
+
+[data-node-editor-theme="vaporwave"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff00ff, #00ffff);
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+[data-node-editor-theme="vaporwave"] ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff66ff, #66ffff);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+}
+
+/* ========================================
+   Input Fields
+   ======================================== */
+[data-node-editor-theme="vaporwave"] input,
+[data-node-editor-theme="vaporwave"] textarea,
+[data-node-editor-theme="vaporwave"] select {
+  background: rgba(10, 5, 30, 0.9) !important;
+  border: 1px solid #ff00ff !important;
+  box-shadow: 0 0 8px rgba(255, 0, 255, 0.3), inset 0 0 10px rgba(0, 0, 0, 0.5) !important;
+  color: #ffffff !important;
+  caret-color: #00ffff !important;
+}
+
+[data-node-editor-theme="vaporwave"] input:focus,
+[data-node-editor-theme="vaporwave"] textarea:focus,
+[data-node-editor-theme="vaporwave"] select:focus {
+  border-color: #00ffff !important;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(0, 255, 255, 0.1) !important;
+  outline: none !important;
+}
+
+[data-node-editor-theme="vaporwave"] input::placeholder,
+[data-node-editor-theme="vaporwave"] textarea::placeholder {
+  color: rgba(255, 153, 255, 0.5) !important;
+}
+
+/* ========================================
+   Menu Items
+   ======================================== */
+[data-node-editor-theme="vaporwave"] [role="menuitem"],
+[data-node-editor-theme="vaporwave"] [role="option"] {
+  color: #ff99ff !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-node-editor-theme="vaporwave"] [role="menuitem"]:hover,
+[data-node-editor-theme="vaporwave"] [role="option"]:hover {
+  background: linear-gradient(90deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.2)) !important;
+  color: #00ffff !important;
+  text-shadow: 0 0 10px #00ffff !important;
+}
+
+/* ========================================
+   Tooltips
+   ======================================== */
+[data-node-editor-theme="vaporwave"] [role="tooltip"] {
+  background: rgba(20, 10, 40, 0.95) !important;
+  border: 1px solid #ff00ff !important;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.5), 0 0 40px rgba(0, 255, 255, 0.3) !important;
+  color: #00ffff !important;
+}
+
+/* ========================================
+   Selection Glow
+   ======================================== */
+[data-node-editor-theme="vaporwave"] [aria-selected="true"],
+[data-node-editor-theme="vaporwave"] [data-selected="true"] {
+  background: linear-gradient(90deg, rgba(255, 0, 255, 0.3), rgba(0, 255, 255, 0.2)) !important;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5), inset 0 0 10px rgba(255, 0, 255, 0.2) !important;
+}
+
+/* ========================================
+   Checkboxes and Radio Buttons
+   ======================================== */
+[data-node-editor-theme="vaporwave"] input[type="checkbox"],
+[data-node-editor-theme="vaporwave"] input[type="radio"] {
+  appearance: none;
+  width: 16px !important;
+  height: 16px !important;
+  background: rgba(10, 5, 30, 0.9) !important;
+  border: 1px solid #ff00ff !important;
+  box-shadow: 0 0 5px rgba(255, 0, 255, 0.3) !important;
+}
+
+[data-node-editor-theme="vaporwave"] input[type="radio"] {
+  border-radius: 50% !important;
+}
+
+[data-node-editor-theme="vaporwave"] input[type="checkbox"]:checked,
+[data-node-editor-theme="vaporwave"] input[type="radio"]:checked {
+  background: linear-gradient(135deg, #ff00ff, #00ffff) !important;
+  border-color: #00ffff !important;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.6) !important;
+}
+
+/* ========================================
+   Dialog Windows
+   ======================================== */
+[data-node-editor-theme="vaporwave"] [role="dialog"] {
+  background: rgba(20, 10, 40, 0.98) !important;
+  border: 1px solid #ff00ff !important;
+  box-shadow: 0 0 40px rgba(255, 0, 255, 0.6), 0 0 80px rgba(0, 255, 255, 0.4), inset 0 0 30px rgba(255, 0, 255, 0.1) !important;
+}
+
+/* ========================================
+   Glitch Text Effect on Hover
+   ======================================== */
+@keyframes glitch {
+  0%, 100% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff; }
+  25% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; }
+  50% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
+  75% { text-shadow: 0 -2px #ff00ff, 0 2px #00ffff; }
+}
+
+[data-node-editor-theme="vaporwave"] [class*="title"]:hover,
+[data-node-editor-theme="vaporwave"] h1:hover,
+[data-node-editor-theme="vaporwave"] h2:hover,
+[data-node-editor-theme="vaporwave"] h3:hover {
+  animation: glitch 0.3s ease-in-out;
+}
+
+/* ========================================
+   Neon Pulse Animation
+   ======================================== */
+@keyframes neon-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 255, 0.4), 0 0 20px rgba(0, 255, 255, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(255, 0, 255, 0.6), 0 0 40px rgba(0, 255, 255, 0.4); }
+}
+
+[data-node-editor-theme="vaporwave"] [class*="NodeCard"],
+[data-node-editor-theme="vaporwave"] [class*="Card"] {
+  animation: neon-pulse 3s ease-in-out infinite;
+}
+
+/* ========================================
+   Chrome/Rainbow Text for Headers
+   ======================================== */
+[data-node-editor-theme="vaporwave"] [class*="title"],
+[data-node-editor-theme="vaporwave"] h1,
+[data-node-editor-theme="vaporwave"] h2 {
+  background: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: chrome-shift 3s linear infinite;
+}
+
+@keyframes chrome-shift {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}

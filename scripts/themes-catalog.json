@@ -32,6 +32,12 @@
       "cssFile": "apple.css"
     },
     {
+      "id": "blueprint",
+      "label": "Blueprint",
+      "description": "Technical drawing style with grid lines, white-on-blue, and architectural aesthetics.",
+      "cssFile": "blueprint.css"
+    },
+    {
       "id": "brutalist",
       "label": "Brutalist",
       "description": "Raw, bold aesthetic with hard shadows and high contrast.",
@@ -74,6 +80,12 @@
       "cssFile": "macintosh.css"
     },
     {
+      "id": "meta",
+      "label": "Meta",
+      "description": "Facebook/Meta design with clean blues, rounded corners, and friendly UI.",
+      "cssFile": "meta.css"
+    },
+    {
       "id": "minecraft",
       "label": "Minecraft",
       "description": "Pixel-crafted UI with earthy neutrals and vibrant emerald highlight.",
@@ -110,6 +122,12 @@
       "cssFile": "unity.css"
     },
     {
+      "id": "vaporwave",
+      "label": "V A P O R W A V E",
+      "description": "A E S T H E T I C neon pink & cyan with synthwave sunset grid and glitch effects.",
+      "cssFile": "vaporwave.css"
+    },
+    {
       "id": "vscode",
       "label": "VS Code",
       "description": "Dark code editor theme with precise geometry and VS Code's signature blue.",
@@ -126,6 +144,12 @@
       "label": "Windows 98",
       "description": "Pixel-perfect nostalgia with flat widgets and crisp blue chrome.",
       "cssFile": "window98.css"
+    },
+    {
+      "id": "windows31",
+      "label": "Windows 3.1",
+      "description": "Classic 3D beveled UI with navy title bars and Program Manager aesthetics.",
+      "cssFile": "windows31.css"
     },
     {
       "id": "windows11",

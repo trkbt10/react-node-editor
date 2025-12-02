@@ -1,0 +1,600 @@
+:root {
+  /* ========================================
+     Meta Theme
+     Facebook / Meta design system
+     Clean, friendly, blue-focused
+     ======================================== */
+
+  /* Core spacing scale */
+  --node-editor-space-xs: 4px;
+  --node-editor-space-sm: 8px;
+  --node-editor-space-md: 12px;
+  --node-editor-space-lg: 16px;
+  --node-editor-space-xl: 20px;
+  --node-editor-space-xxl: 24px;
+
+  /* Layout spacing */
+  --node-editor-control-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  /* Inspector spacing system */
+  --node-editor-inspector-space-xs: var(--node-editor-space-xs);
+  --node-editor-inspector-space-sm: var(--node-editor-space-sm);
+  --node-editor-inspector-space-md: var(--node-editor-space-md);
+  --node-editor-inspector-space-lg: var(--node-editor-space-lg);
+  --node-editor-inspector-space-xl: var(--node-editor-space-xl);
+  --node-editor-inspector-space-xxl: var(--node-editor-space-xxl);
+  --node-editor-inspector-content-padding: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-header-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-section-gap: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-field-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
+  --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+  --node-editor-inspector-input-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  /* Inspector typography */
+  --node-editor-inspector-font-size-title: 0.8125rem;
+  --node-editor-inspector-line-height-title: 1.3;
+  --node-editor-inspector-font-size-body: 0.875rem;
+  --node-editor-inspector-line-height-body: 1.4;
+  --node-editor-inspector-font-size-meta: 0.75rem;
+  --node-editor-inspector-line-height-meta: 1.3;
+  --node-editor-inspector-font-weight-medium: 600;
+  --node-editor-inspector-font-size-heading: 0.9375rem;
+  --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
+  --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+  /* Font families - System UI like Facebook */
+  --node-editor-theme-default-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --node-editor-theme-control-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --node-editor-theme-label-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --node-editor-system-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --node-editor-font-mono: "SF Mono", "Roboto Mono", Menlo, monospace;
+  --node-editor-title-font: 700 0.9375rem/1.2 var(--node-editor-theme-label-font-family);
+  --node-editor-subtitle-font: 600 0.875rem/1.3 var(--node-editor-theme-label-font-family);
+  --node-editor-caption-font: 400 0.8125rem/1.3 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 600 0.875rem/1.2 var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 0.875rem/1.4 var(--node-editor-theme-default-font-family);
+  --node-editor-font-size-lg: 1rem;
+  --node-editor-font-size-sm: 0.8125rem;
+  --node-editor-font-size-xs: 0.75rem;
+
+  /* Canvas grid */
+  --node-editor-grid-color: #0866ff;
+  --node-editor-grid-opacity: 0.06;
+
+  /* Shadow system - soft, friendly shadows */
+  --node-editor-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --node-editor-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --node-editor-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  /* Transition system */
+  --node-editor-transition-duration: 0.2s;
+
+  /* Inspector shadows */
+  --node-editor-inspector-shadow: -1px 0 0 #dddfe2, 0 0 8px rgba(0, 0, 0, 0.05);
+  --node-editor-inspector-header-shadow: 0 1px 0 #dddfe2;
+
+  /* Tree & List Components */
+  --node-editor-tree-item-height: 36px;
+  --node-editor-tree-indent: 16px;
+
+  /* Control Buttons */
+  --node-editor-control-button-size-sm: 28px;
+  --node-editor-control-button-size: 36px;
+
+  /* Icons */
+  --node-editor-icon-size-sm: 16px;
+  --node-editor-icon-selected-brightness: 1;
+
+  /* Text colors */
+  --node-editor-text-color: #050505;
+  --node-editor-text-secondary: #65676b;
+  --node-editor-header-text-color: #050505;
+  --node-editor-label-color: #050505;
+  --node-editor-secondary-label-color: #65676b;
+  --node-editor-tertiary-label-color: #8a8d91;
+  --node-editor-quaternary-label-color: #b0b3b8;
+  --node-editor-control-text-color: #050505;
+  --node-editor-control-text-color-primary: #ffffff;
+  --node-editor-control-text-color-secondary: #050505;
+  --node-editor-control-hover-text-color-primary: #ffffff;
+  --node-editor-input-text-color: #050505;
+  --node-editor-selected-control-text-color: #ffffff;
+  --node-editor-selected-menu-item-text-color: #050505;
+
+  /* Accent colors - Meta Blue */
+  --node-editor-accent-color: #0866ff;
+  --node-editor-accent-color-hover: #0055d4;
+  --node-editor-color-primary: #0866ff;
+  --node-editor-keyboard-focus-indicator-color: #0866ff;
+  --node-editor-success-color: #31a24c;
+  --node-editor-warning-color: #f7b928;
+  --node-editor-caution-color: #f02849;
+  --node-editor-caution-hover-background: rgba(240, 40, 73, 0.1);
+  --node-editor-system-orange-color: #f7b928;
+  --node-editor-system-red-color: #f02849;
+  --node-editor-connection-color: #0866ff;
+
+  /* Surface colors - clean whites and grays */
+  --node-editor-surface-primary: #ffffff;
+  --node-editor-surface-secondary: #f0f2f5;
+  --node-editor-surface-tertiary: #e4e6eb;
+  --node-editor-selected-content-background-color: #e7f3ff;
+  --node-editor-selected-control-color: #e7f3ff;
+  --node-editor-under-page-background-color: #f0f2f5;
+  --node-editor-window-background-color: #ffffff;
+  --node-editor-background-surface: #f0f2f5;
+
+  /* Control surfaces */
+  --node-editor-control-background: #e4e6eb;
+  --node-editor-control-background-primary: #0866ff;
+  --node-editor-control-background-secondary: #e4e6eb;
+  --node-editor-control-hover-background: #d8dadf;
+  --node-editor-control-hover-background-primary: #0055d4;
+  --node-editor-hover-background: rgba(0, 0, 0, 0.05);
+  --node-editor-control-box-shadow-primary: none;
+  --node-editor-control-box-shadow-secondary: none;
+  --node-editor-disabled-control-text-color: #bcc0c4;
+
+  /* Input surfaces */
+  --node-editor-input-background: #f0f2f5;
+  --node-editor-input-border: none;
+  --node-editor-input-border-hover: none;
+  --node-editor-input-box-shadow: none;
+  --node-editor-input-padding: 8px 12px;
+
+  /* Card & panel styling */
+  --node-editor-card-border-color: #dddfe2;
+  --node-editor-card-border: 1px solid #dddfe2;
+  --node-editor-card-border-radius: 8px;
+  --node-editor-card-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --node-editor-card-hover-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --node-editor-card-elevated-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  --node-editor-card-focus-box-shadow: 0 0 0 2px #0866ff;
+  --node-editor-card-disabled-background: #f5f6f7;
+  --node-editor-card-filled-background: #ffffff;
+  --node-editor-card-filled-hover-background: #ffffff;
+  --node-editor-card-hover-border-color: #c4c6c9;
+
+  /* Dialogs & overlays */
+  --node-editor-dialog-background: #ffffff;
+  --node-editor-dialog-box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+  --node-editor-dialog-level-elevation: 1000;
+
+  /* Scrollbars */
+  --node-editor-scroll-bar-thumb-color: #bcc0c4;
+  --node-editor-active-scroll-bar-thumb-color: #8a8d91;
+
+  /* Selected State Colors */
+  --node-editor-selected-secondary-color: #0866ff;
+  --node-editor-selected-hover-background: #e7f3ff;
+
+  /* Tables & list accents */
+  --node-editor-table-header-background-color: #f0f2f5;
+  --node-editor-table-header-background-color-hover: #e4e6eb;
+  --node-editor-table-header-background-color-active: #e7f3ff;
+
+  /* Node-specific colors */
+  --node-editor-group-node-background: rgba(8, 102, 255, 0.05);
+  --node-editor-group-node-border: #0866ff;
+  --node-editor-group-node-active-background: #e7f3ff;
+  --node-editor-group-node-active-color: #0866ff;
+  --node-editor-node-port-input-color: #31a24c;
+  --node-editor-node-port-output-color: #0866ff;
+
+  /* System fills */
+  --node-editor-tertiary-system-background: #e4e6eb;
+  --node-editor-tertiary-system-fill-color: #f0f2f5;
+  --node-editor-quaternary-system-fill-color: #f5f6f7;
+
+  /* Border Radii - rounded, friendly */
+  --node-editor-border-radius-xxs: 4px;
+  --node-editor-border-radius-xs: 6px;
+  --node-editor-radius-xs: 6px;
+  --node-editor-radius-sm: 8px;
+  --node-editor-radius-md: 10px;
+  --node-editor-control-border-radius: 6px;
+  --node-editor-segment-control-border-radius: 6px;
+
+  /* Borders */
+  --node-editor-border-width: 1px;
+  --node-editor-border-color: #dddfe2;
+  --node-editor-divider-color: #dddfe2;
+  --node-editor-separator-color: #e4e6eb;
+
+  /* Segment controls */
+  --node-editor-segment-backdrop-filter: none;
+  --node-editor-segment-control-background: #e4e6eb;
+  --node-editor-segment-control-background-color: #f0f2f5;
+  --node-editor-segment-control-text-color: #050505;
+  --node-editor-segment-control-active-background-color: #ffffff;
+  --node-editor-segment-control-active-text-color: #0866ff;
+  --node-editor-segment-control-segment-padding: 6px 12px;
+
+  /* Tab Navigation */
+  --node-editor-tab-nav-gap: 0;
+  --node-editor-tab-nav-padding: 4px;
+  --node-editor-tab-nav-border-radius: 8px;
+  --node-editor-tab-nav-background: #e4e6eb;
+  --node-editor-tab-nav-border: none;
+  --node-editor-tab-nav-box-shadow: none;
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 32px;
+  --node-editor-tab-button-padding: 6px 16px;
+  --node-editor-tab-button-border-radius: 6px;
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-border: none;
+  --node-editor-tab-button-color: #65676b;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 600;
+  --node-editor-tab-button-text-transform: none;
+  --node-editor-tab-button-active-background: #ffffff;
+  --node-editor-tab-button-active-color: #0866ff;
+  --node-editor-tab-button-active-font-weight: 600;
+  --node-editor-tab-button-active-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --node-editor-tab-button-hover-background: rgba(0, 0, 0, 0.05);
+  --node-editor-tab-button-hover-color: #050505;
+
+  /* Connection styling */
+  --node-editor-connection-base-stroke-width: 2;
+  --node-editor-connection-active-stroke-width: 3;
+  --node-editor-connection-flow-stripe-stroke-width: 2;
+  --node-editor-connection-flow-stripe-active-stroke-width: 3;
+  --node-editor-connection-direction-stroke-width: 2;
+  --node-editor-connection-hover-shadow: drop-shadow(0 2px 4px rgba(8, 102, 255, 0.3));
+  --node-editor-connection-selected-shadow: drop-shadow(0 2px 6px rgba(8, 102, 255, 0.4));
+  --node-editor-connection-hover-opacity: 1;
+  --node-editor-connection-dragging-opacity: 0.7;
+  --node-editor-connection-stripe-dash-array: 0;
+  --node-editor-connection-stripe-dash-offset-bg: 0;
+  --node-editor-connection-stripe-opacity-accent: 1;
+  --node-editor-connection-stripe-opacity-background: 0.3;
+  --node-editor-connection-flow-animation-duration: 0s;
+  --node-editor-connection-flow-animation-distance: 0;
+  --node-editor-connection-base-transition: all 0.2s ease;
+  --node-editor-connection-arrow-transition: all 0.2s ease;
+
+  /* Connection drag styling */
+  --node-editor-connection-drag-stroke-width-connecting: 2;
+  --node-editor-connection-drag-stroke-width-disconnecting: 3;
+  --node-editor-connection-drag-dash-array-connecting: 6 6;
+  --node-editor-connection-drag-dash-array-disconnecting: 8 4;
+  --node-editor-connection-drag-animation-duration: 0.4s;
+  --node-editor-connection-drag-animation-distance: -12;
+
+  /* Inspector icon button */
+  --node-editor-inspector-icon-button-size: 32px;
+  --node-editor-inspector-icon-button-size-sm: 28px;
+  --node-editor-inspector-icon-button-icon-size: 18px;
+  --node-editor-inspector-icon-button-icon-size-sm: 16px;
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: rgba(0, 0, 0, 0.05);
+  --node-editor-inspector-icon-button-background-active: #e7f3ff;
+  --node-editor-inspector-icon-button-color: #65676b;
+  --node-editor-inspector-icon-button-color-hover: #050505;
+  --node-editor-inspector-icon-button-color-active: #0866ff;
+  --node-editor-inspector-icon-button-color-disabled: #bcc0c4;
+
+  /* Inspector input label */
+  --node-editor-inspector-input-label-color: #65676b;
+  --node-editor-inspector-input-label-font-size: 0.75rem;
+  --node-editor-inspector-input-label-font-weight: 500;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 40px;
+
+  /* Inspector segment control */
+  --node-editor-inspector-segment-background: #e4e6eb;
+  --node-editor-inspector-segment-border-radius: 6px;
+  --node-editor-inspector-segment-padding: 4px;
+  --node-editor-inspector-segment-gap: 0;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(0, 0, 0, 0.05);
+  --node-editor-inspector-segment-button-background-active: #ffffff;
+  --node-editor-inspector-segment-button-color: #65676b;
+  --node-editor-inspector-segment-button-color-hover: #050505;
+  --node-editor-inspector-segment-button-color-active: #0866ff;
+  --node-editor-inspector-segment-button-shadow-active: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ========================================
+   Clean Light Background
+   ======================================== */
+[data-node-editor-theme="meta"] [data-testid="node-editor-canvas"],
+[data-node-editor-theme="meta"] .node-editor-canvas {
+  background-color: #f0f2f5;
+}
+
+/* ========================================
+   Card Headers
+   ======================================== */
+[data-node-editor-theme="meta"] [data-testid="node-card-header"],
+[data-node-editor-theme="meta"] .node-card-header,
+[data-node-editor-theme="meta"] [class*="CardHeader"] {
+  background: #ffffff !important;
+  border-bottom: 1px solid #dddfe2 !important;
+  padding: 12px 16px !important;
+}
+
+[data-node-editor-theme="meta"] [data-testid="node-card-header"] *,
+[data-node-editor-theme="meta"] .node-card-header *,
+[data-node-editor-theme="meta"] [class*="CardHeader"] * {
+  color: #050505 !important;
+  font-weight: 600 !important;
+}
+
+/* ========================================
+   Inspector Panel
+   ======================================== */
+[data-node-editor-theme="meta"] [class*="InspectorHeader"],
+[data-node-editor-theme="meta"] [data-testid="inspector-header"] {
+  background: #ffffff !important;
+  border-bottom: 1px solid #dddfe2 !important;
+  padding: 12px 16px !important;
+}
+
+[data-node-editor-theme="meta"] [class*="InspectorHeader"] *,
+[data-node-editor-theme="meta"] [data-testid="inspector-header"] * {
+  color: #050505 !important;
+  font-weight: 700 !important;
+}
+
+/* ========================================
+   Buttons - Facebook Style
+   ======================================== */
+[data-node-editor-theme="meta"] button,
+[data-node-editor-theme="meta"] [role="button"] {
+  background: #e4e6eb !important;
+  border: none !important;
+  border-radius: 6px !important;
+  color: #050505 !important;
+  font-weight: 600 !important;
+  transition: background 0.2s ease !important;
+}
+
+[data-node-editor-theme="meta"] button:hover,
+[data-node-editor-theme="meta"] [role="button"]:hover {
+  background: #d8dadf !important;
+}
+
+[data-node-editor-theme="meta"] button:active,
+[data-node-editor-theme="meta"] [role="button"]:active {
+  background: #c4c6c9 !important;
+  transform: scale(0.98);
+}
+
+/* Primary buttons - Meta Blue */
+[data-node-editor-theme="meta"] button[data-variant="primary"],
+[data-node-editor-theme="meta"] [role="button"][data-variant="primary"] {
+  background: #0866ff !important;
+  color: #ffffff !important;
+}
+
+[data-node-editor-theme="meta"] button[data-variant="primary"]:hover,
+[data-node-editor-theme="meta"] [role="button"][data-variant="primary"]:hover {
+  background: #0055d4 !important;
+}
+
+/* ========================================
+   Messenger-style Gradient Button (for special actions)
+   ======================================== */
+[data-node-editor-theme="meta"] button[data-variant="gradient"],
+[data-node-editor-theme="meta"] [role="button"][data-variant="gradient"] {
+  background: linear-gradient(90deg, #0088ff, #a033ff, #ff5c87) !important;
+  color: #ffffff !important;
+}
+
+/* ========================================
+   Scrollbars
+   ======================================== */
+[data-node-editor-theme="meta"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+[data-node-editor-theme="meta"] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+[data-node-editor-theme="meta"] ::-webkit-scrollbar-thumb {
+  background: #bcc0c4;
+  border-radius: 4px;
+}
+
+[data-node-editor-theme="meta"] ::-webkit-scrollbar-thumb:hover {
+  background: #8a8d91;
+}
+
+/* ========================================
+   Input Fields - Rounded Search Style
+   ======================================== */
+[data-node-editor-theme="meta"] input,
+[data-node-editor-theme="meta"] textarea,
+[data-node-editor-theme="meta"] select {
+  background: #f0f2f5 !important;
+  border: none !important;
+  border-radius: 20px !important;
+  padding: 8px 16px !important;
+  color: #050505 !important;
+  transition: background 0.2s ease !important;
+}
+
+[data-node-editor-theme="meta"] input:focus,
+[data-node-editor-theme="meta"] textarea:focus,
+[data-node-editor-theme="meta"] select:focus {
+  background: #e4e6eb !important;
+  outline: none !important;
+}
+
+[data-node-editor-theme="meta"] input::placeholder,
+[data-node-editor-theme="meta"] textarea::placeholder {
+  color: #8a8d91 !important;
+}
+
+/* Text inputs (not search) - less rounded */
+[data-node-editor-theme="meta"] input[type="text"],
+[data-node-editor-theme="meta"] input[type="number"],
+[data-node-editor-theme="meta"] textarea {
+  border-radius: 8px !important;
+}
+
+/* ========================================
+   Checkboxes and Radio Buttons
+   ======================================== */
+[data-node-editor-theme="meta"] input[type="checkbox"],
+[data-node-editor-theme="meta"] input[type="radio"] {
+  appearance: none;
+  width: 20px !important;
+  height: 20px !important;
+  background: #ffffff !important;
+  border: 2px solid #bcc0c4 !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-node-editor-theme="meta"] input[type="radio"] {
+  border-radius: 50% !important;
+}
+
+[data-node-editor-theme="meta"] input[type="checkbox"]:checked,
+[data-node-editor-theme="meta"] input[type="radio"]:checked {
+  background: #0866ff !important;
+  border-color: #0866ff !important;
+}
+
+[data-node-editor-theme="meta"] input[type="checkbox"]:checked {
+  background: #0866ff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath fill='%23fff' d='M7 10l2 2 4-4-1.5-1.5L9 9l-.5-.5z'/%3E%3C/svg%3E") center/contain no-repeat !important;
+}
+
+[data-node-editor-theme="meta"] input[type="radio"]:checked {
+  background: #0866ff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%23fff'/%3E%3C/svg%3E") center/contain no-repeat !important;
+}
+
+/* ========================================
+   Menu Items
+   ======================================== */
+[data-node-editor-theme="meta"] [role="menuitem"],
+[data-node-editor-theme="meta"] [role="option"] {
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+  margin: 2px 4px !important;
+  transition: background 0.15s ease !important;
+}
+
+[data-node-editor-theme="meta"] [role="menuitem"]:hover,
+[data-node-editor-theme="meta"] [role="option"]:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* ========================================
+   Tooltips
+   ======================================== */
+[data-node-editor-theme="meta"] [role="tooltip"] {
+  background: rgba(0, 0, 0, 0.8) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: #ffffff !important;
+  padding: 8px 12px !important;
+  font-size: 0.8125rem !important;
+}
+
+/* ========================================
+   Selection
+   ======================================== */
+[data-node-editor-theme="meta"] [aria-selected="true"],
+[data-node-editor-theme="meta"] [data-selected="true"] {
+  background: #e7f3ff !important;
+  border-color: #0866ff !important;
+}
+
+/* ========================================
+   Dialog Windows
+   ======================================== */
+[data-node-editor-theme="meta"] [role="dialog"] {
+  background: #ffffff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+[data-node-editor-theme="meta"] [role="dialog"] > header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #dddfe2 !important;
+  border-radius: 12px 12px 0 0 !important;
+  padding: 16px 20px !important;
+}
+
+/* ========================================
+   Cards - Clean White
+   ======================================== */
+[data-node-editor-theme="meta"] [class*="NodeCard"],
+[data-node-editor-theme="meta"] [class*="Card"] {
+  background: #ffffff !important;
+  border: 1px solid #dddfe2 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+  transition: box-shadow 0.2s ease !important;
+}
+
+[data-node-editor-theme="meta"] [class*="NodeCard"]:hover,
+[data-node-editor-theme="meta"] [class*="Card"]:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* ========================================
+   Reactions-style Hover Effect
+   ======================================== */
+[data-node-editor-theme="meta"] [class*="reaction"],
+[data-node-editor-theme="meta"] [class*="emoji"] {
+  transition: transform 0.1s ease !important;
+}
+
+[data-node-editor-theme="meta"] [class*="reaction"]:hover,
+[data-node-editor-theme="meta"] [class*="emoji"]:hover {
+  transform: scale(1.2) !important;
+}
+
+/* ========================================
+   Link Style
+   ======================================== */
+[data-node-editor-theme="meta"] a,
+[data-node-editor-theme="meta"] [class*="link"] {
+  color: #0866ff !important;
+  text-decoration: none !important;
+}
+
+[data-node-editor-theme="meta"] a:hover,
+[data-node-editor-theme="meta"] [class*="link"]:hover {
+  text-decoration: underline !important;
+}
+
+/* ========================================
+   Notification Badge Style
+   ======================================== */
+[data-node-editor-theme="meta"] [class*="badge"],
+[data-node-editor-theme="meta"] [class*="Badge"] {
+  background: #f02849 !important;
+  color: #ffffff !important;
+  font-size: 0.6875rem !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  padding: 2px 6px !important;
+  min-width: 18px !important;
+}
+
+/* ========================================
+   Toggle/Switch Style
+   ======================================== */
+[data-node-editor-theme="meta"] [class*="toggle"],
+[data-node-editor-theme="meta"] [class*="switch"] {
+  background: #bcc0c4 !important;
+  border-radius: 12px !important;
+  transition: background 0.2s ease !important;
+}
+
+[data-node-editor-theme="meta"] [class*="toggle"][data-checked="true"],
+[data-node-editor-theme="meta"] [class*="switch"][data-checked="true"] {
+  background: #0866ff !important;
+}
