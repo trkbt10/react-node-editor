@@ -5,10 +5,13 @@
 
 .group {
   display: inline-flex;
+  align-items: stretch;
   gap: var(--node-editor-inspector-segment-gap);
+  height: var(--node-editor-inspector-control-height);
   padding: 2px;
   background: var(--node-editor-inspector-segment-background);
   border-radius: var(--node-editor-inspector-segment-border-radius);
+  box-sizing: border-box;
 }
 
 /* Size variants */
@@ -17,6 +20,7 @@
 }
 
 .group[data-size="compact"] {
+  height: calc(var(--node-editor-inspector-control-height) - 4px);
   padding: 1px;
 }
 
@@ -24,7 +28,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--node-editor-inspector-segment-padding);
+  padding: 0 8px;
   font: var(--node-editor-control-text-font);
   border: none;
   border-radius: calc(var(--node-editor-inspector-segment-border-radius) - 2px);
@@ -38,7 +42,7 @@
 }
 
 .group[data-size="compact"] .button {
-  padding: 4px 6px;
+  padding: 0 6px;
 }
 
 /* Content wrapper for icons and text */

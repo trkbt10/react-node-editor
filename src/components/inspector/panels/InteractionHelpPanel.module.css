@@ -3,5 +3,5 @@
 .panel {
   display: flex;
   flex-direction: column;
-  gap: var(--node-editor-space-lg, 16px);
+  gap: var(--node-editor-inspector-section-gap);
 }

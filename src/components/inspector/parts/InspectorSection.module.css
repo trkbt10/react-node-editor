@@ -1,5 +1,9 @@
 .section {
-  margin-bottom: var(--node-editor-inspector-section-gap);
+  /* Layout between sections is controlled by parent container using gap */
+  /* Layout within section is controlled here */
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-inspector-section-gap);
 }
 
 .section label {

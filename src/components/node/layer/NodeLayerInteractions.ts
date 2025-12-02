@@ -430,10 +430,17 @@ export const useNodeLayerPorts = () => {
         resolveCandidatePort(canvasPosition) || resolveDisconnectCandidate(canvasPosition) || fallbackPort;
 
       actionActions.setHoveredPort(candidate);
+      // Use the drag/disconnect source port for computing connectable ports, not the candidate.
+      // The candidate may be a destination port (e.g., input) which would incorrectly
+      // calculate output ports as connectable when we're dragging from an output port.
+      const sourcePort =
+        actionState.connectionDragState?.fromPort ??
+        actionState.connectionDisconnectState?.fixedPort ??
+        fallbackPort;
       const connectable = computeConnectablePortIds({
         dragState: actionState.connectionDragState,
         disconnectState: actionState.connectionDisconnectState,
-        fallbackPort: candidate,
+        fallbackPort: sourcePort,
         nodes: nodeEditorState.nodes,
         connections: nodeEditorState.connections,
         getNodePorts,

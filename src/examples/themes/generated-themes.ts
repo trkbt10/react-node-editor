@@ -11,6 +11,7 @@ export type NodeEditorThemeId =
   | "akzidenz-grotesk"
   | "antigravity"
   | "apple"
+  | "blueprint"
   | "brutalist"
   | "constructivist"
   | "figma"
@@ -18,15 +19,18 @@ export type NodeEditorThemeId =
   | "github-light"
   | "google"
   | "macintosh"
+  | "meta"
   | "minecraft"
   | "notion"
   | "opal"
   | "russian-avant-garde"
   | "stellar"
   | "unity"
+  | "vaporwave"
   | "vscode"
   | "wargames"
   | "window98"
+  | "windows31"
   | "windows11"
   | "windowsxp"
   | "xcorp";
@@ -68,6 +72,12 @@ export const GENERATED_THEMES: NodeEditorTheme[] = [
     label: "Apple",
     description: "Translucent layers, spacious typography, and vibrant blue accent inspired by apple.com.",
     cssPath: "/themes/apple.css",
+  },
+  {
+    id: "blueprint",
+    label: "Blueprint",
+    description: "Technical drawing style with grid lines, white-on-blue, and architectural aesthetics.",
+    cssPath: "/themes/blueprint.css",
   },
   {
     id: "brutalist",
@@ -112,6 +122,12 @@ export const GENERATED_THEMES: NodeEditorTheme[] = [
     cssPath: "/themes/macintosh.css",
   },
   {
+    id: "meta",
+    label: "Meta",
+    description: "Facebook/Meta design with clean blues, rounded corners, and friendly UI.",
+    cssPath: "/themes/meta.css",
+  },
+  {
     id: "minecraft",
     label: "Minecraft",
     description: "Pixel-crafted UI with earthy neutrals and vibrant emerald highlight.",
@@ -148,6 +164,12 @@ export const GENERATED_THEMES: NodeEditorTheme[] = [
     cssPath: "/themes/unity.css",
   },
   {
+    id: "vaporwave",
+    label: "V A P O R W A V E",
+    description: "A E S T H E T I C neon pink & cyan with synthwave sunset grid and glitch effects.",
+    cssPath: "/themes/vaporwave.css",
+  },
+  {
     id: "vscode",
     label: "VS Code",
     description: "Dark code editor theme with precise geometry and VS Code's signature blue.",
@@ -164,6 +186,12 @@ export const GENERATED_THEMES: NodeEditorTheme[] = [
     label: "Windows 98",
     description: "Pixel-perfect nostalgia with flat widgets and crisp blue chrome.",
     cssPath: "/themes/window98.css",
+  },
+  {
+    id: "windows31",
+    label: "Windows 3.1",
+    description: "Classic 3D beveled UI with navy title bars and Program Manager aesthetics.",
+    cssPath: "/themes/windows31.css",
   },
   {
     id: "windows11",

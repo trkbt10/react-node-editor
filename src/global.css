@@ -27,6 +27,9 @@
   --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
   --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
   --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+
+  /* Inspector control dimensions - unified height for inputs, button groups, selects */
+  --node-editor-inspector-control-height: 28px;
   --node-editor-inspector-input-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
 
   /* Inspector typography */

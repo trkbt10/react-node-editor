@@ -1,7 +1,9 @@
 .input,
 .inputWithLabel {
   width: 100%;
+  height: var(--node-editor-inspector-control-height);
   font: var(--node-editor-input-font);
+  line-height: 1;
   color: var(--node-editor-text-color);
   background: var(--node-editor-control-background);
   border-radius: var(--node-editor-control-border-radius);
@@ -15,8 +17,7 @@
 
 /* Input with label - container styles */
 .inputWithLabel {
-  display: grid;
-  grid-template-columns: auto 1fr;
+  display: flex;
   align-items: center;
   gap: var(--node-editor-inspector-space-xs);
 }
@@ -63,13 +64,9 @@
 /* Variants */
 .input[data-variant="default"],
 .inputWithLabel[data-variant="default"] {
-  padding: var(--node-editor-input-padding);
+  padding: 0 var(--node-editor-inspector-space-sm);
   border: var(--node-editor-input-border);
   box-shadow: var(--node-editor-input-box-shadow);
-}
-
-.inputWithLabel[data-variant="default"] {
-  padding: var(--node-editor-input-padding);
 }
 
 .input[data-variant="default"]:hover:not(:disabled),
@@ -84,13 +81,9 @@
 
 .input[data-variant="outline"],
 .inputWithLabel[data-variant="outline"] {
-  padding: var(--node-editor-input-padding);
+  padding: 0 var(--node-editor-inspector-space-sm);
   border: var(--node-editor-card-border);
   background-color: transparent;
-}
-
-.inputWithLabel[data-variant="outline"] {
-  padding: var(--node-editor-input-padding);
 }
 
 .input[data-variant="outline"]:hover:not(:disabled),
@@ -105,13 +98,9 @@
 
 .input[data-variant="filled"],
 .inputWithLabel[data-variant="filled"] {
-  padding: var(--node-editor-input-padding);
+  padding: 0 var(--node-editor-inspector-space-sm);
   border: 1px solid transparent;
   background-color: var(--node-editor-card-filled-background);
-}
-
-.inputWithLabel[data-variant="filled"] {
-  padding: var(--node-editor-input-padding);
 }
 
 .input[data-variant="filled"]:hover:not(:disabled),

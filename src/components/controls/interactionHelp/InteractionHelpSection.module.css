@@ -1,24 +1,31 @@
 /* InteractionHelpSection styles */
+/* This is a subsection inside PropertySection, so styling is less prominent */
 
 .section {
+  /* Layout between sections is controlled by parent container using gap */
+  /* Internal layout (header + list) is controlled here */
   display: flex;
   flex-direction: column;
-  gap: var(--node-editor-space-sm, 8px);
+  gap: var(--node-editor-inspector-space-sm);
+  padding-top: var(--node-editor-inspector-space-sm);
 }
 
 .sectionHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--node-editor-space-sm, 8px);
+  gap: var(--node-editor-inspector-inline-gap);
+  box-sizing: border-box;
 }
 
 .sectionTitle {
-  font-weight: 600;
-  font-size: var(--node-editor-inspector-font-size-title);
-  color: var(--node-editor-secondary-label-color, #4b5563);
+  margin: 0;
+  font-weight: 500;
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--node-editor-tertiary-label-color);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  line-height: 1;
 }
 
 .shortcutList {
@@ -27,5 +34,5 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--node-editor-space-xs, 4px);
+  gap: var(--node-editor-inspector-space-xs);
 }

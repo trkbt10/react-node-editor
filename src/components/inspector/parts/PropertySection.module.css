@@ -1,5 +1,5 @@
 .section {
-  margin-bottom: var(--node-editor-inspector-section-gap);
+  /* Layout is controlled by parent container using gap */
 }
 
 .sectionHeader {
@@ -7,8 +7,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--node-editor-inspector-inline-gap);
-  min-height: var(--node-editor-inspector-section-header-height);
-  margin-bottom: var(--node-editor-inspector-space-sm);
+  min-height: calc(var(--node-editor-inspector-section-header-height) + 1px);
   padding: 0 var(--node-editor-inspector-space-xs);
   border-bottom: 1px solid var(--node-editor-separator-color);
   box-sizing: border-box;

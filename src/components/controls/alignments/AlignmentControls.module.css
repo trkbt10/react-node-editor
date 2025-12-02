@@ -1,5 +1,5 @@
 .alignmentControls {
-  margin-bottom: var(--node-editor-inspector-space-sm);
+  /* Layout is controlled by parent container using gap */
 }
 
 .alignmentGroupsContainer {
@@ -10,8 +10,10 @@
 
 .alignmentGroup {
   display: flex;
+  align-items: stretch;
   gap: var(--node-editor-inspector-segment-gap);
-  padding: 1px;
+  height: var(--node-editor-inspector-control-height);
+  padding: 2px;
   background: var(--node-editor-inspector-segment-background);
   border-radius: var(--node-editor-inspector-segment-border-radius);
   box-sizing: border-box;
@@ -23,9 +25,9 @@
   align-items: center;
   justify-content: center;
   min-width: 0;
-  padding: 4px;
+  padding: 0;
   border: none;
-  border-radius: calc(var(--node-editor-inspector-segment-border-radius) - 1px);
+  border-radius: calc(var(--node-editor-inspector-segment-border-radius) - 2px);
   background: transparent;
   color: var(--node-editor-inspector-segment-button-color);
   cursor: pointer;

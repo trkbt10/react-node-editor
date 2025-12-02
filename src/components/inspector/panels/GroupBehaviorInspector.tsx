@@ -40,7 +40,7 @@ export function GroupBehaviorInspector({
   });
 
   return (
-    <div>
+    <div className={styles.container}>
       <h3 className={styles.sectionTitle}>
         {t("inspectorGroupAppearanceTitle") || "Appearance"}
       </h3>

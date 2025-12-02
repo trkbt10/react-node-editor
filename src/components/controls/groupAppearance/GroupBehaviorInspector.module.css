@@ -1,5 +1,11 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-inspector-space-md);
+}
+
 .sectionTitle {
-  margin: 0 0 var(--node-editor-inspector-space-md);
+  margin: 0;
   font-size: var(--node-editor-inspector-font-size-heading);
   font-weight: 600;
   color: var(--node-editor-label-color);
@@ -9,7 +15,6 @@
   display: flex;
   align-items: center;
   gap: var(--node-editor-inspector-space-sm);
-  margin-bottom: var(--node-editor-inspector-space-lg);
 }
 
 .checkboxRow input[type="checkbox"] {

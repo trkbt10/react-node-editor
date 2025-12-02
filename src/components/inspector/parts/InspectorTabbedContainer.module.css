@@ -15,8 +15,11 @@
 }
 
 .content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-inspector-section-gap);
   flex: 1;
   overflow-y: auto;
-  padding: var(--node-editor-inspector-content-padding);
+  padding: 0 var(--node-editor-inspector-content-padding);
   box-sizing: border-box;
 }
