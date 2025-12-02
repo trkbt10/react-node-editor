@@ -4,7 +4,7 @@
   /* ========================================
      Macintosh System 1.0 Theme
      Pure 1-bit black & white aesthetic
-     with authentic retro patterns
+     Authentic 1984 Macintosh experience
      ======================================== */
 
   /* Core spacing scale - ultra compact classic Mac style */
@@ -38,11 +38,11 @@
 
   /* Inspector typography - chunky bitmap feel */
   --node-editor-inspector-font-size-title: 1rem;
-  --node-editor-inspector-line-height-title: 1;
+  --node-editor-inspector-line-height-title: 1.2;
   --node-editor-inspector-font-size-body: 1rem;
-  --node-editor-inspector-line-height-body: 1;
+  --node-editor-inspector-line-height-body: 1.2;
   --node-editor-inspector-font-size-meta: 0.875rem;
-  --node-editor-inspector-line-height-meta: 1;
+  --node-editor-inspector-line-height-meta: 1.2;
   --node-editor-inspector-font-weight-medium: 400;
   --node-editor-inspector-font-size-heading: 1rem;
   --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
@@ -54,11 +54,11 @@
   --node-editor-theme-label-font-family: "VT323", "Chicago", "Monaco", monospace;
   --node-editor-system-font: "VT323", "Chicago", "Monaco", monospace;
   --node-editor-font-mono: "VT323", "Monaco", "Courier", monospace;
-  --node-editor-title-font: 400 1rem/1 var(--node-editor-theme-label-font-family);
-  --node-editor-subtitle-font: 400 1rem/1 var(--node-editor-theme-label-font-family);
-  --node-editor-caption-font: 400 0.875rem/1 var(--node-editor-theme-default-font-family);
-  --node-editor-control-text-font: 400 1rem/1 var(--node-editor-theme-control-font-family);
-  --node-editor-input-font: 400 1rem/1 var(--node-editor-theme-default-font-family);
+  --node-editor-title-font: 400 1rem/1.2 var(--node-editor-theme-label-font-family);
+  --node-editor-subtitle-font: 400 1rem/1.2 var(--node-editor-theme-label-font-family);
+  --node-editor-caption-font: 400 0.875rem/1.2 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 400 1rem/1.2 var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 1rem/1.2 var(--node-editor-theme-default-font-family);
   --node-editor-font-size-lg: 1.125rem;
   --node-editor-font-size-sm: 0.875rem;
   --node-editor-font-size-xs: 0.75rem;
@@ -80,15 +80,15 @@
   --node-editor-inspector-header-shadow: 0 1px 0 #000000;
 
   /* Tree & List Components - tight spacing */
-  --node-editor-tree-item-height: 16px;
+  --node-editor-tree-item-height: 18px;
   --node-editor-tree-indent: 10px;
 
   /* Control Buttons - Compact classic style */
-  --node-editor-control-button-size-sm: 14px;
-  --node-editor-control-button-size: 18px;
+  --node-editor-control-button-size-sm: 16px;
+  --node-editor-control-button-size: 20px;
 
   /* Icons */
-  --node-editor-icon-size-sm: 10px;
+  --node-editor-icon-size-sm: 12px;
   --node-editor-icon-selected-brightness: 1;
 
   /* Text colors - Pure black */
@@ -214,7 +214,7 @@
   --node-editor-segment-control-text-color: #000000;
   --node-editor-segment-control-active-background-color: #000000;
   --node-editor-segment-control-active-text-color: #ffffff;
-  --node-editor-segment-control-segment-padding: 1px 4px;
+  --node-editor-segment-control-segment-padding: 2px 6px;
 
   /* Tab Navigation - Classic Mac folder tab style */
   --node-editor-tab-nav-gap: 0;
@@ -224,8 +224,8 @@
   --node-editor-tab-nav-border: 1px solid #000000;
   --node-editor-tab-nav-box-shadow: none;
   --node-editor-tab-button-flex: 1;
-  --node-editor-tab-button-min-height: 16px;
-  --node-editor-tab-button-padding: 1px 6px;
+  --node-editor-tab-button-min-height: 20px;
+  --node-editor-tab-button-padding: 2px 8px;
   --node-editor-tab-button-border-radius: 0;
   --node-editor-tab-button-background: #ffffff;
   --node-editor-tab-button-border: 1px solid #000000;
@@ -262,16 +262,16 @@
   /* Connection drag styling - Classic Mac marching ants */
   --node-editor-connection-drag-stroke-width-connecting: 1;
   --node-editor-connection-drag-stroke-width-disconnecting: 1;
-  --node-editor-connection-drag-dash-array-connecting: 1 1;
-  --node-editor-connection-drag-dash-array-disconnecting: 1 1;
+  --node-editor-connection-drag-dash-array-connecting: 2 2;
+  --node-editor-connection-drag-dash-array-disconnecting: 2 2;
   --node-editor-connection-drag-animation-duration: 0.15s;
   --node-editor-connection-drag-animation-distance: -2;
 
   /* Inspector icon button - Classic Mac 1-bit style */
-  --node-editor-inspector-icon-button-size: 18px;
-  --node-editor-inspector-icon-button-size-sm: 14px;
-  --node-editor-inspector-icon-button-icon-size: 10px;
-  --node-editor-inspector-icon-button-icon-size-sm: 8px;
+  --node-editor-inspector-icon-button-size: 20px;
+  --node-editor-inspector-icon-button-size-sm: 16px;
+  --node-editor-inspector-icon-button-icon-size: 12px;
+  --node-editor-inspector-icon-button-icon-size-sm: 10px;
   --node-editor-inspector-icon-button-background: #ffffff;
   --node-editor-inspector-icon-button-background-hover: #000000;
   --node-editor-inspector-icon-button-background-active: #000000;
@@ -299,226 +299,4 @@
   --node-editor-inspector-segment-button-color-hover: #ffffff;
   --node-editor-inspector-segment-button-color-active: #ffffff;
   --node-editor-inspector-segment-button-shadow-active: none;
-}
-
-/* ========================================
-   Classic Mac Desktop Dot Pattern
-   ======================================== */
-[data-node-editor-theme="macintosh"] [data-testid="node-editor-canvas"],
-[data-node-editor-theme="macintosh"] .node-editor-canvas {
-  background-color: #ffffff;
-  background-image:
-    radial-gradient(#000000 1px, transparent 1px);
-  background-size: 4px 4px;
-  background-position: 0 0;
-}
-
-/* ========================================
-   Window Title Bar Stripes (Susan Kare style)
-   ======================================== */
-[data-node-editor-theme="macintosh"] [data-testid="node-card-header"],
-[data-node-editor-theme="macintosh"] .node-card-header,
-[data-node-editor-theme="macintosh"] [class*="CardHeader"] {
-  background: repeating-linear-gradient(
-    0deg,
-    #ffffff 0px,
-    #ffffff 1px,
-    #000000 1px,
-    #000000 2px
-  ) !important;
-  background-size: 100% 2px !important;
-  border-bottom: 1px solid #000000 !important;
-  padding: 2px 4px !important;
-}
-
-/* Header text needs to be readable on stripes */
-[data-node-editor-theme="macintosh"] [data-testid="node-card-header"] *,
-[data-node-editor-theme="macintosh"] .node-card-header *,
-[data-node-editor-theme="macintosh"] [class*="CardHeader"] * {
-  background: #ffffff !important;
-  padding: 0 2px !important;
-}
-
-/* ========================================
-   Inspector Panel Title Stripes
-   ======================================== */
-[data-node-editor-theme="macintosh"] [class*="InspectorHeader"],
-[data-node-editor-theme="macintosh"] [data-testid="inspector-header"] {
-  background: repeating-linear-gradient(
-    0deg,
-    #ffffff 0px,
-    #ffffff 1px,
-    #000000 1px,
-    #000000 2px
-  ) !important;
-  border-bottom: 1px solid #000000 !important;
-}
-
-[data-node-editor-theme="macintosh"] [class*="InspectorHeader"] *,
-[data-node-editor-theme="macintosh"] [data-testid="inspector-header"] * {
-  background: #ffffff !important;
-  padding: 0 2px !important;
-}
-
-/* ========================================
-   Dialog/Menu Title Stripes
-   ======================================== */
-[data-node-editor-theme="macintosh"] [role="dialog"] > header,
-[data-node-editor-theme="macintosh"] [role="menu"] > header {
-  background: repeating-linear-gradient(
-    0deg,
-    #ffffff 0px,
-    #ffffff 1px,
-    #000000 1px,
-    #000000 2px
-  ) !important;
-  border-bottom: 1px solid #000000 !important;
-}
-
-/* ========================================
-   Classic Mac Scrollbars with Pattern
-   ======================================== */
-[data-node-editor-theme="macintosh"] ::-webkit-scrollbar {
-  width: 16px;
-  height: 16px;
-  background: repeating-linear-gradient(
-    45deg,
-    #ffffff 0px,
-    #ffffff 2px,
-    #000000 2px,
-    #000000 3px,
-    #ffffff 3px,
-    #ffffff 5px
-  );
-}
-
-[data-node-editor-theme="macintosh"] ::-webkit-scrollbar-thumb {
-  background: #ffffff;
-  border: 1px solid #000000;
-  box-shadow: inset -1px -1px 0 #000000;
-}
-
-[data-node-editor-theme="macintosh"] ::-webkit-scrollbar-button {
-  background: #ffffff;
-  border: 1px solid #000000;
-  width: 16px;
-  height: 16px;
-}
-
-[data-node-editor-theme="macintosh"] ::-webkit-scrollbar-corner {
-  background: #ffffff;
-  border: 1px solid #000000;
-}
-
-/* ========================================
-   Classic Mac Buttons - Rounded with Border
-   ======================================== */
-[data-node-editor-theme="macintosh"] button,
-[data-node-editor-theme="macintosh"] [role="button"] {
-  border-radius: 3px !important;
-  border: 1px solid #000000 !important;
-  box-shadow: none !important;
-  font-family: "VT323", "Chicago", "Monaco", monospace !important;
-}
-
-[data-node-editor-theme="macintosh"] button:active,
-[data-node-editor-theme="macintosh"] [role="button"]:active {
-  background: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* ========================================
-   Selection Marquee - Marching Ants
-   ======================================== */
-@keyframes marching-ants {
-  0% { background-position: 0 0, 100% 100%, 0 100%, 100% 0; }
-  100% { background-position: 8px 0, calc(100% - 8px) 100%, 0 calc(100% - 8px), 100% 8px; }
-}
-
-[data-node-editor-theme="macintosh"] [data-selected="true"],
-[data-node-editor-theme="macintosh"] .selected {
-  background-image:
-    linear-gradient(90deg, #000 50%, transparent 50%),
-    linear-gradient(90deg, #000 50%, transparent 50%),
-    linear-gradient(0deg, #000 50%, transparent 50%),
-    linear-gradient(0deg, #000 50%, transparent 50%);
-  background-size: 4px 1px, 4px 1px, 1px 4px, 1px 4px;
-  background-position: 0 0, 100% 100%, 0 100%, 100% 0;
-  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
-  animation: marching-ants 0.4s linear infinite;
-}
-
-/* ========================================
-   Menu Items - Inverted on Hover
-   ======================================== */
-[data-node-editor-theme="macintosh"] [role="menuitem"]:hover,
-[data-node-editor-theme="macintosh"] [role="option"]:hover {
-  background: #000000 !important;
-  color: #ffffff !important;
-}
-
-/* ========================================
-   Input Fields - Inset Border Style
-   ======================================== */
-[data-node-editor-theme="macintosh"] input,
-[data-node-editor-theme="macintosh"] textarea,
-[data-node-editor-theme="macintosh"] select {
-  border: 1px solid #000000 !important;
-  box-shadow: inset 1px 1px 0 #000000 !important;
-  font-family: "VT323", "Chicago", "Monaco", monospace !important;
-  font-size: 1rem !important;
-  padding: 1px 3px !important;
-}
-
-[data-node-editor-theme="macintosh"] input:focus,
-[data-node-editor-theme="macintosh"] textarea:focus,
-[data-node-editor-theme="macintosh"] select:focus {
-  outline: 2px solid #000000 !important;
-  outline-offset: 1px !important;
-}
-
-/* ========================================
-   Checkboxes and Radio Buttons
-   ======================================== */
-[data-node-editor-theme="macintosh"] input[type="checkbox"],
-[data-node-editor-theme="macintosh"] input[type="radio"] {
-  appearance: none;
-  width: 12px !important;
-  height: 12px !important;
-  border: 1px solid #000000 !important;
-  background: #ffffff !important;
-  box-shadow: none !important;
-}
-
-[data-node-editor-theme="macintosh"] input[type="radio"] {
-  border-radius: 50% !important;
-}
-
-[data-node-editor-theme="macintosh"] input[type="checkbox"]:checked {
-  background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='%23000' d='M2 6l3 3 5-6-1-1-4 5-2-2z'/%3E%3C/svg%3E") center/contain no-repeat !important;
-}
-
-[data-node-editor-theme="macintosh"] input[type="radio"]:checked {
-  background: #ffffff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Ccircle cx='6' cy='6' r='3' fill='%23000'/%3E%3C/svg%3E") center/contain no-repeat !important;
-}
-
-/* ========================================
-   Tooltips
-   ======================================== */
-[data-node-editor-theme="macintosh"] [role="tooltip"] {
-  background: #ffffff !important;
-  border: 1px solid #000000 !important;
-  box-shadow: 1px 1px 0 #000000 !important;
-  font-family: "VT323", "Chicago", "Monaco", monospace !important;
-  padding: 2px 4px !important;
-}
-
-/* ========================================
-   Disable smooth rendering for pixelated feel
-   ======================================== */
-[data-node-editor-theme="macintosh"] * {
-  image-rendering: pixelated;
-  -webkit-font-smoothing: none;
-  -moz-osx-font-smoothing: unset;
-  text-rendering: optimizeSpeed;
 }

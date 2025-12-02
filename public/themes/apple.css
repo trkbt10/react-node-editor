@@ -53,8 +53,7 @@
   --node-editor-subtitle-font: 500 0.875rem/1.4 var(--node-editor-theme-label-font-family);
   --node-editor-caption-font: 400 0.6875rem/1.35 var(--node-editor-theme-default-font-family);
   --node-editor-control-text-font: 500 0.8125rem/1.4 var(--node-editor-theme-control-font-family);
-  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.45
-    var(--node-editor-theme-default-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.45 var(--node-editor-theme-default-font-family);
   --node-editor-font-size-lg: 1.125rem;
   --node-editor-font-size-sm: 0.875rem;
   --node-editor-font-size-xs: 0.75rem;
@@ -235,7 +234,6 @@
   --node-editor-tab-button-align: center;
   --node-editor-tab-button-justify: center;
   --node-editor-tab-button-flex: 0 0 auto;
-  --node-editor-tab-button-gap: var(--node-editor-space-xs);
   --node-editor-tab-button-min-width: auto;
   --node-editor-tab-button-min-height: 32px;
   --node-editor-tab-button-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);

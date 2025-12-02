@@ -82,10 +82,8 @@
   --node-editor-title-font: 500 0.875rem/1.429 var(--node-editor-theme-label-font-family);
   --node-editor-subtitle-font: 400 0.875rem/1.429 var(--node-editor-theme-label-font-family);
   --node-editor-caption-font: 400 0.75rem/1.333 var(--node-editor-theme-default-font-family);
-  --node-editor-control-text-font: 400 var(--node-editor-inspector-font-size-body) / 1.429
-    var(--node-editor-theme-control-font-family);
-  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.429
-    var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 400 var(--node-editor-inspector-font-size-body) / 1.429 var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.429 var(--node-editor-theme-default-font-family);
   --node-editor-font-size-lg: 1rem;
   --node-editor-font-size-sm: 0.875rem;
   --node-editor-font-size-xs: 0.75rem;
@@ -265,7 +263,6 @@
   --node-editor-tab-button-align: center;
   --node-editor-tab-button-justify: center;
   --node-editor-tab-button-flex: 1;
-  --node-editor-tab-button-gap: var(--node-editor-space-xs);
   --node-editor-tab-button-min-width: 32px;
   --node-editor-tab-button-min-height: 28px;
   --node-editor-tab-button-padding: var(--node-editor-space-xs) var(--node-editor-space-md);

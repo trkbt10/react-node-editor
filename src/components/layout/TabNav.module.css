@@ -24,7 +24,6 @@
   align-items: var(--node-editor-tab-button-align, center);
   justify-content: var(--node-editor-tab-button-justify, center);
   flex: var(--node-editor-tab-button-flex, 1);
-  gap: var(--node-editor-tab-button-gap, 0);
   min-width: var(--node-editor-tab-button-min-width, 2.5em);
   min-height: var(--node-editor-tab-button-min-height, 28px);
   padding: var(--node-editor-tab-button-padding, var(--node-editor-segment-control-segment-padding));
@@ -60,25 +59,17 @@
 
 /* First child border radius - respects gap */
 .tabButton:first-child {
-  border-top-left-radius: var(
-    --node-editor-tab-button-first-border-radius,
-    var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius))
-  );
-  border-bottom-left-radius: var(
-    --node-editor-tab-button-first-border-radius,
-    var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius))
-  );
+  border-top-left-radius: var(--node-editor-tab-button-first-border-radius,
+      var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius)));
+  border-bottom-left-radius: var(--node-editor-tab-button-first-border-radius,
+      var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius)));
 }
 
 .tabButton:last-child {
-  border-top-right-radius: var(
-    --node-editor-tab-button-last-border-radius,
-    var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius))
-  );
-  border-bottom-right-radius: var(
-    --node-editor-tab-button-last-border-radius,
-    var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius))
-  );
+  border-top-right-radius: var(--node-editor-tab-button-last-border-radius,
+      var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius)));
+  border-bottom-right-radius: var(--node-editor-tab-button-last-border-radius,
+      var(--node-editor-tab-button-border-radius, var(--node-editor-segment-control-border-radius)));
 }
 
 .tabButton:only-child {
@@ -87,17 +78,13 @@
 
 /* Active state */
 .tabButton[data-active="true"] {
-  background: var(
-    --node-editor-tab-button-active-background,
-    var(--node-editor-segment-control-active-background-color)
-  );
+  background: var(--node-editor-tab-button-active-background,
+      var(--node-editor-segment-control-active-background-color));
   color: var(--node-editor-tab-button-active-color, var(--node-editor-segment-control-active-text-color));
   font-weight: var(--node-editor-tab-button-active-font-weight, var(--node-editor-tab-button-font-weight, 500));
   border: var(--node-editor-tab-button-active-border, var(--node-editor-tab-button-border, none));
-  box-shadow: var(
-    --node-editor-tab-button-active-box-shadow,
-    var(--node-editor-segment-control-indicator-box-shadow, none)
-  );
+  box-shadow: var(--node-editor-tab-button-active-box-shadow,
+      var(--node-editor-segment-control-indicator-box-shadow, none));
 }
 
 /* Active indicator (underline, etc.) */
@@ -114,10 +101,8 @@
 
 /* Hover state (non-active) */
 .tabButton:not([data-active="true"]):hover {
-  background: var(
-    --node-editor-tab-button-hover-background,
-    var(--node-editor-segment-control-hover-background-color, rgba(0, 0, 0, 0.05))
-  );
+  background: var(--node-editor-tab-button-hover-background,
+      var(--node-editor-segment-control-hover-background-color, rgba(0, 0, 0, 0.05)));
   color: var(--node-editor-tab-button-hover-color, var(--node-editor-tab-button-color));
 }
 
