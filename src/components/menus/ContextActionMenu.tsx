@@ -69,10 +69,6 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
     return getShortcutLabelForAction(interactionSettings.keyboardShortcuts, "paste", platform);
   }, [interactionSettings.keyboardShortcuts, platform]);
 
-  if (!visible) {
-    return null;
-  }
-
   const handleAlignFromMenu = React.useCallback(
     (alignmentType: AlignmentActionType) => {
       if (!showAlignmentControls) {
@@ -109,13 +105,17 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({ position, 
     onClose();
   }, [editorActions, actionActions, onClose]);
 
-  const handleDeleteConnection = () => {
+  const handleDeleteConnection = React.useCallback(() => {
     if (target.type !== "connection") {
       return;
     }
     editorActions.deleteConnection(target.id);
     onClose();
-  };
+  }, [editorActions, onClose, target]);
+
+  if (!visible) {
+    return null;
+  }
 
   return (
     <ContextMenuOverlay
