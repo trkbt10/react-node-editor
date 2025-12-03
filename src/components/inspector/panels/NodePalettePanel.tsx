@@ -2,6 +2,7 @@
  * @file Inspector node palette panel with drag-and-drop support for creating nodes.
  */
 import * as React from "react";
+import { CategoryIcon } from "../../../category/components/CategoryIcon";
 import { Input } from "../../elements/Input";
 import { PropertySection } from "../parts/PropertySection";
 import { useI18n } from "../../../i18n/context";
@@ -9,11 +10,8 @@ import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { countNodesByType, getDisabledNodeTypes } from "../../../contexts/node-definitions/utils/nodeTypeLimits";
 import { NodeCard } from "../../node/cards/NodeCard";
-import {
-  groupNodeDefinitions,
-  filterGroupedNodeDefinitions,
-  type NodeDefinitionCategory,
-} from "../../../contexts/node-definitions/category/nodeDefinitionCatalog";
+import { groupNodeDefinitions, filterGroupedNodeDefinitions } from "../../../category/catalog";
+import type { NodeDefinitionCategory } from "../../../category/types";
 import { NODE_DRAG_MIME } from "../../../constants/dnd";
 import styles from "./NodePalettePanel.module.css";
 
@@ -92,6 +90,7 @@ export const NodePalettePanel: React.FC = () => {
             <div key={category.name} className={styles.categorySection}>
               <div className={styles.categoryHeader}>
                 <div className={styles.categoryHeaderRow}>
+                  {category.icon != null && <CategoryIcon icon={category.icon} />}
                   <span>{category.name}</span>
                 </div>
                 <span className={styles.categoryCount}>{category.nodes.length}</span>

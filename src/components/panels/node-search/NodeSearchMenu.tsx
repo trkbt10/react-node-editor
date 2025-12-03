@@ -9,7 +9,7 @@ import { ContextMenuOverlay } from "../../layout/ContextMenuOverlay";
 import { SearchHeader } from "./parts/SearchHeader";
 import { SearchFooter } from "./parts/SearchFooter";
 import { NoResults } from "./parts/NoResults";
-import { CategoryListView } from "./parts/CategoryListView";
+import { CategoryListView } from "../../../category/components/CategoryListView";
 import { SplitPaneView } from "./parts/SplitPaneView";
 import { useI18n } from "../../../i18n/context";
 import {
@@ -19,9 +19,8 @@ import {
   groupNodeDefinitionsNested,
   filterNestedNodeDefinitions,
   flattenNestedNodeDefinitions,
-  type NodeDefinitionCategory,
-  type NestedNodeDefinitionCategory,
-} from "../../../contexts/node-definitions/category/nodeDefinitionCatalog";
+} from "../../../category/catalog";
+import type { NodeDefinitionCategory, NestedNodeDefinitionCategory } from "../../../category/types";
 
 export type NodeSearchMenuViewMode = "list" | "split";
 export type NodeSearchMenuFilterMode = "filter" | "highlight";

@@ -10,11 +10,10 @@
 import * as React from "react";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import type { Position } from "../../types/core";
-import {
-  groupNodeDefinitionsNested,
-  type NestedNodeDefinitionCategory,
-} from "../../contexts/node-definitions/category/nodeDefinitionCatalog";
+import { groupNodeDefinitionsNested } from "../../category/catalog";
+import type { NestedNodeDefinitionCategory } from "../../category/types";
 import { PlusIcon } from "../elements/icons";
+import { CategoryIcon } from "../../category/components/CategoryIcon";
 import { NodeCard } from "../node/cards/NodeCard";
 import styles from "./NodeAddMenu.module.css";
 
@@ -366,6 +365,7 @@ const CategoryItem: React.FC<CategoryItemProps> = React.memo(({
         aria-haspopup="menu"
         aria-expanded={isOpen}
       >
+        {category.icon != null && <CategoryIcon icon={category.icon} />}
         <span className={styles.menuItemLabel}>{category.name}</span>
         <span className={styles.menuItemBadge}>{category.totalNodeCount}</span>
       </div>

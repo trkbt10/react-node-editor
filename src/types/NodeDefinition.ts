@@ -3,6 +3,7 @@
  */
 import React, { type ReactNode, type ReactElement } from "react";
 import type { Node, NodeId, Port, Connection, ConnectionId, NodeData, PortPlacement, Size, Position } from "./core";
+import type { CategoryInfo } from "../category/types";
 import type { NodeBehavior } from "./behaviors";
 
 /**
@@ -357,6 +358,11 @@ export type NodeDefinition<TData extends Record<string, unknown> = Record<string
   icon?: ReactNode;
   /** Category for grouping in UI */
   category?: string;
+  /**
+   * Reference to shared category metadata (icon, priority, etc.).
+   * When provided, takes precedence over individual priority field for category ordering.
+   */
+  categoryInfo?: CategoryInfo;
   /**
    * Optional priority hint for the node's category when rendered in palettes/menus.
    * Lower numbers appear first. When multiple nodes share a category, the lowest

@@ -2,9 +2,9 @@
  * @file Grouped node list pane - shows nodes grouped by category (for "All Nodes" in split view)
  */
 import * as React from "react";
-import type { NodeDefinitionCategory } from "../../../../contexts/node-definitions/category/nodeDefinitionCatalog";
+import type { NodeDefinitionCategory } from "../../../../category/types";
 import { useI18n } from "../../../../i18n/context";
-import { CategoryListView } from "./CategoryListView";
+import { CategoryListView } from "../../../../category/components/CategoryListView";
 import { PaneHeader } from "./PaneHeader";
 import styles from "./GroupedNodeListPane.module.css";
 

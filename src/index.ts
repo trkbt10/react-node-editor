@@ -33,6 +33,7 @@ export type {
   PortInstanceFactoryContext,
   PortRenderContext,
 } from "./types/NodeDefinition";
+export type { CategoryInfo } from "./category/types";
 
 // Node definition registry
 export { createNodeDefinitionRegistry } from "./types/NodeDefinitionRegistry";

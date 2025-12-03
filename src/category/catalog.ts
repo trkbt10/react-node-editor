@@ -1,37 +1,17 @@
 /**
  * @file Helpers for grouping and filtering node definitions for palette displays.
  */
-import type { NodeDefinition } from "../../../types/NodeDefinition";
+import type { ReactNode } from "react";
+import type { NodeDefinition } from "../types/NodeDefinition";
+import type {
+  NodeDefinitionCategory,
+  NestedNodeDefinitionCategory,
+  FlattenedNodeDefinition,
+  FlattenedNestedNodeDefinition,
+} from "./types";
 
 export const DEFAULT_NODE_CATEGORY = "Other";
 export const CATEGORY_SEPARATOR = "/";
-
-export type NodeDefinitionCategory = {
-  name: string;
-  nodes: NodeDefinition[];
-  /** Lower values appear first; undefined categories fall back to alphabetical ordering */
-  sortOrder: number | null;
-};
-
-/**
- * Nested category structure for hierarchical displays (e.g., split pane).
- * Categories can contain both nodes and subcategories.
- */
-export type NestedNodeDefinitionCategory = {
-  name: string;
-  /** Full path from root (e.g., "Parent/Child/Grandchild") */
-  path: string;
-  /** Depth level (0 = root) */
-  depth: number;
-  /** Direct nodes in this category (not in subcategories) */
-  nodes: NodeDefinition[];
-  /** Nested subcategories */
-  children: NestedNodeDefinitionCategory[];
-  /** Total node count including all descendants */
-  totalNodeCount: number;
-  /** Sort order inherited from nodes */
-  sortOrder: number | null;
-};
 
 /**
  * Group node definitions by category. Categories honor the lowest provided priority
@@ -40,6 +20,7 @@ export type NestedNodeDefinitionCategory = {
 export const groupNodeDefinitions = (nodeDefinitions: NodeDefinition[]): NodeDefinitionCategory[] => {
   const categoryMap = new Map<string, NodeDefinition[]>();
   const categoryOrder = new Map<string, number | null>();
+  const categoryIcon = new Map<string, ReactNode>();
 
   nodeDefinitions.forEach((definition) => {
     const category = definition.category || DEFAULT_NODE_CATEGORY;
@@ -50,7 +31,13 @@ export const groupNodeDefinitions = (nodeDefinitions: NodeDefinition[]): NodeDef
 
     categoryMap.get(category)!.push(definition);
 
-    const definitionOrder = definition.priority;
+    // Update icon from categoryInfo (first one wins)
+    if (definition.categoryInfo?.icon !== undefined && !categoryIcon.has(category)) {
+      categoryIcon.set(category, definition.categoryInfo.icon);
+    }
+
+    // Update sort order (categoryInfo.priority takes precedence over definition.priority)
+    const definitionOrder = definition.categoryInfo?.priority ?? definition.priority;
     if (typeof definitionOrder === "number" && Number.isFinite(definitionOrder)) {
       const current = categoryOrder.get(category) ?? null;
       if (current === null || definitionOrder < current) {
@@ -64,6 +51,7 @@ export const groupNodeDefinitions = (nodeDefinitions: NodeDefinition[]): NodeDef
       name,
       nodes: [...nodes].sort((a, b) => a.displayName.localeCompare(b.displayName)),
       sortOrder: categoryOrder.get(name) ?? null,
+      icon: categoryIcon.get(name),
     }))
     .sort((a, b) => {
       const orderA = a.sortOrder ?? Number.POSITIVE_INFINITY;
@@ -111,11 +99,6 @@ export const filterGroupedNodeDefinitions = (
       };
     })
     .filter((category): category is NodeDefinitionCategory => Boolean(category));
-};
-
-export type FlattenedNodeDefinition = {
-  category: string;
-  node: NodeDefinition;
 };
 
 /**
@@ -200,8 +183,13 @@ export const groupNodeDefinitionsNested = (nodeDefinitions: NodeDefinition[]): N
 
     category.nodes.push(definition);
 
-    // Update sort order
-    const definitionOrder = definition.priority;
+    // Update icon from categoryInfo (first one wins)
+    if (definition.categoryInfo?.icon !== undefined && category.icon === undefined) {
+      category.icon = definition.categoryInfo.icon;
+    }
+
+    // Update sort order (categoryInfo.priority takes precedence over definition.priority)
+    const definitionOrder = definition.categoryInfo?.priority ?? definition.priority;
     if (typeof definitionOrder === "number" && Number.isFinite(definitionOrder)) {
       if (category.sortOrder === null || definitionOrder < category.sortOrder) {
         category.sortOrder = definitionOrder;
@@ -303,14 +291,6 @@ export const filterNestedNodeDefinitions = (
   return categories
     .map(filterCategory)
     .filter((category): category is NestedNodeDefinitionCategory => category !== null);
-};
-
-export type FlattenedNestedNodeDefinition = {
-  /** Full category path */
-  categoryPath: string;
-  /** Immediate parent category name */
-  categoryName: string;
-  node: NodeDefinition;
 };
 
 /**

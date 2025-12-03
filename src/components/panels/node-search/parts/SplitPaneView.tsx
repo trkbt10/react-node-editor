@@ -6,9 +6,9 @@ import type { NodeDefinition } from "../../../../types/NodeDefinition";
 import type {
   NestedNodeDefinitionCategory,
   NodeDefinitionCategory,
-} from "../../../../contexts/node-definitions/category/nodeDefinitionCatalog";
+} from "../../../../category/types";
 import { useI18n } from "../../../../i18n/context";
-import { CategoryTree } from "./CategoryTree";
+import { CategoryTree } from "../../../../category/components/CategoryTree";
 import { GroupedNodeListPane } from "./GroupedNodeListPane";
 import { NodeListPane } from "./NodeListPane";
 import { PaneHeader } from "./PaneHeader";

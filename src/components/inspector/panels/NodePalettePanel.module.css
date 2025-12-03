@@ -68,5 +68,5 @@
 .categoryHeaderRow {
   display: flex;
   align-items: center;
-  gap: var(--node-editor-space-md);
+  gap: var(--node-editor-space-xs);
 }

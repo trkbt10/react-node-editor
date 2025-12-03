@@ -2,7 +2,8 @@
  * @file Category tree component for hierarchical category navigation
  */
 import * as React from "react";
-import type { NestedNodeDefinitionCategory } from "../../../../contexts/node-definitions/category/nodeDefinitionCatalog";
+import type { NestedNodeDefinitionCategory } from "../types";
+import { CategoryIcon } from "./CategoryIcon";
 import styles from "./CategoryTree.module.css";
 
 export type CategoryTreeProps = {
@@ -70,6 +71,7 @@ const CategoryTreeItem: React.FC<CategoryTreeItemProps> = ({
         ) : (
           <span className={styles.expandPlaceholder} />
         )}
+        {category.icon != null && <CategoryIcon icon={category.icon} />}
         <span className={styles.categoryLabel}>{category.name}</span>
         <span className={styles.categoryCount}>{category.totalNodeCount}</span>
       </div>

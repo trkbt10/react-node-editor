@@ -1,7 +1,8 @@
 /**
  * @file Tests for node definition catalog grouping helpers.
  */
-import type { NodeDefinition } from "../../../types/NodeDefinition";
+import type { NodeDefinition } from "../types/NodeDefinition";
+import type { CategoryInfo } from "./types";
 import {
   DEFAULT_NODE_CATEGORY,
   filterGroupedNodeDefinitions,
@@ -10,7 +11,7 @@ import {
   filterNestedNodeDefinitions,
   flattenNestedNodeDefinitions,
   parseCategoryPath,
-} from "./nodeDefinitionCatalog";
+} from "./catalog";
 
 const baseNode = (overrides: Partial<NodeDefinition>): NodeDefinition => ({
   type: "node",
@@ -117,6 +118,39 @@ describe("groupNodeDefinitionsNested", () => {
 
     expect(nested).toHaveLength(1);
     expect(nested[0]?.name).toBe(DEFAULT_NODE_CATEGORY);
+  });
+
+  it("extracts icon from categoryInfo", () => {
+    const dataCategory: CategoryInfo = {
+      name: "Data",
+      icon: "📊",
+      priority: 1,
+    };
+
+    const nested = groupNodeDefinitionsNested([
+      baseNode({ type: "source", displayName: "Source", category: "Data", categoryInfo: dataCategory }),
+      baseNode({ type: "filter", displayName: "Filter", category: "Data" }),
+    ]);
+
+    expect(nested).toHaveLength(1);
+    expect(nested[0]?.name).toBe("Data");
+    expect(nested[0]?.icon).toBe("📊");
+  });
+
+  it("uses categoryInfo.priority over definition.priority for sorting", () => {
+    const highPriority: CategoryInfo = {
+      name: "Important",
+      priority: 1,
+    };
+
+    const nested = groupNodeDefinitionsNested([
+      baseNode({ type: "low", displayName: "Low", category: "LowPrio", priority: 10 }),
+      baseNode({ type: "high", displayName: "High", category: "Important", categoryInfo: highPriority, priority: 100 }),
+    ]);
+
+    expect(nested.map((c) => c.name)).toEqual(["Important", "LowPrio"]);
+    expect(nested[0]?.sortOrder).toBe(1);
+    expect(nested[1]?.sortOrder).toBe(10);
   });
 });
 

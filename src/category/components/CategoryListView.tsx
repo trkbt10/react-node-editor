@@ -2,9 +2,10 @@
  * @file Category list view - vertical scrollable list with sticky category headers
  */
 import * as React from "react";
-import type { NodeDefinition } from "../../../../types/NodeDefinition";
-import type { NodeDefinitionCategory } from "../../../../contexts/node-definitions/category/nodeDefinitionCatalog";
-import { NodeCard } from "../../../node/cards/NodeCard";
+import type { NodeDefinition } from "../../types/NodeDefinition";
+import type { NodeDefinitionCategory } from "../types";
+import { CategoryIcon } from "./CategoryIcon";
+import { NodeCard } from "../../components/node/cards/NodeCard";
 import styles from "./CategoryListView.module.css";
 
 export type CategoryListViewProps = {
@@ -56,6 +57,7 @@ export const CategoryListView: React.FC<CategoryListViewProps> = ({
             onClick={() => handleCategoryHeaderClick(category.name)}
             data-is-selected={selectedCategory === category.name}
           >
+            {category.icon != null && <CategoryIcon icon={category.icon} />}
             <span className={styles.categoryName}>{category.name}</span>
             <span className={styles.nodeCount}>{category.nodes.length}</span>
           </div>
