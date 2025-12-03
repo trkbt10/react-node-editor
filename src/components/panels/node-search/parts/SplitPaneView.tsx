@@ -3,15 +3,21 @@
  */
 import * as React from "react";
 import type { NodeDefinition } from "../../../../types/NodeDefinition";
-import type { NestedNodeDefinitionCategory } from "../../../../contexts/node-definitions/category/nodeDefinitionCatalog";
+import type {
+  NestedNodeDefinitionCategory,
+  NodeDefinitionCategory,
+} from "../../../../contexts/node-definitions/category/nodeDefinitionCatalog";
 import { useI18n } from "../../../../i18n/context";
 import { CategoryTree } from "./CategoryTree";
+import { GroupedNodeListPane } from "./GroupedNodeListPane";
 import { NodeListPane } from "./NodeListPane";
 import { PaneHeader } from "./PaneHeader";
 import styles from "./SplitPaneView.module.css";
 
 export type SplitPaneViewProps = {
   categories: NestedNodeDefinitionCategory[];
+  /** Flat grouped categories to display when "All Nodes" is selected */
+  groupedCategories: NodeDefinitionCategory[];
   selectedCategoryPath: string | null;
   onCategorySelect: (categoryPath: string | null) => void;
   selectedNodeIndex: number;
@@ -55,6 +61,7 @@ const findCategoryByPath = (
 
 export const SplitPaneView: React.FC<SplitPaneViewProps> = ({
   categories,
+  groupedCategories,
   selectedCategoryPath,
   onCategorySelect,
   selectedNodeIndex,
@@ -99,6 +106,7 @@ export const SplitPaneView: React.FC<SplitPaneViewProps> = ({
   }, [categories, selectedCategory]);
 
   const paneTitle = selectedCategory ? selectedCategory.name : t("nodeSearchAllNodes");
+  const showAllNodesGrouped = selectedCategoryPath === null;
 
   return (
     <div className={styles.splitPane}>
@@ -113,16 +121,28 @@ export const SplitPaneView: React.FC<SplitPaneViewProps> = ({
         />
       </div>
 
-      <NodeListPane
-        title={paneTitle}
-        nodes={displayNodes}
-        selectedNodeIndex={selectedNodeIndex}
-        onNodeSelect={onNodeSelect}
-        onNodeHover={onNodeHover}
-        disabledNodeTypes={disabledNodeTypes}
-        nodeIndexByType={nodeIndexByType}
-        matchingNodeTypes={matchingNodeTypes}
-      />
+      {showAllNodesGrouped ? (
+        <GroupedNodeListPane
+          categories={groupedCategories}
+          selectedNodeIndex={selectedNodeIndex}
+          onNodeSelect={onNodeSelect}
+          onNodeHover={onNodeHover}
+          disabledNodeTypes={disabledNodeTypes}
+          nodeIndexByType={nodeIndexByType}
+          matchingNodeTypes={matchingNodeTypes}
+        />
+      ) : (
+        <NodeListPane
+          title={paneTitle}
+          nodes={displayNodes}
+          selectedNodeIndex={selectedNodeIndex}
+          onNodeSelect={onNodeSelect}
+          onNodeHover={onNodeHover}
+          disabledNodeTypes={disabledNodeTypes}
+          nodeIndexByType={nodeIndexByType}
+          matchingNodeTypes={matchingNodeTypes}
+        />
+      )}
     </div>
   );
 };

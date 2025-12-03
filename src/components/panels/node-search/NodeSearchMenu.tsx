@@ -116,13 +116,17 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
   // Get all nodes in flat list for keyboard navigation
   const allNodes = React.useMemo(() => {
     if (viewMode === "split") {
+      // When "All Nodes" is selected (no category), use grouped order to match CategoryListView display
+      if (selectedCategory === null) {
+        return flattenGroupedNodeDefinitions(filteredListResults);
+      }
       return flattenNestedNodeDefinitions(filteredNestedResults).map((item) => ({
         category: item.categoryName,
         node: item.node,
       }));
     }
     return flattenGroupedNodeDefinitions(filteredListResults);
-  }, [viewMode, filteredListResults, filteredNestedResults]);
+  }, [viewMode, filteredListResults, filteredNestedResults, selectedCategory]);
 
   const nodeIndexByType = React.useMemo(() => {
     return allNodes.reduce<Map<string, number>>((map, entry, index) => {
@@ -260,6 +264,7 @@ export const NodeSearchMenu: React.FC<NodeSearchMenuProps> = ({
           ) : viewMode === "split" ? (
             <SplitPaneView
               categories={filteredNestedResults}
+              groupedCategories={filteredListResults}
               selectedCategoryPath={selectedCategory}
               onCategorySelect={setSelectedCategory}
               selectedNodeIndex={selectedIndex}
