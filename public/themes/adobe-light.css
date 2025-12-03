@@ -1,0 +1,293 @@
+:root {
+  /* Core spacing scale */
+  --node-editor-space-xs: 4px;
+  --node-editor-space-sm: 8px;
+  --node-editor-space-md: 12px;
+  --node-editor-space-lg: 16px;
+  --node-editor-space-xl: 24px;
+  --node-editor-space-xxl: 32px;
+
+  /* Layout spacing */
+  --node-editor-control-padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+
+  /* Inspector spacing system */
+  --node-editor-inspector-space-xs: var(--node-editor-space-xs);
+  --node-editor-inspector-space-sm: var(--node-editor-space-sm);
+  --node-editor-inspector-space-md: var(--node-editor-space-md);
+  --node-editor-inspector-space-lg: var(--node-editor-space-lg);
+  --node-editor-inspector-space-xl: var(--node-editor-space-xl);
+  --node-editor-inspector-space-xxl: var(--node-editor-space-xxl);
+  --node-editor-inspector-content-padding: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-top: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-header-padding-bottom: var(--node-editor-inspector-space-xs);
+  --node-editor-inspector-header-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-section-gap: var(--node-editor-inspector-space-md);
+  --node-editor-inspector-field-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-inline-gap: var(--node-editor-inspector-space-sm);
+  --node-editor-inspector-empty-padding-vertical: var(--node-editor-inspector-space-xxl);
+  --node-editor-inspector-empty-padding-horizontal: var(--node-editor-inspector-space-lg);
+  --node-editor-inspector-input-padding: var(--node-editor-space-xs) var(--node-editor-space-sm);
+
+  /* Inspector typography */
+  --node-editor-inspector-font-size-title: 0.6875rem;
+  --node-editor-inspector-line-height-title: 1.429;
+  --node-editor-inspector-font-size-body: 0.875rem;
+  --node-editor-inspector-line-height-body: 1.429;
+  --node-editor-inspector-font-size-meta: 0.75rem;
+  --node-editor-inspector-line-height-meta: 1.333;
+  --node-editor-inspector-font-weight-medium: 500;
+  --node-editor-inspector-font-size-heading: 0.875rem;
+  --node-editor-inspector-font-size: var(--node-editor-inspector-font-size-body);
+  --node-editor-inspector-line-height: var(--node-editor-inspector-line-height-body);
+
+  /* Font families & typography - Adobe uses Adobe Clean */
+  --node-editor-theme-default-font-family: "adobe-clean", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --node-editor-theme-control-font-family: "adobe-clean", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --node-editor-theme-label-font-family: "adobe-clean", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --node-editor-system-font: "adobe-clean", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --node-editor-font-mono: "Source Code Pro", "SF Mono", "Consolas", monospace;
+  --node-editor-title-font: 500 0.875rem/1.429 var(--node-editor-theme-label-font-family);
+  --node-editor-subtitle-font: 400 0.875rem/1.429 var(--node-editor-theme-label-font-family);
+  --node-editor-caption-font: 400 0.75rem/1.333 var(--node-editor-theme-default-font-family);
+  --node-editor-control-text-font: 400 var(--node-editor-inspector-font-size-body) / 1.429
+    var(--node-editor-theme-control-font-family);
+  --node-editor-input-font: 400 var(--node-editor-inspector-font-size-body) / 1.429
+    var(--node-editor-theme-default-font-family);
+  --node-editor-font-size-lg: 1rem;
+  --node-editor-font-size-sm: 0.875rem;
+  --node-editor-font-size-xs: 0.75rem;
+
+  /* Canvas grid - Adobe's subtle grid */
+  --node-editor-grid-color: #000000;
+  --node-editor-grid-opacity: 0.08;
+
+  /* Shadow system - Adobe's characteristic shadows (lighter for light theme) */
+  --node-editor-shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.15);
+  --node-editor-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --node-editor-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.25);
+
+  /* Transition system */
+  --node-editor-transition-duration: 0.13s;
+
+  /* Inspector shadows */
+  --node-editor-inspector-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.15), 0 1px 4px 0 rgba(0, 0, 0, 0.1);
+  --node-editor-inspector-header-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+
+  /* Tree & List Components */
+  --node-editor-tree-item-height: 28px;
+  --node-editor-tree-indent: 16px;
+
+  /* Control Buttons */
+  --node-editor-control-button-size-sm: 16px;
+  --node-editor-control-button-size: 20px;
+
+  /* Icons */
+  --node-editor-icon-size-sm: 14px;
+  --node-editor-icon-selected-brightness: 1.0;
+
+  /* Text colors - Adobe Spectrum design system (Light) */
+  --node-editor-text-color: #4b4b4b;
+  --node-editor-text-secondary: #707070;
+  --node-editor-header-text-color: #2c2c2c;
+  --node-editor-label-color: #4b4b4b;
+  --node-editor-secondary-label-color: #707070;
+  --node-editor-tertiary-label-color: #909090;
+  --node-editor-quaternary-label-color: #b0b0b0;
+  --node-editor-control-text-color: var(--node-editor-text-color);
+  --node-editor-control-text-color-primary: #ffffff;
+  --node-editor-control-text-color-secondary: var(--node-editor-text-color);
+  --node-editor-control-hover-text-color-primary: #ffffff;
+  --node-editor-input-text-color: #2c2c2c;
+  --node-editor-selected-control-text-color: #ffffff;
+  --node-editor-selected-menu-item-text-color: #ffffff;
+
+  /* Status & accent colors - Adobe Spectrum blue (authentic Adobe blue) */
+  --node-editor-accent-color: #2680eb;
+  --node-editor-accent-color-hover: #1473e6;
+  --node-editor-color-primary: #2680eb;
+  --node-editor-keyboard-focus-indicator-color: rgba(38, 128, 235, 0.4);
+  --node-editor-success-color: #2d9d78;
+  --node-editor-warning-color: #e68619;
+  --node-editor-caution-color: #d7373f;
+  --node-editor-caution-hover-background: rgba(215, 55, 63, 0.08);
+  --node-editor-system-orange-color: #e68619;
+  --node-editor-system-red-color: #d7373f;
+  --node-editor-connection-color: #a0a0a0;
+
+  /* Surface colors - Adobe Creative Cloud UI backgrounds (Light) */
+  --node-editor-surface-primary: #f5f5f5;
+  --node-editor-surface-secondary: #ffffff;
+  --node-editor-surface-tertiary: #f0f0f0;
+  --node-editor-background-surface: #f5f5f5;
+  --node-editor-selected-content-background-color: rgba(38, 128, 235, 0.1);
+  --node-editor-selected-control-color: rgba(38, 128, 235, 0.15);
+  --node-editor-under-page-background-color: #e0e0e0;
+  --node-editor-window-background-color: #e0e0e0;
+
+  /* Control surfaces - Adobe Spectrum buttons (Light) */
+  --node-editor-control-background: #e1e1e1;
+  --node-editor-control-background-primary: #2680eb;
+  --node-editor-control-background-secondary: #f0f0f0;
+  --node-editor-control-hover-background: #d4d4d4;
+  --node-editor-control-hover-background-primary: #1473e6;
+  --node-editor-hover-background: rgba(0, 0, 0, 0.04);
+  --node-editor-control-box-shadow-primary: 0 1px 2px rgba(0, 0, 0, 0.15);
+  --node-editor-control-box-shadow-secondary: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  --node-editor-disabled-control-text-color: rgba(75, 75, 75, 0.3);
+
+  /* Input surfaces - Adobe style input fields (Light) */
+  --node-editor-input-background: #ffffff;
+  --node-editor-input-border: 1px solid #d0d0d0;
+  --node-editor-input-border-hover: #2680eb;
+  --node-editor-input-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  --node-editor-input-padding: var(--node-editor-space-sm) var(--node-editor-space-md);
+
+  /* Card & panel styling - Adobe Spectrum card components (Light) */
+  --node-editor-card-border-color: rgba(0, 0, 0, 0.1);
+  --node-editor-card-border: 1px solid var(--node-editor-card-border-color);
+  --node-editor-card-border-radius: var(--node-editor-radius-xs);
+  --node-editor-card-box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  --node-editor-card-hover-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --node-editor-card-elevated-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --node-editor-card-focus-box-shadow: 0 0 0 1px var(--node-editor-keyboard-focus-indicator-color);
+  --node-editor-card-disabled-background: rgba(0, 0, 0, 0.05);
+  --node-editor-card-filled-background: rgba(38, 128, 235, 0.05);
+  --node-editor-card-filled-hover-background: rgba(38, 128, 235, 0.1);
+  --node-editor-card-hover-border-color: rgba(38, 128, 235, 0.38);
+
+  /* Dialogs & overlays */
+  --node-editor-dialog-background: var(--node-editor-surface-secondary);
+  --node-editor-dialog-box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+  --node-editor-dialog-level-elevation: 1000;
+
+  /* Scrollbars - Adobe Spectrum scrollbar styling */
+  --node-editor-scroll-bar-thumb-color: rgba(0, 0, 0, 0.2);
+  --node-editor-active-scroll-bar-thumb-color: rgba(0, 0, 0, 0.35);
+
+  /* Selected State Colors */
+  --node-editor-selected-secondary-color: rgba(20, 115, 230, 0.95);
+  --node-editor-selected-hover-background: rgba(20, 115, 230, 0.1);
+
+  /* Tables & list accents */
+  --node-editor-table-header-background-color: #f0f0f0;
+  --node-editor-table-header-background-color-hover: #e8e8e8;
+  --node-editor-table-header-background-color-active: #e0e0e0;
+
+  /* Node-specific colors - Adobe Spectrum semantic colors */
+  --node-editor-group-node-background: rgba(38, 128, 235, 0.04);
+  --node-editor-group-node-border: rgba(38, 128, 235, 0.2);
+  --node-editor-group-node-active-background: rgba(38, 128, 235, 0.1);
+  --node-editor-group-node-active-color: rgba(38, 128, 235, 0.6);
+  --node-editor-node-port-input-color: #2d9d78;
+  --node-editor-node-port-output-color: #d7373f;
+
+  /* System fills */
+  --node-editor-tertiary-system-background: rgba(0, 0, 0, 0.03);
+  --node-editor-tertiary-system-fill-color: rgba(0, 0, 0, 0.04);
+  --node-editor-quaternary-system-fill-color: rgba(0, 0, 0, 0.06);
+
+  /* Border Radii - minimal and consistent */
+  --node-editor-border-radius-xxs: 2px;
+  --node-editor-border-radius-xs: 4px;
+  --node-editor-radius-xs: 4px;
+  --node-editor-radius-sm: 4px;
+  --node-editor-radius-md: 6px;
+  --node-editor-control-border-radius: var(--node-editor-radius-xs);
+  --node-editor-segment-control-border-radius: 16px;
+
+  /* Borders */
+  --node-editor-border-width: 1px;
+  --node-editor-border-color: rgba(0, 0, 0, 0.15);
+  --node-editor-divider-color: rgba(0, 0, 0, 0.1);
+  --node-editor-separator-color: rgba(0, 0, 0, 0.06);
+
+  /* Segment controls */
+  --node-editor-segment-backdrop-filter: none;
+  --node-editor-segment-control-background: rgba(0, 0, 0, 0.05);
+  --node-editor-segment-control-background-color: transparent;
+  --node-editor-segment-control-text-color: #707070;
+  --node-editor-segment-control-active-background-color: #ffffff;
+  --node-editor-segment-control-active-text-color: #2c2c2c;
+  --node-editor-segment-control-segment-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+
+  /* Tab Navigation - Adobe Spectrum segment style (pill/toggle) */
+  --node-editor-tab-nav-gap: 0;
+  --node-editor-tab-nav-padding: 2px;
+  --node-editor-tab-nav-border-radius: var(--node-editor-segment-control-border-radius);
+  --node-editor-tab-nav-background: rgba(0, 0, 0, 0.05);
+  --node-editor-tab-nav-box-shadow: none;
+  --node-editor-tab-button-flex: 1;
+  --node-editor-tab-button-min-height: 26px;
+  --node-editor-tab-button-padding: var(--node-editor-space-xs) var(--node-editor-space-md);
+  --node-editor-tab-button-border-radius: 14px;
+  --node-editor-tab-button-background: transparent;
+  --node-editor-tab-button-color: #707070;
+  --node-editor-tab-button-font-size: var(--node-editor-inspector-font-size-meta);
+  --node-editor-tab-button-font-weight: 400;
+  --node-editor-tab-button-active-background: #ffffff;
+  --node-editor-tab-button-active-color: #2c2c2c;
+  --node-editor-tab-button-active-font-weight: 500;
+  --node-editor-tab-button-active-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --node-editor-tab-button-hover-background: rgba(0, 0, 0, 0.05);
+  --node-editor-tab-button-hover-color: #4b4b4b;
+
+  /* Connection styling - Adobe After Effects / Premiere Pro style */
+  --node-editor-connection-base-stroke-width: 2.5;
+  --node-editor-connection-active-stroke-width: 3.5;
+  --node-editor-connection-flow-stripe-stroke-width: 1.8;
+  --node-editor-connection-flow-stripe-active-stroke-width: 2.8;
+  --node-editor-connection-direction-stroke-width: 2.5;
+  --node-editor-connection-hover-shadow: drop-shadow(0 2px 4px rgba(38, 128, 235, 0.35));
+  --node-editor-connection-selected-shadow: drop-shadow(0 3px 6px rgba(38, 128, 235, 0.5));
+  --node-editor-connection-hover-opacity: 0.92;
+  --node-editor-connection-dragging-opacity: 0.62;
+  --node-editor-connection-stripe-dash-array: 9 11;
+  --node-editor-connection-stripe-dash-offset-bg: -10;
+  --node-editor-connection-stripe-opacity-accent: 0.92;
+  --node-editor-connection-stripe-opacity-background: 0.52;
+  --node-editor-connection-flow-animation-duration: 1.1s;
+  --node-editor-connection-flow-animation-distance: -20;
+  --node-editor-connection-base-transition: stroke 0.13s ease-out, stroke-width 0.13s ease-out;
+  --node-editor-connection-arrow-transition: fill 0.13s ease-out;
+
+  /* Connection drag styling */
+  --node-editor-connection-drag-stroke-width-connecting: 2;
+  --node-editor-connection-drag-stroke-width-disconnecting: 3;
+  --node-editor-connection-drag-dash-array-connecting: 4 4;
+  --node-editor-connection-drag-dash-array-disconnecting: 8 4;
+  --node-editor-connection-drag-animation-duration: 0.45s;
+  --node-editor-connection-drag-animation-distance: -8;
+
+  /* Inspector icon button - Adobe Spectrum light style */
+  --node-editor-inspector-icon-button-size: 26px;
+  --node-editor-inspector-icon-button-size-sm: 22px;
+  --node-editor-inspector-icon-button-icon-size: 14px;
+  --node-editor-inspector-icon-button-icon-size-sm: 12px;
+  --node-editor-inspector-icon-button-background: transparent;
+  --node-editor-inspector-icon-button-background-hover: rgba(0, 0, 0, 0.05);
+  --node-editor-inspector-icon-button-background-active: rgba(38, 128, 235, 0.15);
+  --node-editor-inspector-icon-button-color: #707070;
+  --node-editor-inspector-icon-button-color-hover: #4b4b4b;
+  --node-editor-inspector-icon-button-color-active: #2680eb;
+  --node-editor-inspector-icon-button-color-disabled: rgba(112, 112, 112, 0.25);
+
+  /* Inspector input label - Adobe Spectrum typography */
+  --node-editor-inspector-input-label-color: #707070;
+  --node-editor-inspector-input-label-font-size: 0.75rem;
+  --node-editor-inspector-input-label-font-weight: 400;
+  --node-editor-inspector-input-label-width: auto;
+  --node-editor-inspector-input-label-min-width: 48px;
+
+  /* Inspector segment control - Adobe Spectrum pill style */
+  --node-editor-inspector-segment-background: rgba(0, 0, 0, 0.05);
+  --node-editor-inspector-segment-border-radius: 16px;
+  --node-editor-inspector-segment-padding: 2px;
+  --node-editor-inspector-segment-gap: 0;
+  --node-editor-inspector-segment-button-background: transparent;
+  --node-editor-inspector-segment-button-background-hover: rgba(0, 0, 0, 0.05);
+  --node-editor-inspector-segment-button-background-active: #ffffff;
+  --node-editor-inspector-segment-button-color: #707070;
+  --node-editor-inspector-segment-button-color-hover: #4b4b4b;
+  --node-editor-inspector-segment-button-color-active: #2c2c2c;
+  --node-editor-inspector-segment-button-shadow-active: 0 1px 3px rgba(0, 0, 0, 0.1);
+}

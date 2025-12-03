@@ -14,6 +14,12 @@
       "cssFile": "adobe.css"
     },
     {
+      "id": "adobe-light",
+      "label": "Adobe Light",
+      "description": "Clean light interface inspired by Adobe Creative Cloud with refined blue accents.",
+      "cssFile": "adobe-light.css"
+    },
+    {
       "id": "akzidenz-grotesk",
       "label": "Akzidenz-Grotesk",
       "description": "Swiss Style minimalism with strict grids and neutral typography.",

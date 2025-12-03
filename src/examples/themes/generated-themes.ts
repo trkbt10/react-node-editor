@@ -8,6 +8,7 @@
 export type NodeEditorThemeId =
   | "default"
   | "adobe"
+  | "adobe-light"
   | "akzidenz-grotesk"
   | "antigravity"
   | "apple"
@@ -54,6 +55,12 @@ export const GENERATED_THEMES: NodeEditorTheme[] = [
     label: "Adobe",
     description: "Sleek dark interface inspired by Adobe Creative Cloud with refined blue accents.",
     cssPath: "/themes/adobe.css",
+  },
+  {
+    id: "adobe-light",
+    label: "Adobe Light",
+    description: "Clean light interface inspired by Adobe Creative Cloud with refined blue accents.",
+    cssPath: "/themes/adobe-light.css",
   },
   {
     id: "akzidenz-grotesk",
