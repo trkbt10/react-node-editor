@@ -1,7 +1,6 @@
 /**
  * @file Tests for useSettings hook and settings value accessors
  */
-import { describe, it, expect, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useSettings } from "./useSettings";
 import { SettingsManager } from "../settings/SettingsManager";

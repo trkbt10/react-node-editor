@@ -15,9 +15,10 @@ import {
   type NestedNodeDefinitionCategory,
 } from "../../contexts/node-definitions/category/nodeDefinitionCatalog";
 import { PlusIcon } from "../elements/icons";
+import { NodeCard } from "../node/cards/NodeCard";
 import styles from "./NodeAddMenu.module.css";
 
-const CLOSE_DELAY_MS = 150;
+const DEFAULT_CLOSE_DELAY_MS = 150;
 const SUBMENU_OVERLAP = 8;
 
 // ============================================================================
@@ -103,6 +104,8 @@ export type NodeAddMenuProps = {
   canvasPosition: Position;
   disabledNodeTypes?: string[];
   onClose: () => void;
+  /** Delay in ms before closing submenu on pointer leave (default: 150, use 0 for tests) */
+  closeDelayMs?: number;
 };
 
 /**
@@ -115,13 +118,14 @@ export const NodeAddMenu: React.FC<NodeAddMenuProps> = ({
   canvasPosition,
   disabledNodeTypes = [],
   onClose,
+  closeDelayMs = DEFAULT_CLOSE_DELAY_MS,
 }) => {
   const triggerRef = React.useRef<HTMLLIElement>(null);
   const [openPath, setOpenPath] = React.useState<string[]>([]);
 
   const { schedule: scheduleClose, cancel: cancelClose } = useDelayedCallback(
     () => setOpenPath([]),
-    CLOSE_DELAY_MS,
+    closeDelayMs,
   );
 
   const disabledSet = React.useMemo(
@@ -420,16 +424,15 @@ const NodeItem: React.FC<NodeItemProps> = React.memo(({ node, disabled, onSelect
 
   return (
     <li className={styles.menuItemWrapper}>
-      <div
-        className={disabled ? styles.menuItemDisabled : styles.menuItem}
+      <NodeCard
+        node={node}
+        variant="menu"
+        disabled={disabled}
         onPointerEnter={handlePointerEnter}
         onClick={handleClick}
         tabIndex={disabled ? -1 : 0}
         role="menuitem"
-        aria-disabled={disabled}
-      >
-        <span className={styles.menuItemLabel}>{node.displayName}</span>
-      </div>
+      />
     </li>
   );
 });

@@ -4,7 +4,7 @@
 import * as React from "react";
 import type { NodeDefinition } from "../../../../types/NodeDefinition";
 import { useI18n } from "../../../../i18n/context";
-import { NodeDefinitionCard } from "./NodeDefinitionCard";
+import { NodeCard } from "../../../node/cards/NodeCard";
 import { PaneHeader } from "./PaneHeader";
 import styles from "./NodeListPane.module.css";
 
@@ -55,7 +55,7 @@ export const NodeListPane: React.FC<NodeListPaneProps> = ({
           const isNonMatching = matchingNodeTypes !== undefined && !matchingNodeTypes.has(node.type);
 
           return (
-            <NodeDefinitionCard
+            <NodeCard
               key={node.type}
               node={node}
               variant="list"

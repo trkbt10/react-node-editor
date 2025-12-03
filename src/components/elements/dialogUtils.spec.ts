@@ -1,4 +1,6 @@
-import { describe, it, expect } from "vitest";
+/**
+ * @file Tests for dialogUtils positioning functions
+ */
 import { calculateContextMenuPosition, getViewportInfo, type ViewportInfo } from "./dialogUtils";
 
 describe("dialogUtils", () => {

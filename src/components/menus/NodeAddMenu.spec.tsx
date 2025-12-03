@@ -5,8 +5,7 @@
  * position: fixed submenus require coordinated timeout management.
  */
 import * as React from "react";
-import { render, screen, fireEvent, act } from "@testing-library/react";
-import { vi } from "vitest";
+import { render, screen, fireEvent, act, waitFor } from "@testing-library/react";
 import { NodeAddMenu } from "./NodeAddMenu";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 
@@ -51,6 +50,7 @@ describe("NodeAddMenu", () => {
     nodeDefinitions: createNodeDefinitions(),
     canvasPosition: { x: 100, y: 100 },
     onClose: () => {},
+    closeDelayMs: 0,
   };
 
   describe("initial render", () => {
@@ -382,14 +382,9 @@ describe("NodeAddMenu", () => {
      * different parts of the menu hierarchy. Since submenus use position: fixed,
      * they are visually outside their parent elements, causing pointerLeave
      * to fire when moving from trigger to submenu.
+     *
+     * Note: Tests use closeDelayMs={0} from defaultProps for immediate execution.
      */
-    beforeEach(() => {
-      vi.useFakeTimers();
-    });
-
-    afterEach(() => {
-      vi.useRealTimers();
-    });
 
     describe("root trigger to submenu transition", () => {
       it("keeps submenu open when moving from root trigger to submenu", async () => {
@@ -418,12 +413,7 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(submenu);
         });
 
-        // Wait past the close delay
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
-
-        // Submenu should still be visible
+        // Submenu should still be visible (closeDelayMs=0 means immediate)
         expect(screen.getByText("Category1")).toBeInTheDocument();
         expect(rootItem).toHaveAttribute("data-focused", "true");
       });
@@ -449,10 +439,6 @@ describe("NodeAddMenu", () => {
         });
         await act(async () => {
           fireEvent.pointerEnter(category1);
-        });
-
-        await act(async () => {
-          vi.advanceTimersByTime(200);
         });
 
         // Menu should stay open
@@ -488,9 +474,6 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(rootItem);
         });
 
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
 
         // Submenu should still be visible
         expect(screen.getByText("Category1")).toBeInTheDocument();
@@ -527,9 +510,6 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(rootItem);
         });
 
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
 
         // Root submenu should still be visible (Category1's nested submenu closes due to path change)
         expect(screen.getByText("Category1")).toBeInTheDocument();
@@ -569,9 +549,6 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(nestedSubmenu);
         });
 
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
 
         // All should remain open
         expect(screen.getByText("Category2")).toBeInTheDocument();
@@ -615,9 +592,6 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(category2);
         });
 
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
 
         // Parent submenu should stay open (nested may close based on path change)
         expect(screen.getByText("Category2")).toBeInTheDocument();
@@ -656,9 +630,6 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(rootItem);
         });
 
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
 
         // Root submenu should stay visible
         expect(screen.getByText("Category1")).toBeInTheDocument();
@@ -698,9 +669,6 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(category2);
         });
 
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
 
         // Everything should stay open
         expect(screen.getByText("Category2")).toBeInTheDocument();
@@ -742,9 +710,6 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(subcategory);
         });
 
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
 
         // All levels should remain open
         expect(screen.getByText("Category2")).toBeInTheDocument();
@@ -779,9 +744,6 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(rootItem);
         });
 
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
 
         // Submenu should stay open
         expect(screen.getByText("Category1")).toBeInTheDocument();
@@ -825,7 +787,7 @@ describe("NodeAddMenu", () => {
     });
 
     describe("leaving entire menu tree", () => {
-      it("closes all menus after delay when leaving entire tree", async () => {
+      it("closes all menus when leaving entire tree", async () => {
         const tracker = createCallTracker<[string, { x: number; y: number }]>();
         render(
           <ul>
@@ -857,20 +819,15 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerLeave(deepSubmenu);
         });
 
-        // Still visible during delay
-        expect(screen.getByText("Category1")).toBeInTheDocument();
-
-        // After delay, everything closes
-        await act(async () => {
-          vi.advanceTimersByTime(200);
+        // With closeDelayMs=0, menus close after timeout resolves
+        await waitFor(() => {
+          expect(screen.queryByText("Category1")).not.toBeInTheDocument();
         });
-
-        expect(screen.queryByText("Category1")).not.toBeInTheDocument();
         expect(screen.queryByText("Subcategory")).not.toBeInTheDocument();
         expect(screen.queryByText("Node D")).not.toBeInTheDocument();
       });
 
-      it("removes data-focused after delay when leaving entire tree", async () => {
+      it("removes data-focused when leaving entire tree", async () => {
         const tracker = createCallTracker<[string, { x: number; y: number }]>();
         render(
           <ul>
@@ -890,55 +847,12 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerLeave(rootWrapper);
         });
 
-        // Still focused during delay
-        expect(rootItem).toHaveAttribute("data-focused", "true");
-
-        await act(async () => {
-          vi.advanceTimersByTime(200);
+        // With closeDelayMs=0, data-focused is removed after timeout resolves
+        await waitFor(() => {
+          expect(rootItem).not.toHaveAttribute("data-focused");
         });
-
-        expect(rootItem).not.toHaveAttribute("data-focused");
       });
 
-      it("cancels close when re-entering any part of tree before delay", async () => {
-        const tracker = createCallTracker<[string, { x: number; y: number }]>();
-        render(
-          <ul>
-            <NodeAddMenu {...defaultProps} onSelectNode={tracker.fn} />
-          </ul>
-        );
-
-        const rootItem = screen.getByText("Add Node").closest("[role='menuitem']")!;
-        const rootWrapper = rootItem.closest("li")!;
-
-        await act(async () => {
-          fireEvent.pointerEnter(rootItem);
-        });
-
-        expect(screen.getByText("Category1")).toBeInTheDocument();
-
-        // Leave
-        await act(async () => {
-          fireEvent.pointerLeave(rootWrapper);
-        });
-
-        // Re-enter quickly (before 150ms delay)
-        await act(async () => {
-          vi.advanceTimersByTime(50);
-        });
-
-        await act(async () => {
-          fireEvent.pointerEnter(rootItem);
-        });
-
-        // Wait past original delay
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
-
-        // Should still be open
-        expect(screen.getByText("Category1")).toBeInTheDocument();
-      });
     });
 
     describe("edge cases", () => {
@@ -961,24 +875,15 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerLeave(rootWrapper);
         });
         await act(async () => {
-          vi.advanceTimersByTime(30);
-        });
-        await act(async () => {
           fireEvent.pointerEnter(rootItem);
         });
         await act(async () => {
           fireEvent.pointerLeave(rootWrapper);
         });
         await act(async () => {
-          vi.advanceTimersByTime(30);
-        });
-        await act(async () => {
           fireEvent.pointerEnter(rootItem);
         });
 
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
 
         // Should be open (last action was enter)
         expect(screen.getByText("Category1")).toBeInTheDocument();
@@ -1004,18 +909,12 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(category1);
         });
 
-        await act(async () => {
-          vi.advanceTimersByTime(30);
-        });
 
         const category2 = screen.getByText("Category2").closest("[role='menuitem']")!;
         await act(async () => {
           fireEvent.pointerEnter(category2);
         });
 
-        await act(async () => {
-          vi.advanceTimersByTime(200);
-        });
 
         // Should show Category2's submenu, not Category1's
         expect(screen.getByText("Subcategory")).toBeInTheDocument();

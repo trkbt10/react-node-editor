@@ -4,7 +4,7 @@
 import * as React from "react";
 import type { NodeDefinition } from "../../../../types/NodeDefinition";
 import type { NodeDefinitionCategory } from "../../../../contexts/node-definitions/category/nodeDefinitionCatalog";
-import { NodeDefinitionCard } from "./NodeDefinitionCard";
+import { NodeCard } from "../../../node/cards/NodeCard";
 import styles from "./CategoryListView.module.css";
 
 export type CategoryListViewProps = {
@@ -68,7 +68,7 @@ export const CategoryListView: React.FC<CategoryListViewProps> = ({
               const isNonMatching = matchingNodeTypes !== undefined && !matchingNodeTypes.has(node.type);
 
               return (
-                <NodeDefinitionCard
+                <NodeCard
                   key={node.type}
                   node={node}
                   variant="list"

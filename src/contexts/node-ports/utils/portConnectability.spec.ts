@@ -62,8 +62,12 @@ describe("getConnectablePortIds", () => {
     };
 
     const getNodePorts = (nodeId: string) => {
-      if (nodeId === "node-1") return [fromPort];
-      if (nodeId === "node-2") return [targetPort];
+      if (nodeId === "node-1") {
+        return [fromPort];
+      }
+      if (nodeId === "node-2") {
+        return [targetPort];
+      }
       return [];
     };
 

@@ -8,7 +8,7 @@ import { useI18n } from "../../../i18n/context";
 import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { countNodesByType, getDisabledNodeTypes } from "../../../contexts/node-definitions/utils/nodeTypeLimits";
-import { NodeDefinitionCard } from "../../panels/node-search/parts/NodeDefinitionCard";
+import { NodeCard } from "../../node/cards/NodeCard";
 import {
   groupNodeDefinitions,
   filterGroupedNodeDefinitions,
@@ -101,7 +101,7 @@ export const NodePalettePanel: React.FC = () => {
                 {category.nodes.map((nodeDefinition) => {
                   const disabled = disabledSet.has(nodeDefinition.type);
                   return (
-                    <NodeDefinitionCard
+                    <NodeCard
                       key={nodeDefinition.type}
                       node={nodeDefinition}
                       variant="grid"

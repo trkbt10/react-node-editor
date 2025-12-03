@@ -1,0 +1,240 @@
+/* NodeCard - Shared node definition card for menus, search, and inspector */
+
+.card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--node-editor-space-md);
+  border-radius: var(--node-editor-card-border-radius);
+  background: var(--node-editor-control-background);
+  color: var(--node-editor-text-color);
+  box-sizing: border-box;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+/* ============================================================================
+   Variant: list (default - for NodeSearchMenu)
+   ============================================================================ */
+
+.card[data-variant="list"] {
+  gap: var(--node-editor-space-md);
+  border: none;
+  border-radius: 0;
+  padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
+}
+
+.card[data-variant="list"] .icon {
+  width: 24px;
+  height: 24px;
+  font-size: 18px;
+  background: transparent;
+}
+
+.card[data-variant="list"]:hover:not([data-is-disabled="true"]):not([data-is-selected="true"]) {
+  background: var(--node-editor-control-hover-background);
+}
+
+.card[data-variant="list"][data-is-selected="true"] {
+  background: var(--node-editor-selected-control-color);
+  color: var(--node-editor-selected-control-text-color);
+}
+
+.card[data-variant="list"][data-is-selected="true"]:hover {
+  filter: brightness(0.95);
+}
+
+.card[data-variant="list"] .content {
+  gap: var(--node-editor-space-xxs, 4px);
+}
+
+.card[data-variant="list"] .description {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.card[data-variant="list"] .typeBadge {
+  margin-left: var(--node-editor-space-lg);
+}
+
+/* ============================================================================
+   Variant: grid (for palette grids)
+   ============================================================================ */
+
+.card[data-variant="grid"] {
+  flex-direction: row;
+  gap: var(--node-editor-space-sm);
+  padding: var(--node-editor-space-sm);
+  border: var(--node-editor-input-border);
+  box-shadow: var(--node-editor-card-box-shadow);
+}
+
+.card[data-variant="grid"]:focus-visible {
+  outline: 3px solid var(--node-editor-keyboard-focus-indicator-color);
+  outline-offset: 2px;
+}
+
+.card[data-variant="grid"]:hover {
+  background: var(--node-editor-control-hover-background);
+  box-shadow: var(--node-editor-card-hover-box-shadow);
+}
+
+.card[data-variant="grid"] .content {
+  gap: var(--node-editor-space-xxs, 4px);
+}
+
+.card[data-variant="grid"] .description {
+  -webkit-line-clamp: 2;
+}
+
+.card[data-variant="grid"] .typeBadge {
+  margin-left: var(--node-editor-space-md);
+}
+
+/* ============================================================================
+   Variant: menu (for NodeAddMenu submenu items)
+   ============================================================================ */
+
+.card[data-variant="menu"] {
+  gap: var(--node-editor-space-sm, 8px);
+  padding: var(--node-editor-space-sm, 8px) var(--node-editor-space-md, 12px);
+  border: none;
+  border-radius: var(--node-editor-control-border-radius, 6px);
+  background: transparent;
+}
+
+.card[data-variant="menu"] .icon {
+  width: 20px;
+  height: 20px;
+  font-size: 14px;
+  background: transparent;
+}
+
+.card[data-variant="menu"]:hover:not([data-is-disabled="true"]) {
+  background: var(--node-editor-control-hover-background, #f5f5f5);
+}
+
+.card[data-variant="menu"] .title {
+  font-size: var(--node-editor-font-size-sm, 13px);
+  font-weight: 500;
+}
+
+.card[data-variant="menu"] .typeBadge {
+  font-size: 10px;
+  padding: 1px 6px;
+  margin-left: auto;
+}
+
+/* ============================================================================
+   Variant: compact (for inspector or tight spaces)
+   ============================================================================ */
+
+.card[data-variant="compact"] {
+  gap: var(--node-editor-space-xs, 6px);
+  padding: var(--node-editor-space-xs, 6px) var(--node-editor-space-sm, 8px);
+  border: none;
+  border-radius: var(--node-editor-control-border-radius, 6px);
+  background: transparent;
+}
+
+.card[data-variant="compact"] .icon {
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  background: transparent;
+}
+
+.card[data-variant="compact"] .title {
+  font-size: var(--node-editor-inspector-font-size-meta, 11px);
+  font-weight: 500;
+}
+
+.card[data-variant="compact"] .typeBadge {
+  font-size: 9px;
+  padding: 1px 4px;
+}
+
+/* ============================================================================
+   Shared element styles
+   ============================================================================ */
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--node-editor-control-border-radius);
+  background: var(--node-editor-table-header-background-color);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-xs);
+}
+
+.titleRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--node-editor-space-sm);
+}
+
+.title {
+  font-size: var(--node-editor-inspector-font-size-body);
+  font-weight: 600;
+  line-height: 1.3;
+  color: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.description {
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--node-editor-secondary-label-color);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.typeBadge {
+  font-size: var(--node-editor-inspector-font-size-meta);
+  font-family: var(--node-editor-input-font);
+  padding: var(--node-editor-space-xxs, 4px) var(--node-editor-space-xs);
+  border-radius: var(--node-editor-control-border-radius);
+  background: var(--node-editor-table-header-background-color);
+  color: var(--node-editor-secondary-label-color);
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+/* ============================================================================
+   State modifiers (shared across variants)
+   ============================================================================ */
+
+.card[data-is-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Non-matching nodes in highlight filter mode - dimmed but still interactive */
+.card[data-is-non-matching="true"] {
+  opacity: 0.4;
+}
+
+.card[data-is-non-matching="true"]:hover:not([data-is-disabled="true"]) {
+  opacity: 0.65;
+}
