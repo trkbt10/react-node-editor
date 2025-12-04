@@ -157,20 +157,28 @@ export const useNodeLayerPorts = () => {
     document.addEventListener("pointercancel", handlePointerCancel);
   });
 
-  const handlePortPointerUp = React.useEffectEvent((event: React.PointerEvent, port: Port) => {
+  const handlePortPointerUp = React.useEffectEvent((event: React.PointerEvent, _port: Port) => {
     event.stopPropagation();
     if (event.pointerType !== "mouse") {
       containerRef.current?.releasePointerCapture?.(event.pointerId);
     }
 
+    // Use candidatePort from drag state instead of DOM event target port
+    // This ensures snap distance equals connection range
     if (interactionState.connectionDisconnectState) {
-      completeDisconnectDrag(port);
+      const candidatePort = interactionState.connectionDisconnectState.candidatePort;
+      if (candidatePort) {
+        completeDisconnectDrag(candidatePort);
+      }
       endConnectionDisconnect();
       return;
     }
 
     if (interactionState.connectionDragState) {
-      completeConnectionDrag(port);
+      const candidatePort = interactionState.connectionDragState.candidatePort;
+      if (candidatePort) {
+        completeConnectionDrag(candidatePort);
+      }
       endConnectionDrag();
     }
   });
