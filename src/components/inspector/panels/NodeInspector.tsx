@@ -4,8 +4,8 @@
 import * as React from "react";
 import type { Node } from "../../../types/core";
 import type { InspectorRenderProps } from "../../../types/NodeDefinition";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
-import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
+import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
 import { useNodeDefinition } from "../../../contexts/node-definitions/hooks/useNodeDefinition";
 import { useExternalDataRef } from "../../../contexts/external-data/ExternalDataContext";
 import { useExternalData } from "../../../contexts/external-data/useExternalData";

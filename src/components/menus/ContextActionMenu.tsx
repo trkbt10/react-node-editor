@@ -12,13 +12,13 @@ import { calculateAlignmentPositions } from "../controls/alignments/utils";
 import type { AlignmentActionConfig, AlignmentActionGroup, AlignmentActionType } from "../controls/alignments/types";
 import type { Position, Node } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
+import { useEditorActionState } from "../../contexts/composed/EditorActionStateContext";
 import { useI18n } from "../../i18n/context";
-import { useNodeEditor, useNodeEditorActions } from "../../contexts/node-editor/context";
-import { useNodeOperations } from "../../contexts/NodeOperationsContext";
+import { useNodeEditor, useNodeEditorActions } from "../../contexts/composed/node-editor/context";
+import { useNodeOperations } from "../../contexts/composed/NodeOperationsContext";
 import { NodeActionsList } from "./NodeActionsList";
 import { ContextMenuOverlay } from "../layout/ContextMenuOverlay";
-import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
+import { useInteractionSettings } from "../../contexts/interaction-settings/context";
 import { detectShortcutDisplayPlatform, getShortcutLabelForAction } from "../../utils/shortcutDisplay";
 
 export type ContextTarget = { type: "node"; id: string } | { type: "connection"; id: string } | { type: "canvas" };

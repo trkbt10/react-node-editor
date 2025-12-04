@@ -2,7 +2,7 @@
  * @file Inspector panel component
  */
 import * as React from "react";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
+import { useEditorActionState } from "../../contexts/composed/EditorActionStateContext";
 import { NodeTreeListPanel } from "./panels/NodeTreeListPanel";
 import { HistoryPanel } from "./panels/HistoryPanel";
 import { InspectorPropertiesTab } from "./panels/InspectorPropertiesTab";

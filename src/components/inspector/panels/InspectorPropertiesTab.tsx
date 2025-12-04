@@ -2,8 +2,8 @@
  * @file Inspector properties tab component
  */
 import * as React from "react";
-import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
+import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
 import { NodeInspector } from "../panels/NodeInspector";
 import { InspectorSection } from "../parts/InspectorSection";
 import { ConnectionPropertiesSection } from "../../controls/connectionProperties/ConnectionPropertiesSection";

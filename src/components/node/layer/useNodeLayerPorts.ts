@@ -2,11 +2,11 @@
  * @file Hook for handling port interactions (click, drag, hover).
  */
 import * as React from "react";
-import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
-import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
+import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
+import { useCanvasInteraction } from "../../../contexts/composed/canvas/interaction/context";
+import { useNodeCanvas } from "../../../contexts/composed/canvas/viewport/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
 import { usePortPositions } from "../../../contexts/node-ports/context";
 import {
   computeConnectablePortIds,
@@ -21,7 +21,7 @@ import { useConnectionOperations } from "./useConnectionOperations";
 import { createEmptyConnectablePorts } from "./connectablePortsUtils";
 
 export const useNodeLayerPorts = () => {
-  const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: _actionState, actions: actionActions } = useEditorActionState();
   const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { state: nodeEditorState, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
   const { containerRef, utils } = useNodeCanvas();

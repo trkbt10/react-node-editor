@@ -4,11 +4,11 @@
  */
 import * as React from "react";
 import { Node, NodeId } from "../../../types/core";
-import { useNodeDrag } from "../../../hooks/useNodeDrag";
+import { useNodeDrag } from "../../../contexts/composed/canvas/interaction/useNodeDrag";
 import {
   createMemoizedComponent,
   areNodesEqual,
-} from "../../../contexts/node-editor/utils/renderOptimizationMemoization";
+} from "../../../contexts/composed/node-editor/utils/renderOptimizationMemoization";
 import styles from "./NodeRenderer.module.css";
 import { NodeView } from "../NodeView";
 import { useOptionalRenderers } from "../../../contexts/RendererContext";

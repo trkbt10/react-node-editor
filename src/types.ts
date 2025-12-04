@@ -17,10 +17,10 @@ export type {
 } from "./types/core";
 
 // Re-export context-specific types
-export type { NodeEditorAction } from "./contexts/node-editor/actions";
+export type { NodeEditorAction } from "./contexts/composed/node-editor/actions";
 
-export type { PanState, NodeCanvasState, NodeCanvasAction } from "./contexts/canvas/viewport/context";
-export type { nodeCanvasReducer } from "./contexts/canvas/viewport/provider";
+export type { PanState, NodeCanvasState, NodeCanvasAction } from "./contexts/composed/canvas/viewport/context";
+export type { nodeCanvasReducer } from "./contexts/composed/canvas/viewport/provider";
 
 // Import types to use in local definitions
 import type { NodeEditorData, Node, NodeId } from "./types/core";

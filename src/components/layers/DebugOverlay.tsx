@@ -2,10 +2,10 @@
  * @file Debug overlay component
  */
 import * as React from "react";
-import { useNodeEditor } from "../../contexts/node-editor/context";
-import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useCanvasInteraction } from "../../contexts/canvas/interaction/context";
+import { useNodeEditor } from "../../contexts/composed/node-editor/context";
+import { useNodeCanvas } from "../../contexts/composed/canvas/viewport/context";
+import { useEditorActionState } from "../../contexts/composed/EditorActionStateContext";
+import { useCanvasInteraction } from "../../contexts/composed/canvas/interaction/context";
 import styles from "./DebugOverlay.module.css";
 
 export type DebugOverlayProps = {
@@ -35,7 +35,7 @@ export const DebugOverlay: React.FC<DebugOverlayProps> = ({
   const { state: editorState } = useNodeEditor();
   const { state: canvasState } = useNodeCanvas();
   const { state: actionState } = useEditorActionState();
-  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
+  const { state: interactionState, actions: _interactionActions } = useCanvasInteraction();
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const [performanceStats, setPerformanceStats] = React.useState({
     renderCount: 0,

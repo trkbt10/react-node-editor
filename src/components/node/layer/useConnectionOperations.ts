@@ -2,10 +2,10 @@
  * @file Hook for connection operations (create, disconnect, complete).
  */
 import * as React from "react";
-import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
+import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
+import { useCanvasInteraction } from "../../../contexts/composed/canvas/interaction/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
 import { isValidReconnection } from "../../../contexts/node-ports/utils/portConnectionQueries";
 import { createValidatedConnection } from "../../../contexts/node-ports/utils/connectionOperations";
 import {
@@ -16,7 +16,7 @@ import type { Port } from "../../../types/core";
 import { createEmptyConnectablePorts } from "./connectablePortsUtils";
 
 export const useConnectionOperations = () => {
-  const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: _actionState, actions: actionActions } = useEditorActionState();
   const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { state: nodeEditorState, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
   const { registry } = useNodeDefinitions();

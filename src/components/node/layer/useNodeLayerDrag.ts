@@ -2,13 +2,13 @@
  * @file Hook for handling node drag interactions.
  */
 import * as React from "react";
-import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
-import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
+import { useCanvasInteraction } from "../../../contexts/composed/canvas/interaction/context";
+import { useNodeCanvas } from "../../../contexts/composed/canvas/viewport/context";
 import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
-import { snapMultipleToGrid } from "../../../contexts/node-editor/utils/gridSnap";
-import { calculateNewPositions, handleGroupMovement } from "../../../contexts/node-editor/utils/nodeDragHelpers";
-import type { UseGroupManagementResult } from "../../../hooks/useGroupManagement";
+import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
+import { snapMultipleToGrid } from "../../../contexts/composed/node-editor/utils/gridSnap";
+import { calculateNewPositions, handleGroupMovement } from "../../../contexts/composed/node-editor/utils/nodeDragHelpers";
+import type { UseGroupManagementResult } from "../../../contexts/composed/node-editor/hooks/useGroupManagement";
 
 export const useNodeLayerDrag = (moveGroupWithChildren: UseGroupManagementResult["moveGroupWithChildren"]) => {
   const { state: interactionState, actions: interactionActions } = useCanvasInteraction();

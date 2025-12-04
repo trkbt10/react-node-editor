@@ -18,7 +18,7 @@ import {
   type MaterialConfig,
   type MaterialMode,
 } from "./materialConfig";
-import { useNodeEditor } from "../../../../../contexts/node-editor/context";
+import { useNodeEditor } from "../../../../../contexts/composed/node-editor/context";
 import classes from "./ThreeJsNodes.module.css";
 import { calculateConnectionPath } from "../../../../../core/connection/path";
 import { getOppositePortPosition } from "../../../../../core/port/position";

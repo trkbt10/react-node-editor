@@ -3,10 +3,10 @@
  */
 import * as React from "react";
 import { Port, NodeId, Position } from "../../../types/core";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
-import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
-import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
+import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
+import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
+import { useCanvasInteraction } from "../../../contexts/composed/canvas/interaction/context";
+import { useNodeCanvas } from "../../../contexts/composed/canvas/viewport/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import { usePointerDrag } from "../../../hooks/usePointerDrag";
 import { usePortPositions } from "../../../contexts/node-ports/context";

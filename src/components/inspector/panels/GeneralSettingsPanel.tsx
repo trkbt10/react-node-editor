@@ -3,12 +3,12 @@
  * Aggregation layer that combines general settings sections
  */
 import * as React from "react";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
-import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
+import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
+import { useNodeCanvas } from "../../../contexts/composed/canvas/viewport/context";
 import {
   calculateAutoLayout,
   calculateNodesBoundingBox,
-} from "../../../contexts/node-editor/utils/autoLayout";
+} from "../../../contexts/composed/node-editor/utils/autoLayout";
 import { InspectorDefinitionList } from "../parts/InspectorDefinitionList";
 import { AutoSaveSection } from "../../controls/autoSave/AutoSaveSection";
 import { AutoLayoutSection } from "../../controls/autoLayout/AutoLayoutSection";

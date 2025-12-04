@@ -5,12 +5,12 @@ import * as React from "react";
 import { CanvasBase, type CanvasNodeDropEvent } from "./CanvasBase";
 import { ConnectionLayer } from "../connection/ConnectionLayer";
 import { NodeLayer } from "../node/layer/NodeLayer";
-import { useNodeEditor } from "../../contexts/node-editor/context";
+import { useNodeEditor } from "../../contexts/composed/node-editor/context";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { buildNodeFromDefinition } from "../../contexts/node-editor/utils/nodeFactory";
+import { buildNodeFromDefinition } from "../../contexts/composed/node-editor/utils/nodeFactory";
 import { canAddNodeType, countNodesByType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
-import { CanvasPointerActionProvider } from "../../contexts/canvas/pointer-action-provider";
-import { CanvasInteractionProvider } from "../../contexts/canvas/interaction/provider";
+import { CanvasPointerActionProvider } from "../../contexts/composed/canvas/pointer-action-provider";
+import { CanvasInteractionProvider } from "../../contexts/composed/canvas/interaction/provider";
 
 export type NodeCanvasProps = {
   showGrid?: boolean;

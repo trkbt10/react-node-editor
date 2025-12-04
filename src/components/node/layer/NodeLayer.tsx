@@ -2,14 +2,14 @@
  * @file Main node layer rendering and interaction handler for the node editor canvas.
  */
 import * as React from "react";
-import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
-import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
+import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
+import { useNodeCanvas } from "../../../contexts/composed/canvas/viewport/context";
+import { useCanvasInteraction } from "../../../contexts/composed/canvas/interaction/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
-import { useGroupManagement } from "../../../hooks/useGroupManagement";
-import { useNodeResize } from "../../../hooks/useNodeResize";
-import { useVisibleNodes } from "../../../hooks/useVisibleNodes";
+import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
+import { useGroupManagement } from "../../../contexts/composed/node-editor/hooks/useGroupManagement";
+import { useNodeResize } from "../../../contexts/composed/canvas/interaction/hooks/useNodeResize";
+import { useVisibleNodes } from "../../../contexts/composed/canvas/viewport/hooks/useVisibleNodes";
 import styles from "./NodeLayer.module.css";
 import { useRenderers } from "../../../contexts/RendererContext";
 import { hasGroupBehavior } from "../../../types/behaviors";

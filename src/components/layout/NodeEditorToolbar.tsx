@@ -3,9 +3,9 @@
  */
 import * as React from "react";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
-import { useNodeEditor } from "../../contexts/node-editor/context";
+import { useEditorActionState } from "../../contexts/composed/EditorActionStateContext";
+import { useNodeCanvas } from "../../contexts/composed/canvas/viewport/context";
+import { useNodeEditor } from "../../contexts/composed/node-editor/context";
 import { Button } from "../elements/Button";
 import styles from "./NodeEditorToolbar.module.css";
 import { countNodesByType, canAddNodeType } from "../../contexts/node-definitions/utils/nodeTypeLimits";

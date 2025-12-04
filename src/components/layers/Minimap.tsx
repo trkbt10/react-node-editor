@@ -2,8 +2,8 @@
  * @file Minimap component
  */
 import * as React from "react";
-import { useNodeEditor } from "../../contexts/node-editor/context";
-import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
+import { useNodeEditor } from "../../contexts/composed/node-editor/context";
+import { useNodeCanvas } from "../../contexts/composed/canvas/viewport/context";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import {
   FloatingPanelFrame,

@@ -2,7 +2,7 @@
  * @file History entries list
  */
 import * as React from "react";
-import type { HistoryEntry } from "../../../contexts/HistoryContext";
+import type { HistoryEntry } from "../../../contexts/history/context";
 import { useI18n } from "../../../i18n/context";
 import styles from "./HistoryList.module.css";
 

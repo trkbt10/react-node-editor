@@ -2,7 +2,7 @@
  * @file SelectionBox component
  */
 import * as React from "react";
-import { useCanvasInteractionState } from "../../contexts/canvas/interaction/context";
+import { useCanvasInteractionState } from "../../contexts/composed/canvas/interaction/context";
 import styles from "./SelectionBox.module.css";
 
 /**

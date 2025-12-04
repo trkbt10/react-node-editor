@@ -17,7 +17,7 @@ import { StandardNodeDefinition } from "../../../../../node-definitions/standard
 import { toUntypedDefinition, type ExternalDataReference } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData } from "../../../../../types/core";
 import type { GridLayoutConfig, LayerDefinition } from "../../../../../types/panels";
-import { useNodeEditor } from "../../../../../contexts/node-editor/context";
+import { useNodeEditor } from "../../../../../contexts/composed/node-editor/context";
 import { createDefaultSubEditorData } from "./initialData";
 import { ensureSubEditorData, getSubEditorData, setSubEditorData } from "./subEditorDataStore";
 import { isSubEditorNodeData } from "./types";

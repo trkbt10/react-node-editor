@@ -3,21 +3,21 @@
  * Split into Container (context-aware) and Inner (pure rendering) for optimal memoization.
  */
 import * as React from "react";
-import { useNodeEditor } from "../../contexts/node-editor/context";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
-import { useCanvasInteraction } from "../../contexts/canvas/interaction/context";
+import { useNodeEditor } from "../../contexts/composed/node-editor/context";
+import { useEditorActionState } from "../../contexts/composed/EditorActionStateContext";
+import { useNodeCanvas } from "../../contexts/composed/canvas/viewport/context";
+import { useCanvasInteraction } from "../../contexts/composed/canvas/interaction/context";
 import { calculateConnectionPath } from "../../core/connection/path";
 import { getOppositePortPosition } from "../../core/port/position";
-import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
+import { useDynamicConnectionPoint } from "../../contexts/node-ports/hooks/usePortPosition";
 import type { Connection, Node as EditorNode, Port as CorePort, Position, Size } from "../../types/core";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
 import { useRenderers } from "../../contexts/RendererContext";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import styles from "./ConnectionLayer.module.css";
-import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
+import { useInteractionSettings } from "../../contexts/interaction-settings/context";
 import type { PointerType } from "../../types/interaction";
-import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
+import { usePointerShortcutMatcher } from "../../contexts/interaction-settings/hooks/usePointerShortcutMatcher";
 import { getPreviewPosition } from "../../core/geometry/position";
 import { hasPositionChanged, hasSizeChanged } from "../../core/geometry/comparators";
 import { getNodeResizeSize } from "../../core/node/resizeState";

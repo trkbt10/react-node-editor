@@ -2,10 +2,10 @@
  * @file Status bar component
  */
 import * as React from "react";
-import { useNodeEditor } from "../../contexts/node-editor/context";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useCanvasInteraction } from "../../contexts/canvas/interaction/context";
-import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
+import { useNodeEditor } from "../../contexts/composed/node-editor/context";
+import { useEditorActionState } from "../../contexts/composed/EditorActionStateContext";
+import { useCanvasInteraction } from "../../contexts/composed/canvas/interaction/context";
+import { useNodeCanvas } from "../../contexts/composed/canvas/viewport/context";
 import type { SettingsManager as _SettingsManager } from "../../settings/SettingsManager";
 import { StatusSection } from "./StatusSection";
 import styles from "./StatusBar.module.css";
@@ -32,7 +32,7 @@ export const StatusBar: React.FC<StatusBarProps> = React.memo(({
   const settingsManager = settingsManagerProp ?? editorSettingsManager;
   const { state: nodeEditorState } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
-  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
+  const { state: interactionState, actions: _interactionActions } = useCanvasInteraction();
   const { state: canvasState } = useNodeCanvas();
 
   const selectedNodeCount = actionState.selectedNodeIds.length;

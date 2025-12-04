@@ -7,7 +7,7 @@ import { Input } from "../../elements/Input";
 import { PropertySection } from "../parts/PropertySection";
 import { useI18n } from "../../../i18n/context";
 import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
 import { countNodesByType, getDisabledNodeTypes } from "../../../contexts/node-definitions/utils/nodeTypeLimits";
 import { NodeCard } from "../../node/cards/NodeCard";
 import { groupNodeDefinitions, filterGroupedNodeDefinitions } from "../../../category/catalog";

@@ -1,18 +1,18 @@
 /**
  * @file Hook for handling connection drag and disconnect interactions.
  */
-import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
-import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
+import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
+import { useCanvasInteraction } from "../../../contexts/composed/canvas/interaction/context";
+import { useNodeCanvas } from "../../../contexts/composed/canvas/viewport/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
 import { getConnectableNodeTypes } from "../../../contexts/node-ports/utils/portConnectability";
 import { usePointerInteraction } from "../../../hooks/usePointerInteraction";
 import { useConnectionPortResolvers } from "./useConnectionPortResolvers";
 import { useConnectionOperations } from "./useConnectionOperations";
 
 export const useNodeLayerConnections = () => {
-  const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: _actionState, actions: actionActions } = useEditorActionState();
   const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { state: nodeEditorState } = useNodeEditor();
   const { state: canvasState, utils } = useNodeCanvas();

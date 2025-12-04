@@ -3,7 +3,7 @@
  * Aggregation layer that combines history sections
  */
 import * as React from "react";
-import { useHistory } from "../../../contexts/HistoryContext";
+import { useHistory } from "../../../contexts/history/context";
 import { useI18n } from "../../../i18n/context";
 import { PropertySection } from "../parts/PropertySection";
 import { HistoryControls } from "../../controls/history/HistoryControls";

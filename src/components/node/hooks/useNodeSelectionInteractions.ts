@@ -2,18 +2,18 @@
  * @file Selection + context-menu interactions sourced from editor contexts.
  */
 import * as React from "react";
-import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
-import { useNodeEditor } from "../../../contexts/node-editor/context";
-import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
-import { useInteractionSettings } from "../../../contexts/InteractionSettingsContext";
+import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
+import { useCanvasInteraction } from "../../../contexts/composed/canvas/interaction/context";
+import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
+import { useNodeCanvas } from "../../../contexts/composed/canvas/viewport/context";
+import { useInteractionSettings } from "../../../contexts/interaction-settings/context";
 import type { PointerType } from "../../../types/interaction";
-import { usePointerShortcutMatcher } from "../../../hooks/usePointerShortcutMatcher";
+import { usePointerShortcutMatcher } from "../../../contexts/interaction-settings/hooks/usePointerShortcutMatcher";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
-import type { UseGroupManagementResult } from "../../../hooks/useGroupManagement";
+import type { UseGroupManagementResult } from "../../../contexts/composed/node-editor/hooks/useGroupManagement";
 import { addUniqueIds } from "../../../utils/selectionUtils";
-import { getNodesToDrag, collectInitialPositions } from "../../../contexts/node-editor/utils/nodeDragHelpers";
+import { getNodesToDrag, collectInitialPositions } from "../../../contexts/composed/node-editor/utils/nodeDragHelpers";
 
 export type NodeSelectionHandlers = {
   handleNodePointerDown: (event: React.PointerEvent, nodeId: string, isDragAllowed?: boolean) => void;
@@ -30,7 +30,7 @@ export const useNodeSelectionInteractions = (
   options: UseNodeSelectionInteractionsOptions = {},
 ): NodeSelectionHandlers => {
   const { state: actionState, actions: actionActions } = useEditorActionState();
-  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
+  const { state: _interactionState, actions: interactionActions } = useCanvasInteraction();
   const { state: nodeEditorState } = useNodeEditor();
   const { utils } = useNodeCanvas();
   const interactionSettings = useInteractionSettings();

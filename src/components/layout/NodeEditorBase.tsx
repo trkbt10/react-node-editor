@@ -2,7 +2,7 @@
  * @file Node editor base component
  */
 import * as React from "react";
-import { useNodeEditorShortcuts } from "../../hooks/useNodeEditorShortcuts";
+import { useNodeEditorShortcuts } from "../../contexts/composed/keyboard-shortcut/hooks/useNodeEditorShortcuts";
 import styles from "./NodeEditorBase.module.css";
 
 type NodeEditorBaseProps = {

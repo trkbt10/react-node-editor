@@ -5,7 +5,7 @@ import * as React from "react";
 import {
   useInteractionSettings,
   useInteractionSettingsUpdate,
-} from "../../../contexts/InteractionSettingsContext";
+} from "../../../contexts/interaction-settings/context";
 import { useI18n } from "../../../i18n/context";
 import type { I18nKey } from "../../../i18n/types";
 import type {

@@ -6,8 +6,8 @@ import { DuplicateIcon, CopyIcon, CutIcon, PasteIcon, DeleteIcon } from "../elem
 import { MenuItem } from "./MenuItem";
 import { MenuSeparator } from "./MenuSeparator";
 import { useI18n } from "../../i18n/context";
-import { useNodeOperations } from "../../contexts/NodeOperationsContext";
-import { useInteractionSettings } from "../../contexts/InteractionSettingsContext";
+import { useNodeOperations } from "../../contexts/composed/NodeOperationsContext";
+import { useInteractionSettings } from "../../contexts/interaction-settings/context";
 import {
   detectShortcutDisplayPlatform,
   getShortcutLabelForAction,

@@ -7,7 +7,7 @@ import type { Connection, Node, Port, PortPosition, Position } from "../../types
 import { calculateConnectionPath, calculateConnectionMidpoint } from "../../core/connection/path";
 import { hasAnyPositionChanged, hasAnySizeChanged } from "../../core/geometry/comparators";
 import { hasPortPositionChanged } from "../../core/port/comparators";
-import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
+import { useDynamicConnectionPoint } from "../../contexts/node-ports/hooks/usePortPosition";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import type { ConnectionRenderContext, PortDefinition } from "../../types/NodeDefinition";
 import {

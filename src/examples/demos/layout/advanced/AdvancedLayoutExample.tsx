@@ -9,7 +9,7 @@ import { Minimap } from "../../../../components/layers/Minimap";
 import { GridToolbox } from "../../../../components/layers/GridToolbox";
 import { StandardNodeDefinition } from "../../../../node-definitions/standard";
 import { toUntypedDefinition } from "../../../../types/NodeDefinition";
-import { useNodeCanvas } from "../../../../contexts/canvas/viewport/context";
+import { useNodeCanvas } from "../../../../contexts/composed/canvas/viewport/context";
 import type { NodeEditorData } from "../../../../types/core";
 import classes from "./AdvancedLayoutExample.module.css";
 

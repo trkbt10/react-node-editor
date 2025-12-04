@@ -16,7 +16,7 @@ import {
 import { NodeCanvas } from "../../../../../components/canvas/NodeCanvas";
 import { InspectorPanel } from "../../../../../components/inspector/InspectorPanel";
 import type { NodeEditorData } from "../../../../../types/core";
-import { defaultInteractionSettings } from "../../../../../contexts/InteractionSettingsContext";
+import { defaultInteractionSettings } from "../../../../../contexts/interaction-settings/context";
 import classes from "./InteractionCustomizationExample.module.css";
 import { SettingsPanel } from "./SettingsPanel";
 import type { PanOptionsState, PinchOptionsState, ShortcutBindingMap, ShortcutOverrideState } from "./panelTypes";
