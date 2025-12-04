@@ -85,12 +85,6 @@ export type Node = {
   data: NodeData;
   /** Optional ordering index for sibling sorting in Layers */
   order?: number;
-  /**
-   * @deprecated Ports are now inferred from NodeDefinitions.
-   * This field is only used for backward compatibility and will be removed in a future version.
-   * Use NodeEditorContext.getNodePorts() instead.
-   */
-  _ports?: Port[];
   children?: NodeId[]; // For group nodes
   parentId?: NodeId; // Parent group node ID
   expanded?: boolean; // For group nodes

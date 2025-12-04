@@ -5,7 +5,6 @@
 import type { Node, Size } from "../../types/core";
 import { hasPositionChanged, hasSizeChanged, arePositionsEqual, areSizesEqual } from "../geometry/comparators";
 import { areStringArraysEqual, areRecordValuesShallowEqual } from "../common/comparators";
-import { arePortArraysEqual } from "../port/comparators";
 
 /**
  * Check if node's geometric properties (position, size) have changed
@@ -66,7 +65,6 @@ export const areNodesStructurallyEqual = (prev: Node, next: Node): boolean => {
     prev.visible === next.visible &&
     prev.locked === next.locked &&
     prev.resizable === next.resizable &&
-    areRecordValuesShallowEqual(prev.data, next.data) &&
-    arePortArraysEqual(prev._ports, next._ports)
+    areRecordValuesShallowEqual(prev.data, next.data)
   );
 };

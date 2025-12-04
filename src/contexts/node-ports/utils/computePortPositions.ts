@@ -252,7 +252,7 @@ export type ComputeNodePortPositionsOptions = {
  * Compute all port positions for a single node
  * @param node - The node to compute port positions for (may include ports property from PortPositionNode)
  * @param configOrOptions - Port position configuration or options object
- * @param ports - Optional explicit port array (if not provided, uses node.ports, node._ports, or empty array)
+ * @param ports - Optional explicit port array (if not provided, uses node.ports or empty array)
  */
 export function computeNodePortPositions(
   node: Node & { ports?: Port[] },
@@ -266,11 +266,11 @@ export function computeNodePortPositions(
   if ("visualSize" in configOrOptions) {
     // Legacy signature: (node, config, ports)
     config = configOrOptions;
-    effectivePorts = ports || node.ports || node._ports || [];
+    effectivePorts = ports || node.ports || [];
   } else {
     // New signature: (node, options)
     config = configOrOptions.config ?? DEFAULT_PORT_POSITION_CONFIG;
-    effectivePorts = configOrOptions.ports || node.ports || node._ports || [];
+    effectivePorts = configOrOptions.ports || node.ports || [];
   }
 
   const positions = new Map<string, PortPosition>();

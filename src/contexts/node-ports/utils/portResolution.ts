@@ -98,42 +98,22 @@ const createPortInstances = (definition: PortDefinition, node: Node): Port[] => 
  * - output ports are positioned on the right
  * - ports are centered vertically
  */
-export function inferDefaultPortDefinitions(node: Node): PortDefinition[] {
-  // Check if node has _ports (legacy) defined
-  if (node._ports) {
-    // If _ports is explicitly set, respect it even if it's empty
-    if (node._ports.length === 0) {
-      return [];
-    }
-
-    return node._ports.map((port) => ({
-      id: port.id,
-      type: port.type,
-      label: port.label,
-      position: port.position,
-      dataType: port.dataType,
-      maxConnections: port.maxConnections,
-    }));
-  }
-
+export function inferDefaultPortDefinitions(_node: Node): PortDefinition[] {
   // Default inference: create one input (left) and one output (right) port
-  const defaultPorts: PortDefinition[] = [];
-
-  defaultPorts.push({
-    id: "input",
-    type: "input",
-    label: "Input",
-    position: "left",
-  });
-
-  defaultPorts.push({
-    id: "output",
-    type: "output",
-    label: "Output",
-    position: "right",
-  });
-
-  return defaultPorts;
+  return [
+    {
+      id: "input",
+      type: "input",
+      label: "Input",
+      position: "left",
+    },
+    {
+      id: "output",
+      type: "output",
+      label: "Output",
+      position: "right",
+    },
+  ];
 }
 
 /**

@@ -198,7 +198,7 @@ export const useConstraintValidation = (getNodePorts?: (nodeId: NodeId) => Port[
           let toNode: Node | undefined;
 
           if (getNodePorts) {
-            // Use port resolver if available
+            // Use port resolver to validate connection
             fromNode = currentState.nodes[action.payload.connection.fromNodeId];
             toNode = currentState.nodes[action.payload.connection.toNodeId];
 
@@ -216,13 +216,9 @@ export const useConstraintValidation = (getNodePorts?: (nodeId: NodeId) => Port[
               }
             }
           } else {
-            // Fall back to legacy method
-            fromNode = Object.values(currentState.nodes).find((node) =>
-              node._ports?.some((port) => port.id === action.payload.connection.fromPortId),
-            );
-            toNode = Object.values(currentState.nodes).find((node) =>
-              node._ports?.some((port) => port.id === action.payload.connection.toPortId),
-            );
+            // Without port resolver, use node IDs directly from the connection
+            fromNode = currentState.nodes[action.payload.connection.fromNodeId];
+            toNode = currentState.nodes[action.payload.connection.toNodeId];
           }
 
           if (!fromNode || !toNode) {

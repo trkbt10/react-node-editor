@@ -50,7 +50,7 @@ describe("normalizePlacement", () => {
 });
 
 describe("inferDefaultPortDefinitions", () => {
-  it("should create default input (left) and output (right) ports when node has no _ports", () => {
+  it("should create default input (left) and output (right) ports", () => {
     const node: Node = {
       id: "node-1",
       type: "test",
@@ -73,67 +73,6 @@ describe("inferDefaultPortDefinitions", () => {
       label: "Output",
       position: "right",
     });
-  });
-
-  it("should use legacy _ports when available", () => {
-    const node: Node = {
-      id: "node-1",
-      type: "test",
-      position: { x: 0, y: 0 },
-      data: {},
-      _ports: [
-        {
-          id: "custom-input",
-          type: "input",
-          label: "Custom Input",
-          nodeId: "node-1",
-          position: "top",
-          dataType: "string",
-        },
-        {
-          id: "custom-output",
-          type: "output",
-          label: "Custom Output",
-          nodeId: "node-1",
-          position: "bottom",
-          maxConnections: "unlimited",
-        },
-      ],
-    };
-
-    const ports = inferDefaultPortDefinitions(node);
-
-    expect(ports).toHaveLength(2);
-    expect(ports[0]).toEqual({
-      id: "custom-input",
-      type: "input",
-      label: "Custom Input",
-      position: "top",
-      dataType: "string",
-      maxConnections: undefined,
-    });
-    expect(ports[1]).toEqual({
-      id: "custom-output",
-      type: "output",
-      label: "Custom Output",
-      position: "bottom",
-      dataType: undefined,
-      maxConnections: "unlimited",
-    });
-  });
-
-  it("should return empty array when node has empty _ports array", () => {
-    const node: Node = {
-      id: "node-1",
-      type: "test",
-      position: { x: 0, y: 0 },
-      data: {},
-      _ports: [],
-    };
-
-    const ports = inferDefaultPortDefinitions(node);
-
-    expect(ports).toHaveLength(0);
   });
 });
 
@@ -202,40 +141,6 @@ describe("getNodePorts", () => {
       type: "output",
       label: "Output",
       position: "right",
-      nodeId: "node-1",
-    });
-  });
-
-  it("should use legacy _ports for inference when definition has no ports", () => {
-    const node: Node = {
-      id: "node-1",
-      type: "test",
-      position: { x: 0, y: 0 },
-      data: {},
-      _ports: [
-        {
-          id: "legacy-port",
-          type: "input",
-          label: "Legacy Port",
-          nodeId: "node-1",
-          position: "top",
-        },
-      ],
-    };
-
-    const definition: NodeDefinition = {
-      type: "test",
-      displayName: "Test Node",
-    };
-
-    const ports = getNodePorts(node, definition);
-
-    expect(ports).toHaveLength(1);
-    expect(ports[0]).toMatchObject({
-      id: "legacy-port",
-      type: "input",
-      label: "Legacy Port",
-      position: "top",
       nodeId: "node-1",
     });
   });
