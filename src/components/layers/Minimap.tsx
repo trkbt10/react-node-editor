@@ -12,7 +12,7 @@ import {
   FloatingPanelMeta,
   FloatingPanelControls,
   FloatingPanelContent,
-} from "../panels/FloatingPanelFrame";
+} from "../layout/FloatingPanelFrame";
 import styles from "./Minimap.module.css";
 import { NodeMapRenderer } from "./NodeMapRenderer";
 

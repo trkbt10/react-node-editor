@@ -11,7 +11,7 @@ import {
   FloatingPanelMeta,
   FloatingPanelControls,
   FloatingPanelContent,
-} from "../../../../../components/panels/FloatingPanelFrame";
+} from "../../../../../components/layout/FloatingPanelFrame";
 import { NodeEditor } from "../../../../../index";
 import { StandardNodeDefinition } from "../../../../../node-definitions/standard";
 import { toUntypedDefinition, type ExternalDataReference } from "../../../../../types/NodeDefinition";

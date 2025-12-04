@@ -10,7 +10,7 @@ import {
   FloatingPanelTitle,
   FloatingPanelMeta,
   FloatingPanelContent,
-} from "../../../../../components/panels/FloatingPanelFrame";
+} from "../../../../../components/layout/FloatingPanelFrame";
 import styles from "./EditorDataPreview.module.css";
 
 export type EditorDataPreviewProps = {
