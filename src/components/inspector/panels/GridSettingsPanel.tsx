@@ -3,7 +3,7 @@
  * Aggregation layer that combines grid settings sections
  */
 import * as React from "react";
-import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
 import { GridVisibilitySection } from "../../controls/gridSettings/GridVisibilitySection";
 import { GridSizeSection } from "../../controls/gridSettings/GridSizeSection";
 

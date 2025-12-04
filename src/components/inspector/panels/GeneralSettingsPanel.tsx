@@ -4,7 +4,7 @@
  */
 import * as React from "react";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
-import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
 import {
   calculateAutoLayout,
   calculateNodesBoundingBox,

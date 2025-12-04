@@ -3,16 +3,16 @@
  * Extracted from NodeDragHandler component for better render optimization
  */
 import * as React from "react";
-import { NodeId, Position } from "../types/core";
-import { usePointerDrag } from "./usePointerDrag";
-import { useNodeEditor } from "../contexts/node-editor/context";
-import { useEditorActionState } from "../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../contexts/canvas/viewport/context";
-import { useCanvasInteraction } from "../contexts/canvas/interaction/context";
-import { useNodeDefinitionList } from "../contexts/node-definitions/hooks/useNodeDefinitionList";
-import { nodeHasGroupBehavior } from "../types/behaviors";
-import { usePointerShortcutMatcher } from "./usePointerShortcutMatcher";
-import { addUniqueIds } from "../utils/selectionUtils";
+import { NodeId, Position } from "../../../types/core";
+import { usePointerDrag } from "../../../hooks/usePointerDrag";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useNodeCanvas } from "../viewport/context";
+import { useCanvasInteraction } from "./context";
+import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
+import { nodeHasGroupBehavior } from "../../../types/behaviors";
+import { usePointerShortcutMatcher } from "../../../hooks/usePointerShortcutMatcher";
+import { addUniqueIds } from "./utils/selectionOperations";
 
 export type UseNodeDragResult = {
   onPointerDown: (e: React.PointerEvent) => void;

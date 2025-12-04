@@ -4,6 +4,7 @@
 import * as React from "react";
 import { useNodeEditor } from "../contexts/node-editor/context";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
+import { useCanvasInteraction } from "../contexts/canvas/interaction/context";
 import { useNodeDefinitionList } from "../contexts/node-definitions/hooks/useNodeDefinitionList";
 import type { NodeId, Node } from "../types/core";
 import {
@@ -43,6 +44,7 @@ export type UseGroupManagementResult = {
 export const useGroupManagement = (options: UseGroupManagementOptions = {}): UseGroupManagementResult => {
   const { state, actions } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
+  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const nodeDefinitions = useNodeDefinitionList();
   const { autoUpdateMembership = true, membershipUpdateDelay = 100 } = options;
 
@@ -73,7 +75,7 @@ export const useGroupManagement = (options: UseGroupManagementOptions = {}): Use
 
     // Only update if we're not currently dragging nodes
     // This prevents continuous updates during drag operations
-    const isDragging = actionState.dragState !== null;
+    const isDragging = interactionState.dragState !== null;
 
     if (!isDragging) {
       // Set new timeout for debounced update

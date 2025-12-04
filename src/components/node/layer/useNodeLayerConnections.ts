@@ -2,7 +2,8 @@
  * @file Hook for handling connection drag and disconnect interactions.
  */
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
+import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { getConnectableNodeTypes } from "../../../contexts/node-ports/utils/portConnectability";
@@ -12,6 +13,7 @@ import { useConnectionOperations } from "./useConnectionOperations";
 
 export const useNodeLayerConnections = () => {
   const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { state: nodeEditorState } = useNodeEditor();
   const { state: canvasState, utils } = useNodeCanvas();
   const { registry } = useNodeDefinitions();
@@ -20,15 +22,15 @@ export const useNodeLayerConnections = () => {
     useConnectionOperations();
 
   usePointerInteraction({
-    interactionState: actionState.connectionDragState,
+    interactionState: interactionState.connectionDragState,
     viewport: canvasState.viewport,
     screenToCanvas: utils.screenToCanvas,
     onPointerMove: (canvasPosition) => {
       const candidate = resolveCandidatePort(canvasPosition);
-      actionActions.updateConnectionDrag(canvasPosition, candidate);
+      interactionActions.updateConnectionDrag(canvasPosition, candidate);
     },
     onPointerUp: () => {
-      const drag = actionState.connectionDragState;
+      const drag = interactionState.connectionDragState;
       if (!drag) {
         endConnectionDrag();
         return;
@@ -61,15 +63,15 @@ export const useNodeLayerConnections = () => {
   });
 
   usePointerInteraction({
-    interactionState: actionState.connectionDisconnectState,
+    interactionState: interactionState.connectionDisconnectState,
     viewport: canvasState.viewport,
     screenToCanvas: utils.screenToCanvas,
     onPointerMove: (canvasPosition) => {
       const candidate = resolveDisconnectCandidate(canvasPosition);
-      actionActions.updateConnectionDisconnect(canvasPosition, candidate);
+      interactionActions.updateConnectionDisconnect(canvasPosition, candidate);
     },
     onPointerUp: () => {
-      const disconnectState = actionState.connectionDisconnectState;
+      const disconnectState = interactionState.connectionDisconnectState;
       if (disconnectState?.candidatePort) {
         completeDisconnectDrag(disconnectState.candidatePort);
       }

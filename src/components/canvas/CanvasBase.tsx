@@ -2,7 +2,7 @@
  * @file CanvasBase component
  */
 import * as React from "react";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
+import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { applyZoomDelta } from "../../utils/zoomUtils";
 import { SelectionOverlay } from "./SelectionOverlay";
@@ -12,7 +12,7 @@ import type { PointerType } from "../../types/interaction";
 import type { Position } from "../../types/core";
 import { NODE_DRAG_MIME } from "../../constants/dnd";
 import { usePointerShortcutMatcher } from "../../hooks/usePointerShortcutMatcher";
-import { useCanvasPointerActions } from "../../hooks/useCanvasPointerActions";
+import { useCanvasPointerActions } from "../../contexts/canvas/interaction/useCanvasPointerActions";
 
 export type CanvasNodeDropEvent = {
   nodeType: string;

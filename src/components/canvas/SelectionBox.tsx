@@ -2,7 +2,7 @@
  * @file SelectionBox component
  */
 import * as React from "react";
-import { useEditorActionState } from "../../contexts/EditorActionStateContext";
+import { useCanvasInteractionState } from "../../contexts/canvas/interaction/context";
 import styles from "./SelectionBox.module.css";
 
 /**
@@ -10,13 +10,13 @@ import styles from "./SelectionBox.module.css";
  * This component is purely visual and does not handle events
  */
 export const SelectionBox: React.FC = () => {
-  const { state: actionState } = useEditorActionState();
+  const interactionState = useCanvasInteractionState();
 
-  if (!actionState.selectionBox) {
+  if (!interactionState.selectionBox) {
     return null;
   }
 
-  const { start, end } = actionState.selectionBox;
+  const { start, end } = interactionState.selectionBox;
 
   // Calculate box dimensions
   const left = Math.min(start.x, end.x);

@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import { useNodeEditor } from "../../contexts/node-editor/context";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
+import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import {
   FloatingPanelFrame,

@@ -4,7 +4,8 @@
 import * as React from "react";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
+import { useCanvasInteraction } from "../../contexts/canvas/interaction/context";
+import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
 import type { SettingsManager as _SettingsManager } from "../../settings/SettingsManager";
 import { StatusSection } from "./StatusSection";
 import styles from "./StatusBar.module.css";
@@ -31,6 +32,7 @@ export const StatusBar: React.FC<StatusBarProps> = React.memo(({
   const settingsManager = settingsManagerProp ?? editorSettingsManager;
   const { state: nodeEditorState } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
+  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { state: canvasState } = useNodeCanvas();
 
   const selectedNodeCount = actionState.selectedNodeIds.length;
@@ -42,13 +44,13 @@ export const StatusBar: React.FC<StatusBarProps> = React.memo(({
 
   // Determine operation mode
   const operationMode = React.useMemo((): string => {
-    if (actionState.dragState) {
+    if (interactionState.dragState) {
       return "Moving";
     }
-    if (actionState.selectionBox) {
+    if (interactionState.selectionBox) {
       return "Selecting";
     }
-    if (actionState.connectionDragState) {
+    if (interactionState.connectionDragState) {
       return "Connecting";
     }
     if (canvasState.isSpacePanning || canvasState.panState.isPanning) {
@@ -56,21 +58,21 @@ export const StatusBar: React.FC<StatusBarProps> = React.memo(({
     }
     return "Ready";
   }, [
-    actionState.dragState,
-    actionState.selectionBox,
-    actionState.connectionDragState,
+    interactionState.dragState,
+    interactionState.selectionBox,
+    interactionState.connectionDragState,
     canvasState.isSpacePanning,
     canvasState.panState.isPanning,
   ]);
 
   // Get cursor position (if dragging)
   const cursorPosition = React.useMemo(() => {
-    if (actionState.dragState) {
-      return `Offset: (${Math.round(actionState.dragState.offset.x)}, ${Math.round(actionState.dragState.offset.y)})`;
+    if (interactionState.dragState) {
+      return `Offset: (${Math.round(interactionState.dragState.offset.x)}, ${Math.round(interactionState.dragState.offset.y)})`;
     }
     return `Canvas: (${Math.round(canvasState.viewport.offset.x)}, ${Math.round(canvasState.viewport.offset.y)})`;
   }, [
-    actionState.dragState,
+    interactionState.dragState,
     canvasState.viewport.offset.x,
     canvasState.viewport.offset.y,
   ]);

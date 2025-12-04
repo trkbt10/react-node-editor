@@ -11,6 +11,7 @@ import { useNodeDefinition } from "../../contexts/node-definitions/hooks/useNode
 import { useExternalDataRef } from "../../contexts/external-data/ExternalDataContext";
 import { useExternalData } from "../../contexts/external-data/useExternalData";
 import { useEditorActionStateState, useEditorActionStateActions } from "../../contexts/EditorActionStateContext";
+import { useCanvasInteraction } from "../../contexts/canvas/interaction/context";
 import { useGroupManagement } from "../../hooks/useGroupManagement";
 import { computeNodeBehaviorState, computeNodeResizeState } from "../../core/node/nodeState";
 import { computeNodeAppearance } from "../../core/node/nodeAppearance";
@@ -66,6 +67,7 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
   const editingState = useInlineEditingState();
   const { isEditing, startEditing, updateValue, confirmEdit, cancelEdit } = useInlineEditingActions();
   const actionState = useEditorActionStateState();
+  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { actions: actionActions } = useEditorActionStateActions();
   const groupManager = useGroupManagement({ autoUpdateMembership: false });
   const nodeDefinition = useNodeDefinition(node.type);
@@ -80,8 +82,8 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
   );
 
   const resizeState = React.useMemo(
-    () => computeNodeResizeState(node.id, actionState.resizeState),
-    [node.id, actionState.resizeState],
+    () => computeNodeResizeState(node.id, interactionState.resizeState),
+    [node.id, interactionState.resizeState],
   );
 
   const groupChildren = React.useMemo(
@@ -176,7 +178,7 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
       height: liveNode.size?.height || 50,
     };
 
-    actionActions.startNodeResize(node.id, { x: e.clientX, y: e.clientY }, currentSize, handle, {
+    interactionActions.startNodeResize(node.id, { x: e.clientX, y: e.clientY }, currentSize, handle, {
       x: liveNode.position.x,
       y: liveNode.position.y,
     });

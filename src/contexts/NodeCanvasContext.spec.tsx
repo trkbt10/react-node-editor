@@ -3,7 +3,8 @@
  */
 import { render } from "@testing-library/react";
 import { useEffect, type FC } from "react";
-import { NodeCanvasProvider, useNodeCanvas } from "./NodeCanvasContext";
+import { useNodeCanvas } from "./canvas/viewport/context";
+import { NodeCanvasProvider } from "./canvas/viewport/provider";
 
 const Harness: FC = () => {
   const { state, actions } = useNodeCanvas();

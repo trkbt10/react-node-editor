@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { isValidReconnection } from "../../../contexts/node-ports/utils/portConnectionQueries";
@@ -16,12 +17,13 @@ import { createEmptyConnectablePorts } from "./connectablePortsUtils";
 
 export const useConnectionOperations = () => {
   const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { state: nodeEditorState, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
   const { registry } = useNodeDefinitions();
 
   const completeDisconnectDrag = React.useCallback(
     (targetPort: Port): boolean => {
-      const disconnectState = actionState.connectionDisconnectState;
+      const disconnectState = interactionState.connectionDisconnectState;
       if (!disconnectState) {
         return false;
       }
@@ -52,7 +54,7 @@ export const useConnectionOperations = () => {
       return true;
     },
     [
-      actionState.connectionDisconnectState,
+      interactionState.connectionDisconnectState,
       nodeEditorState.nodes,
       nodeEditorState.connections,
       registry,
@@ -62,7 +64,7 @@ export const useConnectionOperations = () => {
 
   const completeConnectionDrag = React.useCallback(
     (targetPort: Port): boolean => {
-      const drag = actionState.connectionDragState;
+      const drag = interactionState.connectionDragState;
       if (!drag) {
         return false;
       }
@@ -118,7 +120,7 @@ export const useConnectionOperations = () => {
       return false;
     },
     [
-      actionState.connectionDragState,
+      interactionState.connectionDragState,
       nodeEditorState.nodes,
       nodeEditorState.connections,
       registry,
@@ -128,12 +130,12 @@ export const useConnectionOperations = () => {
   );
 
   const endConnectionDrag = React.useCallback(() => {
-    actionActions.endConnectionDrag();
+    interactionActions.endConnectionDrag();
     actionActions.updateConnectablePorts(createEmptyConnectablePorts());
   }, [actionActions]);
 
   const endConnectionDisconnect = React.useCallback(() => {
-    actionActions.endConnectionDisconnect();
+    interactionActions.endConnectionDisconnect();
     actionActions.updateConnectablePorts(createEmptyConnectablePorts());
   }, [actionActions]);
 

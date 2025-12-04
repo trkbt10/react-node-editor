@@ -3,7 +3,8 @@
  */
 import * as React from "react";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
+import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { useGroupManagement } from "../../../hooks/useGroupManagement";
@@ -28,6 +29,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
   void doubleClickToEdit;
   const { state: nodeEditorState } = useNodeEditor();
   const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: interactionState } = useCanvasInteraction();
   const { state: canvasState } = useNodeCanvas();
   const { node: NodeComponent } = useRenderers();
   const nodeDefinitionRegistry = useNodeDefinitions();
@@ -99,7 +101,8 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
 
   useNodeLayerConnections();
 
-  const { dragState, selectedNodeIds, connectionDragState, hoveredPort, connectablePorts } = actionState;
+  const { selectedNodeIds, hoveredPort, connectablePorts } = actionState;
+  const { dragState, connectionDragState } = interactionState;
 
   // Convert selectedNodeIds to Set for O(1) lookup instead of O(n) includes
   const selectedNodeIdsSet = React.useMemo(() => new Set(selectedNodeIds), [selectedNodeIds]);

@@ -9,7 +9,8 @@ import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { buildNodeFromDefinition } from "../../contexts/node-editor/utils/nodeFactory";
 import { canAddNodeType, countNodesByType } from "../../contexts/node-definitions/utils/nodeTypeLimits";
-import { CanvasPointerActionProvider } from "../../contexts/CanvasPointerActionContext";
+import { CanvasPointerActionProvider } from "../../contexts/canvas/pointer-action-provider";
+import { CanvasInteractionProvider } from "../../contexts/canvas/interaction/provider";
 
 export type NodeCanvasProps = {
   showGrid?: boolean;
@@ -51,12 +52,14 @@ export const NodeCanvas: React.FC<NodeCanvasProps> = ({
   );
 
   return (
-    <CanvasPointerActionProvider>
-      <CanvasBase showGrid={showGrid} onNodeDrop={handleNodeDrop}>
-        <ConnectionLayer />
-        <NodeLayer doubleClickToEdit={doubleClickToEdit} />
-      </CanvasBase>
-    </CanvasPointerActionProvider>
+    <CanvasInteractionProvider>
+      <CanvasPointerActionProvider>
+        <CanvasBase showGrid={showGrid} onNodeDrop={handleNodeDrop}>
+          <ConnectionLayer />
+          <NodeLayer doubleClickToEdit={doubleClickToEdit} />
+        </CanvasBase>
+      </CanvasPointerActionProvider>
+    </CanvasInteractionProvider>
   );
 };
 

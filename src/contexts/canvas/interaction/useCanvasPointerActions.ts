@@ -2,17 +2,25 @@
  * @file Hook that centralizes canvas pointer event handling with registry-based injections.
  */
 import * as React from "react";
-import { useNodeCanvas } from "../contexts/NodeCanvasContext";
-import { useEditorActionState } from "../contexts/EditorActionStateContext";
-import { useNodeEditor } from "../contexts/node-editor/context";
-import { useInteractionSettings } from "../contexts/InteractionSettingsContext";
-import { usePointerShortcutMatcher } from "./usePointerShortcutMatcher";
-import { evaluateCanvasPointerIntent, hasExceededCanvasDragThreshold, normalizePointerType } from "../utils/canvasPointerIntent";
-import type { PointerType } from "../types/interaction";
-import { useCanvasPointerActionRegistry, type CanvasPointerEventHandlers } from "../contexts/CanvasPointerActionContext";
-import { clampZoomScale } from "../utils/zoomUtils";
-import { toggleIds } from "../utils/selectionUtils";
-import type { NodeId } from "../types/core";
+import { useNodeCanvas } from "../viewport/context";
+import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useCanvasInteraction } from "./context";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { useInteractionSettings } from "../../../contexts/InteractionSettingsContext";
+import { usePointerShortcutMatcher } from "../../../hooks/usePointerShortcutMatcher";
+import {
+  evaluateCanvasPointerIntent,
+  hasExceededCanvasDragThreshold,
+  normalizePointerType,
+} from "./utils/pointerIntent";
+import type { PointerType } from "../../../types/interaction";
+import {
+  useCanvasPointerActionRegistry,
+  type CanvasPointerEventHandlers,
+} from "../pointer-action-context";
+import { clampZoomScale } from "../viewport/utils/zoomScale";
+import { toggleIds } from "./utils/selectionOperations";
+import type { NodeId } from "../../../types/core";
 
 type PinchPointer = {
   clientX: number;
@@ -27,14 +35,12 @@ type PinchState = {
   center: { x: number; y: number };
 };
 
-type PrimaryPointerState =
-  | {
-      pointerId: number;
-      origin: { x: number; y: number };
-      intent: ReturnType<typeof evaluateCanvasPointerIntent>;
-      status: "pending" | "pan" | "range-select";
-    }
-  | null;
+type PrimaryPointerState = {
+  pointerId: number;
+  origin: { x: number; y: number };
+  intent: ReturnType<typeof evaluateCanvasPointerIntent>;
+  status: "pending" | "pan" | "range-select";
+} | null;
 
 export type UseCanvasPointerActionsOptions = {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -52,6 +58,7 @@ export const useCanvasPointerActions = ({
 }: UseCanvasPointerActionsOptions): UseCanvasPointerActionsResult => {
   const { state: canvasState, actions: canvasActions } = useNodeCanvas();
   const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { state: nodeEditorState } = useNodeEditor();
   const interactionSettings = useInteractionSettings();
   const matchesPointerAction = usePointerShortcutMatcher();
@@ -106,7 +113,7 @@ export const useCanvasPointerActions = ({
 
     if (isBoxSelecting) {
       setIsBoxSelecting(false);
-      actionActions.setSelectionBox(null);
+      interactionActions.setSelectionBox(null);
     }
 
     if (canvasState.panState.isPanning) {
@@ -224,7 +231,7 @@ export const useCanvasPointerActions = ({
       const start = { x: screenX, y: screenY };
 
       setIsBoxSelecting(true);
-      actionActions.setSelectionBox({ start, end: start });
+      interactionActions.setSelectionBox({ start, end: start });
       if (intent.additiveSelection) {
         initialSelectionRef.current = actionState.selectedNodeIds.slice();
       } else {
@@ -338,7 +345,7 @@ export const useCanvasPointerActions = ({
       return;
     }
 
-    if (isBoxSelecting && actionState.selectionBox) {
+    if (isBoxSelecting && interactionState.selectionBox) {
       const rect = containerRef.current?.getBoundingClientRect();
       if (!rect) {
         return;
@@ -347,8 +354,8 @@ export const useCanvasPointerActions = ({
       const screenX = e.clientX - rect.left;
       const screenY = e.clientY - rect.top;
 
-      actionActions.setSelectionBox({
-        start: actionState.selectionBox.start,
+      interactionActions.setSelectionBox({
+        start: interactionState.selectionBox.start,
         end: { x: screenX, y: screenY },
       });
     }
@@ -406,10 +413,10 @@ export const useCanvasPointerActions = ({
       return;
     }
 
-    if (isBoxSelecting && actionState.selectionBox) {
+    if (isBoxSelecting && interactionState.selectionBox) {
       setIsBoxSelecting(false);
 
-      const { start, end } = actionState.selectionBox;
+      const { start, end } = interactionState.selectionBox;
       const canvasStartX = (start.x - canvasState.viewport.offset.x) / canvasState.viewport.scale;
       const canvasStartY = (start.y - canvasState.viewport.offset.y) / canvasState.viewport.scale;
       const canvasEndX = (end.x - canvasState.viewport.offset.x) / canvasState.viewport.scale;
@@ -440,9 +447,8 @@ export const useCanvasPointerActions = ({
       const uniqueNodeIds = Array.from(new Set(nodesInBox));
 
       if (additiveSelection) {
-        const baseSelection = initialSelectionRef.current.length > 0
-          ? initialSelectionRef.current
-          : actionState.selectedNodeIds;
+        const baseSelection =
+          initialSelectionRef.current.length > 0 ? initialSelectionRef.current : actionState.selectedNodeIds;
         const toggled = toggleIds(baseSelection, uniqueNodeIds);
         actionActions.setInteractionSelection(toggled);
         actionActions.setEditingSelection(toggled);
@@ -453,7 +459,7 @@ export const useCanvasPointerActions = ({
         actionActions.clearSelection();
       }
 
-      actionActions.setSelectionBox(null);
+      interactionActions.setSelectionBox(null);
       initialSelectionRef.current = [];
 
       const container = containerRef.current;

@@ -3,6 +3,7 @@
  */
 import * as React from "react";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { usePortPositions } from "../../../contexts/node-ports/context";
 import { findNearestConnectablePort } from "../../../contexts/node-ports/utils/connectionCandidate";
@@ -10,6 +11,7 @@ import type { Position } from "../../../types/core";
 
 export const useConnectionPortResolvers = () => {
   const { state: actionState } = useEditorActionState();
+  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { state: nodeEditorState, getNodePorts } = useNodeEditor();
   const { getPortPosition, computePortPosition } = usePortPositions();
 
@@ -36,7 +38,7 @@ export const useConnectionPortResolvers = () => {
 
   const resolveCandidatePort = React.useCallback(
     (canvasPosition: Position) => {
-      if (!actionState.connectionDragState) {
+      if (!interactionState.connectionDragState) {
         return null;
       }
       return findNearestConnectablePort({
@@ -46,13 +48,13 @@ export const useConnectionPortResolvers = () => {
         getNodePorts,
         getConnectionPoint: resolveConnectionPoint,
         excludePort: {
-          nodeId: actionState.connectionDragState.fromPort.nodeId,
-          portId: actionState.connectionDragState.fromPort.id,
+          nodeId: interactionState.connectionDragState.fromPort.nodeId,
+          portId: interactionState.connectionDragState.fromPort.id,
         },
       });
     },
     [
-      actionState.connectionDragState,
+      interactionState.connectionDragState,
       actionState.connectablePorts,
       nodeEditorState.nodes,
       getNodePorts,
@@ -62,7 +64,7 @@ export const useConnectionPortResolvers = () => {
 
   const resolveDisconnectCandidate = React.useCallback(
     (canvasPosition: Position) => {
-      if (!actionState.connectionDisconnectState) {
+      if (!interactionState.connectionDisconnectState) {
         return null;
       }
       return findNearestConnectablePort({
@@ -72,13 +74,13 @@ export const useConnectionPortResolvers = () => {
         getNodePorts,
         getConnectionPoint: resolveConnectionPoint,
         excludePort: {
-          nodeId: actionState.connectionDisconnectState.fixedPort.nodeId,
-          portId: actionState.connectionDisconnectState.fixedPort.id,
+          nodeId: interactionState.connectionDisconnectState.fixedPort.nodeId,
+          portId: interactionState.connectionDisconnectState.fixedPort.id,
         },
       });
     },
     [
-      actionState.connectionDisconnectState,
+      interactionState.connectionDisconnectState,
       actionState.connectablePorts,
       nodeEditorState.nodes,
       getNodePorts,

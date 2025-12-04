@@ -8,6 +8,7 @@ import type { ComputedPortPosition } from "../types/NodeDefinition";
 import { useNodeEditor } from "../contexts/node-editor/context";
 import { usePortPositions } from "../contexts/node-ports/context";
 import { useEditorActionState } from "../contexts/EditorActionStateContext";
+import { useCanvasInteraction } from "../contexts/canvas/interaction/context";
 import { useNodeDefinitions } from "../contexts/node-definitions/context";
 import { computeNodePortPositions, createDefaultPortCompute } from "../contexts/node-ports/utils/computePortPositions";
 import { getNodeSize } from "../utils/boundingBoxUtils";
@@ -48,7 +49,7 @@ export function useDynamicPortPosition(
 ): PortPosition | undefined {
   const { state, getNodePorts } = useNodeEditor();
   const { config, behavior } = usePortPositions();
-  const { state: actionState } = useEditorActionState();
+  const { state: interactionState } = useCanvasInteraction();
   const { registry } = useNodeDefinitions();
   const currentNode = React.useMemo(() => state.nodes[nodeId], [state.nodes, nodeId]);
   const nodePorts = React.useMemo(() => getNodePorts(nodeId), [getNodePorts, nodeId]);
@@ -66,7 +67,7 @@ export function useDynamicPortPosition(
 
   // Pre-compute sets for O(1) lookup instead of O(n) includes/some
   const draggedNodeIdsSet = React.useMemo(() => {
-    const dragState = actionState.dragState;
+    const dragState = interactionState.dragState;
     if (!dragState) {
       return null;
     }
@@ -78,7 +79,7 @@ export function useDynamicPortPosition(
       }
     }
     return set;
-  }, [actionState.dragState]);
+  }, [interactionState.dragState]);
 
   // Compute effective size (may change during resize)
   const effectiveSize = React.useMemo((): Size | undefined => {
@@ -87,13 +88,13 @@ export function useDynamicPortPosition(
       return sizeOverride;
     }
     if (applyInteractionPreview) {
-      const resizeState = actionState.resizeState;
+      const resizeState = interactionState.resizeState;
       if (resizeState?.nodeId === nodeId && resizeState.currentSize) {
         return resizeState.currentSize;
       }
     }
     return currentNode?.size;
-  }, [currentNode?.size, nodeId, actionState.resizeState, options?.sizeOverride, options?.applyInteractionPreview]);
+  }, [currentNode?.size, nodeId, interactionState.resizeState, options?.sizeOverride, options?.applyInteractionPreview]);
 
   // Compute effective position (changes during drag/resize)
   const effectivePosition = React.useMemo((): Position | undefined => {
@@ -105,11 +106,11 @@ export function useDynamicPortPosition(
       return positionOverride;
     }
     if (applyInteractionPreview) {
-      const dragState = actionState.dragState;
+      const dragState = interactionState.dragState;
       if (dragState && draggedNodeIdsSet?.has(nodeId)) {
         return { x: currentNode.position.x + dragState.offset.x, y: currentNode.position.y + dragState.offset.y };
       }
-      const resizeState = actionState.resizeState;
+      const resizeState = interactionState.resizeState;
       if (resizeState?.nodeId === nodeId && resizeState.currentPosition) {
         return resizeState.currentPosition;
       }
@@ -118,8 +119,8 @@ export function useDynamicPortPosition(
   }, [
     currentNode,
     nodeId,
-    actionState.dragState,
-    actionState.resizeState,
+    interactionState.dragState,
+    interactionState.resizeState,
     draggedNodeIdsSet,
     options?.positionOverride,
     options?.applyInteractionPreview,

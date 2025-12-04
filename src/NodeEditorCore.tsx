@@ -16,7 +16,8 @@ import { InlineEditingProvider } from "./contexts/InlineEditingContext";
 import { KeyboardShortcutProvider } from "./contexts/KeyboardShortcutContext";
 import { NodeEditorProvider } from "./contexts/node-editor/provider";
 import type { NodeEditorData } from "./types/core";
-import { NodeCanvasProvider } from "./contexts/NodeCanvasContext";
+import { NodeCanvasProvider } from "./contexts/canvas/viewport/provider";
+import { CanvasInteractionProvider } from "./contexts/canvas/interaction/provider";
 import { NodeDefinitionProvider } from "./contexts/node-definitions/provider";
 import { RendererProvider } from "./contexts/RendererContext";
 import { I18nProvider } from "./i18n/context";
@@ -141,15 +142,17 @@ export function NodeEditorCore({
             >
               <EditorActionStateProvider>
                 <NodeCanvasProvider>
-                  <HistoryProvider maxEntries={historyMaxEntries}>
-                    <InlineEditingProvider>
-                      <KeyboardShortcutProvider>
-                        <InteractionSettingsProvider value={interactionSettings}>
-                          <NodeOperationsProvider>{children}</NodeOperationsProvider>
-                        </InteractionSettingsProvider>
-                      </KeyboardShortcutProvider>
-                    </InlineEditingProvider>
-                  </HistoryProvider>
+                  <CanvasInteractionProvider>
+                    <HistoryProvider maxEntries={historyMaxEntries}>
+                      <InlineEditingProvider>
+                        <KeyboardShortcutProvider>
+                          <InteractionSettingsProvider value={interactionSettings}>
+                            <NodeOperationsProvider>{children}</NodeOperationsProvider>
+                          </InteractionSettingsProvider>
+                        </KeyboardShortcutProvider>
+                      </InlineEditingProvider>
+                    </HistoryProvider>
+                  </CanvasInteractionProvider>
                 </NodeCanvasProvider>
               </EditorActionStateProvider>
             </NodeEditorProvider>

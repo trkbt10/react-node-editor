@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import type { Node } from "../types/core";
-import { useNodeCanvas } from "../contexts/NodeCanvasContext";
+import { useNodeCanvas } from "../contexts/canvas/viewport/context";
 
 type ViewportBounds = {
   left: number;

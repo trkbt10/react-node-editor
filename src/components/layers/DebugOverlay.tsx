@@ -3,8 +3,9 @@
  */
 import * as React from "react";
 import { useNodeEditor } from "../../contexts/node-editor/context";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
+import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
+import { useCanvasInteraction } from "../../contexts/canvas/interaction/context";
 import styles from "./DebugOverlay.module.css";
 
 export type DebugOverlayProps = {
@@ -34,6 +35,7 @@ export const DebugOverlay: React.FC<DebugOverlayProps> = ({
   const { state: editorState } = useNodeEditor();
   const { state: canvasState } = useNodeCanvas();
   const { state: actionState } = useEditorActionState();
+  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const [isCollapsed, setIsCollapsed] = React.useState(false);
   const [performanceStats, setPerformanceStats] = React.useState({
     renderCount: 0,
@@ -136,18 +138,18 @@ export const DebugOverlay: React.FC<DebugOverlayProps> = ({
               <div className={styles.debugItem}>
                 <span className={styles.label}>Dragging:</span>
                 <span className={styles.value}>
-                  {actionState.dragState ? `${actionState.dragState.nodeIds.length} nodes` : "None"}
+                  {interactionState.dragState ? `${interactionState.dragState.nodeIds.length} nodes` : "None"}
                 </span>
               </div>
               <div className={styles.debugItem}>
                 <span className={styles.label}>Resizing:</span>
                 <span className={styles.value}>
-                  {actionState.resizeState ? actionState.resizeState.nodeId : "None"}
+                  {interactionState.resizeState ? interactionState.resizeState.nodeId : "None"}
                 </span>
               </div>
               <div className={styles.debugItem}>
                 <span className={styles.label}>Connecting:</span>
-                <span className={styles.value}>{actionState.connectionDragState ? "Active" : "None"}</span>
+                <span className={styles.value}>{interactionState.connectionDragState ? "Active" : "None"}</span>
               </div>
               <div className={styles.debugItem}>
                 <span className={styles.label}>Panning:</span>

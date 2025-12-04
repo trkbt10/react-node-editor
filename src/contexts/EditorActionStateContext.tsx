@@ -8,13 +8,7 @@ import {
   ConnectionId,
   PortId,
   Position,
-  Size,
   Port as BasePort,
-  DragState,
-  ResizeState,
-  ResizeHandle,
-  ConnectionDragState,
-  ConnectionDisconnectState,
   ContextMenuState,
 } from "../types/core";
 
@@ -38,23 +32,12 @@ const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
   source: null,
 });
 
-// Selection box specific to action state
-export type SelectionBox = {
-  start: Position;
-  end: Position;
-};
-
 export type EditorActionState = {
   selectedNodeIds: NodeId[];
   editingSelectedNodeIds: NodeId[];
   selectedConnectionIds: ConnectionId[];
-  selectionBox: SelectionBox | null;
-  dragState: DragState | null;
-  resizeState: ResizeState | null;
   hoveredNodeId: NodeId | null;
   hoveredConnectionId: ConnectionId | null;
-  connectionDragState: ConnectionDragState | null;
-  connectionDisconnectState: ConnectionDisconnectState | null;
   hoveredPort: BasePort | null;
   connectedPorts: Set<PortId>;
   connectablePorts: ConnectablePortsResult;
@@ -80,76 +63,14 @@ export const editorActionStateActions = {
     (connectionId: ConnectionId, multiple: boolean = false) => ({ connectionId, multiple }),
   ),
   clearSelection: createAction("CLEAR_SELECTION"),
-  setSelectionBox: createAction("SET_SELECTION_BOX", (box: SelectionBox | null) => ({ box })),
-  startNodeDrag: createAction(
-    "START_NODE_DRAG",
-    (
-      nodeIds: NodeId[],
-      startPosition: Position,
-      initialPositions: Record<NodeId, Position>,
-      affectedChildNodes: Record<NodeId, NodeId[]>,
-    ) => ({ nodeIds, startPosition, initialPositions, affectedChildNodes }),
-  ),
-  updateNodeDrag: createAction("UPDATE_NODE_DRAG", (offset: Position) => ({ offset })),
-  endNodeDrag: createAction("END_NODE_DRAG"),
   setHoveredNode: createAction("SET_HOVERED_NODE", (nodeId: NodeId | null) => ({ nodeId })),
   setHoveredConnection: createAction("SET_HOVERED_CONNECTION", (connectionId: ConnectionId | null) => ({ connectionId })),
-  startConnectionDrag: createAction("START_CONNECTION_DRAG", (fromPort: BasePort) => ({ fromPort })),
-  updateConnectionDrag: createAction(
-    "UPDATE_CONNECTION_DRAG",
-    (toPosition: Position, candidatePort: BasePort | null) => ({ toPosition, candidatePort }),
-  ),
-  endConnectionDrag: createAction("END_CONNECTION_DRAG"),
-  startConnectionDisconnect: createAction(
-    "START_CONNECTION_DISCONNECT",
-    (
-      originalConnection: {
-        id: ConnectionId;
-        fromNodeId: NodeId;
-        fromPortId: PortId;
-        toNodeId: NodeId;
-        toPortId: PortId;
-      },
-      disconnectedEnd: "from" | "to",
-      fixedPort: BasePort,
-      draggingPosition: Position,
-    ) => ({ originalConnection, disconnectedEnd, fixedPort, draggingPosition }),
-  ),
-  updateConnectionDisconnect: createAction(
-    "UPDATE_CONNECTION_DISCONNECT",
-    (draggingPosition: Position, candidatePort: BasePort | null) => ({
-      draggingPosition,
-      candidatePort,
-    }),
-  ),
-  endConnectionDisconnect: createAction("END_CONNECTION_DISCONNECT"),
   setHoveredPort: createAction("SET_HOVERED_PORT", (port: BasePort | null) => ({ port })),
   updateConnectedPorts: createAction("UPDATE_CONNECTED_PORTS", (connectedPorts: Set<PortId>) => ({ connectedPorts })),
   updateConnectablePorts: createAction(
     "UPDATE_CONNECTABLE_PORTS",
     (connectablePorts: ConnectablePortsResult) => ({ connectablePorts }),
   ),
-  startNodeResize: createAction(
-    "START_NODE_RESIZE",
-    (
-      nodeId: NodeId,
-      startPosition: Position,
-      startSize: Size,
-      handle: ResizeHandle,
-      startNodePosition: Position,
-    ) => ({
-      nodeId,
-      startPosition,
-      startSize,
-      handle,
-      startNodePosition,
-    }),
-  ),
-  updateNodeResize: createAction(
-    "UPDATE_NODE_RESIZE",
-    (currentSize: Size, currentPosition: Position) => ({ currentSize, currentPosition }),
-  ),
-  endNodeResize: createAction("END_NODE_RESIZE"),
   showContextMenu: createAction(
     "SHOW_CONTEXT_MENU",
     (options: ShowContextMenuOptions) => options,
@@ -237,43 +158,9 @@ const editorActionStateHandlers = createActionHandlerMap<EditorActionState, type
       selectedNodeIds: [],
       editingSelectedNodeIds: [],
       selectedConnectionIds: [],
-      selectionBox: null,
       hoveredConnectionId: null,
       hoveredNodeId: null,
       hoveredPort: null,
-    }),
-    setSelectionBox: (state, action) => ({
-      ...state,
-      selectionBox: action.payload.box,
-    }),
-    startNodeDrag: (state, action) => {
-      const { nodeIds, startPosition, initialPositions, affectedChildNodes } = action.payload;
-      return {
-        ...state,
-        dragState: {
-          nodeIds,
-          startPosition,
-          offset: { x: 0, y: 0 },
-          initialPositions,
-          affectedChildNodes,
-        },
-      };
-    },
-    updateNodeDrag: (state, action) => {
-      if (!state.dragState) {
-        return state;
-      }
-      return {
-        ...state,
-        dragState: {
-          ...state.dragState,
-          offset: action.payload.offset,
-        },
-      };
-    },
-    endNodeDrag: (state) => ({
-      ...state,
-      dragState: null,
     }),
     setHoveredNode: (state, action) => ({
       ...state,
@@ -282,61 +169,6 @@ const editorActionStateHandlers = createActionHandlerMap<EditorActionState, type
     setHoveredConnection: (state, action) => ({
       ...state,
       hoveredConnectionId: action.payload.connectionId,
-    }),
-    startConnectionDrag: (state, action) => ({
-      ...state,
-      connectionDragState: {
-        fromPort: action.payload.fromPort,
-        toPosition: { x: 0, y: 0 },
-        validTarget: null,
-        candidatePort: null,
-      },
-    }),
-    updateConnectionDrag: (state, action) => {
-      if (!state.connectionDragState) {
-        return state;
-      }
-      return {
-        ...state,
-        connectionDragState: {
-          ...state.connectionDragState,
-          toPosition: action.payload.toPosition,
-          candidatePort: action.payload.candidatePort,
-        },
-      };
-    },
-    endConnectionDrag: (state) => ({
-      ...state,
-      connectionDragState: null,
-    }),
-    startConnectionDisconnect: (state, action) => ({
-      ...state,
-      connectionDisconnectState: {
-        connectionId: action.payload.originalConnection.id,
-        fixedPort: action.payload.fixedPort,
-        draggingEnd: action.payload.disconnectedEnd,
-        draggingPosition: action.payload.draggingPosition,
-        originalConnection: action.payload.originalConnection,
-        disconnectedEnd: action.payload.disconnectedEnd,
-        candidatePort: null,
-      },
-    }),
-    updateConnectionDisconnect: (state, action) => {
-      if (!state.connectionDisconnectState) {
-        return state;
-      }
-      return {
-        ...state,
-        connectionDisconnectState: {
-          ...state.connectionDisconnectState,
-          draggingPosition: action.payload.draggingPosition,
-          candidatePort: action.payload.candidatePort,
-        },
-      };
-    },
-    endConnectionDisconnect: (state) => ({
-      ...state,
-      connectionDisconnectState: null,
     }),
     setHoveredPort: (state, action) => ({
       ...state,
@@ -349,38 +181,6 @@ const editorActionStateHandlers = createActionHandlerMap<EditorActionState, type
     updateConnectablePorts: (state, action) => ({
       ...state,
       connectablePorts: action.payload.connectablePorts,
-    }),
-    startNodeResize: (state, action) => {
-      const { nodeId, startPosition, startSize, handle, startNodePosition } = action.payload;
-      return {
-        ...state,
-        resizeState: {
-          nodeId,
-          startPosition,
-          startSize,
-          startNodePosition,
-          currentSize: startSize,
-          currentPosition: startNodePosition,
-          handle,
-        },
-      };
-    },
-    updateNodeResize: (state, action) => {
-      if (!state.resizeState) {
-        return state;
-      }
-      return {
-        ...state,
-        resizeState: {
-          ...state.resizeState,
-          currentSize: action.payload.currentSize,
-          currentPosition: action.payload.currentPosition,
-        },
-      };
-    },
-    endNodeResize: (state) => ({
-      ...state,
-      resizeState: null,
     }),
     showContextMenu: (state, action) => ({
       ...state,
@@ -429,13 +229,8 @@ export const defaultEditorActionState: EditorActionState = {
   selectedNodeIds: [],
   editingSelectedNodeIds: [],
   selectedConnectionIds: [],
-  selectionBox: null,
-  dragState: null,
-  resizeState: null,
   hoveredNodeId: null,
   hoveredConnectionId: null,
-  connectionDragState: null,
-  connectionDisconnectState: null,
   hoveredPort: null,
   connectedPorts: new Set<PortId>(),
   connectablePorts: createEmptyConnectablePorts(),

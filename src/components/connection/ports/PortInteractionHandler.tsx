@@ -5,7 +5,8 @@ import * as React from "react";
 import { Port, NodeId, Position } from "../../../types/core";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
+import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import { usePointerDrag } from "../../../hooks/usePointerDrag";
 import { usePortPositions } from "../../../contexts/node-ports/context";
@@ -50,15 +51,16 @@ export type PortInteractionHandlerProps = {
 export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ port, children }) => {
   const { state: nodeEditorState, actions, getNodePorts } = useNodeEditor();
   const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { utils } = useNodeCanvas();
   const { registry } = useNodeDefinitions();
   const { getPortPosition, computePortPosition } = usePortPositions();
 
   // Check port states
   const isHovered = actionState.hoveredPort?.id === port.id;
-  const isConnecting = actionState.connectionDragState?.fromPort.id === port.id;
+  const isConnecting = interactionState.connectionDragState?.fromPort.id === port.id;
   const isConnectable = isPortConnectable(port, actionState.connectablePorts);
-  const isCandidate = actionState.connectionDragState?.candidatePort?.id === port.id;
+  const isCandidate = interactionState.connectionDragState?.candidatePort?.id === port.id;
   const isConnected = actionState.connectedPorts.has(port.id);
 
   // Convert to Port for actions using factory to ensure all properties are copied
@@ -88,7 +90,7 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
   });
 
   const resolveCandidatePort = React.useEffectEvent((canvasPosition: Position) => {
-    if (!actionState.connectionDragState) {
+    if (!interactionState.connectionDragState) {
       return null;
     }
     return findNearestConnectablePort({
@@ -98,8 +100,8 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
       getNodePorts,
       getConnectionPoint: resolveConnectionPoint,
       excludePort: {
-        nodeId: actionState.connectionDragState.fromPort.nodeId,
-        portId: actionState.connectionDragState.fromPort.id,
+        nodeId: interactionState.connectionDragState.fromPort.nodeId,
+        portId: interactionState.connectionDragState.fromPort.id,
       },
     });
   });
@@ -116,7 +118,7 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     });
 
     // Start connection drag and update connectable ports
-    actionActions.startConnectionDrag(actionPort);
+    interactionActions.startConnectionDrag(actionPort);
     actionActions.updateConnectablePorts(connectablePorts);
   });
 
@@ -130,7 +132,7 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
   const handleConnectionDragMoveImpl = React.useEffectEvent((event: PointerEvent, _delta: Position) => {
     const canvasPos = utils.screenToCanvas(event.clientX, event.clientY);
     const candidate = resolveCandidatePort(canvasPos);
-    actionActions.updateConnectionDrag(canvasPos, candidate);
+    interactionActions.updateConnectionDrag(canvasPos, candidate);
   });
 
   const handleConnectionDragMove = React.useCallback(
@@ -141,11 +143,11 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
   );
 
   const handleConnectionDragEndImpl = React.useEffectEvent((_event: PointerEvent, _delta: Position) => {
-    if (!actionState.connectionDragState) {
+    if (!interactionState.connectionDragState) {
       return;
     }
 
-    const { fromPort, candidatePort } = actionState.connectionDragState;
+    const { fromPort, candidatePort } = interactionState.connectionDragState;
     const resolveCurrentPort = (port: Port | null): Port | null => {
       if (!port) {
         return null;
@@ -208,7 +210,7 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     }
 
     // Clear drag state and connectable ports
-    actionActions.endConnectionDrag();
+    interactionActions.endConnectionDrag();
     actionActions.updateConnectablePorts(createEmptyConnectablePorts());
   });
 
@@ -240,8 +242,8 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     actionActions.setHoveredPort(actionPort);
 
     // Update candidate port if we're dragging a connection and this port is connectable
-    if (actionState.connectionDragState && actionState.connectionDragState.fromPort.id !== port.id && isConnectable) {
-      actionActions.updateConnectionDrag(actionState.connectionDragState.toPosition, actionPort);
+    if (interactionState.connectionDragState && interactionState.connectionDragState.fromPort.id !== port.id && isConnectable) {
+      interactionActions.updateConnectionDrag(interactionState.connectionDragState.toPosition, actionPort);
     }
   });
 
@@ -256,8 +258,8 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     actionActions.setHoveredPort(null);
 
     // Clear candidate port if we're dragging
-    if (actionState.connectionDragState?.candidatePort?.id === port.id) {
-      actionActions.updateConnectionDrag(actionState.connectionDragState.toPosition, null);
+    if (interactionState.connectionDragState?.candidatePort?.id === port.id) {
+      interactionActions.updateConnectionDrag(interactionState.connectionDragState.toPosition, null);
     }
   });
 

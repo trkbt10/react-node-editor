@@ -4,7 +4,7 @@
 import * as React from "react";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
+import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { Button } from "../elements/Button";
 import styles from "./NodeEditorToolbar.module.css";

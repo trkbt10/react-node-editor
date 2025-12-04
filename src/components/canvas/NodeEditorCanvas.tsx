@@ -12,7 +12,7 @@ import { ContextActionMenu } from "../menus/ContextActionMenu";
 import { NodeSearchMenu } from "../panels/node-search/NodeSearchMenu";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
 import { useNodeEditor } from "../../contexts/node-editor/context";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
+import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
 import { useNodeDefinitionList } from "../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import { PortPositionProvider } from "../../contexts/node-ports/provider";

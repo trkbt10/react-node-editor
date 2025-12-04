@@ -3,8 +3,9 @@
  */
 import * as React from "react";
 import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
-import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
 import { useInteractionSettings } from "../../../contexts/InteractionSettingsContext";
 import type { PointerType } from "../../../types/interaction";
 import { usePointerShortcutMatcher } from "../../../hooks/usePointerShortcutMatcher";
@@ -29,6 +30,7 @@ export const useNodeSelectionInteractions = (
   options: UseNodeSelectionInteractionsOptions = {},
 ): NodeSelectionHandlers => {
   const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { state: nodeEditorState } = useNodeEditor();
   const { utils } = useNodeCanvas();
   const interactionSettings = useInteractionSettings();
@@ -145,7 +147,7 @@ export const useNodeSelectionInteractions = (
         nodeDefinitionList,
       );
 
-      actionActions.startNodeDrag(nodesToDrag, startPosition, initialPositions, affectedChildNodes);
+      interactionActions.startNodeDrag(nodesToDrag, startPosition, initialPositions, affectedChildNodes);
     },
     [
       matchesPointerAction,

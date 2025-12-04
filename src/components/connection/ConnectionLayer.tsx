@@ -5,7 +5,8 @@
 import * as React from "react";
 import { useNodeEditor } from "../../contexts/node-editor/context";
 import { useEditorActionState } from "../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../contexts/NodeCanvasContext";
+import { useNodeCanvas } from "../../contexts/canvas/viewport/context";
+import { useCanvasInteraction } from "../../contexts/canvas/interaction/context";
 import { calculateConnectionPath } from "../../core/connection/path";
 import { getOppositePortPosition } from "../../core/port/position";
 import { useDynamicConnectionPoint } from "../../hooks/usePortPosition";
@@ -32,8 +33,10 @@ export type ConnectionLayerProps = {
 export const ConnectionLayer: React.FC<ConnectionLayerProps> = ({ className }) => {
   const { state: nodeEditorState } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
+  const { state: interactionState } = useCanvasInteraction();
 
-  const { dragState, resizeState, selectedConnectionIds, hoveredConnectionId, selectedNodeIds } = actionState;
+  const { selectedConnectionIds, hoveredConnectionId, selectedNodeIds } = actionState;
+  const { dragState, resizeState } = interactionState;
 
   // Convert to Sets for O(1) lookup instead of O(n) includes
   const selectedConnectionIdsSet = React.useMemo(
@@ -136,11 +139,11 @@ const resolveConnectionRenderer = (
 // ============================================================================
 
 const ConnectingDragConnectionComponent: React.FC = () => {
-  const { state: actionState } = useEditorActionState();
+  const { state: interactionState } = useCanvasInteraction();
   const { state: nodeEditorState, portLookupMap } = useNodeEditor();
   const { getPortDefinition } = useNodeDefinitions();
 
-  const dragState = actionState.connectionDragState;
+  const dragState = interactionState.connectionDragState;
   if (!dragState) {
     return null;
   }
@@ -221,11 +224,11 @@ ConnectingDragConnection.displayName = "ConnectingDragConnection";
 // ============================================================================
 
 const DisconnectingDragConnectionComponent: React.FC = () => {
-  const { state: actionState } = useEditorActionState();
+  const { state: interactionState } = useCanvasInteraction();
   const { state: nodeEditorState, portLookupMap } = useNodeEditor();
   const { getPortDefinition } = useNodeDefinitions();
 
-  const disconnectState = actionState.connectionDisconnectState;
+  const disconnectState = interactionState.connectionDisconnectState;
   if (!disconnectState) {
     return null;
   }
@@ -336,13 +339,13 @@ DisconnectingDragConnection.displayName = "DisconnectingDragConnection";
 // ============================================================================
 
 const DragConnectionComponent: React.FC = () => {
-  const { state: actionState } = useEditorActionState();
+  const { state: interactionState } = useCanvasInteraction();
 
-  if (actionState.connectionDragState) {
+  if (interactionState.connectionDragState) {
     return <ConnectingDragConnection />;
   }
 
-  if (actionState.connectionDisconnectState) {
+  if (interactionState.connectionDisconnectState) {
     return <DisconnectingDragConnection />;
   }
 

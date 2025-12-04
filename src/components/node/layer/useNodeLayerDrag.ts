@@ -2,8 +2,8 @@
  * @file Hook for handling node drag interactions.
  */
 import * as React from "react";
-import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
-import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { useCanvasInteraction } from "../../../contexts/canvas/interaction/context";
+import { useNodeCanvas } from "../../../contexts/canvas/viewport/context";
 import { useNodeDefinitionList } from "../../../contexts/node-definitions/hooks/useNodeDefinitionList";
 import { useNodeEditor } from "../../../contexts/node-editor/context";
 import { snapMultipleToGrid } from "../../../contexts/node-editor/utils/gridSnap";
@@ -11,26 +11,26 @@ import { calculateNewPositions, handleGroupMovement } from "../../../contexts/no
 import type { UseGroupManagementResult } from "../../../hooks/useGroupManagement";
 
 export const useNodeLayerDrag = (moveGroupWithChildren: UseGroupManagementResult["moveGroupWithChildren"]) => {
-  const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { state: nodeEditorState, actions: nodeEditorActions } = useNodeEditor();
   const { state: canvasState } = useNodeCanvas();
   const nodeDefinitions = useNodeDefinitionList();
 
   const handlePointerMove = React.useEffectEvent((event: PointerEvent) => {
-    if (!actionState.dragState) {
+    if (!interactionState.dragState) {
       return;
     }
-    const deltaX = (event.clientX - actionState.dragState.startPosition.x) / canvasState.viewport.scale;
-    const deltaY = (event.clientY - actionState.dragState.startPosition.y) / canvasState.viewport.scale;
+    const deltaX = (event.clientX - interactionState.dragState.startPosition.x) / canvasState.viewport.scale;
+    const deltaY = (event.clientY - interactionState.dragState.startPosition.y) / canvasState.viewport.scale;
 
-    actionActions.updateNodeDrag({ x: deltaX, y: deltaY });
+    interactionActions.updateNodeDrag({ x: deltaX, y: deltaY });
   });
 
   const handlePointerUp = React.useEffectEvent(() => {
-    if (!actionState.dragState) {
+    if (!interactionState.dragState) {
       return;
     }
-    const { nodeIds, initialPositions, offset } = actionState.dragState;
+    const { nodeIds, initialPositions, offset } = interactionState.dragState;
     const newPositions = calculateNewPositions(nodeIds, initialPositions, offset);
 
     const snappedPositions = canvasState.gridSettings.snapToGrid
@@ -50,11 +50,11 @@ export const useNodeLayerDrag = (moveGroupWithChildren: UseGroupManagementResult
       nodeEditorActions.moveNodes(finalPositions);
     }
 
-    actionActions.endNodeDrag();
+    interactionActions.endNodeDrag();
   });
 
   React.useEffect(() => {
-    if (!actionState.dragState) {
+    if (!interactionState.dragState) {
       return;
     }
 
@@ -65,5 +65,5 @@ export const useNodeLayerDrag = (moveGroupWithChildren: UseGroupManagementResult
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerup", handlePointerUp);
     };
-  }, [actionState.dragState]);
+  }, [interactionState.dragState, handlePointerMove, handlePointerUp]);
 };
