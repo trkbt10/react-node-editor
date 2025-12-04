@@ -110,12 +110,9 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     actionActions.updateConnectablePorts(connectablePorts);
   });
 
-  const handleConnectionDragStart = React.useCallback(
-    (event: PointerEvent, portElement: HTMLElement) => {
-      handleConnectionDragStartImpl(event, portElement);
-    },
-    [],
-  );
+  const handleConnectionDragStart = React.useCallback((event: PointerEvent, portElement: HTMLElement) => {
+    handleConnectionDragStartImpl(event, portElement);
+  }, []);
 
   const handleConnectionDragMoveImpl = React.useEffectEvent((event: PointerEvent, _delta: Position) => {
     const canvasPos = utils.screenToCanvas(event.clientX, event.clientY);
@@ -123,12 +120,9 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     interactionActions.updateConnectionDrag(canvasPos, candidate);
   });
 
-  const handleConnectionDragMove = React.useCallback(
-    (event: PointerEvent, delta: Position) => {
-      handleConnectionDragMoveImpl(event, delta);
-    },
-    [],
-  );
+  const handleConnectionDragMove = React.useCallback((event: PointerEvent, delta: Position) => {
+    handleConnectionDragMoveImpl(event, delta);
+  }, []);
 
   const handleConnectionDragEndImpl = React.useEffectEvent((_event: PointerEvent, _delta: Position) => {
     const candidatePort = interactionState.connectionDragState?.candidatePort;
@@ -138,12 +132,9 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
     endConnectionDrag();
   });
 
-  const handleConnectionDragEnd = React.useCallback(
-    (event: PointerEvent, delta: Position) => {
-      handleConnectionDragEndImpl(event, delta);
-    },
-    [],
-  );
+  const handleConnectionDragEnd = React.useCallback((event: PointerEvent, delta: Position) => {
+    handleConnectionDragEndImpl(event, delta);
+  }, []);
 
   const { startDrag } = usePointerDrag({
     onStart: handleConnectionDragStart,
@@ -164,35 +155,19 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
 
   const handlePointerEnterImpl = React.useEffectEvent((_event: React.PointerEvent) => {
     actionActions.setHoveredPort(actionPort);
-
-    // Update candidate port if we're dragging a connection and this port is connectable
-    if (interactionState.connectionDragState && interactionState.connectionDragState.fromPort.id !== port.id && isConnectable) {
-      interactionActions.updateConnectionDrag(interactionState.connectionDragState.toPosition, actionPort);
-    }
   });
 
-  const handlePointerEnter = React.useCallback(
-    (event: React.PointerEvent) => {
-      handlePointerEnterImpl(event);
-    },
-    [],
-  );
+  const handlePointerEnter = React.useCallback((event: React.PointerEvent) => {
+    handlePointerEnterImpl(event);
+  }, []);
 
   const handlePointerLeaveImpl = React.useEffectEvent((_event: React.PointerEvent) => {
     actionActions.setHoveredPort(null);
-
-    // Clear candidate port if we're dragging
-    if (interactionState.connectionDragState?.candidatePort?.id === port.id) {
-      interactionActions.updateConnectionDrag(interactionState.connectionDragState.toPosition, null);
-    }
   });
 
-  const handlePointerLeave = React.useCallback(
-    (event: React.PointerEvent) => {
-      handlePointerLeaveImpl(event);
-    },
-    [],
-  );
+  const handlePointerLeave = React.useCallback((event: React.PointerEvent) => {
+    handlePointerLeaveImpl(event);
+  }, []);
 
   return (
     <>
