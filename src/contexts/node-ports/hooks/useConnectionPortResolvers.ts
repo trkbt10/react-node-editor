@@ -2,11 +2,11 @@
  * @file Hook for resolving connection port positions and candidates.
  */
 import * as React from "react";
-import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
-import { useCanvasInteraction } from "../../../contexts/composed/canvas/interaction/context";
-import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
-import { usePortPositions } from "../../../contexts/node-ports/context";
-import { findNearestConnectablePort } from "../../../contexts/node-ports/utils/connectionCandidate";
+import { useEditorActionState } from "../../composed/EditorActionStateContext";
+import { useCanvasInteraction } from "../../composed/canvas/interaction/context";
+import { useNodeEditor } from "../../composed/node-editor/context";
+import { usePortPositions } from "../context";
+import { findNearestConnectablePort } from "../utils/connectionCandidate";
 import type { Position } from "../../../types/core";
 
 export const useConnectionPortResolvers = () => {

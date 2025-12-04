@@ -59,7 +59,7 @@ const makeConnections = (...entries: Connection[]): Record<string, Connection> =
   Object.fromEntries(entries.map((entry) => [entry.id, entry]));
 
 describe("connectablePortPlanner", () => {
-  it("prefers dragState source when present", () => {
+  it("prefers dragState source when present and returns connectable ports", () => {
     const dragState: ConnectionDragState = {
       fromPort: portsByNode.source[0],
       toPosition: { x: 0, y: 0 },
@@ -68,6 +68,33 @@ describe("connectablePortPlanner", () => {
     };
 
     const fallbackPort = portsByNode.other[0];
+
+    // No existing connections - port has capacity
+    const connectable = computeConnectablePortIds({
+      dragState,
+      disconnectState: null,
+      fallbackPort,
+      nodes,
+      connections: {},
+      getNodePorts,
+      getNodeDefinition,
+    });
+
+    expect(Array.from(connectable.ids)).toContain("target:in");
+    expect(Array.from(connectable.ids)).not.toContain("other:out");
+    const descriptor = connectable.descriptors.get("target:in") as ConnectablePortDescriptor;
+    expect(descriptor.portType).toBe("input");
+    expect(descriptor.source.portType).toBe("output");
+    expect(descriptor.behavior).toBe(ConnectionSwitchBehavior.Append);
+  });
+
+  it("returns empty connectable ports when source port is at capacity", () => {
+    const dragState: ConnectionDragState = {
+      fromPort: portsByNode.source[0],
+      toPosition: { x: 0, y: 0 },
+      validTarget: null,
+      candidatePort: null,
+    };
 
     const connections = makeConnections({
       id: "c-existing",
@@ -80,30 +107,19 @@ describe("connectablePortPlanner", () => {
     const connectable = computeConnectablePortIds({
       dragState,
       disconnectState: null,
-      fallbackPort,
+      fallbackPort: null,
       nodes,
       connections,
       getNodePorts,
       getNodeDefinition,
     });
 
-    expect(Array.from(connectable.ids)).toContain("target:in");
-    expect(Array.from(connectable.ids)).not.toContain("other:out");
-    const descriptor = connectable.descriptors.get("target:in") as ConnectablePortDescriptor;
-    expect(descriptor.portType).toBe("input");
-    expect(descriptor.source.portType).toBe("output");
-    expect(descriptor.behavior).toBe(ConnectionSwitchBehavior.Replace);
+    // Port is at capacity (maxConnections=1), so no connectable ports
+    expect(connectable.ids.size).toBe(0);
   });
 
   it("falls back to disconnect fixed port when drag state is absent", () => {
-    const connections = makeConnections({
-      id: "c1",
-      fromNodeId: "other",
-      fromPortId: "out",
-      toNodeId: "target",
-      toPortId: "in",
-    });
-
+    // No existing connections - port has capacity
     const disconnectState: ConnectionDisconnectState = {
       connectionId: "c1",
       fixedPort: portsByNode.other[0],
@@ -125,7 +141,7 @@ describe("connectablePortPlanner", () => {
       disconnectState,
       fallbackPort: null,
       nodes,
-      connections,
+      connections: {},
       getNodePorts,
       getNodeDefinition,
     });
@@ -133,7 +149,7 @@ describe("connectablePortPlanner", () => {
     expect(connectable.ids.size).toBeGreaterThan(0);
     expect(Array.from(connectable.ids)).toContain("target:in");
     const descriptor = connectable.descriptors.get("target:in") as ConnectablePortDescriptor;
-    expect(descriptor.behavior).toBe(ConnectionSwitchBehavior.Replace);
+    expect(descriptor.behavior).toBe(ConnectionSwitchBehavior.Append);
   });
 
   it("returns empty set when no source can be resolved", () => {

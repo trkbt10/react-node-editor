@@ -2,7 +2,7 @@
  * @file Port-level interaction handler used by the connection system.
  */
 import * as React from "react";
-import { Port, NodeId, Position } from "../../../types/core";
+import type { Port, NodeId, Position } from "../../../types/core";
 import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
 import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
 import { useCanvasInteraction } from "../../../contexts/composed/canvas/interaction/context";
@@ -12,23 +12,10 @@ import { usePointerDrag } from "../../../hooks/usePointerDrag";
 import { usePortPositions } from "../../../contexts/node-ports/context";
 import { createActionPort } from "../../../core/port/factory";
 import { isPortConnectable } from "../../../contexts/node-ports/utils/portConnectability";
-import {
-  planConnectionChange,
-  ConnectionSwitchBehavior,
-} from "../../../contexts/node-ports/utils/connectionSwitchBehavior";
-import {
-  computeConnectablePortIds,
-  type ConnectablePortsResult,
-} from "../../../contexts/node-ports/utils/connectablePortPlanner";
+import { computeConnectablePortIds } from "../../../contexts/node-ports/utils/connectablePortPlanner";
 import { findNearestConnectablePort } from "../../../contexts/node-ports/utils/connectionCandidate";
-import { createValidatedConnection } from "../../../contexts/node-ports/utils/connectionOperations";
+import { useConnectionOperations } from "../../../contexts/node-ports/hooks/useConnectionOperations";
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
-
-const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
-  ids: new Set<string>(),
-  descriptors: new Map(),
-  source: null,
-});
 
 export type PortInteractionHandlerProps = {
   port: Port;
@@ -49,12 +36,13 @@ export type PortInteractionHandlerProps = {
  * Handles all port interaction logic including connections and hover states
  */
 export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ port, children }) => {
-  const { state: nodeEditorState, actions, getNodePorts } = useNodeEditor();
+  const { state: nodeEditorState, getNodePorts } = useNodeEditor();
   const { state: actionState, actions: actionActions } = useEditorActionState();
   const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { utils } = useNodeCanvas();
   const { registry } = useNodeDefinitions();
   const { getPortPosition, computePortPosition } = usePortPositions();
+  const { completeConnectionDrag, endConnectionDrag } = useConnectionOperations();
 
   // Check port states
   const isHovered = actionState.hoveredPort?.id === port.id;
@@ -143,75 +131,11 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
   );
 
   const handleConnectionDragEndImpl = React.useEffectEvent((_event: PointerEvent, _delta: Position) => {
-    if (!interactionState.connectionDragState) {
-      return;
+    const candidatePort = interactionState.connectionDragState?.candidatePort;
+    if (candidatePort) {
+      completeConnectionDrag(candidatePort);
     }
-
-    const { fromPort, candidatePort } = interactionState.connectionDragState;
-    const resolveCurrentPort = (port: Port | null): Port | null => {
-      if (!port) {
-        return null;
-      }
-      // Skip port resolution for unknown node types
-      const node = nodeEditorState.nodes[port.nodeId];
-      if (!node || !registry.get(node.type)) {
-        return port;
-      }
-      const ports = getNodePorts(port.nodeId);
-      const current = ports.find((candidate) => candidate.id === port.id);
-      return current ?? port;
-    };
-
-    const resolvedFromPort = resolveCurrentPort(fromPort);
-    const resolvedCandidate = resolveCurrentPort(candidatePort);
-
-    if (resolvedFromPort && resolvedCandidate && resolvedFromPort.id !== resolvedCandidate.id) {
-      const plan = planConnectionChange({
-        fromPort: resolvedFromPort,
-        toPort: resolvedCandidate,
-        nodes: nodeEditorState.nodes,
-        connections: nodeEditorState.connections,
-        getNodeDefinition: (type: string) => registry.get(type),
-      });
-
-      switch (plan.behavior) {
-        case ConnectionSwitchBehavior.Replace:
-          if (plan.connection) {
-            plan.connectionIdsToReplace.forEach((connectionId) => {
-              actions.deleteConnection(connectionId);
-            });
-            actions.addConnection(plan.connection);
-          }
-          break;
-
-        case ConnectionSwitchBehavior.Append:
-          if (plan.connection) {
-            actions.addConnection(plan.connection);
-          }
-          break;
-
-        case ConnectionSwitchBehavior.Ignore:
-        default:
-          break;
-      }
-
-      if (!plan.connection && resolvedFromPort && resolvedCandidate) {
-        const fallback = createValidatedConnection(
-          resolvedFromPort,
-          resolvedCandidate,
-          nodeEditorState.nodes,
-          nodeEditorState.connections,
-          (type: string) => registry.get(type),
-        );
-        if (fallback) {
-          actions.addConnection(fallback);
-        }
-      }
-    }
-
-    // Clear drag state and connectable ports
-    interactionActions.endConnectionDrag();
-    actionActions.updateConnectablePorts(createEmptyConnectablePorts());
+    endConnectionDrag();
   });
 
   const handleConnectionDragEnd = React.useCallback(

@@ -8,8 +8,8 @@ import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
 import { getConnectableNodeTypes } from "../../../contexts/node-ports/utils/portConnectability";
 import { usePointerInteraction } from "../../../hooks/usePointerInteraction";
-import { useConnectionPortResolvers } from "./useConnectionPortResolvers";
-import { useConnectionOperations } from "./useConnectionOperations";
+import { useConnectionPortResolvers } from "../../../contexts/node-ports/hooks/useConnectionPortResolvers";
+import { useConnectionOperations } from "../../../contexts/node-ports/hooks/useConnectionOperations";
 
 export const useNodeLayerConnections = () => {
   const { state: _actionState, actions: actionActions } = useEditorActionState();

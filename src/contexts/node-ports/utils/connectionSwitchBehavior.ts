@@ -14,8 +14,6 @@ const DEFAULT_MAX_CONNECTIONS = 1;
 export enum ConnectionSwitchBehavior {
   /** Simply append the new connection */
   Append = "append",
-  /** Replace existing connections owned by the dragging port */
-  Replace = "replace",
   /** Ignore the drag result completely */
   Ignore = "ignore",
 }
@@ -88,32 +86,9 @@ const determineBehaviorForPort = (
     return { behavior: ConnectionSwitchBehavior.Append, existingConnections, maxConnections };
   }
 
-  if (maxConnections === 1) {
-    return { behavior: ConnectionSwitchBehavior.Replace, existingConnections, maxConnections };
-  }
-
+  // Port is at capacity - ignore new connections
   return { behavior: ConnectionSwitchBehavior.Ignore, existingConnections, maxConnections };
 };
-
-const createConnectionMapWithout = (
-  connections: Record<string, Connection>,
-  toRemove: Connection[],
-): Record<string, Connection> => {
-  if (toRemove.length === 0) {
-    return connections;
-  }
-  const filtered: Record<string, Connection> = { ...connections };
-  toRemove.forEach((connection) => {
-    delete filtered[connection.id];
-  });
-  return filtered;
-};
-
-const isSameConnection = (existing: Connection, candidate: Omit<Connection, "id">): boolean =>
-  existing.fromNodeId === candidate.fromNodeId &&
-  existing.fromPortId === candidate.fromPortId &&
-  existing.toNodeId === candidate.toNodeId &&
-  existing.toPortId === candidate.toPortId;
 
 /**
  * Decide how to handle a completed drag between two ports while respecting connection limits.
@@ -128,29 +103,6 @@ export const planConnectionChange = ({
   const behaviorContext = determineBehaviorForPort(fromPort, nodes, connections, getNodeDefinition);
 
   switch (behaviorContext.behavior) {
-    case ConnectionSwitchBehavior.Replace: {
-      const reducedConnections = createConnectionMapWithout(connections, behaviorContext.existingConnections);
-      const connection = createValidatedConnection(fromPort, toPort, nodes, reducedConnections, getNodeDefinition);
-
-      if (!connection) {
-        return { behavior: ConnectionSwitchBehavior.Replace, connection: null, connectionIdsToReplace: [] };
-      }
-
-      const duplicatesExisting = behaviorContext.existingConnections.some((existingConnection) =>
-        isSameConnection(existingConnection, connection),
-      );
-
-      if (duplicatesExisting) {
-        return { behavior: ConnectionSwitchBehavior.Replace, connection: null, connectionIdsToReplace: [] };
-      }
-
-      return {
-        behavior: ConnectionSwitchBehavior.Replace,
-        connection,
-        connectionIdsToReplace: behaviorContext.existingConnections.map((connectionToRemove) => connectionToRemove.id),
-      };
-    }
-
     case ConnectionSwitchBehavior.Ignore:
       return { behavior: ConnectionSwitchBehavior.Ignore, connection: null, connectionIdsToReplace: [] };
 
@@ -174,8 +126,3 @@ export const getConnectionSwitchContext = (
   connections: Record<string, Connection>,
   getNodeDefinition: (type: string) => NodeDefinition | undefined,
 ): BehaviorContext => determineBehaviorForPort(port, nodes, connections, getNodeDefinition);
-
-export const createConnectionSnapshotWithout = (
-  connections: Record<string, Connection>,
-  toRemove: Connection[],
-): Record<string, Connection> => createConnectionMapWithout(connections, toRemove);

@@ -58,7 +58,7 @@ const makeConnection = (id: string, toNodeId: string): Connection => ({
 });
 
 describe("planConnectionChange", () => {
-  it("replaces existing connection when maxConnections is 1", () => {
+  it("ignores new connection when maxConnections is 1 and already full", () => {
     const definitions = makeDefinitions(1);
     const nodes = {
       source: makeNode("source", "source"),
@@ -79,10 +79,9 @@ describe("planConnectionChange", () => {
       getNodeDefinition: (type) => definitions[type],
     });
 
-    expect(plan.behavior).toBe(ConnectionSwitchBehavior.Replace);
-    expect(plan.connection).not.toBeNull();
-    expect(plan?.connection?.toNodeId).toBe("targetB");
-    expect(plan.connectionIdsToReplace).toEqual(["c1"]);
+    expect(plan.behavior).toBe(ConnectionSwitchBehavior.Ignore);
+    expect(plan.connection).toBeNull();
+    expect(plan.connectionIdsToReplace).toEqual([]);
   });
 
   it("ignores new connection when maxConnections is greater than 1 and already full", () => {
@@ -139,7 +138,7 @@ describe("planConnectionChange", () => {
     expect(plan.connectionIdsToReplace).toEqual([]);
   });
 
-  it("keeps existing connection when reconnecting to same target", () => {
+  it("ignores reconnection to same target when at capacity", () => {
     const definitions = makeDefinitions(1);
     const nodes = {
       source: makeNode("source", "source"),
@@ -159,7 +158,7 @@ describe("planConnectionChange", () => {
       getNodeDefinition: (type) => definitions[type],
     });
 
-    expect(plan.behavior).toBe(ConnectionSwitchBehavior.Replace);
+    expect(plan.behavior).toBe(ConnectionSwitchBehavior.Ignore);
     expect(plan.connection).toBeNull();
     expect(plan.connectionIdsToReplace).toEqual([]);
   });

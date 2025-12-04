@@ -16,7 +16,6 @@ import { getConnectablePortIds } from "./portConnectability";
 import {
   ConnectionSwitchBehavior,
   getConnectionSwitchContext,
-  createConnectionSnapshotWithout,
 } from "./connectionSwitchBehavior";
 
 type ResolveSourcePortParams = {
@@ -115,12 +114,7 @@ export const computeConnectablePortIds = ({
 
   const behaviorContext = getConnectionSwitchContext(sourcePort, nodes, connections, getNodeDefinition);
 
-  const evaluationConnections =
-    behaviorContext.behavior === ConnectionSwitchBehavior.Replace
-      ? createConnectionSnapshotWithout(connections, behaviorContext.existingConnections)
-      : connections;
-
-  const candidateIds = getConnectablePortIds(sourcePort, nodes, getNodePorts, evaluationConnections, getNodeDefinition);
+  const candidateIds = getConnectablePortIds(sourcePort, nodes, getNodePorts, connections, getNodeDefinition);
 
   candidateIds.forEach((key) => {
     const [nodeId, portId] = key.split(":");

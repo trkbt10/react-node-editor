@@ -1,7 +1,7 @@
 /**
  * @file Utility functions for connectable ports management.
  */
-import type { ConnectablePortsResult } from "../../../contexts/node-ports/utils/connectablePortPlanner";
+import type { ConnectablePortsResult } from "./connectablePortPlanner";
 
 export const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
   ids: new Set<string>(),

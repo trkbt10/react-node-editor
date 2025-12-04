@@ -2,18 +2,18 @@
  * @file Hook for connection operations (create, disconnect, complete).
  */
 import * as React from "react";
-import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
-import { useCanvasInteraction } from "../../../contexts/composed/canvas/interaction/context";
-import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
-import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
-import { isValidReconnection } from "../../../contexts/node-ports/utils/portConnectionQueries";
-import { createValidatedConnection } from "../../../contexts/node-ports/utils/connectionOperations";
+import { useEditorActionState } from "../../composed/EditorActionStateContext";
+import { useCanvasInteraction } from "../../composed/canvas/interaction/context";
+import { useNodeDefinitions } from "../../node-definitions/context";
+import { useNodeEditor } from "../../composed/node-editor/context";
+import { isValidReconnection } from "../utils/portConnectionQueries";
+import { createValidatedConnection } from "../utils/connectionOperations";
 import {
   planConnectionChange,
   ConnectionSwitchBehavior,
-} from "../../../contexts/node-ports/utils/connectionSwitchBehavior";
+} from "../utils/connectionSwitchBehavior";
 import type { Port } from "../../../types/core";
-import { createEmptyConnectablePorts } from "./connectablePortsUtils";
+import { createEmptyConnectablePorts } from "../utils/connectablePortsUtils";
 
 export const useConnectionOperations = () => {
   const { state: _actionState, actions: actionActions } = useEditorActionState();
@@ -84,15 +84,6 @@ export const useConnectionOperations = () => {
       });
 
       switch (plan.behavior) {
-        case ConnectionSwitchBehavior.Replace:
-          if (plan.connection) {
-            plan.connectionIdsToReplace.forEach((connectionId) => {
-              nodeEditorActions.deleteConnection(connectionId);
-            });
-            nodeEditorActions.addConnection(plan.connection);
-            return true;
-          }
-          break;
         case ConnectionSwitchBehavior.Append:
           if (plan.connection) {
             nodeEditorActions.addConnection(plan.connection);
