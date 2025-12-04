@@ -151,41 +151,44 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
     const defaultElement = defaultRender() as React.ReactElement<DefaultConnectionElementProps>;
     const fromStyle = getStyleForDataType(context.fromPort.dataType);
     const toStyle = getStyleForDataType(context.toPort?.dataType ?? context.fromPort.dataType);
-    const toPortPosition = context.toPort?.position ?? getOppositePortPosition(context.fromPort.position);
 
     const resolvedVariant = variant ?? resolveConnectionVariant(context);
     const tokens = CONNECTION_VARIANT_TOKENS[resolvedVariant];
+
+    // Use connectionDirection from context (source of truth for absolute ports)
+    const fromDirection = context.fromConnectionDirection;
+    const toDirection = context.toConnectionDirection;
 
     const pathData = React.useMemo(() => {
       return calculateConnectionPath(
         context.fromPosition,
         context.toPosition,
-        context.fromPort.position,
-        toPortPosition,
+        fromDirection,
+        toDirection,
       );
     }, [
       context.fromPosition.x,
       context.fromPosition.y,
       context.toPosition.x,
       context.toPosition.y,
-      context.fromPort.position,
-      toPortPosition,
+      fromDirection,
+      toDirection,
     ]);
 
     const { cp1, cp2 } = React.useMemo(() => {
       return calculateConnectionControlPoints(
         context.fromPosition,
         context.toPosition,
-        context.fromPort.position,
-        toPortPosition,
+        fromDirection,
+        toDirection,
       );
     }, [
       context.fromPosition.x,
       context.fromPosition.y,
       context.toPosition.x,
       context.toPosition.y,
-      context.fromPort.position,
-      toPortPosition,
+      fromDirection,
+      toDirection,
     ]);
 
     const midpoint = React.useMemo(() => {

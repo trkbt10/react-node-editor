@@ -440,4 +440,206 @@ describe("computeNodePortPositions - absolute placement", () => {
     const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
     expect(absolutePort?.renderPosition.x).toBeCloseTo(100 - halfPortSize, 1);
   });
+
+  it("connectionPoint is exactly connectionMargin away from port visual center", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 100, y: 100 },
+      size: { width: 200, height: 150 },
+      data: {},
+    };
+
+    const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
+    const connectionMargin = DEFAULT_PORT_POSITION_CONFIG.connectionMargin;
+
+    // Port in center of node - should connect to nearest edge (could be any)
+    const ports: Port[] = [
+      {
+        id: "center-port",
+        nodeId: node.id,
+        type: "output",
+        label: "Center",
+        position: "right",
+        placement: { mode: "absolute", x: 100, y: 75 }, // center of 200x150 node
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("center-port");
+
+    // Port visual center in canvas coordinates
+    const portVisualCenterX = node.position.x + pos!.renderPosition.x + halfPortSize;
+    const portVisualCenterY = node.position.y + pos!.renderPosition.y + halfPortSize;
+
+    // Distance from port visual center to connection point
+    const dx = pos!.connectionPoint.x - portVisualCenterX;
+    const dy = pos!.connectionPoint.y - portVisualCenterY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Connection point should be exactly connectionMargin away from port center
+    expect(distance).toBeCloseTo(connectionMargin, 1);
+  });
+
+  it("connectionPoint aligns with port visual center on perpendicular axis", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 0, y: 0 },
+      size: { width: 200, height: 100 },
+      data: {},
+    };
+
+    const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
+    const connectionMargin = DEFAULT_PORT_POSITION_CONFIG.connectionMargin;
+
+    // Port near right edge - should connect to the right
+    const ports: Port[] = [
+      {
+        id: "right-port",
+        nodeId: node.id,
+        type: "output",
+        label: "Right",
+        position: "right",
+        placement: { mode: "absolute", x: 195, y: 50 }, // near right edge
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("right-port");
+
+    // Port visual center in canvas coordinates
+    const portVisualCenterX = node.position.x + pos!.renderPosition.x + halfPortSize;
+    const portVisualCenterY = node.position.y + pos!.renderPosition.y + halfPortSize;
+
+    // For right direction, connectionPoint.y should equal port center y
+    expect(pos!.connectionPoint.y).toBeCloseTo(portVisualCenterY, 1);
+    // connectionPoint.x should be connectionMargin to the right of port center
+    expect(pos!.connectionPoint.x).toBeCloseTo(portVisualCenterX + connectionMargin, 1);
+  });
+
+  it("absolute port at corner has correct connectionPoint relative to visual center", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 50, y: 50 },
+      size: { width: 200, height: 150 },
+      data: {},
+    };
+
+    const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
+    const connectionMargin = DEFAULT_PORT_POSITION_CONFIG.connectionMargin;
+
+    // Port at top-left corner (0, 0)
+    const ports: Port[] = [
+      {
+        id: "corner-tl",
+        nodeId: node.id,
+        type: "input",
+        label: "TL",
+        position: "left",
+        placement: { mode: "absolute", x: 0, y: 0 },
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("corner-tl");
+
+    // Port visual center in canvas coordinates
+    const portVisualCenterX = node.position.x + pos!.renderPosition.x + halfPortSize;
+    const portVisualCenterY = node.position.y + pos!.renderPosition.y + halfPortSize;
+
+    // Port center should be at node position + placement
+    expect(portVisualCenterX).toBeCloseTo(node.position.x + 0, 1);
+    expect(portVisualCenterY).toBeCloseTo(node.position.y + 0, 1);
+
+    // Connection point should be connectionMargin away from port center
+    const dx = pos!.connectionPoint.x - portVisualCenterX;
+    const dy = pos!.connectionPoint.y - portVisualCenterY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    expect(distance).toBeCloseTo(connectionMargin, 1);
+  });
+
+  it("absolute and side placement at same position produce consistent connectionPoints", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 100, y: 100 },
+      size: { width: 200, height: 100 },
+      data: {},
+    };
+
+    const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
+
+    // Side port on the left at center (align=0.5 means y=50)
+    const sidePorts: Port[] = [
+      {
+        id: "side-left",
+        nodeId: node.id,
+        type: "input",
+        label: "Side Left",
+        position: "left",
+        placement: { side: "left", align: 0.5 },
+      },
+    ];
+
+    // Absolute port at same visual position (left edge, y=50)
+    const absolutePorts: Port[] = [
+      {
+        id: "absolute-left",
+        nodeId: node.id,
+        type: "input",
+        label: "Absolute Left",
+        position: "left",
+        placement: { mode: "absolute", x: 0, y: 50 },
+      },
+    ];
+
+    const sidePositions = computeNodePortPositions({ ...node, ports: sidePorts }, DEFAULT_PORT_POSITION_CONFIG, sidePorts);
+    const absolutePositions = computeNodePortPositions({ ...node, ports: absolutePorts }, DEFAULT_PORT_POSITION_CONFIG, absolutePorts);
+
+    const sidePos = sidePositions.get("side-left")!;
+    const absPos = absolutePositions.get("absolute-left")!;
+
+    // Calculate visual centers for both
+    // Side port uses transform, so visual center calculation differs
+    const sideVisualCenterY = node.position.y + sidePos.renderPosition.y; // transform centers it
+    const absVisualCenterY = node.position.y + absPos.renderPosition.y + halfPortSize;
+
+    // Both should have same visual center Y (at node.y + 50)
+    expect(sideVisualCenterY).toBeCloseTo(node.position.y + 50, 1);
+    expect(absVisualCenterY).toBeCloseTo(node.position.y + 50, 1);
+
+    // Both connectionPoints should have same Y coordinate (both on left edge)
+    expect(sidePos.connectionPoint.y).toBeCloseTo(absPos.connectionPoint.y, 1);
+    expect(sidePos.connectionPoint.x).toBeCloseTo(absPos.connectionPoint.x, 1);
+  });
+
+  it("absolute port connectionPoint.y equals placement.y + node.position.y for horizontal directions", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 100, y: 100 },
+      size: { width: 200, height: 150 },
+      data: {},
+    };
+
+    // Port at (0, 75) - left edge, vertical center
+    const ports: Port[] = [
+      {
+        id: "left-center",
+        nodeId: node.id,
+        type: "input",
+        label: "Left Center",
+        position: "left",
+        placement: { mode: "absolute", x: 0, y: 75 },
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("left-center")!;
+
+    // For left direction, connectionPoint.y should exactly equal node.y + placement.y
+    expect(pos.connectionPoint.y).toBe(node.position.y + 75);
+  });
 });

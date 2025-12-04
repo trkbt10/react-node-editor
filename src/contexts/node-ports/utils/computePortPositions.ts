@@ -310,6 +310,7 @@ function calculateAbsolutePortPosition(
     portId: port.id,
     renderPosition,
     connectionPoint,
+    connectionDirection: direction,
   };
 }
 
@@ -425,11 +426,13 @@ export function computeNodePortPositions(
         const relativeOffset = segmentStart + segmentRange * offsetsWithinSegment[index];
         const renderPosition = calculatePortRenderPosition(port, relativeOffset, nodeSize, config);
         const connectionPoint = calculatePortConnectionPoint(port, relativeOffset, node, config);
+        const side = getPortSide(port);
 
         positions.set(port.id, {
           portId: port.id,
           renderPosition,
           connectionPoint,
+          connectionDirection: side,
         });
       });
 
@@ -456,6 +459,7 @@ export function createDefaultPortCompute(
       result.set(portId, {
         renderPosition: pos.renderPosition,
         connectionPoint: pos.connectionPoint,
+        connectionDirection: pos.connectionDirection,
       });
     }
 

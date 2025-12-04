@@ -25,6 +25,7 @@ describe("PortPositionContext", () => {
               portId: "p1",
               renderPosition: { x: 10, y: 20 },
               connectionPoint: { x: 15, y: 25 },
+              connectionDirection: "right",
             },
           ],
         ]),

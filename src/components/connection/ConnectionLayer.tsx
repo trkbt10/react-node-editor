@@ -172,11 +172,15 @@ const ConnectingDragConnectionComponent: React.FC = () => {
 
   const renderer = resolveConnectionRenderer(getPortDefinition, fromPortEntry, fromNode, candidatePort, candidateNode);
 
+  // Use connectionDirection from computed port position (source of truth)
+  const fromDirection = fromPos.connectionDirection;
+  const toDirection = candidatePos?.connectionDirection ?? getOppositePortPosition(fromDirection);
+
   const pathData = calculateConnectionPath(
     fromPos,
     toPosition,
-    fromPortEntry.position,
-    candidatePort ? candidatePort.position : getOppositePortPosition(fromPortEntry.position),
+    fromDirection,
+    toDirection,
   );
 
   const defaultRender = () => (
@@ -198,6 +202,8 @@ const ConnectingDragConnectionComponent: React.FC = () => {
     toNode: candidateNode,
     fromPosition: fromPos,
     toPosition,
+    fromConnectionDirection: fromDirection,
+    toConnectionDirection: toDirection,
     isSelected: false,
     isHovered: false,
     isAdjacentToSelectedNode: false,
@@ -287,11 +293,20 @@ const DisconnectingDragConnectionComponent: React.FC = () => {
 
   const renderer = resolveConnectionRenderer(getPortDefinition, originalFromPort, fromNode, targetPort, targetNode);
 
+  // Use connectionDirection from computed port position (source of truth)
+  // For disconnecting, the fixed port's direction comes from fixedPos
+  const fixedDirection = fixedPos.connectionDirection;
+  const candidateDirection = candidatePos?.connectionDirection ?? getOppositePortPosition(fixedDirection);
+
+  // Determine from/to directions based on which end is being dragged
+  const fromDirection = disconnectState.draggingEnd === "from" ? candidateDirection : fixedDirection;
+  const toDirection = disconnectState.draggingEnd === "from" ? fixedDirection : candidateDirection;
+
   const pathData = calculateConnectionPath(
     fromPosition,
     toPosition,
-    originalFromPort.position,
-    targetPort ? targetPort.position : getOppositePortPosition(originalFromPort.position),
+    fromDirection,
+    toDirection,
   );
 
   const defaultRender = () => (
@@ -313,6 +328,8 @@ const DisconnectingDragConnectionComponent: React.FC = () => {
     toNode: targetNode,
     fromPosition,
     toPosition,
+    fromConnectionDirection: fromDirection,
+    toConnectionDirection: toDirection,
     isSelected: false,
     isHovered: false,
     isAdjacentToSelectedNode: false,

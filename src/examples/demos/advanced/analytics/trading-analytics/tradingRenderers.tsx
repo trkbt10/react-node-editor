@@ -13,7 +13,7 @@ export const renderTradingConnection = (
   context: ConnectionRenderContext,
   defaultRender: () => React.ReactElement,
 ): React.ReactElement => {
-  const { connection, fromPosition, toPosition, fromPort, toPort, handlers, isSelected, isHovered } = context;
+  const { connection, fromPosition, toPosition, fromPort, toPort, fromConnectionDirection, toConnectionDirection, handlers, isSelected, isHovered } = context;
 
   // If no connection exists yet (preview mode), use default
   if (!connection) {
@@ -28,11 +28,11 @@ export const renderTradingConnection = (
     return defaultRender();
   }
 
-  // Calculate bezier path for curved connection
-  const pathData = calculateConnectionPath(fromPosition, toPosition, fromPort.position, toPort.position);
+  // Calculate bezier path for curved connection (use connectionDirection from context for absolute ports)
+  const pathData = calculateConnectionPath(fromPosition, toPosition, fromConnectionDirection, toConnectionDirection);
 
   // Calculate midpoint for badge placement
-  const { cp1, cp2 } = calculateConnectionControlPoints(fromPosition, toPosition, fromPort.position, toPort.position);
+  const { cp1, cp2 } = calculateConnectionControlPoints(fromPosition, toPosition, fromConnectionDirection, toConnectionDirection);
   const midPoint = cubicBezierPoint(fromPosition, cp1, cp2, toPosition, 0.5);
 
   // Determine colors based on correlation coefficient - matching reference image

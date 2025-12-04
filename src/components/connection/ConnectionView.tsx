@@ -51,8 +51,10 @@ type ConnectionViewInnerProps = {
   connectionId: string;
   fromPosition: Position;
   toPosition: Position;
-  fromPortPosition: PortPosition;
-  toPortPosition: PortPosition;
+  /** Connection direction for the source port (from computed port position) */
+  fromConnectionDirection: PortPosition;
+  /** Connection direction for the target port (from computed port position) */
+  toConnectionDirection: PortPosition;
   isSelected: boolean;
   isHovered: boolean;
   isAdjacentToSelectedNode: boolean;
@@ -74,8 +76,8 @@ const ConnectionViewInnerComponent: React.FC<ConnectionViewInnerProps> = ({
   connectionId,
   fromPosition,
   toPosition,
-  fromPortPosition,
-  toPortPosition,
+  fromConnectionDirection,
+  toConnectionDirection,
   isSelected,
   isHovered,
   isAdjacentToSelectedNode,
@@ -101,13 +103,13 @@ const ConnectionViewInnerComponent: React.FC<ConnectionViewInnerProps> = ({
   );
 
   const pathData = React.useMemo(
-    () => calculateConnectionPath(fromPosition, toPosition, fromPortPosition, toPortPosition),
-    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPortPosition, toPortPosition],
+    () => calculateConnectionPath(fromPosition, toPosition, fromConnectionDirection, toConnectionDirection),
+    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromConnectionDirection, toConnectionDirection],
   );
 
   const midAndAngle = React.useMemo(
-    () => calculateConnectionMidpoint(fromPosition, toPosition, fromPortPosition, toPortPosition),
-    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPortPosition, toPortPosition],
+    () => calculateConnectionMidpoint(fromPosition, toPosition, fromConnectionDirection, toConnectionDirection),
+    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromConnectionDirection, toConnectionDirection],
   );
 
   const arrowGeometry = React.useMemo(
@@ -216,7 +218,7 @@ const areInnerPropsEqual = (prev: ConnectionViewInnerProps, next: ConnectionView
   ) {
     return false;
   }
-  if (prev.fromPortPosition !== next.fromPortPosition || prev.toPortPosition !== next.toPortPosition) {
+  if (prev.fromConnectionDirection !== next.fromConnectionDirection || prev.toConnectionDirection !== next.toConnectionDirection) {
     return false;
   }
   if (prev.customRenderer !== next.customRenderer) {
@@ -286,6 +288,10 @@ const ConnectionViewContainer: React.FC<ConnectionViewProps> = ({
     [baseToPosition, toNode.position.x, toNode.position.y, toNodePosition?.x, toNodePosition?.y],
   );
 
+  // Connection directions from computed port positions (source of truth)
+  const fromConnectionDirection = baseFromPosition?.connectionDirection ?? fromPort.position;
+  const toConnectionDirection = baseToPosition?.connectionDirection ?? toPort.position;
+
   // Event handlers (stable via useEffectEvent)
   const handlePointerDown = React.useEffectEvent((e: React.PointerEvent) => {
     e.stopPropagation();
@@ -322,6 +328,8 @@ const ConnectionViewContainer: React.FC<ConnectionViewProps> = ({
       toNode,
       fromPosition,
       toPosition,
+      fromConnectionDirection,
+      toConnectionDirection,
       isSelected,
       isHovered,
       isAdjacentToSelectedNode,
@@ -342,6 +350,8 @@ const ConnectionViewContainer: React.FC<ConnectionViewProps> = ({
       toNode,
       fromPosition,
       toPosition,
+      fromConnectionDirection,
+      toConnectionDirection,
       isSelected,
       isHovered,
       isAdjacentToSelectedNode,
@@ -355,8 +365,8 @@ const ConnectionViewContainer: React.FC<ConnectionViewProps> = ({
       connectionId={connectionId}
       fromPosition={fromPosition}
       toPosition={toPosition}
-      fromPortPosition={fromPort.position}
-      toPortPosition={toPort.position}
+      fromConnectionDirection={fromConnectionDirection}
+      toConnectionDirection={toConnectionDirection}
       isSelected={isSelected}
       isHovered={isHovered}
       isAdjacentToSelectedNode={isAdjacentToSelectedNode}

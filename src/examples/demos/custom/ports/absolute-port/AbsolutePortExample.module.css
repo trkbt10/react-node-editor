@@ -1,0 +1,88 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--node-editor-surface-secondary);
+}
+
+.header {
+  padding: 16px 24px;
+  background: var(--node-editor-surface-primary);
+  border-bottom: var(--node-editor-card-border, 1px solid rgba(15, 23, 42, 0.12));
+}
+
+.title {
+  margin: 0 0 4px 0;
+  font: var(--node-editor-title-font);
+  color: var(--node-editor-label-color);
+}
+
+.description {
+  margin: 0;
+  font-size: var(--node-editor-inspector-font-size-body);
+  color: var(--node-editor-secondary-label-color);
+}
+
+.editorContainer {
+  flex: 1;
+  min-height: 0;
+}
+
+.absoluteNode,
+.insetNode,
+.mixedNode {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.absoluteNode {
+  background: color-mix(in srgb, var(--node-editor-accent-color) 12%, var(--node-editor-surface-primary));
+  border: 2px solid var(--node-editor-accent-color);
+}
+
+.insetNode {
+  background: color-mix(in srgb, var(--node-editor-warning-color) 12%, var(--node-editor-surface-primary));
+  border: 2px solid var(--node-editor-warning-color);
+}
+
+.mixedNode {
+  background: color-mix(in srgb, var(--node-editor-success-color) 12%, var(--node-editor-surface-primary));
+  border: 2px solid var(--node-editor-success-color);
+}
+
+.nodeTitle {
+  font: var(--node-editor-subtitle-font);
+  color: var(--node-editor-label-color);
+  margin-bottom: 8px;
+}
+
+.nodeInfo {
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--node-editor-secondary-label-color);
+  text-align: center;
+  line-height: 1.4;
+}
+
+.legend {
+  padding: 16px 24px;
+  background: var(--node-editor-surface-primary);
+  border-top: var(--node-editor-card-border, 1px solid rgba(15, 23, 42, 0.12));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legendItem {
+  font-size: var(--node-editor-inspector-font-size-body);
+  color: var(--node-editor-secondary-label-color);
+}
+
+.legendItem strong {
+  color: var(--node-editor-label-color);
+}

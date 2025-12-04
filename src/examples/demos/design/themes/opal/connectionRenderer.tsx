@@ -19,17 +19,18 @@ export const opalConnectionRenderer = (
     defaultElement
   );
 
-  const { fromPort, toPort, fromPosition, toPosition, isSelected, isHovered, handlers } = context;
+  const { fromPort, toPort, fromPosition, toPosition, fromConnectionDirection, toConnectionDirection, isSelected, isHovered, handlers } = context;
 
+  // Use connectionDirection from context (source of truth for absolute ports)
   const pathData = React.useMemo(
     () =>
       calculateConnectionPath(
         fromPosition,
         toPosition,
-        fromPort.position,
-        toPort?.position ?? getOppositePortPosition(fromPort.position),
+        fromConnectionDirection,
+        toConnectionDirection,
       ),
-    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromPort.position, toPort?.position],
+    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromConnectionDirection, toConnectionDirection],
   );
 
   const strokeColor = isSelected || isHovered ? "#4a5568" : "#a0aec0";

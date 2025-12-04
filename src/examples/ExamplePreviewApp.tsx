@@ -36,6 +36,7 @@ import { DataBindingModesExample } from "./demos/data/binding-modes/DataBindingM
 import { ErrorNodeFallbackExample } from "./demos/basic/error-node-fallback/ErrorNodeFallbackExample";
 import { CustomLayoutDemo } from "./demos/layout/custom-core/custom-layout-demo";
 import { DynamicPortPlaygroundExample } from "./demos/custom/ports/port-playground/DynamicPortPlaygroundExample";
+import { AbsolutePortExample } from "./demos/custom/ports/absolute-port/AbsolutePortExample";
 import { ComfyUILayoutExample } from "./demos/custom/layouts/comfyui/ComfyUILayoutExample";
 import { CustomInspectorExample } from "./demos/custom/inspector/custom-inspector/CustomInspectorExample";
 import { NodeSearchMenuExample } from "./demos/custom/search/node-search-menu/NodeSearchMenuExample";
@@ -141,6 +142,13 @@ const examples: ExampleEntry[] = [
     title: "Dynamic Port Playground",
     description: "Experiment with segmented port placement, multi-type validation, and dynamic port counts.",
     component: DynamicPortPlaygroundExample,
+    category: "custom",
+  },
+  {
+    id: "absolute-port-placement",
+    title: "Absolute & Inset Ports",
+    description: "Demonstrates absolute positioning (x,y coordinates) and inset ports (inside node boundary).",
+    component: AbsolutePortExample,
     category: "custom",
   },
   {
