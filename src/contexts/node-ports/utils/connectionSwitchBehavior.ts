@@ -2,11 +2,10 @@
  * @file Logic for handling connection switching behavior when ports reach capacity limits
  */
 import type { Connection, Node, NodeId, Port } from "../../../types/core";
-import type { NodeDefinition, PortDefinition } from "../../../types/NodeDefinition";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { createValidatedConnection } from "./connectionOperations";
 import { getPortDefinition } from "../../../core/port/definition";
-
-const DEFAULT_MAX_CONNECTIONS = 1;
+import { checkPortCapacity } from "../../../core/port/queries";
 
 /**
  * How the editor should respond when a port at capacity is used to start a new connection drag.
@@ -44,28 +43,6 @@ export type ConnectionPlan = {
   connectionIdsToReplace: string[];
 };
 
-const normalizeMaxConnections = (value: number | "unlimited" | undefined): number | undefined => {
-  if (value === "unlimited") {
-    return undefined;
-  }
-  if (typeof value === "number") {
-    return value;
-  }
-  return DEFAULT_MAX_CONNECTIONS;
-};
-
-const getEffectiveMaxConnections = (port: Port, definition?: PortDefinition): number | undefined => {
-  const configuredMax = port.maxConnections ?? definition?.maxConnections;
-  return normalizeMaxConnections(configuredMax);
-};
-
-const collectConnectionsForPort = (port: Port, connections: Record<string, Connection>): Connection[] =>
-  Object.values(connections).filter((connection) =>
-    port.type === "output"
-      ? connection.fromNodeId === port.nodeId && connection.fromPortId === port.id
-      : connection.toNodeId === port.nodeId && connection.toPortId === port.id,
-  );
-
 const determineBehaviorForPort = (
   port: Port,
   nodes: Record<NodeId, Node>,
@@ -75,19 +52,20 @@ const determineBehaviorForPort = (
   const node = nodes[port.nodeId];
   const definition = node ? getNodeDefinition(node.type) : undefined;
   const portDefinition = definition ? getPortDefinition(port, definition) : undefined;
-  const maxConnections = getEffectiveMaxConnections(port, portDefinition);
-  const existingConnections = collectConnectionsForPort(port, connections);
+  const direction = port.type === "output" ? "from" : "to";
 
-  if (maxConnections === undefined) {
-    return { behavior: ConnectionSwitchBehavior.Append, existingConnections, maxConnections };
-  }
+  // Use checkPortCapacity as single source of truth for capacity logic
+  const capacityResult = checkPortCapacity(port, connections, direction, portDefinition);
 
-  if (existingConnections.length < maxConnections) {
-    return { behavior: ConnectionSwitchBehavior.Append, existingConnections, maxConnections };
-  }
+  const behavior = capacityResult.atCapacity
+    ? ConnectionSwitchBehavior.Ignore
+    : ConnectionSwitchBehavior.Append;
 
-  // Port is at capacity - ignore new connections
-  return { behavior: ConnectionSwitchBehavior.Ignore, existingConnections, maxConnections };
+  return {
+    behavior,
+    existingConnections: capacityResult.existingConnections,
+    maxConnections: capacityResult.maxConnections,
+  };
 };
 
 /**

@@ -380,4 +380,55 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
     );
     expect(blockedBySegment).toBe(false);
   });
+
+  it("port object maxConnections takes priority over definition maxConnections", () => {
+    // Definition allows unlimited connections
+    const unlimitedDef = baseNodeDef("Unlimited", [
+      { id: "in", type: "input", label: "in", position: "left", maxConnections: "unlimited" },
+      { id: "out", type: "output", label: "out", position: "right", maxConnections: "unlimited" },
+    ]);
+    const reg = mkRegistry([unlimitedDef]);
+
+    // Port object overrides with maxConnections: 1
+    const inputWithLimit: Port = {
+      id: "in",
+      nodeId: "target",
+      type: "input",
+      label: "in",
+      position: "left",
+      maxConnections: 1,
+    };
+    const output: Port = { id: "out", nodeId: "source", type: "output", label: "out", position: "right" };
+
+    const existingConnection: Record<string, Connection> = {
+      c1: { id: "c1", fromNodeId: "other", fromPortId: "out", toNodeId: "target", toPortId: "in" },
+    };
+
+    // Should be blocked because port object has maxConnections: 1 (despite definition having unlimited)
+    const blocked = canConnectPorts(
+      output,
+      inputWithLimit,
+      reg.get("Unlimited"),
+      reg.get("Unlimited"),
+      existingConnection,
+    );
+    expect(blocked).toBe(false);
+
+    // Without port-level override, definition's unlimited should allow connection
+    const inputWithoutLimit: Port = {
+      id: "in",
+      nodeId: "target",
+      type: "input",
+      label: "in",
+      position: "left",
+    };
+    const allowed = canConnectPorts(
+      output,
+      inputWithoutLimit,
+      reg.get("Unlimited"),
+      reg.get("Unlimited"),
+      existingConnection,
+    );
+    expect(allowed).toBe(true);
+  });
 });

@@ -6,25 +6,13 @@ import type { Node, Port, Connection, NodeId } from "../../types/core";
 import type { NodeDefinition, PortConnectionContext } from "../../types/NodeDefinition";
 import { arePortDataTypesCompatible, mergePortDataTypes } from "../../utils/portDataTypeUtils";
 import { getPortDefinition } from "../port/definition";
+import { checkPortCapacity } from "../port/queries";
 
 // Re-export for backwards compatibility
 export { getPortDefinition } from "../port/definition";
 
 export type ConnectionValidationOptions = {
   nodes?: Record<NodeId, Node>;
-};
-
-/**
- * Normalize maxConnections value to a number or undefined (unlimited)
- */
-const normalizeMaxConnections = (value: number | "unlimited" | undefined, defaultValue: number): number | undefined => {
-  if (value === "unlimited") {
-    return undefined;
-  }
-  if (typeof value === "number") {
-    return value;
-  }
-  return defaultValue;
 };
 
 /**
@@ -46,37 +34,6 @@ const connectionExists = (
         conn.toNodeId === fromPort.nodeId &&
         conn.toPortId === fromPort.id),
   );
-};
-
-/**
- * Count connections for a specific port
- */
-const countPortConnections = (
-  port: Port,
-  connections: Record<string, Connection>,
-  direction: "from" | "to",
-): number => {
-  const nodeKey = direction === "from" ? "fromNodeId" : "toNodeId";
-  const portKey = direction === "from" ? "fromPortId" : "toPortId";
-  return Object.values(connections).filter(
-    (conn) => conn[nodeKey] === port.nodeId && conn[portKey] === port.id,
-  ).length;
-};
-
-/**
- * Check if port exceeds max connections limit
- */
-const exceedsMaxConnections = (
-  port: Port,
-  connections: Record<string, Connection>,
-  maxConnections: number | "unlimited" | undefined,
-  direction: "from" | "to",
-): boolean => {
-  const max = normalizeMaxConnections(maxConnections, 1);
-  if (max === undefined) {
-    return false;
-  }
-  return countPortConnections(port, connections, direction) >= max;
 };
 
 /**
@@ -144,12 +101,12 @@ export const canConnectPorts = (
     return false;
   }
 
-  // Check max connections limit
+  // Check max connections limit (port object takes priority over definition)
   if (connections) {
-    if (exceedsMaxConnections(toPort, connections, toPortDef?.maxConnections, "to")) {
+    if (checkPortCapacity(toPort, connections, "to", toPortDef).atCapacity) {
       return false;
     }
-    if (exceedsMaxConnections(fromPort, connections, fromPortDef?.maxConnections, "from")) {
+    if (checkPortCapacity(fromPort, connections, "from", fromPortDef).atCapacity) {
       return false;
     }
   }
