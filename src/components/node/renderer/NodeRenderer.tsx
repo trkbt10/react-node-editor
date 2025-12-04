@@ -1,10 +1,14 @@
 /**
  * @file Node renderer component
+ * Optimized to use useNodeDrag hook instead of render props pattern
  */
 import * as React from "react";
 import { Node, NodeId } from "../../../types/core";
-import { NodeDragHandler } from "../drag/NodeDragHandler";
-import { createMemoizedComponent, areNodesEqual } from "../../../contexts/node-editor/utils/renderOptimizationMemoization";
+import { useNodeDrag } from "../../../hooks/useNodeDrag";
+import {
+  createMemoizedComponent,
+  areNodesEqual,
+} from "../../../contexts/node-editor/utils/renderOptimizationMemoization";
 import styles from "./NodeRenderer.module.css";
 import { NodeView } from "../NodeView";
 import { useOptionalRenderers } from "../../../contexts/RendererContext";
@@ -31,11 +35,13 @@ export type NodeRendererProps = {
   nodeRenderer?: (props: CustomNodeRendererProps) => React.ReactNode;
   onUpdateNode?: (nodeId: NodeId, updates: Partial<Node>) => void;
   onNodeContextMenu?: (e: React.MouseEvent, nodeId: NodeId) => void;
-  externalDataMap?: Map<NodeId, unknown>;
+  /** Pre-extracted external data for this specific node (avoids Map reference comparison issues) */
+  externalData?: unknown;
 };
 
 /**
  * Renders an individual node with optimized re-rendering
+ * Uses useNodeDrag hook for better memoization than render props
  */
 const NodeRendererComponent: React.FC<NodeRendererProps> = ({
   node,
@@ -44,11 +50,14 @@ const NodeRendererComponent: React.FC<NodeRendererProps> = ({
   nodeRenderer,
   onUpdateNode,
   onNodeContextMenu,
-  externalDataMap,
+  externalData,
 }) => {
   const renderers = useOptionalRenderers();
   const NodeComponent = renderers?.node ?? NodeView;
   const nodeDefinitions = useNodeDefinitionList();
+
+  // Use hook instead of render props for stable references
+  const { onPointerDown, isDragging: isCurrentlyDragging } = useNodeDrag(node.id);
 
   // Calculate actual position including drag offset
   const actualPosition = React.useMemo(
@@ -58,9 +67,6 @@ const NodeRendererComponent: React.FC<NodeRendererProps> = ({
     }),
     [node.position, dragOffset],
   );
-
-  // Get external data for custom renderers
-  const externalData = externalDataMap?.get(node.id);
 
   // Handle node updates
   const handleUpdateNode = React.useCallback(
@@ -83,30 +89,26 @@ const NodeRendererComponent: React.FC<NodeRendererProps> = ({
   const isGroup = nodeHasGroupBehavior(node, nodeDefinitions);
 
   return (
-    <NodeDragHandler nodeId={node.id}>
-      {({ onPointerDown, isDragging: isCurrentlyDragging }) => (
-        <div
-          className={styles.nodeWrapper}
-          style={{
-            transform: `translate(${actualPosition.x}px, ${actualPosition.y}px)`,
-            zIndex: isCurrentlyDragging ? 1000 : isGroup ? 1 : 10,
-          }}
-          data-node-id={node.id}
-          data-dragging={isCurrentlyDragging}
-        >
-          <NodeComponent
-            node={node}
-            isSelected={isSelected}
-            isDragging={isCurrentlyDragging}
-            onPointerDown={onPointerDown}
-            onContextMenu={handleContextMenu}
-            nodeRenderer={nodeRenderer}
-            externalData={externalData}
-            onUpdateNode={handleUpdateNode}
-          />
-        </div>
-      )}
-    </NodeDragHandler>
+    <div
+      className={styles.nodeWrapper}
+      style={{
+        transform: `translate(${actualPosition.x}px, ${actualPosition.y}px)`,
+        zIndex: isCurrentlyDragging ? 1000 : isGroup ? 1 : 10,
+      }}
+      data-node-id={node.id}
+      data-dragging={isCurrentlyDragging}
+    >
+      <NodeComponent
+        node={node}
+        isSelected={isSelected}
+        isDragging={isCurrentlyDragging}
+        onPointerDown={onPointerDown}
+        onContextMenu={handleContextMenu}
+        nodeRenderer={nodeRenderer}
+        externalData={externalData}
+        onUpdateNode={handleUpdateNode}
+      />
+    </div>
   );
 };
 
@@ -124,6 +126,7 @@ export const NodeRenderer = createMemoizedComponent(NodeRendererComponent, (prev
     prevProps.nodeRenderer === nextProps.nodeRenderer &&
     prevProps.onUpdateNode === nextProps.onUpdateNode &&
     prevProps.onNodeContextMenu === nextProps.onNodeContextMenu &&
-    prevProps.externalDataMap === nextProps.externalDataMap
+    // Compare external data directly instead of Map reference
+    prevProps.externalData === nextProps.externalData
   );
 });

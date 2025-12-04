@@ -69,7 +69,7 @@ export const useCanvasPointerActions = ({
   }, [interactionSettings.pinchZoom.pointerTypes]);
   const pinchMinDistance = interactionSettings.pinchZoom.minDistance ?? 0;
 
-  const tryStartPinch = React.useCallback((): boolean => {
+  const tryStartPinch = React.useEffectEvent((): boolean => {
     if (!interactionSettings.pinchZoom.enabled) {
       return false;
     }
@@ -115,18 +115,9 @@ export const useCanvasPointerActions = ({
 
     setIsPinching(true);
     return true;
-  }, [
-    interactionSettings.pinchZoom.enabled,
-    pinchMinDistance,
-    canvasState.viewport.scale,
-    canvasState.panState.isPanning,
-    isBoxSelecting,
-    actionActions,
-    canvasActions,
-    containerRef,
-  ]);
+  });
 
-  const updatePinchZoom = React.useCallback(() => {
+  const updatePinchZoom = React.useEffectEvent(() => {
     const container = containerRef.current;
     const pinchState = pinchStateRef.current;
     if (!container || !pinchState) {
@@ -168,277 +159,228 @@ export const useCanvasPointerActions = ({
       ...pinchState,
       center,
     };
-  }, [canvasActions, containerRef]);
+  });
 
-  const endPinch = React.useCallback(() => {
+  const endPinch = React.useEffectEvent(() => {
     if (!isPinching) {
       return;
     }
     setIsPinching(false);
     pinchStateRef.current = null;
-  }, [isPinching]);
+  });
 
-  const pointerTypeFromEvent = React.useCallback((event: React.PointerEvent): PointerType => {
+  const pointerTypeFromEvent = React.useEffectEvent((event: React.PointerEvent): PointerType => {
     return normalizePointerType(event.pointerType);
-  }, []);
+  });
 
-  const handlePointerDown = React.useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
-      const pointerType = pointerTypeFromEvent(e);
+  const handlePointerDown = React.useEffectEvent((e: React.PointerEvent<HTMLDivElement>) => {
+    const pointerType = pointerTypeFromEvent(e);
 
-      if (interactionSettings.pinchZoom.enabled && pinchPointerTypes.has(pointerType)) {
+    if (interactionSettings.pinchZoom.enabled && pinchPointerTypes.has(pointerType)) {
+      activePinchPointersRef.current.set(e.pointerId, {
+        clientX: e.clientX,
+        clientY: e.clientY,
+        pointerType,
+      });
+
+      if (activePinchPointersRef.current.size === 2 && tryStartPinch()) {
+        const container = containerRef.current;
+        if (container) {
+          container.setPointerCapture(e.pointerId);
+        }
+        return;
+      }
+    }
+
+    if (isPinching) {
+      return;
+    }
+
+    const target = e.target as Element | null;
+    const interactiveTarget = target?.closest?.(
+      '[data-node-id], [data-port-id], [data-connection-id], button, input, textarea, [role="button"]',
+    );
+
+    const intent = evaluateCanvasPointerIntent({
+      event: e.nativeEvent,
+      pointerType,
+      interactiveTarget: Boolean(interactiveTarget),
+      isSpacePanning: canvasState.isSpacePanning,
+      panActivators: interactionSettings.canvasPanActivators,
+      matchesPointerAction,
+    });
+
+    if (intent.canRangeSelect) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) {
+        return;
+      }
+
+      const screenX = e.clientX - rect.left;
+      const screenY = e.clientY - rect.top;
+      const start = { x: screenX, y: screenY };
+
+      setIsBoxSelecting(true);
+      actionActions.setSelectionBox({ start, end: start });
+      if (intent.additiveSelection) {
+        initialSelectionRef.current = actionState.selectedNodeIds.slice();
+      } else {
+        initialSelectionRef.current = [];
+        actionActions.clearSelection();
+      }
+
+      primaryPointerRef.current = {
+        pointerId: e.pointerId,
+        origin: { x: e.clientX, y: e.clientY },
+        intent,
+        status: "range-select",
+      };
+
+      const container = containerRef.current;
+      if (container) {
+        container.setPointerCapture(e.pointerId);
+      }
+      return;
+    }
+
+    if (pointerType !== "mouse" && pointerType !== "pen") {
+      return;
+    }
+
+    if (intent.canPan && !intent.canClearSelection) {
+      e.preventDefault();
+      canvasActions.startPan({ x: e.clientX, y: e.clientY });
+
+      primaryPointerRef.current = {
+        pointerId: e.pointerId,
+        origin: { x: e.clientX, y: e.clientY },
+        intent,
+        status: "pan",
+      };
+
+      const container = containerRef.current;
+      if (container) {
+        container.setPointerCapture(e.pointerId);
+      }
+      return;
+    }
+
+    if (intent.canPan || intent.canClearSelection) {
+      if (intent.canPan) {
+        e.preventDefault();
+      }
+
+      primaryPointerRef.current = {
+        pointerId: e.pointerId,
+        origin: { x: e.clientX, y: e.clientY },
+        intent,
+        status: "pending",
+      };
+    }
+  });
+
+  const handlePointerMove = React.useEffectEvent((e: React.PointerEvent<HTMLDivElement>) => {
+    const pointerType = pointerTypeFromEvent(e);
+
+    if (interactionSettings.pinchZoom.enabled && pinchPointerTypes.has(pointerType)) {
+      if (activePinchPointersRef.current.has(e.pointerId)) {
         activePinchPointersRef.current.set(e.pointerId, {
           clientX: e.clientX,
           clientY: e.clientY,
           pointerType,
         });
+      }
+    }
 
-        if (activePinchPointersRef.current.size === 2 && tryStartPinch()) {
+    if (isPinching) {
+      e.preventDefault();
+      updatePinchZoom();
+      return;
+    }
+
+    const primaryPointer = primaryPointerRef.current;
+    if (primaryPointer && primaryPointer.pointerId === e.pointerId) {
+      if (primaryPointer.status === "pending") {
+        const currentPosition = { x: e.clientX, y: e.clientY };
+        if (primaryPointer.intent.canPan && hasExceededCanvasDragThreshold(primaryPointer.origin, currentPosition)) {
+          e.preventDefault();
+          canvasActions.startPan(primaryPointer.origin);
+          canvasActions.updatePan(currentPosition);
+          primaryPointerRef.current = {
+            ...primaryPointer,
+            status: "pan",
+          };
+
           const container = containerRef.current;
           if (container) {
             container.setPointerCapture(e.pointerId);
           }
           return;
         }
-      }
 
-      if (isPinching) {
-        return;
-      }
-
-      const target = e.target as Element | null;
-      const interactiveTarget = target?.closest?.(
-        '[data-node-id], [data-port-id], [data-connection-id], button, input, textarea, [role="button"]',
-      );
-
-      const intent = evaluateCanvasPointerIntent({
-        event: e.nativeEvent,
-        pointerType,
-        interactiveTarget: Boolean(interactiveTarget),
-        isSpacePanning: canvasState.isSpacePanning,
-        panActivators: interactionSettings.canvasPanActivators,
-        matchesPointerAction,
-      });
-
-      if (intent.canRangeSelect) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        const rect = containerRef.current?.getBoundingClientRect();
-        if (!rect) {
-          return;
+        if (
+          primaryPointer.intent.canClearSelection &&
+          hasExceededCanvasDragThreshold(primaryPointer.origin, currentPosition)
+        ) {
+          primaryPointerRef.current = null;
         }
-
-        const screenX = e.clientX - rect.left;
-        const screenY = e.clientY - rect.top;
-        const start = { x: screenX, y: screenY };
-
-        setIsBoxSelecting(true);
-        actionActions.setSelectionBox({ start, end: start });
-        if (intent.additiveSelection) {
-          initialSelectionRef.current = actionState.selectedNodeIds.slice();
-        } else {
-          initialSelectionRef.current = [];
-          actionActions.clearSelection();
-        }
-
-        primaryPointerRef.current = {
-          pointerId: e.pointerId,
-          origin: { x: e.clientX, y: e.clientY },
-          intent,
-          status: "range-select",
-        };
-
-        const container = containerRef.current;
-        if (container) {
-          container.setPointerCapture(e.pointerId);
-        }
-        return;
-      }
-
-      if (pointerType !== "mouse" && pointerType !== "pen") {
-        return;
-      }
-
-      if (intent.canPan && !intent.canClearSelection) {
-        e.preventDefault();
-        canvasActions.startPan({ x: e.clientX, y: e.clientY });
-
-        primaryPointerRef.current = {
-          pointerId: e.pointerId,
-          origin: { x: e.clientX, y: e.clientY },
-          intent,
-          status: "pan",
-        };
-
-        const container = containerRef.current;
-        if (container) {
-          container.setPointerCapture(e.pointerId);
-        }
-        return;
-      }
-
-      if (intent.canPan || intent.canClearSelection) {
-        if (intent.canPan) {
-          e.preventDefault();
-        }
-
-        primaryPointerRef.current = {
-          pointerId: e.pointerId,
-          origin: { x: e.clientX, y: e.clientY },
-          intent,
-          status: "pending",
-        };
-      }
-    },
-    [
-      pointerTypeFromEvent,
-      interactionSettings.pinchZoom.enabled,
-      pinchPointerTypes,
-      tryStartPinch,
-      isPinching,
-      canvasState.isSpacePanning,
-      interactionSettings.canvasPanActivators,
-      matchesPointerAction,
-      canvasActions,
-      containerRef,
-      actionActions,
-      actionState.selectedNodeIds,
-    ],
-  );
-
-  const handlePointerMove = React.useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
-      const pointerType = pointerTypeFromEvent(e);
-
-      if (interactionSettings.pinchZoom.enabled && pinchPointerTypes.has(pointerType)) {
-        if (activePinchPointersRef.current.has(e.pointerId)) {
-          activePinchPointersRef.current.set(e.pointerId, {
-            clientX: e.clientX,
-            clientY: e.clientY,
-            pointerType,
-          });
-        }
-      }
-
-      if (isPinching) {
-        e.preventDefault();
-        updatePinchZoom();
-        return;
-      }
-
-      const primaryPointer = primaryPointerRef.current;
-      if (primaryPointer && primaryPointer.pointerId === e.pointerId) {
-        if (primaryPointer.status === "pending") {
-          const currentPosition = { x: e.clientX, y: e.clientY };
-          if (primaryPointer.intent.canPan && hasExceededCanvasDragThreshold(primaryPointer.origin, currentPosition)) {
-            e.preventDefault();
-            canvasActions.startPan(primaryPointer.origin);
-            canvasActions.updatePan(currentPosition);
-            primaryPointerRef.current = {
-              ...primaryPointer,
-              status: "pan",
-            };
-
-            const container = containerRef.current;
-            if (container) {
-              container.setPointerCapture(e.pointerId);
-            }
-            return;
-          }
-
-          if (
-            primaryPointer.intent.canClearSelection &&
-            hasExceededCanvasDragThreshold(primaryPointer.origin, currentPosition)
-          ) {
-            primaryPointerRef.current = null;
-          }
-        } else if (primaryPointer.status === "pan") {
-          canvasActions.updatePan({ x: e.clientX, y: e.clientY });
-          return;
-        }
-      }
-
-      if (canvasState.panState.isPanning) {
+      } else if (primaryPointer.status === "pan") {
         canvasActions.updatePan({ x: e.clientX, y: e.clientY });
         return;
       }
+    }
 
-      if (isBoxSelecting && actionState.selectionBox) {
-        const rect = containerRef.current?.getBoundingClientRect();
-        if (!rect) {
-          return;
-        }
+    if (canvasState.panState.isPanning) {
+      canvasActions.updatePan({ x: e.clientX, y: e.clientY });
+      return;
+    }
 
-        const screenX = e.clientX - rect.left;
-        const screenY = e.clientY - rect.top;
-
-        actionActions.setSelectionBox({
-          start: actionState.selectionBox.start,
-          end: { x: screenX, y: screenY },
-        });
-      }
-    },
-    [
-      pointerTypeFromEvent,
-      interactionSettings.pinchZoom.enabled,
-      pinchPointerTypes,
-      isPinching,
-      updatePinchZoom,
-      canvasState.panState.isPanning,
-      isBoxSelecting,
-      actionState.selectionBox,
-      canvasActions,
-      actionActions,
-      containerRef,
-    ],
-  );
-
-  const handlePointerUp = React.useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
-      const pointerType = pointerTypeFromEvent(e);
-
-      if (interactionSettings.pinchZoom.enabled && pinchPointerTypes.has(pointerType)) {
-        if (activePinchPointersRef.current.has(e.pointerId)) {
-          activePinchPointersRef.current.delete(e.pointerId);
-        }
-
-        const container = containerRef.current;
-        if (container) {
-          container.releasePointerCapture(e.pointerId);
-        }
-
-        if (activePinchPointersRef.current.size < 2) {
-          endPinch();
-        }
-
-        if (isPinching) {
-          return;
-        }
+    if (isBoxSelecting && actionState.selectionBox) {
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) {
+        return;
       }
 
-      const primaryPointer = primaryPointerRef.current;
-      if (primaryPointer && primaryPointer.pointerId === e.pointerId) {
-        if (primaryPointer.status === "pan") {
-          canvasActions.endPan();
-          primaryPointerRef.current = null;
+      const screenX = e.clientX - rect.left;
+      const screenY = e.clientY - rect.top;
 
-          const container = containerRef.current;
-          if (container) {
-            container.releasePointerCapture(e.pointerId);
-          }
-          return;
-        }
+      actionActions.setSelectionBox({
+        start: actionState.selectionBox.start,
+        end: { x: screenX, y: screenY },
+      });
+    }
+  });
 
-        if (primaryPointer.status === "pending" && primaryPointer.intent.canClearSelection) {
-          primaryPointerRef.current = null;
-          actionActions.clearSelection();
-          return;
-        }
+  const handlePointerUp = React.useEffectEvent((e: React.PointerEvent<HTMLDivElement>) => {
+    const pointerType = pointerTypeFromEvent(e);
 
-        primaryPointerRef.current = null;
-      } else if (canvasState.panState.isPanning) {
+    if (interactionSettings.pinchZoom.enabled && pinchPointerTypes.has(pointerType)) {
+      if (activePinchPointersRef.current.has(e.pointerId)) {
+        activePinchPointersRef.current.delete(e.pointerId);
+      }
+
+      const container = containerRef.current;
+      if (container) {
+        container.releasePointerCapture(e.pointerId);
+      }
+
+      if (activePinchPointersRef.current.size < 2) {
+        endPinch();
+      }
+
+      if (isPinching) {
+        return;
+      }
+    }
+
+    const primaryPointer = primaryPointerRef.current;
+    if (primaryPointer && primaryPointer.pointerId === e.pointerId) {
+      if (primaryPointer.status === "pan") {
         canvasActions.endPan();
+        primaryPointerRef.current = null;
 
         const container = containerRef.current;
         if (container) {
@@ -447,89 +389,83 @@ export const useCanvasPointerActions = ({
         return;
       }
 
-      if (isBoxSelecting && actionState.selectionBox) {
-        setIsBoxSelecting(false);
-
-        const { start, end } = actionState.selectionBox;
-        const canvasStartX = (start.x - canvasState.viewport.offset.x) / canvasState.viewport.scale;
-        const canvasStartY = (start.y - canvasState.viewport.offset.y) / canvasState.viewport.scale;
-        const canvasEndX = (end.x - canvasState.viewport.offset.x) / canvasState.viewport.scale;
-        const canvasEndY = (end.y - canvasState.viewport.offset.y) / canvasState.viewport.scale;
-
-        const minX = Math.min(canvasStartX, canvasEndX);
-        const maxX = Math.max(canvasStartX, canvasEndX);
-        const minY = Math.min(canvasStartY, canvasEndY);
-        const maxY = Math.max(canvasStartY, canvasEndY);
-
-        const nodesInBox: NodeId[] = [];
-        Object.values(nodeEditorState.nodes).forEach((node) => {
-          const nodeWidth = node.size?.width ?? 150;
-          const nodeHeight = node.size?.height ?? 50;
-
-          const intersects =
-            node.position.x < maxX &&
-            node.position.x + nodeWidth > minX &&
-            node.position.y < maxY &&
-            node.position.y + nodeHeight > minY;
-
-          if (intersects) {
-            nodesInBox.push(node.id);
-          }
-        });
-
-        const additiveSelection = matchesPointerAction("node-add-to-selection", e.nativeEvent);
-        const uniqueNodeIds = Array.from(new Set(nodesInBox));
-
-        if (additiveSelection) {
-          const baseSelection = initialSelectionRef.current.length > 0
-            ? initialSelectionRef.current
-            : actionState.selectedNodeIds;
-          const toggled = toggleIds(baseSelection, uniqueNodeIds);
-          actionActions.setInteractionSelection(toggled);
-          actionActions.setEditingSelection(toggled);
-        } else if (uniqueNodeIds.length > 0) {
-          actionActions.setInteractionSelection(uniqueNodeIds);
-          actionActions.setEditingSelection(uniqueNodeIds);
-        } else {
-          actionActions.clearSelection();
-        }
-
-        actionActions.setSelectionBox(null);
-        initialSelectionRef.current = [];
-
-        const container = containerRef.current;
-        if (container) {
-          container.releasePointerCapture(e.pointerId);
-        }
+      if (primaryPointer.status === "pending" && primaryPointer.intent.canClearSelection) {
+        primaryPointerRef.current = null;
+        actionActions.clearSelection();
+        return;
       }
-    },
-    [
-      pointerTypeFromEvent,
-      interactionSettings.pinchZoom.enabled,
-      pinchPointerTypes,
-      endPinch,
-      isPinching,
-      canvasState.panState.isPanning,
-      isBoxSelecting,
-      actionState.selectionBox,
-      nodeEditorState.nodes,
-      matchesPointerAction,
-      canvasState.viewport.offset.x,
-      canvasState.viewport.offset.y,
-      canvasState.viewport.scale,
-      canvasActions,
-      actionActions,
-      containerRef,
-      actionState.selectedNodeIds,
-    ],
-  );
 
-  const handlePointerCancel = React.useCallback(
-    (e: React.PointerEvent<HTMLDivElement>) => {
-      handlePointerUp(e);
-    },
-    [handlePointerUp],
-  );
+      primaryPointerRef.current = null;
+    } else if (canvasState.panState.isPanning) {
+      canvasActions.endPan();
+
+      const container = containerRef.current;
+      if (container) {
+        container.releasePointerCapture(e.pointerId);
+      }
+      return;
+    }
+
+    if (isBoxSelecting && actionState.selectionBox) {
+      setIsBoxSelecting(false);
+
+      const { start, end } = actionState.selectionBox;
+      const canvasStartX = (start.x - canvasState.viewport.offset.x) / canvasState.viewport.scale;
+      const canvasStartY = (start.y - canvasState.viewport.offset.y) / canvasState.viewport.scale;
+      const canvasEndX = (end.x - canvasState.viewport.offset.x) / canvasState.viewport.scale;
+      const canvasEndY = (end.y - canvasState.viewport.offset.y) / canvasState.viewport.scale;
+
+      const minX = Math.min(canvasStartX, canvasEndX);
+      const maxX = Math.max(canvasStartX, canvasEndX);
+      const minY = Math.min(canvasStartY, canvasEndY);
+      const maxY = Math.max(canvasStartY, canvasEndY);
+
+      const nodesInBox: NodeId[] = [];
+      Object.values(nodeEditorState.nodes).forEach((node) => {
+        const nodeWidth = node.size?.width ?? 150;
+        const nodeHeight = node.size?.height ?? 50;
+
+        const intersects =
+          node.position.x < maxX &&
+          node.position.x + nodeWidth > minX &&
+          node.position.y < maxY &&
+          node.position.y + nodeHeight > minY;
+
+        if (intersects) {
+          nodesInBox.push(node.id);
+        }
+      });
+
+      const additiveSelection = matchesPointerAction("node-add-to-selection", e.nativeEvent);
+      const uniqueNodeIds = Array.from(new Set(nodesInBox));
+
+      if (additiveSelection) {
+        const baseSelection = initialSelectionRef.current.length > 0
+          ? initialSelectionRef.current
+          : actionState.selectedNodeIds;
+        const toggled = toggleIds(baseSelection, uniqueNodeIds);
+        actionActions.setInteractionSelection(toggled);
+        actionActions.setEditingSelection(toggled);
+      } else if (uniqueNodeIds.length > 0) {
+        actionActions.setInteractionSelection(uniqueNodeIds);
+        actionActions.setEditingSelection(uniqueNodeIds);
+      } else {
+        actionActions.clearSelection();
+      }
+
+      actionActions.setSelectionBox(null);
+      initialSelectionRef.current = [];
+
+      const container = containerRef.current;
+      if (container) {
+        container.releasePointerCapture(e.pointerId);
+      }
+    }
+  });
+
+  const handlePointerCancel = React.useEffectEvent((e: React.PointerEvent<HTMLDivElement>) => {
+    handlePointerUp(e);
+  });
 
   const baseHandlers = React.useMemo<CanvasPointerEventHandlers>(
     () => ({

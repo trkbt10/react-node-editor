@@ -1,0 +1,232 @@
+/**
+ * @file Hook for handling port interactions (click, drag, hover).
+ */
+import * as React from "react";
+import { useEditorActionState } from "../../../contexts/EditorActionStateContext";
+import { useNodeCanvas } from "../../../contexts/NodeCanvasContext";
+import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
+import { useNodeEditor } from "../../../contexts/node-editor/context";
+import { usePortPositions } from "../../../contexts/node-ports/context";
+import {
+  computeConnectablePortIds,
+} from "../../../contexts/node-ports/utils/connectablePortPlanner";
+import { getOtherPortInfo } from "../../../contexts/node-ports/utils/portConnectionQueries";
+import { getPortConnections } from "../../../core/port/queries";
+import { createActionPort } from "../../../core/port/factory";
+import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
+import type { Port, ConnectionDisconnectState } from "../../../types/core";
+import { useConnectionPortResolvers } from "./useConnectionPortResolvers";
+import { useConnectionOperations } from "./useConnectionOperations";
+import { createEmptyConnectablePorts } from "./connectablePortsUtils";
+
+export const useNodeLayerPorts = () => {
+  const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: nodeEditorState, actions: nodeEditorActions, getNodePorts } = useNodeEditor();
+  const { containerRef, utils } = useNodeCanvas();
+  const { calculateNodePortPositions } = usePortPositions();
+  const { registry } = useNodeDefinitions();
+  const { resolveCandidatePort, resolveDisconnectCandidate } = useConnectionPortResolvers();
+  const { completeConnectionDrag, completeDisconnectDrag, endConnectionDrag, endConnectionDisconnect } =
+    useConnectionOperations();
+
+  const portDragStartRef = React.useRef<{ x: number; y: number; port: Port; hasConnection: boolean } | null>(null);
+
+  const handlePortPointerDown = React.useEffectEvent((event: React.PointerEvent, port: Port) => {
+    event.stopPropagation();
+
+    const node = nodeEditorState.nodes[port.nodeId];
+    if (!node) {
+      return;
+    }
+
+    const nodeWithPorts = {
+      ...node,
+      ports: getNodePorts(port.nodeId),
+    };
+    const positions = calculateNodePortPositions(nodeWithPorts);
+    const portPositionData = positions.get(port.id);
+    const portPosition = portPositionData?.connectionPoint || { x: node.position.x, y: node.position.y };
+
+    const existingConnections = getPortConnections(port, nodeEditorState.connections);
+
+    portDragStartRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      port,
+      hasConnection: existingConnections.length > 0,
+    };
+
+    if (event.pointerType !== "mouse") {
+      containerRef.current?.setPointerCapture?.(event.pointerId);
+    }
+
+    if (existingConnections.length === 0 || port.type === "output") {
+      const actionPort = createActionPort(port);
+      actionActions.startConnectionDrag(actionPort);
+      actionActions.updateConnectionDrag(portPosition, null);
+      const connectable = computeConnectablePortIds({
+        fallbackPort: actionPort,
+        nodes: nodeEditorState.nodes,
+        connections: nodeEditorState.connections,
+        getNodePorts,
+        getNodeDefinition: (type: string) => registry.get(type),
+      });
+      actionActions.updateConnectablePorts(connectable);
+      return;
+    }
+
+    const startDisconnect = () => {
+      const connection = existingConnections[0];
+      const portInfo = getOtherPortInfo(connection, port, nodeEditorState.nodes, getNodePorts);
+
+      if (!portInfo) {
+        return;
+      }
+
+      const { otherPort, isFromPort } = portInfo;
+      const fixedPort = createActionPort(otherPort);
+      const disconnectedEnd = isFromPort ? "from" : "to";
+      const originalConnectionSnapshot = {
+        id: connection.id,
+        fromNodeId: connection.fromNodeId,
+        fromPortId: connection.fromPortId,
+        toNodeId: connection.toNodeId,
+        toPortId: connection.toPortId,
+      };
+      const disconnectState: ConnectionDisconnectState = {
+        connectionId: connection.id,
+        fixedPort,
+        draggingEnd: disconnectedEnd,
+        draggingPosition: portPosition,
+        originalConnection: originalConnectionSnapshot,
+        disconnectedEnd,
+        candidatePort: null,
+      };
+
+      actionActions.startConnectionDisconnect(originalConnectionSnapshot, disconnectedEnd, fixedPort, portPosition);
+
+      const disconnectConnectable = computeConnectablePortIds({
+        disconnectState,
+        nodes: nodeEditorState.nodes,
+        connections: nodeEditorState.connections,
+        getNodePorts,
+        getNodeDefinition: (type: string) => registry.get(type),
+      });
+      actionActions.updateConnectablePorts(disconnectConnectable);
+
+      nodeEditorActions.deleteConnection(connection.id);
+
+      portDragStartRef.current = null;
+    };
+
+    const handlePointerMove = (e: PointerEvent) => {
+      if (!portDragStartRef.current) {
+        return;
+      }
+
+      const dx = e.clientX - portDragStartRef.current.x;
+      const dy = e.clientY - portDragStartRef.current.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > PORT_INTERACTION_THRESHOLD.DISCONNECT_THRESHOLD) {
+        document.removeEventListener("pointermove", handlePointerMove);
+        document.removeEventListener("pointerup", handlePointerUp);
+        document.removeEventListener("pointercancel", handlePointerCancel);
+        startDisconnect();
+      }
+    };
+
+    const handlePointerUp = () => {
+      portDragStartRef.current = null;
+      document.removeEventListener("pointermove", handlePointerMove);
+      document.removeEventListener("pointerup", handlePointerUp);
+      document.removeEventListener("pointercancel", handlePointerCancel);
+      if (event.pointerType !== "mouse") {
+        containerRef.current?.releasePointerCapture?.(event.pointerId);
+      }
+    };
+
+    const handlePointerCancel = () => {
+      handlePointerUp();
+    };
+
+    document.addEventListener("pointermove", handlePointerMove);
+    document.addEventListener("pointerup", handlePointerUp);
+    document.addEventListener("pointercancel", handlePointerCancel);
+  });
+
+  const handlePortPointerUp = React.useEffectEvent((event: React.PointerEvent, port: Port) => {
+    event.stopPropagation();
+    if (event.pointerType !== "mouse") {
+      containerRef.current?.releasePointerCapture?.(event.pointerId);
+    }
+
+    if (actionState.connectionDisconnectState) {
+      completeDisconnectDrag(port);
+      endConnectionDisconnect();
+      return;
+    }
+
+    if (actionState.connectionDragState) {
+      completeConnectionDrag(port);
+      endConnectionDrag();
+    }
+  });
+
+  const handlePortPointerCancel = React.useEffectEvent((event: React.PointerEvent, port: Port) => {
+    if (event.pointerType !== "mouse") {
+      containerRef.current?.releasePointerCapture?.(event.pointerId);
+    }
+    handlePortPointerUp(event, port);
+  });
+
+  const updatePortHoverState = React.useEffectEvent((clientX: number, clientY: number, fallbackPort: Port) => {
+    const canvasPosition = utils.screenToCanvas(clientX, clientY);
+    const candidate =
+      resolveCandidatePort(canvasPosition) || resolveDisconnectCandidate(canvasPosition) || fallbackPort;
+
+    actionActions.setHoveredPort(candidate);
+    // Use the drag/disconnect source port for computing connectable ports, not the candidate.
+    // The candidate may be a destination port (e.g., input) which would incorrectly
+    // calculate output ports as connectable when we're dragging from an output port.
+    const sourcePort =
+      actionState.connectionDragState?.fromPort ?? actionState.connectionDisconnectState?.fixedPort ?? fallbackPort;
+    const connectable = computeConnectablePortIds({
+      dragState: actionState.connectionDragState,
+      disconnectState: actionState.connectionDisconnectState,
+      fallbackPort: sourcePort,
+      nodes: nodeEditorState.nodes,
+      connections: nodeEditorState.connections,
+      getNodePorts,
+      getNodeDefinition: (type: string) => registry.get(type),
+    });
+    actionActions.updateConnectablePorts(connectable);
+  });
+
+  const handlePortPointerEnter = React.useEffectEvent((event: React.PointerEvent, port: Port) => {
+    updatePortHoverState(event.clientX, event.clientY, port);
+  });
+
+  const handlePortPointerMove = React.useEffectEvent((event: React.PointerEvent, port: Port) => {
+    if (!actionState.connectionDragState && !actionState.connectionDisconnectState) {
+      return;
+    }
+    updatePortHoverState(event.clientX, event.clientY, port);
+  });
+
+  const handlePortPointerLeave = React.useEffectEvent(() => {
+    actionActions.setHoveredPort(null);
+    if (!actionState.connectionDragState) {
+      actionActions.updateConnectablePorts(createEmptyConnectablePorts());
+    }
+  });
+
+  return {
+    handlePortPointerDown,
+    handlePortPointerUp,
+    handlePortPointerEnter,
+    handlePortPointerMove,
+    handlePortPointerLeave,
+    handlePortPointerCancel,
+  };
+};

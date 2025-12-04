@@ -12,7 +12,9 @@ import { useVisibleNodes } from "../../../hooks/useVisibleNodes";
 import styles from "./NodeLayer.module.css";
 import { useRenderers } from "../../../contexts/RendererContext";
 import { hasGroupBehavior } from "../../../types/behaviors";
-import { useNodeLayerDrag, useNodeLayerConnections, useNodeLayerPorts } from "./NodeLayerInteractions";
+import { useNodeLayerDrag } from "./useNodeLayerDrag";
+import { useNodeLayerConnections } from "./useNodeLayerConnections";
+import { useNodeLayerPorts } from "./useNodeLayerPorts";
 import { useNodeSelectionInteractions } from "../hooks/useNodeSelectionInteractions";
 
 export type NodeLayerProps = {
@@ -179,5 +181,3 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
 };
 
 NodeLayer.displayName = "NodeLayer";
-
-// Reference note: Reviewed connectionCandidate.ts, PortInteractionHandler.tsx, nodeDragHelpers.ts, and NodeDragHandler.tsx to coordinate selection toggling.

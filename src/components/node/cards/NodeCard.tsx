@@ -45,8 +45,7 @@ export const NodeCard: React.FC<NodeCardProps> = ({
   ...divProps
 }) => {
   // Default showDescription based on variant
-  const shouldShowDescription =
-    showDescription ?? (variant === "list" || variant === "grid");
+  const shouldShowDescription = showDescription ?? (variant === "list" || variant === "grid");
 
   return (
     <div
@@ -70,9 +69,7 @@ export const NodeCard: React.FC<NodeCardProps> = ({
           <div className={styles.description}>{node.description}</div>
         ) : null}
       </div>
-      {showTypeBadge ? (
-        <div className={styles.typeBadge}>{node.type}</div>
-      ) : null}
+      {showTypeBadge ? <div className={styles.typeBadge}>{node.type}</div> : null}
     </div>
   );
 };
