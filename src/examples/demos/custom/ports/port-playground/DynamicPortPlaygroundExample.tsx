@@ -14,7 +14,8 @@ import type {
   PortInstanceContext,
   PortRenderContext,
 } from "../../../../../types/NodeDefinition";
-import type { NodeEditorData, PortPlacement, PortPosition } from "../../../../../types/core";
+import type { NodeEditorData, PortPosition, PortPlacement } from "../../../../../types/core";
+import { getPlacementSegment } from "../../../../../contexts/node-ports/utils/placementUtils";
 import { ExampleLayout } from "../../../shared/parts/ExampleLayout";
 import { ExampleWrapper } from "../../../shared/parts/ExampleWrapper";
 import styles from "./DynamicPortPlaygroundExample.module.css";
@@ -290,10 +291,12 @@ const makePortGroupDefinition = (
   createPortLabel: ({ index }: { index: number }) => `${group.label} ${index + 1}`,
   canConnect: requireSegmentMatch
     ? ({ fromPort, toPort }: PortConnectionContext) => {
-        if (!fromPort.placement?.segment || !toPort?.placement?.segment) {
+        const fromSegment = getPlacementSegment(fromPort.placement);
+        const toSegment = getPlacementSegment(toPort?.placement);
+        if (!fromSegment || !toSegment) {
           return false;
         }
-        return fromPort.placement.segment === toPort.placement.segment;
+        return fromSegment === toSegment;
       }
     : undefined,
 });
@@ -434,7 +437,9 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
     const fromTypes = normalizePortDataTypes(context.fromPort.dataType);
     const toTypes = normalizePortDataTypes(context.toPort?.dataType ?? context.fromPort.dataType);
     const primaryLabel = `${formatDataTypeLabel(fromTypes)} → ${formatDataTypeLabel(toTypes)}`;
-    const segmentLabel = buildSegmentSummary(context.fromPort.placement?.segment, context.toPort?.placement?.segment);
+    const fromSegment = getPlacementSegment(context.fromPort.placement);
+    const toSegment = getPlacementSegment(context.toPort?.placement);
+    const segmentLabel = buildSegmentSummary(fromSegment, toSegment);
     const badgeWidth = calculateBadgeWidth(primaryLabel, segmentLabel);
     const badgeHeight = segmentLabel ? 34 : 22;
     const dataTokens = resolveDataTypeTokens(fromTypes, "primary");

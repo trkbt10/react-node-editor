@@ -4,6 +4,7 @@
 import type { Node } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { inferDefaultPortDefinitions, getNodePorts, normalizePlacement } from "./portResolution";
+import { getPlacementSegment } from "./placementUtils";
 
 describe("normalizePlacement", () => {
   it("should return default placement when position is undefined", () => {
@@ -253,8 +254,10 @@ describe("getNodePorts", () => {
     expect(ports).toHaveLength(3);
     expect(ports.map((port) => port.id)).toEqual(["option-1", "option-2", "option-3"]);
     expect(ports[0].label).toBe("Option 1");
-    expect(ports[0].placement?.segment).toBe("secondary");
-    expect(ports[0].placement?.segmentSpan).toBe(2);
+    expect(getPlacementSegment(ports[0].placement)).toBe("secondary");
+    // segmentSpan is only present on PortPlacement, access via explicit check
+    const placement = ports[0].placement;
+    expect(placement && "segmentSpan" in placement ? placement.segmentSpan : undefined).toBe(2);
     expect(ports[0].position).toBe("right");
   });
 

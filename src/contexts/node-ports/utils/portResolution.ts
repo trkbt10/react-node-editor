@@ -1,7 +1,7 @@
 /**
  * @file Port resolution utilities with default port inference
  */
-import type { Node, Port, PortPlacement } from "../../../types/core";
+import type { Node, Port, PortPlacement, AbsolutePortPlacement } from "../../../types/core";
 import type {
   NodeDefinition,
   PortDefinition,
@@ -10,6 +10,7 @@ import type {
 } from "../../../types/NodeDefinition";
 import { createPortInstance } from "../../../core/port/factory";
 import { mergePortDataTypes, toPortDataTypeValue } from "../../../utils/portDataTypeUtils";
+import { isAbsolutePlacement } from "./placementUtils";
 
 /**
  * Port override configuration for node-specific customizations
@@ -27,12 +28,16 @@ export type PortOverride = {
   disabled?: boolean;
 };
 
-export const normalizePlacement = (position?: PortDefinition["position"] | PortPlacement): PortPlacement => {
+export const normalizePlacement = (position?: PortDefinition["position"] | PortPlacement | AbsolutePortPlacement): PortPlacement | AbsolutePortPlacement => {
   if (!position) {
     return { side: "right" };
   }
   if (typeof position === "string") {
     return { side: position };
+  }
+  // Absolute placement passes through unchanged
+  if (isAbsolutePlacement(position)) {
+    return position;
   }
   return {
     side: position.side,
@@ -40,6 +45,7 @@ export const normalizePlacement = (position?: PortDefinition["position"] | PortP
     segmentOrder: position.segmentOrder,
     segmentSpan: position.segmentSpan,
     align: position.align,
+    inset: position.inset,
   };
 };
 

@@ -15,6 +15,7 @@ import type { NodeEditorData, Port, Size } from "../../../../../types/core";
 import { ExampleLayout } from "../../../shared/parts/ExampleLayout";
 import { ExampleWrapper } from "../../../shared/parts/ExampleWrapper";
 import { getNodeBoundingBox } from "../../../../../utils/boundingBoxUtils";
+import { getPortSide, getPlacementSegment } from "../../../../../contexts/node-ports/utils/placementUtils";
 import { PropertySection } from "../../../../../components/inspector/parts/PropertySection";
 import styles from "./ComfyUILayoutExample.module.css";
 
@@ -99,8 +100,8 @@ function computeComfyPortPositions(context: ComputePortPositionsContext): Map<st
   const rightBodyPorts: Port[] = [];
 
   for (const port of ports) {
-    const side = port.placement?.side ?? port.position;
-    const segment = port.placement?.segment;
+    const side = getPortSide(port);
+    const segment = getPlacementSegment(port.placement);
     const isHeader = segment === "header";
 
     if (side === "left") {

@@ -2,9 +2,10 @@
  * @file Port comparison utilities
  * Pure functions for comparing Port state in memo functions
  */
-import type { Port, PortPlacement } from "../../types/core";
+import type { Port, PortPlacement, AbsolutePortPlacement } from "../../types/core";
 import { areStringArraysEqual } from "../common/comparators";
 import { arePortDataTypesEqual } from "../../utils/portDataTypeUtils";
+import { isAbsolutePlacement } from "../../contexts/node-ports/utils/placementUtils";
 
 /**
  * Check if port ID has changed (handles optional ports)
@@ -26,8 +27,8 @@ export const hasPortPositionChanged = (
  * Check if two placements are equal (full comparison including all fields)
  */
 export const arePlacementsEqual = (
-  prev: PortPlacement | undefined | null,
-  next: PortPlacement | undefined | null,
+  prev: PortPlacement | AbsolutePortPlacement | undefined | null,
+  next: PortPlacement | AbsolutePortPlacement | undefined | null,
 ): boolean => {
   if (prev === next) {
     return true;
@@ -35,12 +36,29 @@ export const arePlacementsEqual = (
   if (!prev || !next) {
     return false;
   }
+
+  // Both must be same type
+  const prevIsAbsolute = isAbsolutePlacement(prev);
+  const nextIsAbsolute = isAbsolutePlacement(next);
+  if (prevIsAbsolute !== nextIsAbsolute) {
+    return false;
+  }
+
+  // Compare absolute placements
+  if (prevIsAbsolute && nextIsAbsolute) {
+    return prev.x === next.x && prev.y === next.y;
+  }
+
+  // Compare side-based placements
+  const prevSide = prev as PortPlacement;
+  const nextSide = next as PortPlacement;
   return (
-    prev.side === next.side &&
-    prev.segment === next.segment &&
-    prev.segmentOrder === next.segmentOrder &&
-    prev.segmentSpan === next.segmentSpan &&
-    prev.align === next.align
+    prevSide.side === nextSide.side &&
+    prevSide.segment === nextSide.segment &&
+    prevSide.segmentOrder === nextSide.segmentOrder &&
+    prevSide.segmentSpan === nextSide.segmentSpan &&
+    prevSide.align === nextSide.align &&
+    prevSide.inset === nextSide.inset
   );
 };
 

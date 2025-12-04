@@ -45,6 +45,22 @@ export type PortPlacement = {
   segmentSpan?: number;
   /** Preferred offset within the segment (0-1). Falls back to even spacing when undefined. */
   align?: number;
+  /** When true, port is placed inside the node boundary instead of outside */
+  inset?: boolean;
+};
+
+/**
+ * Absolute positioning for a port relative to the node's top-left corner.
+ * Useful for custom node layouts where ports need precise placement.
+ * Connection direction is automatically inferred from the nearest edge.
+ */
+export type AbsolutePortPlacement = {
+  /** Absolute positioning mode */
+  mode: "absolute";
+  /** X offset from node's left edge in pixels */
+  x: number;
+  /** Y offset from node's top edge in pixels */
+  y: number;
 };
 
 export type Port = {
@@ -55,8 +71,8 @@ export type Port = {
   label: string;
   nodeId: NodeId;
   position: PortPosition;
-  /** Optional placement details for segmented layouts */
-  placement?: PortPlacement;
+  /** Optional placement details for segmented or absolute layouts */
+  placement?: PortPlacement | AbsolutePortPlacement;
   dataType?: string | string[];
   maxConnections?: number | "unlimited";
   allowedNodeTypes?: string[];

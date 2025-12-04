@@ -6,6 +6,7 @@ import type { Connection, Port } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import type { NodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
 import { createNodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
+import { getPlacementSegment } from "../../contexts/node-ports/utils/placementUtils";
 
 const mkRegistry = (defs: NodeDefinition[]): NodeDefinitionRegistry => {
   const reg = createNodeDefinitionRegistry();
@@ -287,7 +288,7 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
           dataTypes: ["text", "html"],
           instances: () => 1,
           canConnect: ({ fromPort, toPort }) =>
-            fromPort.placement?.segment !== undefined && toPort?.placement?.segment === fromPort.placement.segment,
+            getPlacementSegment(fromPort.placement) !== undefined && getPlacementSegment(toPort?.placement) === getPlacementSegment(fromPort.placement),
         },
       ],
     };
@@ -303,7 +304,7 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
           dataTypes: ["markdown", "text"],
           instances: () => 1,
           canConnect: ({ fromPort, toPort }) =>
-            toPort?.placement?.segment !== undefined && fromPort.placement?.segment === toPort.placement.segment,
+            getPlacementSegment(toPort?.placement) !== undefined && getPlacementSegment(fromPort.placement) === getPlacementSegment(toPort?.placement),
         },
       ],
     };
@@ -353,7 +354,7 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
           dataTypes: ["json"],
           instances: () => 1,
           canConnect: ({ fromPort, toPort }) =>
-            toPort?.placement?.segment !== undefined && fromPort.placement?.segment === toPort.placement.segment,
+            getPlacementSegment(toPort?.placement) !== undefined && getPlacementSegment(fromPort.placement) === getPlacementSegment(toPort?.placement),
         },
       ],
     };

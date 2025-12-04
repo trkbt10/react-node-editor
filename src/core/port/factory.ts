@@ -2,9 +2,10 @@
  * @file Port factory functions for creating Port instances with consistent property copying.
  * Centralizes port creation logic to prevent property omission bugs.
  */
-import type { Port, PortPlacement, PortPosition, PortType } from "../../types/core";
+import type { Port, PortPlacement, AbsolutePortPlacement, PortPosition, PortType } from "../../types/core";
 import type { PortDefinition } from "../../types/NodeDefinition";
 import { mergePortDataTypes, toPortDataTypeValue } from "../../utils/portDataTypeUtils";
+import { getPlacementSide } from "../../contexts/node-ports/utils/placementUtils";
 
 /**
  * Required fields for creating a Port instance
@@ -22,7 +23,7 @@ export type PortRequiredFields = {
  */
 export type PortOptionalFields = {
   definitionId?: string;
-  placement?: PortPlacement;
+  placement?: PortPlacement | AbsolutePortPlacement;
   dataType?: string | string[];
   maxConnections?: number | "unlimited";
   allowedNodeTypes?: string[];
@@ -118,7 +119,7 @@ export const createActionPort = (sourcePort: Port): Port => {
 export const createPortFromDefinition = (
   definition: PortDefinition,
   nodeId: string,
-  placement: PortPlacement,
+  placement: PortPlacement | AbsolutePortPlacement,
 ): Port => {
   const mergedDataTypes = mergePortDataTypes(definition.dataType, definition.dataTypes);
   const resolvedDataType = toPortDataTypeValue(mergedDataTypes);
@@ -129,7 +130,7 @@ export const createPortFromDefinition = (
     type: definition.type,
     label: definition.label,
     nodeId,
-    position: placement.side,
+    position: getPlacementSide(placement),
     placement,
     dataType: resolvedDataType,
     maxConnections: definition.maxConnections,
@@ -151,7 +152,7 @@ export type PortInstanceCreationContext = {
   /** Node ID that owns this port */
   nodeId: string;
   /** Normalized placement for the port */
-  placement: PortPlacement;
+  placement: PortPlacement | AbsolutePortPlacement;
   /** Zero-based index of this instance */
   instanceIndex: number;
   /** Total number of instances from the definition */
@@ -173,7 +174,7 @@ export const createPortInstance = (
     type: definition.type,
     label: context.label,
     nodeId: context.nodeId,
-    position: context.placement.side,
+    position: getPlacementSide(context.placement),
     placement: context.placement,
     dataType: resolvedDataType,
     maxConnections: definition.maxConnections,

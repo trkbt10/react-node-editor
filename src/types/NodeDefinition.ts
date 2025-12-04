@@ -2,7 +2,7 @@
  * @file Core node definition types including render props, constraints, and external data handling
  */
 import React, { type ReactNode, type ReactElement } from "react";
-import type { Node, NodeId, Port, Connection, ConnectionId, NodeData, PortPlacement, Size, Position } from "./core";
+import type { Node, NodeId, Port, Connection, ConnectionId, NodeData, PortPlacement, AbsolutePortPlacement, Size, Position } from "./core";
 import type { CategoryInfo } from "../category/types";
 import type { NodeBehavior } from "./behaviors";
 
@@ -198,9 +198,11 @@ export type PortDefinition = {
   label: string;
   /**
    * Position on the node.
-   * Supports segmented layouts by specifying { side, segment?, segmentOrder?, segmentSpan?, align? }.
+   * - Simple: "left" | "right" | "top" | "bottom"
+   * - Segmented: { side, segment?, segmentOrder?, segmentSpan?, align?, inset? }
+   * - Absolute: { mode: "absolute", x, y, connectionDirection? }
    */
-  position: PortPlacement | "left" | "right" | "top" | "bottom";
+  position: PortPlacement | AbsolutePortPlacement | "left" | "right" | "top" | "bottom";
   /**
    * Optional data type(s) for validation. Arrays allow declaring multiple compatible types.
    * For backwards compatibility, both dataType and dataTypes are supported and merged.
