@@ -8,7 +8,7 @@
  */
 import * as React from "react";
 import { NodeEditorBase } from "../layout/NodeEditorBase";
-import { ContextActionMenu } from "../menus/ContextActionMenu";
+import { ContextActionMenu, type ContextTarget } from "../menus/ContextActionMenu";
 import { NodeSearchMenu } from "../panels/node-search/NodeSearchMenu";
 import { useEditorActionState } from "../../contexts/composed/EditorActionStateContext";
 import { useNodeEditor } from "../../contexts/composed/node-editor/context";
@@ -57,6 +57,40 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
     [nodeOperations],
   );
 
+  // Memoized close handler
+  const handleCloseContextMenu = React.useCallback(() => {
+    actionActions.hideContextMenu();
+  }, [actionActions]);
+
+  // Memoized disabled node types for search menu (combines flow-level and allowed-type restrictions)
+  const searchMenuDisabledNodeTypes = React.useMemo(() => {
+    const allowed = actionState.contextMenu.allowedNodeTypes;
+    if (!allowed) {
+      return disabledNodeTypes;
+    }
+    const allowedSet = new Set(allowed);
+    const flowDisabled = new Set(disabledNodeTypes);
+    const extraDisabled = nodeDefinitions.map((d) => d.type).filter((t) => !allowedSet.has(t));
+    return Array.from(new Set([...Array.from(flowDisabled), ...extraDisabled]));
+  }, [actionState.contextMenu.allowedNodeTypes, disabledNodeTypes, nodeDefinitions]);
+
+  // Memoized context menu target
+  const contextMenuTarget = React.useMemo<ContextTarget>(() => {
+    if (actionState.contextMenu.nodeId) {
+      return { type: "node", id: actionState.contextMenu.nodeId };
+    }
+    if (actionState.contextMenu.connectionId) {
+      return { type: "connection", id: actionState.contextMenu.connectionId };
+    }
+    return { type: "canvas" };
+  }, [actionState.contextMenu.nodeId, actionState.contextMenu.connectionId]);
+
+  // Memoized canvas position for context action menu
+  const contextMenuCanvasPosition = React.useMemo(
+    () => actionState.contextMenu.canvasPosition ?? actionState.contextMenu.position,
+    [actionState.contextMenu.canvasPosition, actionState.contextMenu.position],
+  );
+
   return (
     <NodeEditorBase>
       {children}
@@ -66,18 +100,9 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
         <NodeSearchMenu
           position={actionState.contextMenu.position}
           nodeDefinitions={nodeDefinitions}
-          disabledNodeTypes={(() => {
-            const allowed = actionState.contextMenu.allowedNodeTypes;
-            if (!allowed) {
-              return disabledNodeTypes;
-            }
-            const allowedSet = new Set(allowed);
-            const flowDisabled = new Set(disabledNodeTypes);
-            const extraDisabled = nodeDefinitions.map((d) => d.type).filter((t) => !allowedSet.has(t));
-            return Array.from(new Set([...Array.from(flowDisabled), ...extraDisabled]));
-          })()}
+          disabledNodeTypes={searchMenuDisabledNodeTypes}
           onCreateNode={handleCreateNode}
-          onClose={() => actionActions.hideContextMenu()}
+          onClose={handleCloseContextMenu}
           visible={true}
           viewMode={settings.nodeSearchViewMode}
           filterMode={settings.nodeSearchFilterMode}
@@ -88,18 +113,12 @@ export const NodeEditorCanvas: React.FC<NodeEditorCanvasProps> = ({
       {actionState.contextMenu.visible && actionState.contextMenu.mode !== "search" && (
         <ContextActionMenu
           position={actionState.contextMenu.position}
-          target={
-            actionState.contextMenu.nodeId
-              ? { type: "node", id: actionState.contextMenu.nodeId }
-              : actionState.contextMenu.connectionId
-                ? { type: "connection", id: actionState.contextMenu.connectionId }
-                : { type: "canvas" }
-          }
+          target={contextMenuTarget}
           visible={true}
-          onClose={() => actionActions.hideContextMenu()}
+          onClose={handleCloseContextMenu}
           nodeDefinitions={nodeDefinitions}
           onCreateNode={handleCreateNode}
-          canvasPosition={actionState.contextMenu.canvasPosition ?? actionState.contextMenu.position}
+          canvasPosition={contextMenuCanvasPosition}
           disabledNodeTypes={disabledNodeTypes}
         />
       )}
