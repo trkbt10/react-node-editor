@@ -6,9 +6,10 @@ import type { NodeDefinition } from "../../../types/NodeDefinition";
 import {
   computeConnectablePortIds,
   resolveConnectableSourcePort,
-  ConnectablePortDescriptor,
 } from "./connectablePortPlanner";
-import { ConnectionSwitchBehavior } from "./connectionSwitchBehavior";
+import type { ConnectablePortDescriptor } from "../../../core/port/connectableTypes";
+import { ConnectionSwitchBehavior } from "../../../core/port/connectionPlanning";
+import { createPortKey } from "../../../core/port/portKey";
 
 const makePort = (nodeId: string, id: string, type: "input" | "output"): Port => ({
   id,
@@ -80,9 +81,9 @@ describe("connectablePortPlanner", () => {
       getNodeDefinition,
     });
 
-    expect(Array.from(connectable.ids)).toContain("target:in");
-    expect(Array.from(connectable.ids)).not.toContain("other:out");
-    const descriptor = connectable.descriptors.get("target:in") as ConnectablePortDescriptor;
+    expect(connectable.ids.has(createPortKey("target", "in"))).toBe(true);
+    expect(connectable.ids.has(createPortKey("other", "out"))).toBe(false);
+    const descriptor = connectable.descriptors.get(createPortKey("target", "in")) as ConnectablePortDescriptor;
     expect(descriptor.portType).toBe("input");
     expect(descriptor.source.portType).toBe("output");
     expect(descriptor.behavior).toBe(ConnectionSwitchBehavior.Append);
@@ -147,8 +148,8 @@ describe("connectablePortPlanner", () => {
     });
 
     expect(connectable.ids.size).toBeGreaterThan(0);
-    expect(Array.from(connectable.ids)).toContain("target:in");
-    const descriptor = connectable.descriptors.get("target:in") as ConnectablePortDescriptor;
+    expect(connectable.ids.has(createPortKey("target", "in"))).toBe(true);
+    const descriptor = connectable.descriptors.get(createPortKey("target", "in")) as ConnectablePortDescriptor;
     expect(descriptor.behavior).toBe(ConnectionSwitchBehavior.Append);
   });
 

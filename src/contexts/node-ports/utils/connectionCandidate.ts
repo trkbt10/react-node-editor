@@ -2,9 +2,10 @@
  * @file Utilities for resolving the nearest connectable port during connection interactions.
  */
 import type { Node, NodeId, Port, PortId, Position } from "../../../types/core";
-import type { ConnectablePortsResult } from "./connectablePortPlanner";
+import type { ConnectablePortsResult } from "../../../core/port/connectableTypes";
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
 import { createActionPort } from "../../../core/port/factory";
+import { parsePortKey } from "../../../core/port/portKey";
 
 export type ConnectionCandidateSearchParams = {
   pointerCanvasPosition: Position;
@@ -29,10 +30,9 @@ const toDescriptorTuples = (connectablePorts: ConnectablePortsResult): Array<{ n
     }));
   }
 
-  return Array.from(connectablePorts.ids).map((key) => {
-    const [nodeId, portId] = key.split(":");
-    return { nodeId, portId };
-  });
+  return Array.from(connectablePorts.ids)
+    .map((key) => parsePortKey(key))
+    .filter((parsed): parsed is { nodeId: NodeId; portId: PortId } => parsed !== null);
 };
 
 /**

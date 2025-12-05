@@ -26,7 +26,7 @@ import { InspectorInput } from "../../../../../components/inspector/parts/Inspec
 import { SwitchInput } from "../../../../../components/elements/SwitchInput";
 import { calculateConnectionControlPoints, calculateConnectionPath } from "../../../../../core/connection/path";
 import { cubicBezierPoint } from "../../../../../core/geometry/curve";
-import { getOppositePortPosition } from "../../../../../core/port/position";
+import { getOppositeSide } from "../../../../../core/port/side";
 import { normalizePortDataTypes } from "../../../../../core/port/dataType";
 
 type PortGroupConfig = {

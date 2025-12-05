@@ -5,10 +5,11 @@ import type { Port, Node, Connection } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import {
   getConnectablePortIds,
-  isPortConnectable,
   getConnectableNodeTypes,
   findConnectablePortDefinition,
-} from "./portConnectability";
+} from "../../../core/port/connectability";
+import { isPortConnectable } from "../../../core/port/connectableTypes";
+import { createPortKey, type PortKey } from "../../../core/port/portKey";
 
 const createPort = (overrides: Partial<Port> = {}): Port => ({
   id: "port-1",
@@ -76,7 +77,7 @@ describe("getConnectablePortIds", () => {
 
     const result = getConnectablePortIds(fromPort, nodes, getNodePorts, connections, getNodeDefinition);
 
-    expect(result.has("node-2:in")).toBe(true);
+    expect(result.has(createPortKey("node-2", "in"))).toBe(true);
   });
 
   it("excludes ports on the same node", () => {
@@ -93,7 +94,7 @@ describe("getConnectablePortIds", () => {
 
     const result = getConnectablePortIds(outputPort, nodes, getNodePorts, connections, getNodeDefinition);
 
-    expect(result.has("node-1:in")).toBe(false);
+    expect(result.has(createPortKey("node-1", "in"))).toBe(false);
   });
 });
 
@@ -105,14 +106,14 @@ describe("isPortConnectable", () => {
 
   it("returns false when port is not in connectable set", () => {
     const port = createPort({ id: "port-1", nodeId: "node-1" });
-    const connectablePorts = { ids: new Set<string>() };
+    const connectablePorts = { ids: new Set<PortKey>() };
 
     expect(isPortConnectable(port, connectablePorts)).toBe(false);
   });
 
   it("returns true when port is in connectable set", () => {
     const port = createPort({ id: "port-1", nodeId: "node-1" });
-    const connectablePorts = { ids: new Set<string>(["node-1:port-1"]) };
+    const connectablePorts = { ids: new Set<PortKey>([createPortKey("node-1", "port-1")]) };
 
     expect(isPortConnectable(port, connectablePorts)).toBe(true);
   });

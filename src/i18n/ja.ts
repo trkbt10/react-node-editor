@@ -128,6 +128,12 @@ export const jaMessages: I18nMessages = {
   autoLayoutPanelGridDescription: "ノードを均等なグリッドに配置して間隔を揃えます。",
   autoLayoutPanelForceTitle: "力学レイアウト",
   autoLayoutPanelForceDescription: "物理シミュレーションで接続されたノードをクラスタリングします。",
+  autoLayoutStrategy: "戦略",
+  autoLayoutStrategyAuto: "自動検出",
+  autoLayoutStrategyForce: "力学レイアウト",
+  autoLayoutStrategyHierarchical: "階層レイアウト",
+  autoLayoutStrategyTree: "ツリーレイアウト",
+  autoLayoutStrategyGrid: "グリッドレイアウト",
 
   // History Panel
   historyUndo: "元に戻す",

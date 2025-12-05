@@ -145,6 +145,12 @@ export type I18nMessages = {
   autoLayoutPanelGridDescription: string;
   autoLayoutPanelForceTitle: string;
   autoLayoutPanelForceDescription: string;
+  autoLayoutStrategy?: string;
+  autoLayoutStrategyAuto?: string;
+  autoLayoutStrategyForce?: string;
+  autoLayoutStrategyHierarchical?: string;
+  autoLayoutStrategyTree?: string;
+  autoLayoutStrategyGrid?: string;
 
   // History Panel
   historyUndo?: string;

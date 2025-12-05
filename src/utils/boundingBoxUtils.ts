@@ -31,6 +31,19 @@ export function getNodeSize(node: Node): Size {
 }
 
 /**
+ * Get the size of a node, prioritizing a pre-computed size map
+ * @param node - The node to get the size for
+ * @param nodeSizes - Optional map of pre-computed sizes (e.g., from DOM measurements or NodeDefinition.defaultSize)
+ */
+export function getNodeSizeWithOverride(node: Node, nodeSizes?: Record<string, Size>): Size {
+  // Priority: nodeSizes map > node.size > DEFAULT_NODE_SIZE
+  if (nodeSizes && nodeSizes[node.id]) {
+    return nodeSizes[node.id];
+  }
+  return getNodeSize(node);
+}
+
+/**
  * Calculate the bounding box for a node
  */
 export function getNodeBoundingBox(node: Node): BoundingBox {

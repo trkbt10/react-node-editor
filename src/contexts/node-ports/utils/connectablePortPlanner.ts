@@ -8,15 +8,16 @@ import type {
   Node,
   NodeId,
   Port,
-  PortId,
-  PortType,
 } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { getConnectablePortIds } from "./portConnectability";
+import { getConnectablePortIds } from "../../../core/port/connectability";
+import { getConnectionSwitchContext } from "../../../core/port/connectionPlanning";
+import { parsePortKey } from "../../../core/port/portKey";
 import {
-  ConnectionSwitchBehavior,
-  getConnectionSwitchContext,
-} from "./connectionSwitchBehavior";
+  createEmptyConnectablePorts,
+  type ConnectablePortSourceInfo,
+  type ConnectablePortsResult,
+} from "../../../core/port/connectableTypes";
 
 type ResolveSourcePortParams = {
   dragStatePort?: Port | null;
@@ -34,29 +35,6 @@ export type ComputeConnectablePortsParams = {
   getNodeDefinition: (type: string) => NodeDefinition | undefined;
 };
 
-export type ConnectablePortSourceInfo = {
-  nodeId: NodeId;
-  portId: PortId;
-  portType: PortType;
-  portIndex: number;
-};
-
-export type ConnectablePortDescriptor = {
-  key: string;
-  nodeId: NodeId;
-  portId: PortId;
-  portType: PortType;
-  portIndex: number;
-  source: ConnectablePortSourceInfo;
-  behavior: ConnectionSwitchBehavior;
-};
-
-export type ConnectablePortsResult = {
-  ids: Set<string>;
-  descriptors: Map<string, ConnectablePortDescriptor>;
-  source: ConnectablePortSourceInfo | null;
-};
-
 const resolveSourcePort = ({
   dragStatePort,
   disconnectFixedPort,
@@ -70,12 +48,6 @@ const resolveSourcePort = ({
   }
   return fallbackPort ?? null;
 };
-
-const createEmptyResult = (): ConnectablePortsResult => ({
-  ids: new Set<string>(),
-  descriptors: new Map<string, ConnectablePortDescriptor>(),
-  source: null,
-});
 
 const findPortIndex = (port: Port, ports: Port[]): number => ports.findIndex((candidate) => candidate.id === port.id);
 
@@ -99,12 +71,12 @@ export const computeConnectablePortIds = ({
   });
 
   if (!sourcePort) {
-    return createEmptyResult();
+    return createEmptyConnectablePorts();
   }
 
   const sourcePorts = getNodePorts(sourcePort.nodeId);
   const sourceIndex = findPortIndex(sourcePort, sourcePorts);
-  const result: ConnectablePortsResult = createEmptyResult();
+  const result: ConnectablePortsResult = createEmptyConnectablePorts();
   const sourceInfo: ConnectablePortSourceInfo = {
     nodeId: sourcePort.nodeId,
     portId: sourcePort.id,
@@ -117,7 +89,11 @@ export const computeConnectablePortIds = ({
   const candidateIds = getConnectablePortIds(sourcePort, nodes, getNodePorts, connections, getNodeDefinition);
 
   candidateIds.forEach((key) => {
-    const [nodeId, portId] = key.split(":");
+    const parsed = parsePortKey(key);
+    if (!parsed) {
+      return;
+    }
+    const { nodeId, portId } = parsed;
     const ports = getNodePorts(nodeId);
     const portIndex = ports.findIndex((port) => port.id === portId);
     const port = ports[portIndex];

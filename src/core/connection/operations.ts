@@ -1,10 +1,11 @@
 /**
  * @file Utilities for creating and validating connections between ports
+ * Pure functions for connection operations
  */
-import type { Port, Node, Connection } from "../../../types/core";
-import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { canConnectNormalizedPorts } from "../../../core/connection/validation";
-import { normalizeConnectionPorts, normalizeConnectionContext } from "../../../core/connection/normalization";
+import type { Port, Node, Connection } from "../../types/core";
+import type { NodeDefinition } from "../../types/NodeDefinition";
+import { canConnectNormalizedPorts } from "./validation";
+import { normalizeConnectionPorts, normalizeConnectionContext } from "./normalization";
 
 /**
  * Create a connection object based on port types.

@@ -6,13 +6,13 @@ import { useEditorActionState } from "../../composed/EditorActionStateContext";
 import { useCanvasInteraction } from "../../composed/canvas/interaction/context";
 import { useNodeDefinitions } from "../../node-definitions/context";
 import { useNodeEditor } from "../../composed/node-editor/context";
-import { createValidatedConnection } from "../utils/connectionOperations";
+import { createValidatedConnection } from "../../../core/connection/operations";
 import {
   planConnectionChange,
   ConnectionSwitchBehavior,
-} from "../utils/connectionSwitchBehavior";
+} from "../../../core/port/connectionPlanning";
 import type { Port } from "../../../types/core";
-import { createEmptyConnectablePorts } from "../utils/connectablePortsUtils";
+import { createEmptyConnectablePorts } from "../../../core/port/connectableTypes";
 
 export const useConnectionOperations = () => {
   const { state: _actionState, actions: actionActions } = useEditorActionState();

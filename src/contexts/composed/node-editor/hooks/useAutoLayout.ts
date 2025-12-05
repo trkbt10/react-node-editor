@@ -1,5 +1,6 @@
 /**
- * @file Hook providing automatic node layout algorithms (force-directed, hierarchical, grid)
+ * @file Hook providing automatic node layout algorithms
+ * Supports force-directed, hierarchical, tree, grid, and auto-selection
  */
 import * as React from "react";
 import { useNodeEditor } from "../context";
@@ -7,10 +8,15 @@ import { useNodeCanvas } from "../../canvas/viewport/context";
 import { useEditorActionState } from "../../EditorActionStateContext";
 import {
   calculateAutoLayout,
+  calculateForceDirectedLayout,
   calculateHierarchicalLayout,
+  calculateTreeLayout,
   calculateGridLayout,
   calculateNodesBoundingBox,
 } from "../utils/autoLayout";
+import type { LayoutAlgorithm, LayoutOptions, LayoutResult } from "../utils/autoLayout";
+
+export type { LayoutAlgorithm, LayoutOptions, LayoutResult };
 
 /**
  * Hook that provides auto layout functionality
@@ -20,161 +26,188 @@ export const useAutoLayout = () => {
   const { state: canvasState, actions: canvasActions } = useNodeCanvas();
   const { state: actionState } = useEditorActionState();
 
-  const applyForceLayout = React.useCallback(
-    (selectedOnly: boolean = false) => {
-      console.log("Applying force-directed layout");
+  /**
+   * Apply layout result and adjust viewport
+   */
+  const applyLayoutResult = React.useCallback(
+    (result: LayoutResult, nodesToLayout: Record<string, unknown>) => {
+      if (Object.keys(result.nodePositions).length === 0) {
+        return;
+      }
 
-      const nodesToLayout = selectedOnly
+      nodeEditorActions.moveNodes(result.nodePositions);
+
+      // Adjust viewport to center the laid out nodes
+      const nodes = Object.values(nodesToLayout) as Parameters<typeof calculateNodesBoundingBox>[0];
+      const bbox = calculateNodesBoundingBox(nodes, result.nodePositions);
+
+      if (bbox.width > 0 && bbox.height > 0) {
+        const viewportCenterX = window.innerWidth / 2;
+        const viewportCenterY = window.innerHeight / 2;
+        const newOffsetX = viewportCenterX - bbox.centerX * canvasState.viewport.scale;
+        const newOffsetY = viewportCenterY - bbox.centerY * canvasState.viewport.scale;
+
+        canvasActions.setViewport({
+          offset: { x: newOffsetX, y: newOffsetY },
+          scale: canvasState.viewport.scale,
+        });
+      }
+    },
+    [nodeEditorActions, canvasState.viewport.scale, canvasActions],
+  );
+
+  /**
+   * Get nodes to layout based on selection
+   */
+  const getNodesToLayout = React.useCallback(
+    (selectedOnly: boolean) => {
+      return selectedOnly
         ? Object.fromEntries(
-            Object.entries(nodeEditorState.nodes).filter(([nodeId]) => actionState.selectedNodeIds.includes(nodeId)),
+            Object.entries(nodeEditorState.nodes).filter(([nodeId]) =>
+              actionState.selectedNodeIds.includes(nodeId),
+            ),
           )
         : nodeEditorState.nodes;
+    },
+    [nodeEditorState.nodes, actionState.selectedNodeIds],
+  );
 
+  const applyForceLayout = React.useCallback(
+    (selectedOnly: boolean = false) => {
+      const nodesToLayout = getNodesToLayout(selectedOnly);
       const layoutData = {
         nodes: nodesToLayout,
         connections: nodeEditorState.connections,
       };
 
-      const result = calculateAutoLayout(layoutData, {
+      const result = calculateForceDirectedLayout(layoutData, {
         iterations: 150,
         springLength: 200,
         springStrength: 0.4,
         repulsionStrength: 2000,
         dampening: 0.85,
+        sizeAwareRepulsion: true,
+        useBarnesHut: true,
+        barnesHutTheta: 0.7,
       });
 
-      if (Object.keys(result.nodePositions).length > 0) {
-        nodeEditorActions.moveNodes(result.nodePositions);
-
-        // Adjust viewport to center the laid out nodes
-        const nodes = Object.values(nodesToLayout);
-        const bbox = calculateNodesBoundingBox(nodes, result.nodePositions);
-
-        if (bbox.width > 0 && bbox.height > 0) {
-          const viewportCenterX = window.innerWidth / 2;
-          const viewportCenterY = window.innerHeight / 2;
-          const newOffsetX = viewportCenterX - bbox.centerX * canvasState.viewport.scale;
-          const newOffsetY = viewportCenterY - bbox.centerY * canvasState.viewport.scale;
-
-          canvasActions.setViewport({
-            offset: { x: newOffsetX, y: newOffsetY },
-            scale: canvasState.viewport.scale,
-          });
-        }
-      }
+      applyLayoutResult(result, nodesToLayout);
+      return result;
     },
-    [nodeEditorState, actionState.selectedNodeIds, nodeEditorActions, canvasState.viewport.scale, canvasActions],
+    [getNodesToLayout, nodeEditorState.connections, applyLayoutResult],
   );
 
   const applyHierarchicalLayout = React.useCallback(
     (selectedOnly: boolean = false) => {
-      console.log("Applying hierarchical layout");
-
-      const nodesToLayout = selectedOnly
-        ? Object.fromEntries(
-            Object.entries(nodeEditorState.nodes).filter(([nodeId]) => actionState.selectedNodeIds.includes(nodeId)),
-          )
-        : nodeEditorState.nodes;
-
+      const nodesToLayout = getNodesToLayout(selectedOnly);
       const layoutData = {
         nodes: nodesToLayout,
         connections: nodeEditorState.connections,
       };
 
       const result = calculateHierarchicalLayout(layoutData, {
-        spacing: 250,
-        layerHeight: 200,
+        direction: "TB",
+        layerSpacing: 200,
+        nodeSpacing: 50,
+        crossReduction: "barycentric",
+        crossReductionIterations: 4,
+        sizeAware: true,
       });
 
-      if (Object.keys(result.nodePositions).length > 0) {
-        nodeEditorActions.moveNodes(result.nodePositions);
-
-        // Adjust viewport to center the laid out nodes
-        const nodes = Object.values(nodesToLayout);
-        const bbox = calculateNodesBoundingBox(nodes, result.nodePositions);
-
-        if (bbox.width > 0 && bbox.height > 0) {
-          const viewportCenterX = window.innerWidth / 2;
-          const viewportCenterY = window.innerHeight / 2;
-          const newOffsetX = viewportCenterX - bbox.centerX * canvasState.viewport.scale;
-          const newOffsetY = viewportCenterY - bbox.centerY * canvasState.viewport.scale;
-
-          canvasActions.setViewport({
-            offset: { x: newOffsetX, y: newOffsetY },
-            scale: canvasState.viewport.scale,
-          });
-        }
-      }
+      applyLayoutResult(result, nodesToLayout);
+      return result;
     },
-    [nodeEditorState, actionState.selectedNodeIds, nodeEditorActions, canvasState.viewport.scale, canvasActions],
+    [getNodesToLayout, nodeEditorState.connections, applyLayoutResult],
+  );
+
+  const applyTreeLayout = React.useCallback(
+    (selectedOnly: boolean = false) => {
+      const nodesToLayout = getNodesToLayout(selectedOnly);
+      const layoutData = {
+        nodes: nodesToLayout,
+        connections: nodeEditorState.connections,
+      };
+
+      const result = calculateTreeLayout(layoutData, {
+        direction: "TB",
+        siblingSpacing: 30,
+        levelSpacing: 100,
+      });
+
+      applyLayoutResult(result, nodesToLayout);
+      return result;
+    },
+    [getNodesToLayout, nodeEditorState.connections, applyLayoutResult],
   );
 
   const applyGridLayout = React.useCallback(
     (selectedOnly: boolean = false) => {
-      console.log("Applying grid layout");
-
-      const nodesToLayout = selectedOnly
-        ? Object.fromEntries(
-            Object.entries(nodeEditorState.nodes).filter(([nodeId]) => actionState.selectedNodeIds.includes(nodeId)),
-          )
-        : nodeEditorState.nodes;
-
+      const nodesToLayout = getNodesToLayout(selectedOnly);
       const layoutData = {
         nodes: nodesToLayout,
         connections: nodeEditorState.connections,
       };
 
       const result = calculateGridLayout(layoutData, {
-        spacing: 250,
+        spacing: 50,
         columns: Math.ceil(Math.sqrt(Object.keys(nodesToLayout).length)),
       });
 
-      if (Object.keys(result.nodePositions).length > 0) {
-        nodeEditorActions.moveNodes(result.nodePositions);
-
-        // Adjust viewport to center the laid out nodes
-        const nodes = Object.values(nodesToLayout);
-        const bbox = calculateNodesBoundingBox(nodes, result.nodePositions);
-
-        if (bbox.width > 0 && bbox.height > 0) {
-          const viewportCenterX = window.innerWidth / 2;
-          const viewportCenterY = window.innerHeight / 2;
-          const newOffsetX = viewportCenterX - bbox.centerX * canvasState.viewport.scale;
-          const newOffsetY = viewportCenterY - bbox.centerY * canvasState.viewport.scale;
-
-          canvasActions.setViewport({
-            offset: { x: newOffsetX, y: newOffsetY },
-            scale: canvasState.viewport.scale,
-          });
-        }
-      }
+      applyLayoutResult(result, nodesToLayout);
+      return result;
     },
-    [nodeEditorState, actionState.selectedNodeIds, nodeEditorActions, canvasState.viewport.scale, canvasActions],
+    [getNodesToLayout, nodeEditorState.connections, applyLayoutResult],
+  );
+
+  /**
+   * Apply auto layout with automatic algorithm selection
+   */
+  const applyAutoLayout = React.useCallback(
+    (selectedOnly: boolean = false) => {
+      const nodesToLayout = getNodesToLayout(selectedOnly);
+      const layoutData = {
+        nodes: nodesToLayout,
+        connections: nodeEditorState.connections,
+      };
+
+      const result = calculateAutoLayout(layoutData, {
+        algorithm: "auto",
+        padding: 100,
+      });
+
+      applyLayoutResult(result, nodesToLayout);
+      return result;
+    },
+    [getNodesToLayout, nodeEditorState.connections, applyLayoutResult],
   );
 
   const applyLayout = React.useCallback(
-    (layoutType: "force" | "hierarchical" | "grid", selectedOnly: boolean = false) => {
+    (layoutType: LayoutAlgorithm, selectedOnly: boolean = false): LayoutResult | undefined => {
       switch (layoutType) {
         case "force":
-          applyForceLayout(selectedOnly);
-          break;
+          return applyForceLayout(selectedOnly);
         case "hierarchical":
-          applyHierarchicalLayout(selectedOnly);
-          break;
+          return applyHierarchicalLayout(selectedOnly);
+        case "tree":
+          return applyTreeLayout(selectedOnly);
         case "grid":
-          applyGridLayout(selectedOnly);
-          break;
+          return applyGridLayout(selectedOnly);
+        case "auto":
+          return applyAutoLayout(selectedOnly);
         default:
           console.warn(`Unknown layout type: ${layoutType}`);
+          return undefined;
       }
     },
-    [applyForceLayout, applyHierarchicalLayout, applyGridLayout],
+    [applyForceLayout, applyHierarchicalLayout, applyTreeLayout, applyGridLayout, applyAutoLayout],
   );
 
   return {
     applyLayout,
     applyForceLayout,
     applyHierarchicalLayout,
+    applyTreeLayout,
     applyGridLayout,
+    applyAutoLayout,
   };
 };

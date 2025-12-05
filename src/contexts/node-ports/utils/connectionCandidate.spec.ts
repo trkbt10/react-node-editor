@@ -2,8 +2,9 @@
  * @file Tests for connection candidate utilities
  */
 import type { Node, Port, Position } from "../../../types/core";
-import { ConnectionSwitchBehavior } from "./connectionSwitchBehavior";
-import type { ConnectablePortsResult } from "./connectablePortPlanner";
+import { ConnectionSwitchBehavior } from "../../../core/port/connectionPlanning";
+import type { ConnectablePortsResult } from "../../../core/port/connectableTypes";
+import { createPortKey, type PortKey } from "../../../core/port/portKey";
 import { findNearestConnectablePort } from "./connectionCandidate";
 
 const createPort = (
@@ -45,13 +46,16 @@ describe("findNearestConnectablePort", () => {
     "secondary:in": { x: 160, y: 20 },
   };
 
+  const targetInKey = createPortKey("target", "in");
+  const secondaryInKey = createPortKey("secondary", "in");
+
   const baseConnectable: ConnectablePortsResult = {
-    ids: new Set(["target:in", "secondary:in"]),
+    ids: new Set<PortKey>([targetInKey, secondaryInKey]),
     descriptors: new Map([
       [
-        "target:in",
+        targetInKey,
         {
-          key: "target:in",
+          key: targetInKey,
           nodeId: "target",
           portId: "in",
           portType: "input",
@@ -61,9 +65,9 @@ describe("findNearestConnectablePort", () => {
         },
       ],
       [
-        "secondary:in",
+        secondaryInKey,
         {
-          key: "secondary:in",
+          key: secondaryInKey,
           nodeId: "secondary",
           portId: "in",
           portType: "input",

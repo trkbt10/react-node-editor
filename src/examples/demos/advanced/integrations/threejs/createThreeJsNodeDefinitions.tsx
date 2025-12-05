@@ -21,7 +21,7 @@ import {
 import { useNodeEditor } from "../../../../../contexts/composed/node-editor/context";
 import classes from "./ThreeJsNodes.module.css";
 import { calculateConnectionPath } from "../../../../../core/connection/path";
-import { getOppositePortPosition } from "../../../../../core/port/position";
+import { getOppositeSide } from "../../../../../core/port/side";
 import { NodeResizer } from "../../../../../components/node/resize/NodeResizer";
 
 type ColorControlData = {

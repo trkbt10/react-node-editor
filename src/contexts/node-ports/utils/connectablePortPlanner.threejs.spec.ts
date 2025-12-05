@@ -4,9 +4,9 @@
 import type { Connection, Node } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { createNodeDefinitionRegistry } from "../../../types/NodeDefinitionRegistry";
-import { getNodePorts } from "./portResolution";
+import { getNodePorts } from "../../../core/port/resolution";
 import { computeConnectablePortIds } from "./connectablePortPlanner";
-import { planConnectionChange, ConnectionSwitchBehavior } from "./connectionSwitchBehavior";
+import { planConnectionChange, ConnectionSwitchBehavior } from "../../../core/port/connectionPlanning";
 import { createThreeJsNodeDefinitions } from "../../../examples/demos/advanced/integrations/threejs/createThreeJsNodeDefinitions";
 import { canConnectPorts } from "../../../core/connection/validation";
 

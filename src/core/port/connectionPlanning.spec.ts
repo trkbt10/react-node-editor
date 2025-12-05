@@ -1,10 +1,10 @@
 /**
  * @file Tests for connection switch behavior logic based on port capacity constraints
  */
-import type { Connection, Node, Port } from "../../../types/core";
-import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { planConnectionChange, ConnectionSwitchBehavior } from "./connectionSwitchBehavior";
-import { getNodePorts } from "./portResolution";
+import type { Connection, Node, Port } from "../../types/core";
+import type { NodeDefinition } from "../../types/NodeDefinition";
+import { planConnectionChange, ConnectionSwitchBehavior } from "./connectionPlanning";
+import { getNodePorts } from "./resolution";
 
 const makeNode = (id: string, type: string): Node => ({
   id,
@@ -76,7 +76,7 @@ describe("planConnectionChange", () => {
       toPort,
       nodes,
       connections,
-      getNodeDefinition: (type) => definitions[type],
+      getNodeDefinition: (type: string) => definitions[type],
     });
 
     expect(plan.behavior).toBe(ConnectionSwitchBehavior.Ignore);
@@ -104,7 +104,7 @@ describe("planConnectionChange", () => {
       toPort,
       nodes,
       connections,
-      getNodeDefinition: (type) => definitions[type],
+      getNodeDefinition: (type: string) => definitions[type],
     });
 
     expect(plan.behavior).toBe(ConnectionSwitchBehavior.Ignore);
@@ -130,7 +130,7 @@ describe("planConnectionChange", () => {
       toPort,
       nodes,
       connections,
-      getNodeDefinition: (type) => definitions[type],
+      getNodeDefinition: (type: string) => definitions[type],
     });
 
     expect(plan.behavior).toBe(ConnectionSwitchBehavior.Append);
@@ -155,7 +155,7 @@ describe("planConnectionChange", () => {
       toPort,
       nodes,
       connections,
-      getNodeDefinition: (type) => definitions[type],
+      getNodeDefinition: (type: string) => definitions[type],
     });
 
     expect(plan.behavior).toBe(ConnectionSwitchBehavior.Ignore);

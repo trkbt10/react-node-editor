@@ -1,11 +1,12 @@
 /**
  * @file Logic for handling connection switching behavior when ports reach capacity limits
+ * Pure functions for planning connection changes
  */
-import type { Connection, Node, NodeId, Port } from "../../../types/core";
-import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { createValidatedConnection } from "./connectionOperations";
-import { getPortDefinition } from "../../../core/port/definition";
-import { checkPortCapacity } from "../../../core/port/queries";
+import type { Connection, Node, NodeId, Port } from "../../types/core";
+import type { NodeDefinition } from "../../types/NodeDefinition";
+import { createValidatedConnection } from "../connection/operations";
+import { getPortDefinition } from "./definition";
+import { checkPortCapacity } from "./queries";
 
 /**
  * How the editor should respond when a port at capacity is used to start a new connection drag.
@@ -17,7 +18,7 @@ export enum ConnectionSwitchBehavior {
   Ignore = "ignore",
 }
 
-type BehaviorContext = {
+export type BehaviorContext = {
   behavior: ConnectionSwitchBehavior;
   existingConnections: Connection[];
   maxConnections?: number;
@@ -96,8 +97,10 @@ export const planConnectionChange = ({
   }
 };
 
-export type { BehaviorContext };
-
+/**
+ * Get the connection switch context for a given port.
+ * Used to determine how to handle connections when a port is at or near capacity.
+ */
 export const getConnectionSwitchContext = (
   port: Port,
   nodes: Record<NodeId, Node>,

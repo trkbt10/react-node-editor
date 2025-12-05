@@ -6,7 +6,7 @@ import type { Position } from "../../../../../types/core";
 import type { ConnectionRenderContext } from "../../../../../types/NodeDefinition";
 import { calculateConnectionControlPoints, calculateConnectionPath } from "../../../../../core/connection/path";
 import { cubicBezierPoint, cubicBezierTangent } from "../../../../../core/geometry/curve";
-import { getOppositePortPosition } from "../../../../../core/port/position";
+import { getOppositeSide } from "../../../../../core/port/side";
 import { getStyleForDataType } from "./dataStyles";
 import { CONNECTION_VARIANT_TOKENS, type ConnectionVariant, resolveConnectionVariant } from "./connectionTokens";
 import styles from "./CustomPortRendererExample.module.css";

@@ -4,7 +4,7 @@
  */
 import * as React from "react";
 import type { Node, Position, Port, ResizeHandle as NodeResizeHandle } from "../../types/core";
-import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
+import type { ConnectablePortsResult } from "../../core/port/connectableTypes";
 import { useInlineEditingActions, useInlineEditingState } from "../../contexts/InlineEditingContext";
 import { useNodeEditor } from "../../contexts/composed/node-editor/context";
 import { useNodeDefinition } from "../../contexts/node-definitions/hooks/useNodeDefinition";

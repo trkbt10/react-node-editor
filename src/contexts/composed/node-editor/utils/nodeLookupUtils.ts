@@ -4,6 +4,8 @@
  * for efficient O(1) access to nodes, connections, ports, and spatial queries
  */
 import type { Node, NodeId, Connection, ConnectionId, Port, PortId } from "../../../../types/core";
+import type { PortKey } from "../../../../core/port/portKey";
+import { createPortKey } from "../../../../core/port/portKey";
 
 /**
  * Create a lookup map from port ID to node ID
@@ -52,13 +54,13 @@ export function createConnectionLookupMaps(connections: Record<ConnectionId, Con
   byToNode: Map<NodeId, Connection[]>;
   byFromPort: Map<PortId, Connection[]>;
   byToPort: Map<PortId, Connection[]>;
-  byEndpoint: Map<string, Connection[]>; // "nodeId:portId" -> connections
+  byEndpoint: Map<PortKey, Connection[]>; // "nodeId:portId" -> connections
 } {
   const byFromNode = new Map<NodeId, Connection[]>();
   const byToNode = new Map<NodeId, Connection[]>();
   const byFromPort = new Map<PortId, Connection[]>();
   const byToPort = new Map<PortId, Connection[]>();
-  const byEndpoint = new Map<string, Connection[]>();
+  const byEndpoint = new Map<PortKey, Connection[]>();
 
   Object.values(connections).forEach((connection) => {
     // By node
@@ -82,8 +84,8 @@ export function createConnectionLookupMaps(connections: Record<ConnectionId, Con
     byToPort.get(connection.toPortId)!.push(connection);
 
     // By endpoint (nodeId:portId)
-    const fromEndpoint = `${connection.fromNodeId}:${connection.fromPortId}`;
-    const toEndpoint = `${connection.toNodeId}:${connection.toPortId}`;
+    const fromEndpoint = createPortKey(connection.fromNodeId, connection.fromPortId);
+    const toEndpoint = createPortKey(connection.toNodeId, connection.toPortId);
 
     if (!byEndpoint.has(fromEndpoint)) {
       byEndpoint.set(fromEndpoint, []);

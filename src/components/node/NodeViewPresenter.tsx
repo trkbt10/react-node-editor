@@ -5,7 +5,7 @@
 import * as React from "react";
 import type { Node, Position, Port, Size, ResizeHandle as NodeResizeHandle } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";
-import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
+import type { ConnectablePortsResult } from "../../core/port/connectableTypes";
 import type { NodeAppearance } from "../../core/node/nodeAppearance";
 import type { NodeBehaviorState, NodeResizeState } from "../../core/node/nodeState";
 import type { ExternalDataStateWithActions } from "../../contexts/external-data/useExternalData";

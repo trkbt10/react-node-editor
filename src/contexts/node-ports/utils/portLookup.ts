@@ -3,7 +3,9 @@
  */
 import type { Node, Port, NodeId } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { getNodePorts } from "./portResolution";
+import type { PortKey } from "../../../core/port/portKey";
+import { createPortKey } from "../../../core/port/portKey";
+import { getNodePorts } from "../../../core/port/resolution";
 
 /**
  * Port resolver interface
@@ -15,18 +17,18 @@ export type PortResolver = {
   createPortLookupMap(
     nodes: Record<NodeId, Node>,
     getDefinition: (type: string) => NodeDefinition | undefined,
-  ): Map<string, { node: Node; port: Port }>;
+  ): Map<PortKey, { node: Node; port: Port }>;
 };
 
 /**
  * Create a lookup map for quick port access
- * Key format: "nodeId:portId"
+ * Key format: "nodeId:portId" (PortKey)
  */
 export function createPortLookupMap(
   nodes: Record<NodeId, Node>,
   getDefinition: (type: string) => NodeDefinition | undefined,
-): Map<string, { node: Node; port: Port }> {
-  const map = new Map<string, { node: Node; port: Port }>();
+): Map<PortKey, { node: Node; port: Port }> {
+  const map = new Map<PortKey, { node: Node; port: Port }>();
 
   for (const node of Object.values(nodes)) {
     const definition = getDefinition(node.type);
@@ -36,7 +38,7 @@ export function createPortLookupMap(
 
     const ports = getNodePorts(node, definition);
     for (const port of ports) {
-      const key = `${node.id}:${port.id}`;
+      const key = createPortKey(node.id, port.id);
       map.set(key, { node, port });
     }
   }
@@ -75,7 +77,7 @@ export function createCachedPortResolver(): PortResolver & {
     createPortLookupMap(
       nodes: Record<NodeId, Node>,
       getDefinition: (type: string) => NodeDefinition | undefined,
-    ): Map<string, { node: Node; port: Port }> {
+    ): Map<PortKey, { node: Node; port: Port }> {
       return createPortLookupMap(nodes, getDefinition);
     },
 

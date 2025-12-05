@@ -8,7 +8,7 @@ import { useNodeEditor } from "../../contexts/composed/node-editor/context";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import { useDynamicConnectionPoint } from "../../contexts/node-ports/hooks/usePortPosition";
 import { calculateConnectionPath } from "../../core/connection/path";
-import { getOppositePortPosition } from "../../core/port/position";
+import { getOppositeSide } from "../../core/port/side";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
 import type { Connection, Node as EditorNode, Port as CorePort, PortPosition, Position } from "../../types/core";
 import styles from "./DragConnection.module.css";
@@ -102,7 +102,7 @@ const useConnectingParams = (): DragConnectionParams | null => {
   const toPosition = candidatePort && candidatePos ? candidatePos : dragState.toPosition;
 
   const fromDirection = fromPos.connectionDirection;
-  const toDirection = candidatePos?.connectionDirection ?? getOppositePortPosition(fromDirection);
+  const toDirection = candidatePos?.connectionDirection ?? getOppositeSide(fromDirection);
 
   return {
     variant: "connecting",
@@ -159,7 +159,7 @@ const useDisconnectingParams = (): DragConnectionParams | null => {
   const candidatePosition = candidatePort && candidatePos ? candidatePos : draggingPosition;
 
   const fixedDirection = fixedPos.connectionDirection;
-  const candidateDirection = candidatePos?.connectionDirection ?? getOppositePortPosition(fixedDirection);
+  const candidateDirection = candidatePos?.connectionDirection ?? getOppositeSide(fixedDirection);
 
   const isDraggingFrom = disconnectState.draggingEnd === "from";
 

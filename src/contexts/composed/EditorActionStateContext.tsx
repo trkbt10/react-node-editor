@@ -20,7 +20,7 @@ import {
 } from "./node-editor/utils/nodeClipboardOperations";
 import { useNodeCanvas } from "./canvas/viewport/context";
 import { buildNodeFromDefinition } from "./node-editor/utils/nodeFactory";
-import { findConnectablePortDefinition } from "../node-ports/utils/portConnectability";
+import { findConnectablePortDefinition } from "../../core/port/connectability";
 
 /**
  * Options for showing a context menu
@@ -34,13 +34,10 @@ export type ShowContextMenuOptions = {
   allowedNodeTypes?: string[];
   fromPort?: BasePort;
 };
-import type { ConnectablePortsResult } from "../node-ports/utils/connectablePortPlanner";
-
-const createEmptyConnectablePorts = (): ConnectablePortsResult => ({
-  ids: new Set<string>(),
-  descriptors: new Map(),
-  source: null,
-});
+import {
+  createEmptyConnectablePorts,
+  type ConnectablePortsResult,
+} from "../../core/port/connectableTypes";
 
 export type EditorActionState = {
   selectedNodeIds: NodeId[];

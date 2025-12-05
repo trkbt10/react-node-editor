@@ -4,7 +4,7 @@
 import * as React from "react";
 import type { ConnectionRenderContext } from "../../../../../types/NodeDefinition";
 import { calculateConnectionPath } from "../../../../../core/connection/path";
-import { getOppositePortPosition } from "../../../../../core/port/position";
+import { getOppositeSide } from "../../../../../core/port/side";
 import styles from "./OpalThemeExample.module.css";
 
 

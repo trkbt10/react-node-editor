@@ -1,16 +1,17 @@
 /**
  * @file Port resolution utilities with default port inference
+ * Pure functions for resolving ports from node definitions
  */
-import type { Node, Port, PortPlacement, AbsolutePortPlacement } from "../../../types/core";
+import type { Node, Port } from "../../types/core";
 import type {
   NodeDefinition,
   PortDefinition,
   PortInstanceContext,
   PortInstanceFactoryContext,
-} from "../../../types/NodeDefinition";
-import { createPortInstance } from "../../../core/port/factory";
-import { mergePortDataTypes, toPortDataTypeValue } from "../../../core/port/dataType";
-import { isAbsolutePlacement } from "../../../core/port/placement";
+} from "../../types/NodeDefinition";
+import { createPortInstance } from "./factory";
+import { mergePortDataTypes, toPortDataTypeValue } from "./dataType";
+import { normalizePlacement } from "./placement";
 
 /**
  * Port override configuration for node-specific customizations
@@ -28,26 +29,13 @@ export type PortOverride = {
   disabled?: boolean;
 };
 
-export const normalizePlacement = (position?: PortDefinition["position"] | PortPlacement | AbsolutePortPlacement): PortPlacement | AbsolutePortPlacement => {
-  if (!position) {
-    return { side: "right" };
-  }
-  if (typeof position === "string") {
-    return { side: position };
-  }
-  // Absolute placement passes through unchanged
-  if (isAbsolutePlacement(position)) {
-    return position;
-  }
-  return {
-    side: position.side,
-    segment: position.segment,
-    segmentOrder: position.segmentOrder,
-    segmentSpan: position.segmentSpan,
-    align: position.align,
-    inset: position.inset,
-  };
-};
+/**
+ * Extended Node interface with port overrides
+ */
+export type NodeWithPortOverrides = {
+  /** Optional port-specific overrides */
+  portOverrides?: PortOverride[];
+} & Omit<Node, "ports">;
 
 const resolveInstanceCount = (definition: PortDefinition, context: PortInstanceContext): number => {
   const raw = typeof definition.instances === "function" ? definition.instances(context) : definition.instances;
@@ -121,14 +109,6 @@ export function inferDefaultPortDefinitions(_node: Node): PortDefinition[] {
     },
   ];
 }
-
-/**
- * Extended Node interface with port overrides
- */
-export type NodeWithPortOverrides = {
-  /** Optional port-specific overrides */
-  portOverrides?: PortOverride[];
-} & Omit<Node, "ports">;
 
 /**
  * Resolve ports from node definition, applying any node-specific overrides

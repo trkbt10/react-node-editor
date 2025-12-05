@@ -18,9 +18,6 @@ import {
   getPortSide,
 } from "../../../core/port/placement";
 
-// Re-export for backwards compatibility
-export { isAbsolutePlacement } from "../../../core/port/placement";
-
 type PortSegmentGroup = {
   key: string;
   order: number;

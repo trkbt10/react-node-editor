@@ -29,6 +29,11 @@ export type Bounds = {
 // Port types
 export type PortType = "input" | "output";
 export type PortPosition = "left" | "right" | "top" | "bottom";
+/**
+ * Semantic alias for PortPosition when referring to which edge/side of a node
+ * Use this to clarify intent when "position" could be confused with coordinates
+ */
+export type PortSide = PortPosition;
 
 /**
  * Detailed placement hint for a port on a node edge.

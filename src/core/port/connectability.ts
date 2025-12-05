@@ -1,12 +1,14 @@
 /**
  * @file Utilities for determining which ports can connect to a given source port
+ * Pure functions for port connectability calculations
  */
-import type { Port, Node, Connection } from "../../../types/core";
-import type { NodeDefinition, PortDefinition } from "../../../types/NodeDefinition";
-import type { ConnectablePortsResult } from "./connectablePortPlanner";
-import { createPortFromDefinition } from "../../../core/port/factory";
-import { normalizePlacement } from "./portResolution";
-import { canConnectPorts } from "../../../core/connection/validation";
+import type { Port, Node, Connection } from "../../types/core";
+import type { NodeDefinition, PortDefinition } from "../../types/NodeDefinition";
+import { createPortFromDefinition } from "./factory";
+import { normalizePlacement } from "./placement";
+import { createPortKey } from "./portKey";
+import type { PortKey } from "./portKey";
+import { canConnectPorts } from "../connection/validation";
 
 /**
  * Compute connectable port IDs for a given source port.
@@ -19,8 +21,8 @@ export function getConnectablePortIds(
   getNodePorts: (nodeId: string) => Port[],
   connections: Record<string, Connection>,
   getNodeDefinition: (type: string) => NodeDefinition | undefined,
-): Set<string> {
-  const result = new Set<string>();
+): Set<PortKey> {
+  const result = new Set<PortKey>();
   const fromNode = nodes[fromPort.nodeId];
   const fromDef = fromNode ? getNodeDefinition(fromNode.type) : undefined;
 
@@ -36,42 +38,12 @@ export function getConnectablePortIds(
       // - data type compatibility
       // - capacity limits
       if (canConnectPorts(fromPort, p, fromDef, toDef, connections, { nodes })) {
-        result.add(`${n.id}:${p.id}`);
+        result.add(createPortKey(n.id, p.id));
       }
     });
   });
 
   return result;
-}
-
-/**
- * Check if a given port is connectable based on precomputed connectable port descriptors.
- * Only considers ports whose descriptor indicates they are valid destinations.
- */
-export function isPortConnectable(
-  port: Port,
-  connectablePorts?: ConnectablePortsResult | { ids: Set<string> },
-): boolean {
-  if (!connectablePorts) {
-    return false;
-  }
-
-  const compositeId = `${port.nodeId}:${port.id}`;
-
-  if ("descriptors" in connectablePorts) {
-    const descriptor = connectablePorts.descriptors.get(compositeId);
-    if (!descriptor) {
-      return false;
-    }
-    // Only treat opposite IO as connectable safety net
-    return descriptor.portType !== descriptor.source.portType;
-  }
-
-  const ids: Set<string> = "ids" in connectablePorts ? connectablePorts.ids : connectablePorts;
-  if (!ids || ids.size === 0) {
-    return false;
-  }
-  return ids.has(compositeId);
 }
 
 /**
@@ -144,7 +116,7 @@ export const getConnectableNodeTypes = ({
   }
 
   return connectableTypes;
-}
+};
 
 /**
  * Parameters for finding a connectable port definition
@@ -198,4 +170,4 @@ export const findConnectablePortDefinition = ({
   }
 
   return null;
-}
+};

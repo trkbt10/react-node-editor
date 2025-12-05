@@ -3,8 +3,8 @@
  */
 import * as React from "react";
 import type { Port } from "../../types/core";
-import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
-import { isPortConnectable } from "../../contexts/node-ports/utils/portConnectability";
+import type { ConnectablePortsResult } from "../../core/port/connectableTypes";
+import { isPortConnectable } from "../../core/port/connectableTypes";
 import { PortView } from "./PortView";
 import { useOptionalRenderers } from "../../contexts/RendererContext";
 import { hasPortIdChanged } from "../../core/port/comparators";

@@ -143,6 +143,12 @@ export const enMessages: I18nMessages = {
   autoLayoutPanelGridDescription: "Place nodes in an even grid to keep spacing consistent.",
   autoLayoutPanelForceTitle: "Force-directed layout",
   autoLayoutPanelForceDescription: "Use a physics simulation to cluster connected nodes.",
+  autoLayoutStrategy: "Strategy",
+  autoLayoutStrategyAuto: "Auto (detect)",
+  autoLayoutStrategyForce: "Force-directed",
+  autoLayoutStrategyHierarchical: "Hierarchical",
+  autoLayoutStrategyTree: "Tree",
+  autoLayoutStrategyGrid: "Grid",
 
   // History Panel
   historyUndo: "Undo",

@@ -5,7 +5,7 @@ import * as React from "react";
 import type { ConnectionRenderContext } from "../../../../../types/NodeDefinition";
 import { calculateConnectionControlPoints, calculateConnectionPath } from "../../../../../core/connection/path";
 import { cubicBezierPoint } from "../../../../../core/geometry/curve";
-import { getOppositePortPosition } from "../../../../../core/port/position";
+import { getOppositeSide } from "../../../../../core/port/side";
 import styles from "./CustomConnectorExample.module.css";
 
 type VisualPhase = "idle" | "hovered" | "active";

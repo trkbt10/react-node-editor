@@ -121,3 +121,33 @@ export const absolutePercent = (x: number, y: number): AbsolutePortPlacement => 
   y,
   unit: "percent",
 });
+
+/**
+ * Normalize placement configuration to a consistent form.
+ * Handles string positions, PortPlacement objects, and AbsolutePortPlacement objects.
+ *
+ * @param position - Position string, PortPlacement, or AbsolutePortPlacement (optional)
+ * @returns Normalized PortPlacement or AbsolutePortPlacement (defaults to { side: "right" })
+ */
+export const normalizePlacement = (
+  position?: PortPosition | PortPlacement | AbsolutePortPlacement,
+): PortPlacement | AbsolutePortPlacement => {
+  if (!position) {
+    return { side: "right" };
+  }
+  if (typeof position === "string") {
+    return { side: position };
+  }
+  // Absolute placement passes through unchanged
+  if (isAbsolutePlacement(position)) {
+    return position;
+  }
+  return {
+    side: position.side,
+    segment: position.segment,
+    segmentOrder: position.segmentOrder,
+    segmentSpan: position.segmentSpan,
+    align: position.align,
+    inset: position.inset,
+  };
+};
