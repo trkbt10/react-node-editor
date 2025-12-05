@@ -643,3 +643,279 @@ describe("computeNodePortPositions - absolute placement", () => {
     expect(pos.connectionPoint.y).toBe(node.position.y + 75);
   });
 });
+
+describe("computeNodePortPositions - absolute placement with unit", () => {
+  it("places port using pixel units by default", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 100, y: 100 },
+      size: { width: 200, height: 100 },
+      data: {},
+    };
+
+    const ports: Port[] = [
+      {
+        id: "px-port",
+        nodeId: node.id,
+        type: "input",
+        label: "Pixel",
+        position: "left",
+        placement: { mode: "absolute", x: 50, y: 25 },
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("px-port");
+
+    const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
+    expect(pos?.renderPosition.x).toBeCloseTo(50 - halfPortSize, 1);
+    expect(pos?.renderPosition.y).toBeCloseTo(25 - halfPortSize, 1);
+  });
+
+  it("places port using explicit pixel units", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 100, y: 100 },
+      size: { width: 200, height: 100 },
+      data: {},
+    };
+
+    const ports: Port[] = [
+      {
+        id: "explicit-px",
+        nodeId: node.id,
+        type: "input",
+        label: "Explicit Pixel",
+        position: "left",
+        placement: { mode: "absolute", x: 50, y: 25, unit: "px" },
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("explicit-px");
+
+    const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
+    expect(pos?.renderPosition.x).toBeCloseTo(50 - halfPortSize, 1);
+    expect(pos?.renderPosition.y).toBeCloseTo(25 - halfPortSize, 1);
+  });
+
+  it("places port using percentage units", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 100, y: 100 },
+      size: { width: 200, height: 100 },
+      data: {},
+    };
+
+    // 50% of 200 width = 100px, 25% of 100 height = 25px
+    const ports: Port[] = [
+      {
+        id: "percent-port",
+        nodeId: node.id,
+        type: "input",
+        label: "Percent",
+        position: "left",
+        placement: { mode: "absolute", x: 50, y: 25, unit: "percent" },
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("percent-port");
+
+    const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
+    // 50% of 200 = 100, 25% of 100 = 25
+    expect(pos?.renderPosition.x).toBeCloseTo(100 - halfPortSize, 1);
+    expect(pos?.renderPosition.y).toBeCloseTo(25 - halfPortSize, 1);
+  });
+
+  it("percent 0,0 places port at top-left corner", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 0, y: 0 },
+      size: { width: 200, height: 100 },
+      data: {},
+    };
+
+    const ports: Port[] = [
+      {
+        id: "corner-tl",
+        nodeId: node.id,
+        type: "input",
+        label: "TL",
+        position: "left",
+        placement: { mode: "absolute", x: 0, y: 0, unit: "percent" },
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("corner-tl");
+
+    const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
+    expect(pos?.renderPosition.x).toBeCloseTo(-halfPortSize, 1);
+    expect(pos?.renderPosition.y).toBeCloseTo(-halfPortSize, 1);
+  });
+
+  it("percent 100,100 places port at bottom-right corner", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 0, y: 0 },
+      size: { width: 200, height: 100 },
+      data: {},
+    };
+
+    const ports: Port[] = [
+      {
+        id: "corner-br",
+        nodeId: node.id,
+        type: "output",
+        label: "BR",
+        position: "right",
+        placement: { mode: "absolute", x: 100, y: 100, unit: "percent" },
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("corner-br");
+
+    const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
+    // 100% of 200 = 200, 100% of 100 = 100
+    expect(pos?.renderPosition.x).toBeCloseTo(200 - halfPortSize, 1);
+    expect(pos?.renderPosition.y).toBeCloseTo(100 - halfPortSize, 1);
+  });
+
+  it("percent 50,50 places port at center", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 100, y: 100 },
+      size: { width: 200, height: 100 },
+      data: {},
+    };
+
+    const ports: Port[] = [
+      {
+        id: "center",
+        nodeId: node.id,
+        type: "input",
+        label: "Center",
+        position: "left",
+        placement: { mode: "absolute", x: 50, y: 50, unit: "percent" },
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("center");
+
+    const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
+    // 50% of 200 = 100, 50% of 100 = 50
+    expect(pos?.renderPosition.x).toBeCloseTo(100 - halfPortSize, 1);
+    expect(pos?.renderPosition.y).toBeCloseTo(50 - halfPortSize, 1);
+  });
+
+  it("infers correct direction for percent placement on left edge", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 0, y: 0 },
+      size: { width: 200, height: 100 },
+      data: {},
+    };
+
+    // x=0 means left edge, y=50% means vertical center
+    const ports: Port[] = [
+      {
+        id: "left-edge",
+        nodeId: node.id,
+        type: "input",
+        label: "Left Edge",
+        position: "left",
+        placement: { mode: "absolute", x: 0, y: 50, unit: "percent" },
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("left-edge");
+
+    // Connection should extend to the left
+    expect(pos?.connectionPoint.x).toBeLessThan(0);
+    expect(pos?.connectionDirection).toBe("left");
+  });
+
+  it("infers correct direction for percent placement on right edge", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 0, y: 0 },
+      size: { width: 200, height: 100 },
+      data: {},
+    };
+
+    // x=100% means right edge, y=50% means vertical center
+    const ports: Port[] = [
+      {
+        id: "right-edge",
+        nodeId: node.id,
+        type: "output",
+        label: "Right Edge",
+        position: "right",
+        placement: { mode: "absolute", x: 100, y: 50, unit: "percent" },
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+    const pos = positions.get("right-edge");
+
+    // Connection should extend to the right
+    expect(pos?.connectionPoint.x).toBeGreaterThan(200);
+    expect(pos?.connectionDirection).toBe("right");
+  });
+
+  it("handles mixed px and percent ports on same node", () => {
+    const node: Node = {
+      id: "node-1",
+      type: "test",
+      position: { x: 100, y: 100 },
+      size: { width: 200, height: 100 },
+      data: {},
+    };
+
+    const ports: Port[] = [
+      {
+        id: "px-port",
+        nodeId: node.id,
+        type: "input",
+        label: "Pixel",
+        position: "left",
+        placement: { mode: "absolute", x: 0, y: 50, unit: "px" },
+      },
+      {
+        id: "percent-port",
+        nodeId: node.id,
+        type: "output",
+        label: "Percent",
+        position: "right",
+        placement: { mode: "absolute", x: 100, y: 50, unit: "percent" },
+      },
+    ];
+
+    const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
+
+    expect(positions.size).toBe(2);
+
+    const pxPos = positions.get("px-port");
+    const percentPos = positions.get("percent-port");
+
+    const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
+
+    // px port at x=0
+    expect(pxPos?.renderPosition.x).toBeCloseTo(-halfPortSize, 1);
+
+    // percent port at x=100% of 200 = 200
+    expect(percentPos?.renderPosition.x).toBeCloseTo(200 - halfPortSize, 1);
+  });
+});

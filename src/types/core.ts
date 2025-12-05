@@ -50,6 +50,13 @@ export type PortPlacement = {
 };
 
 /**
+ * Unit type for absolute positioning.
+ * - "px": Pixel values (default)
+ * - "percent": Percentage values (0-100) relative to node dimensions
+ */
+export type AbsolutePositionUnit = "px" | "percent";
+
+/**
  * Absolute positioning for a port relative to the node's top-left corner.
  * Useful for custom node layouts where ports need precise placement.
  * Connection direction is automatically inferred from the nearest edge.
@@ -57,10 +64,12 @@ export type PortPlacement = {
 export type AbsolutePortPlacement = {
   /** Absolute positioning mode */
   mode: "absolute";
-  /** X offset from node's left edge in pixels */
+  /** X offset from node's left edge */
   x: number;
-  /** Y offset from node's top edge in pixels */
+  /** Y offset from node's top edge */
   y: number;
+  /** Unit for x/y values. Defaults to "px" if not specified */
+  unit?: AbsolutePositionUnit;
 };
 
 export type Port = {

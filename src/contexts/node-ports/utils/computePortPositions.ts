@@ -263,6 +263,28 @@ function calculatePortConnectionPoint(
 }
 
 /**
+ * Resolve absolute placement coordinates to pixel values
+ * Handles both "px" (default) and "percent" units
+ */
+function resolveAbsoluteCoordinates(
+  placement: AbsolutePortPlacement,
+  nodeSize: Size,
+): { x: number; y: number } {
+  const unit = placement.unit ?? "px";
+
+  if (unit === "percent") {
+    // Percentage values: 0-100 relative to node dimensions
+    return {
+      x: (placement.x / 100) * nodeSize.width,
+      y: (placement.y / 100) * nodeSize.height,
+    };
+  }
+
+  // Default: pixel values
+  return { x: placement.x, y: placement.y };
+}
+
+/**
  * Calculate positions for an absolute positioned port
  */
 function calculateAbsolutePortPosition(
@@ -275,18 +297,21 @@ function calculateAbsolutePortPosition(
   const { left, top } = getNodeBoundingBox(node);
   const halfPortSize = config.visualSize / 2;
 
+  // Resolve coordinates to pixels (handles both px and percent units)
+  const resolved = resolveAbsoluteCoordinates(placement, nodeSize);
+
   // Render position is the absolute position minus half port size for centering
   const renderPosition: Position & { transform?: string } = {
-    x: placement.x - halfPortSize,
-    y: placement.y - halfPortSize,
+    x: resolved.x - halfPortSize,
+    y: resolved.y - halfPortSize,
   };
 
   // Connection direction is always inferred from port position relative to node
-  const direction = inferConnectionDirection(placement, nodeSize);
+  const direction = inferConnectionDirection(resolved, nodeSize);
 
   // Connection point extends from the port center in the specified direction
-  const portCenterX = left + placement.x;
-  const portCenterY = top + placement.y;
+  const portCenterX = left + resolved.x;
+  const portCenterY = top + resolved.y;
 
   let connectionPoint: Position;
   switch (direction) {
@@ -316,18 +341,23 @@ function calculateAbsolutePortPosition(
 
 /**
  * Infer connection direction based on port position relative to node center
+ * @param resolvedPosition - Position in pixels (already resolved from px or percent)
+ * @param nodeSize - Node dimensions
  */
-function inferConnectionDirection(placement: AbsolutePortPlacement, nodeSize: Size): PortSide {
+function inferConnectionDirection(
+  resolvedPosition: { x: number; y: number },
+  nodeSize: Size,
+): PortSide {
   const centerX = nodeSize.width / 2;
   const centerY = nodeSize.height / 2;
-  const dx = placement.x - centerX;
-  const dy = placement.y - centerY;
+  const dx = resolvedPosition.x - centerX;
+  const dy = resolvedPosition.y - centerY;
 
   // Determine which edge is closest
-  const distToLeft = placement.x;
-  const distToRight = nodeSize.width - placement.x;
-  const distToTop = placement.y;
-  const distToBottom = nodeSize.height - placement.y;
+  const distToLeft = resolvedPosition.x;
+  const distToRight = nodeSize.width - resolvedPosition.x;
+  const distToTop = resolvedPosition.y;
+  const distToBottom = nodeSize.height - resolvedPosition.y;
 
   const minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
 

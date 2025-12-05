@@ -1,12 +1,14 @@
 /**
  * @file Example demonstrating absolute port placement and inset ports.
  * - Absolute positioning: Ports at specific x,y coordinates relative to node
+ * - Unit modes: "px" (default) or "percent" for responsive positioning
  * - Inset ports: Ports placed inside the node boundary
  */
 import * as React from "react";
 import { NodeEditor } from "../../../../../NodeEditor";
 import type { NodeDefinition, PortInstanceContext } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData, AbsolutePortPlacement } from "../../../../../types/core";
+import { absolutePercent } from "../../../../../contexts/node-ports/utils/placementUtils";
 import styles from "./AbsolutePortExample.module.css";
 
 const INITIAL_DATA: NodeEditorData = {
@@ -18,10 +20,17 @@ const INITIAL_DATA: NodeEditorData = {
       size: { width: 200, height: 150 },
       data: { portCount: 4 },
     },
+    "percent-1": {
+      id: "percent-1",
+      type: "percent-ports",
+      position: { x: 400, y: 100 },
+      size: { width: 200, height: 150 },
+      data: {},
+    },
     "inset-1": {
       id: "inset-1",
       type: "inset-ports",
-      position: { x: 400, y: 100 },
+      position: { x: 700, y: 100 },
       size: { width: 180, height: 120 },
       data: {},
     },
@@ -84,6 +93,64 @@ const absolutePortsDefinition: NodeDefinition = {
       <div className={styles.nodeTitle}>Absolute Ports</div>
       <div className={styles.nodeInfo}>
         Ports at corners + dynamic top ports
+      </div>
+    </div>
+  ),
+};
+
+/**
+ * Node with percentage-based port positioning (responsive to node size)
+ */
+const percentPortsDefinition: NodeDefinition = {
+  type: "percent-ports",
+  displayName: "Percent Ports",
+  defaultSize: { width: 200, height: 150 },
+  ports: [
+    {
+      id: "percent-tl",
+      type: "input",
+      label: "0%",
+      position: absolutePercent(0, 0),
+    },
+    {
+      id: "percent-tr",
+      type: "output",
+      label: "100%",
+      position: absolutePercent(100, 0),
+    },
+    {
+      id: "percent-bl",
+      type: "input",
+      label: "0%",
+      position: absolutePercent(0, 100),
+    },
+    {
+      id: "percent-br",
+      type: "output",
+      label: "100%",
+      position: absolutePercent(100, 100),
+    },
+    {
+      id: "percent-center",
+      type: "output",
+      label: "50%",
+      position: absolutePercent(50, 50),
+    },
+    {
+      id: "percent-quarter",
+      type: "input",
+      label: "25%",
+      position: absolutePercent(25, 75),
+    },
+  ],
+  renderNode: () => (
+    <div className={styles.percentNode}>
+      <div className={styles.nodeTitle}>Percent Ports</div>
+      <div className={styles.nodeInfo}>
+        Ports at % positions (responsive)
+      </div>
+      <div className={styles.nodeInfo}>
+        Resize to see ports move!
       </div>
     </div>
   ),
@@ -196,6 +263,7 @@ const mixedPortsDefinition: NodeDefinition = {
 
 const NODE_DEFINITIONS: NodeDefinition[] = [
   absolutePortsDefinition,
+  percentPortsDefinition,
   insetPortsDefinition,
   mixedPortsDefinition,
 ];
@@ -206,7 +274,7 @@ export const AbsolutePortExample: React.FC = () => {
       <header className={styles.header}>
         <h1 className={styles.title}>Absolute & Inset Port Placement</h1>
         <p className={styles.description}>
-          Demonstrates absolute positioning (x,y coordinates) and inset ports (inside node boundary)
+          Demonstrates absolute positioning (px/percent units) and inset ports (inside node boundary)
         </p>
       </header>
       <div className={styles.editorContainer}>
@@ -217,7 +285,10 @@ export const AbsolutePortExample: React.FC = () => {
       </div>
       <div className={styles.legend}>
         <div className={styles.legendItem}>
-          <strong>Absolute Ports:</strong> Positioned at specific x,y coordinates relative to node top-left
+          <strong>Absolute Ports (px):</strong> Positioned at specific x,y pixel coordinates
+        </div>
+        <div className={styles.legendItem}>
+          <strong>Percent Ports (%):</strong> Positioned at percentage of node size (0-100), responsive to resize
         </div>
         <div className={styles.legendItem}>
           <strong>Inset Ports:</strong> Placed inside the node boundary (inset: true)

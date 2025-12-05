@@ -29,6 +29,7 @@
 }
 
 .absoluteNode,
+.percentNode,
 .insetNode,
 .mixedNode {
   width: 100%;
@@ -44,6 +45,11 @@
 .absoluteNode {
   background: color-mix(in srgb, var(--node-editor-accent-color) 12%, var(--node-editor-surface-primary));
   border: 2px solid var(--node-editor-accent-color);
+}
+
+.percentNode {
+  background: color-mix(in srgb, var(--node-editor-info-color) 12%, var(--node-editor-surface-primary));
+  border: 2px solid var(--node-editor-info-color);
 }
 
 .insetNode {

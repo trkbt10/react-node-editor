@@ -2,7 +2,13 @@
  * @file Placement utility functions for port positioning
  * Centralized helpers for working with PortPlacement and AbsolutePortPlacement
  */
-import type { Port, PortPlacement, AbsolutePortPlacement, PortPosition } from "../../../types/core";
+import type {
+  Port,
+  PortPlacement,
+  AbsolutePortPlacement,
+  PortPosition,
+  AbsolutePositionUnit,
+} from "../../../types/core";
 
 /**
  * Type guard to check if placement is absolute positioning
@@ -77,3 +83,41 @@ export const getPlacementSegment = (
   }
   return placement.segment;
 };
+
+/**
+ * Get the unit from an absolute placement (defaults to "px")
+ */
+export const getAbsoluteUnit = (
+  placement: AbsolutePortPlacement,
+): AbsolutePositionUnit => {
+  return placement.unit ?? "px";
+};
+
+/**
+ * Check if absolute placement uses percentage units
+ */
+export const isPercentPlacement = (
+  placement: AbsolutePortPlacement,
+): boolean => {
+  return placement.unit === "percent";
+};
+
+/**
+ * Create an absolute placement with pixel units
+ */
+export const absolutePx = (x: number, y: number): AbsolutePortPlacement => ({
+  mode: "absolute",
+  x,
+  y,
+  unit: "px",
+});
+
+/**
+ * Create an absolute placement with percentage units
+ */
+export const absolutePercent = (x: number, y: number): AbsolutePortPlacement => ({
+  mode: "absolute",
+  x,
+  y,
+  unit: "percent",
+});
