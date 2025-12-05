@@ -17,10 +17,31 @@ export type PortViewProps = {
   onPointerMove?: (e: React.PointerEvent, port: Port) => void;
   onPointerLeave?: (e: React.PointerEvent, port: Port) => void;
   onPointerCancel?: (e: React.PointerEvent, port: Port) => void;
+  /**
+   * Set on the port that initiated the drag.
+   * Visual: scale(1.5) + pulse animation (ripple effect)
+   */
   isConnecting?: boolean;
+  /**
+   * Set on ports that can accept a connection from the dragging port.
+   * Conditions: opposite input/output type, compatible data types, capacity check, etc.
+   * Visual: accent border + scale(1.1) + pulse-connectable animation (ripple effect)
+   */
   isConnectable?: boolean;
+  /**
+   * Set on the nearest connectable port during drag (snap candidate).
+   * Visual: accent border + glow + scale(1.3)
+   */
   isCandidate?: boolean;
+  /**
+   * Set on the port currently hovered by the pointer.
+   * Visual: inner circle changes to accent color
+   */
   isHovered?: boolean;
+  /**
+   * Set on ports that have an existing connection.
+   * Visual: inner circle changes to success color (green)
+   */
   isConnected?: boolean;
 };
 
