@@ -17,7 +17,7 @@ import { hasNodeStateChanged } from "../../core/node/comparators";
 import { hasPortIdChanged } from "../../core/port/comparators";
 import { ResizeHandles } from "./resize/ResizeHandles";
 import { NodeBodyRenderer } from "./body/NodeBodyRenderer";
-import { NodePortsRenderer } from "./ports/NodePortsRenderer";
+import { NodePortsRenderer } from "../ports/NodePortsRenderer";
 import styles from "./NodeView.module.css";
 
 export type CustomNodeRendererProps = {

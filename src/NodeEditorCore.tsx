@@ -7,7 +7,7 @@
  */
 import * as React from "react";
 import { ConnectionView as DefaultConnectionView } from "./components/connection/ConnectionView";
-import { PortView as DefaultPortView } from "./components/connection/ports/PortView";
+import { PortView as DefaultPortView } from "./components/ports/PortView";
 import { NodeView as DefaultNodeView } from "./components/node/NodeView";
 import { EditorActionStateProvider } from "./contexts/composed/EditorActionStateContext";
 import { ExternalDataProvider } from "./contexts/external-data/ExternalDataContext";

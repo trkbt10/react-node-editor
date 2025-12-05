@@ -1,5 +1,8 @@
 /**
- * @file Connection flow highlight spec
+ * @file ConnectionView flow highlight spec
+ * Tests for the flow highlight stripes that appear on connections when adjacent nodes are selected.
+ * The stripes are rendered within ConnectionView (visualAppearance.stripes) and provide visual
+ * feedback for data flow direction.
  */
 import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";

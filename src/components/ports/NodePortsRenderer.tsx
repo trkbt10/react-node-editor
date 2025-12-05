@@ -2,12 +2,12 @@
  * @file Node ports renderer component
  */
 import * as React from "react";
-import type { Port } from "../../../types/core";
-import type { ConnectablePortsResult } from "../../../contexts/node-ports/utils/connectablePortPlanner";
-import { isPortConnectable } from "../../../contexts/node-ports/utils/portConnectability";
-import { PortView } from "../../connection/ports/PortView";
-import { useOptionalRenderers } from "../../../contexts/RendererContext";
-import { hasPortIdChanged } from "../../../core/port/comparators";
+import type { Port } from "../../types/core";
+import type { ConnectablePortsResult } from "../../contexts/node-ports/utils/connectablePortPlanner";
+import { isPortConnectable } from "../../contexts/node-ports/utils/portConnectability";
+import { PortView } from "./PortView";
+import { useOptionalRenderers } from "../../contexts/RendererContext";
+import { hasPortIdChanged } from "../../core/port/comparators";
 import styles from "./NodePortsRenderer.module.css";
 
 export type NodePortsRendererProps = {

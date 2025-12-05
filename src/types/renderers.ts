@@ -3,7 +3,7 @@
  */
 import type { ComponentType } from "react";
 import type { NodeViewProps } from "../components/node/NodeView";
-import type { PortViewProps } from "../components/connection/ports/PortView";
+import type { PortViewProps } from "../components/ports/PortView";
 import type { ConnectionViewProps } from "../components/connection/ConnectionView";
 
 /**

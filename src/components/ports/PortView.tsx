@@ -2,11 +2,11 @@
  * @file PortView component for rendering connection ports on nodes
  */
 import * as React from "react";
-import type { Port } from "../../../types/core";
-import { useDynamicPortPosition } from "../../../contexts/node-ports/hooks/usePortPosition";
-import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
-import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
-import type { PortRenderContext } from "../../../types/NodeDefinition";
+import type { Port } from "../../types/core";
+import { useDynamicPortPosition } from "../../contexts/node-ports/hooks/usePortPosition";
+import { useNodeEditor } from "../../contexts/composed/node-editor/context";
+import { useNodeDefinitions } from "../../contexts/node-definitions/context";
+import type { PortRenderContext } from "../../types/NodeDefinition";
 import styles from "./PortView.module.css";
 
 export type PortViewProps = {
