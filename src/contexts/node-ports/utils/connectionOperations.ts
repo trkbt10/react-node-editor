@@ -3,8 +3,8 @@
  */
 import type { Port, Node, Connection } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { canConnectPorts } from "../../../core/connection/validation";
-import { normalizeConnectionPorts } from "../../../core/connection/normalization";
+import { canConnectNormalizedPorts } from "../../../core/connection/validation";
+import { normalizeConnectionPorts, normalizeConnectionContext } from "../../../core/connection/normalization";
 
 /**
  * Create a connection object based on port types.
@@ -33,7 +33,7 @@ export function createConnection(
 }
 
 /**
- * Create a connection only if valid according to canConnectPorts.
+ * Create a connection only if valid according to connection validation rules.
  * Normalizes port order so that the connection is always from output to input.
  *
  * @param fromPort - First port (can be input or output)
@@ -50,23 +50,23 @@ export function createValidatedConnection(
   connections: Record<string, Connection>,
   getNodeDefinition: (type: string) => NodeDefinition | undefined,
 ): { fromNodeId: string; fromPortId: string; toNodeId: string; toPortId: string } | null {
-  const normalized = normalizeConnectionPorts(fromPort, toPort);
+  const fromNode = nodes[fromPort.nodeId];
+  const toNode = nodes[toPort.nodeId];
+  const fromDef = fromNode ? getNodeDefinition(fromNode.type) : undefined;
+  const toDef = toNode ? getNodeDefinition(toNode.type) : undefined;
+
+  // Normalize once with context (includes definitions)
+  const normalized = normalizeConnectionContext(fromPort, toPort, fromDef, toDef);
   if (!normalized) {
     return null;
   }
 
-  const { sourcePort, targetPort } = normalized;
-  const fromNode = nodes[sourcePort.nodeId];
-  const toNode = nodes[targetPort.nodeId];
-  const fromDef = fromNode ? getNodeDefinition(fromNode.type) : undefined;
-  const toDef = toNode ? getNodeDefinition(toNode.type) : undefined;
-
-  // canConnectPorts also normalizes internally, but we've already done it
-  // This is redundant but harmless since normalized ports stay in the same order
-  if (!canConnectPorts(sourcePort, targetPort, fromDef, toDef, connections, { nodes })) {
+  // Use the normalized-only validation (no double normalization)
+  if (!canConnectNormalizedPorts(normalized, connections, { nodes })) {
     return null;
   }
 
+  const { sourcePort, targetPort } = normalized;
   return {
     fromNodeId: sourcePort.nodeId,
     fromPortId: sourcePort.id,

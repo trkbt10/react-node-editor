@@ -11,6 +11,7 @@ import { canConnectPorts } from "../../../core/connection/validation";
 /**
  * Compute connectable port IDs for a given source port.
  * Uses actual resolved ports per node (via getNodePorts) and NodeDefinitions for validation.
+ * canConnectPorts handles all validation including type/node checks internally.
  */
 export function getConnectablePortIds(
   fromPort: Port,
@@ -27,13 +28,13 @@ export function getConnectablePortIds(
     const toDef = getNodeDefinition(n.type);
     const ports = getNodePorts(n.id) || [];
     ports.forEach((p) => {
-      // Only opposite type and not same port
-      if (p.type === fromPort.type) {
-        return;
-      }
-      if (p.nodeId === fromPort.nodeId && p.id === fromPort.id) {
-        return;
-      }
+      // canConnectPorts handles all validation:
+      // - same type check
+      // - same node check
+      // - port normalization
+      // - validateConnection callbacks
+      // - data type compatibility
+      // - capacity limits
       if (canConnectPorts(fromPort, p, fromDef, toDef, connections, { nodes })) {
         result.add(`${n.id}:${p.id}`);
       }
@@ -75,8 +76,7 @@ export function isPortConnectable(
 
 /**
  * Check if a PortDefinition has any port that can connect to the given source port.
- * Note: canConnectPorts now handles port order normalization internally,
- * so we can pass ports in any order.
+ * canConnectPorts handles all validation including type checks and normalization.
  */
 const canDefinitionConnectToPort = (
   portDefinition: PortDefinition,
@@ -86,15 +86,16 @@ const canDefinitionConnectToPort = (
   connections: Record<string, Connection>,
   nodes: Record<string, Node>,
 ): boolean => {
-  // Skip ports of the same type (both input or both output)
-  if (portDefinition.type === fromPort.type) {
-    return false;
-  }
-
   const placement = normalizePlacement(portDefinition.position);
   const tempPort = createPortFromDefinition(portDefinition, "new", placement);
 
-  // canConnectPorts handles normalization internally - no need to order ports here
+  // canConnectPorts handles all validation:
+  // - same type check
+  // - same node check (tempPort has nodeId="new" so will never match)
+  // - port normalization
+  // - validateConnection callbacks
+  // - data type compatibility
+  // - capacity limits
   return canConnectPorts(fromPort, tempPort, fromDef, targetDef, connections, { nodes });
 };
 
