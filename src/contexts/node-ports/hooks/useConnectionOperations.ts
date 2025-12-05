@@ -6,7 +6,6 @@ import { useEditorActionState } from "../../composed/EditorActionStateContext";
 import { useCanvasInteraction } from "../../composed/canvas/interaction/context";
 import { useNodeDefinitions } from "../../node-definitions/context";
 import { useNodeEditor } from "../../composed/node-editor/context";
-import { isValidReconnection } from "../utils/portConnectionQueries";
 import { createValidatedConnection } from "../utils/connectionOperations";
 import {
   planConnectionChange,
@@ -28,18 +27,13 @@ export const useConnectionOperations = () => {
         return false;
       }
       const fixedPort = disconnectState.fixedPort;
-      if (
-        !isValidReconnection(
-          fixedPort,
-          targetPort,
-          nodeEditorState.nodes,
-          nodeEditorState.connections,
-          (type: string) => registry.get(type),
-        )
-      ) {
-        return false;
-      }
 
+      // createValidatedConnection handles all validation internally:
+      // - port normalization
+      // - same-type/same-node checks
+      // - validateConnection callbacks
+      // - data type compatibility
+      // - capacity limits
       const newConnection = createValidatedConnection(
         fixedPort,
         targetPort,
