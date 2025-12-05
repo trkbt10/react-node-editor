@@ -18,6 +18,9 @@ import {
   copyNodesToClipboard,
   pasteNodesFromClipboard,
 } from "./node-editor/utils/nodeClipboardOperations";
+import { useNodeCanvas } from "./canvas/viewport/context";
+import { buildNodeFromDefinition } from "./node-editor/utils/nodeFactory";
+import { findConnectablePortDefinition } from "../node-ports/utils/portConnectability";
 
 /**
  * Options for showing a context menu
@@ -278,6 +281,14 @@ export type NodeOperations = {
    * Paste nodes from clipboard and select them.
    */
   pasteNodes: () => void;
+  /**
+   * Create a node from context menu, optionally auto-connecting to a source port.
+   * Handles position conversion, type limit checking, and connection creation.
+   */
+  createNodeFromContextMenu: (
+    nodeType: string,
+    screenPosition: Position,
+  ) => void;
 };
 
 // Context types
@@ -339,6 +350,7 @@ export const EditorActionStateProvider: React.FC<EditorActionStateProviderProps>
   const { state: editorState } = useNodeEditor();
   const editorActions = useNodeEditorActions();
   const nodeDefinitions = useNodeDefinitionList();
+  const { utils: canvasUtils } = useNodeCanvas();
 
   // Node operations
   const duplicateNodes = React.useCallback(
@@ -419,6 +431,82 @@ export const EditorActionStateProvider: React.FC<EditorActionStateProviderProps>
     boundActions.setEditingSelection(newIds);
   }, [editorActions, boundActions]);
 
+  const createNodeFromContextMenu = React.useCallback(
+    (nodeType: string, screenPosition: Position) => {
+      const nodeDefinition = nodeDefinitions.find((def) => def.type === nodeType);
+      if (!nodeDefinition) {
+        console.warn(`Node definition not found for type: ${nodeType}`);
+        return;
+      }
+
+      // Use canvas position from context menu state (preferred)
+      // If not available, use canvas utils to convert screen coordinates
+      let canvasPosition = state.contextMenu.canvasPosition;
+
+      if (!canvasPosition) {
+        // Convert screen coordinates to canvas coordinates using canvas utils
+        canvasPosition = canvasUtils.screenToCanvas(screenPosition.x, screenPosition.y);
+      }
+
+      // Enforce per-flow maximums if defined
+      const counts = countNodesByType(editorState);
+      if (!canAddNodeType(nodeType, nodeDefinitions, counts)) {
+        return;
+      }
+
+      // Create new node with definition defaults
+      const newNode = buildNodeFromDefinition({ nodeDefinition, canvasPosition });
+
+      // Add node to editor with the predetermined id
+      editorActions.addNodeWithId(newNode);
+
+      // Do not auto-select the new node to avoid unintended adjacent highlighting
+
+      // If creation was triggered from connection drag, try to connect
+      const fromPort = state.contextMenu.fromPort;
+      if (fromPort) {
+        const fromNode = editorState.nodes[fromPort.nodeId];
+        const fromDef = fromNode ? nodeDefinitions.find((d) => d.type === fromNode.type) : undefined;
+
+        const connectableResult = findConnectablePortDefinition({
+          fromPort,
+          fromNodeDefinition: fromDef,
+          targetNodeDefinition: nodeDefinition,
+          targetNodeId: newNode.id,
+          connections: editorState.connections,
+          nodes: editorState.nodes,
+        });
+
+        if (connectableResult) {
+          const { port: targetPort } = connectableResult;
+          const connection =
+            fromPort.type === "output"
+              ? { fromNodeId: fromPort.nodeId, fromPortId: fromPort.id, toNodeId: newNode.id, toPortId: targetPort.id }
+              : {
+                  fromNodeId: newNode.id,
+                  fromPortId: targetPort.id,
+                  toNodeId: fromPort.nodeId,
+                  toPortId: fromPort.id,
+                };
+          editorActions.addConnection(connection);
+        }
+      }
+
+      // Hide context menu
+      boundActions.hideContextMenu();
+    },
+    [
+      nodeDefinitions,
+      editorActions,
+      boundActions,
+      state.contextMenu.canvasPosition,
+      state.contextMenu.fromPort,
+      editorState.connections,
+      editorState.nodes,
+      canvasUtils,
+    ],
+  );
+
   const nodeOperations = React.useMemo<NodeOperations>(
     () => ({
       duplicateNodes,
@@ -426,8 +514,9 @@ export const EditorActionStateProvider: React.FC<EditorActionStateProviderProps>
       copyNodes,
       cutNodes,
       pasteNodes,
+      createNodeFromContextMenu,
     }),
-    [duplicateNodes, deleteNodes, copyNodes, cutNodes, pasteNodes],
+    [duplicateNodes, deleteNodes, copyNodes, cutNodes, pasteNodes, createNodeFromContextMenu],
   );
 
   // Stable actions value - only depends on dispatch which is stable

@@ -35,6 +35,7 @@ import { TradingAnalyticsDashboard } from "./demos/advanced/analytics/trading-an
 import { DataBindingModesExample } from "./demos/data/binding-modes/DataBindingModesExample";
 import { ErrorNodeFallbackExample } from "./demos/basic/error-node-fallback/ErrorNodeFallbackExample";
 import { CustomLayoutDemo } from "./demos/layout/custom-core/custom-layout-demo";
+import { CoreOnlyExample } from "./demos/layout/core-only/CoreOnlyExample";
 import { DynamicPortPlaygroundExample } from "./demos/custom/ports/port-playground/DynamicPortPlaygroundExample";
 import { AbsolutePortExample } from "./demos/custom/ports/absolute-port/AbsolutePortExample";
 import { ComfyUILayoutExample } from "./demos/custom/layouts/comfyui/ComfyUILayoutExample";
@@ -185,6 +186,13 @@ const examples: ExampleEntry[] = [
     description: "Hierarchical submenu for adding nodes via right-click context menu.",
     component: NodeAddMenuExample,
     category: "custom",
+  },
+  {
+    id: "layout-core-only",
+    title: "Layout: Core Only (Minimal)",
+    description: "Minimal setup using only NodeEditorCore + NodeCanvas without GridLayout or context menus.",
+    component: CoreOnlyExample,
+    category: "layout",
   },
   {
     id: "layout-custom-core",

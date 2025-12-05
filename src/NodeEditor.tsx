@@ -111,6 +111,7 @@ export function NodeEditor({
       historyMaxEntries={historyMaxEntries}
       renderers={renderers}
       interactionSettings={interactionSettings}
+      portPositionBehavior={portPositionBehavior}
     >
       <NodeEditorContent
         settingsManager={settingsManager}
@@ -118,7 +119,6 @@ export function NodeEditor({
         autoSaveInterval={autoSaveInterval}
         gridConfig={gridConfig}
         gridLayers={gridLayers}
-        portPositionBehavior={portPositionBehavior}
       />
     </NodeEditorCore>
   );

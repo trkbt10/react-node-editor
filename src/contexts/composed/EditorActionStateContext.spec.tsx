@@ -6,6 +6,7 @@ import { useEffect, type FC } from "react";
 import { EditorActionStateProvider, useEditorActionState } from "./EditorActionStateContext";
 import { NodeEditorProvider } from "./node-editor/provider";
 import { NodeDefinitionProvider } from "../node-definitions/provider";
+import { NodeCanvasProvider } from "./canvas/viewport/provider";
 import { toUntypedDefinition, type NodeDefinition } from "../../types/NodeDefinition";
 import { StandardNodeDefinition } from "../../node-definitions/standard";
 
@@ -14,7 +15,9 @@ const testNodeDefinitions: NodeDefinition[] = [toUntypedDefinition(StandardNodeD
 const TestProviders: FC<{ children: React.ReactNode }> = ({ children }) => (
   <NodeDefinitionProvider nodeDefinitions={testNodeDefinitions}>
     <NodeEditorProvider>
-      {children}
+      <NodeCanvasProvider>
+        {children}
+      </NodeCanvasProvider>
     </NodeEditorProvider>
   </NodeDefinitionProvider>
 );
