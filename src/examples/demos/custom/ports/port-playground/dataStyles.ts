@@ -2,7 +2,7 @@
  * @file Shared data type styling helpers for the custom port example.
  */
 import type { Connection, Port } from "../../../../../types/core";
-import { primaryPortDataType } from "../../../../../utils/portDataTypeUtils";
+import { primaryPortDataType } from "../../../../../core/port/dataType";
 
 export type DataTypeStyle = {
   primary: string;

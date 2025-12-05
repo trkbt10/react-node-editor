@@ -11,8 +11,8 @@ import {
   getPlacementAlign,
   getPlacementInset,
   getPlacementSegment,
-} from "./placementUtils";
-import type { AbsolutePortPlacement, PortPlacement } from "../../../types/core";
+} from "./placement";
+import type { AbsolutePortPlacement, PortPlacement } from "../../types/core";
 
 describe("isAbsolutePlacement", () => {
   it("returns true for absolute placement", () => {

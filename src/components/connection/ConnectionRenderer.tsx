@@ -1,17 +1,26 @@
 /**
  * @file ConnectionRenderer component
- * Split into Container (context-aware) and Inner (pure rendering) for optimal memoization.
+ * Renders a single connection, deriving interaction state from context.
  */
 import * as React from "react";
 import { useNodeEditor } from "../../contexts/composed/node-editor/context";
-import { useEditorActionState } from "../../contexts/composed/EditorActionStateContext";
+import {
+  useEditorActionState,
+  useSelectedNodeIdsSet,
+  useSelectedConnectionIdsSet,
+} from "../../contexts/composed/EditorActionStateContext";
 import { useNodeCanvas } from "../../contexts/composed/canvas/viewport/context";
+import {
+  useCanvasInteractionState,
+  useDraggedNodeIdsSet,
+} from "../../contexts/composed/canvas/interaction/context";
 import { useDynamicConnectionPoint } from "../../contexts/node-ports/hooks/usePortPosition";
 import { useRenderers } from "../../contexts/RendererContext";
 import { useInteractionSettings } from "../../contexts/interaction-settings/context";
 import { usePointerShortcutMatcher } from "../../contexts/interaction-settings/hooks/usePointerShortcutMatcher";
 import { getPreviewPosition } from "../../core/geometry/position";
 import { hasPositionChanged, hasSizeChanged } from "../../core/geometry/comparators";
+import { getNodeResizeSize } from "../../core/node/resizeState";
 import { ensurePort } from "../../core/port/typeGuards";
 import type { Connection, Node as EditorNode, Port as CorePort, Position, Size } from "../../types/core";
 import type { PointerType } from "../../types/interaction";
@@ -22,13 +31,6 @@ import type { PointerType } from "../../types/interaction";
 
 export type ConnectionRendererProps = {
   connection: Connection;
-  fromDragOffset: Position | null;
-  toDragOffset: Position | null;
-  fromResizeSize: Size | null;
-  toResizeSize: Size | null;
-  isSelected: boolean;
-  isHovered: boolean;
-  isAdjacentToSelectedNode: boolean;
 };
 
 type ConnectionRendererInnerProps = {
@@ -134,21 +136,37 @@ ConnectionRendererInner.displayName = "ConnectionRendererInner";
 // Container Component (Context-Aware)
 // ============================================================================
 
-const ConnectionRendererContainerComponent: React.FC<ConnectionRendererProps> = ({
-  connection,
-  fromDragOffset,
-  toDragOffset,
-  fromResizeSize,
-  toResizeSize,
-  isSelected,
-  isHovered,
-  isAdjacentToSelectedNode,
-}) => {
+const ConnectionRendererContainerComponent: React.FC<ConnectionRendererProps> = ({ connection }) => {
   const { state: nodeEditorState, portLookupMap } = useNodeEditor();
-  const { actions: actionActions } = useEditorActionState();
+  const { state: actionState, actions: actionActions } = useEditorActionState();
   const { utils } = useNodeCanvas();
+  const interactionState = useCanvasInteractionState();
   const interactionSettings = useInteractionSettings();
   const matchesPointerAction = usePointerShortcutMatcher();
+
+  // Use shared memoized Sets from context
+  const selectedConnectionIdsSet = useSelectedConnectionIdsSet();
+  const selectedNodeIdsSet = useSelectedNodeIdsSet();
+  const draggedNodeIdsSet = useDraggedNodeIdsSet();
+
+  const { dragState, resizeState } = interactionState;
+  const { hoveredConnectionId } = actionState;
+
+  // Derive interaction state for this connection
+  const isSelected = selectedConnectionIdsSet.has(connection.id);
+  const isHovered = hoveredConnectionId === connection.id;
+  const isAdjacentToSelectedNode =
+    selectedNodeIdsSet.has(connection.fromNodeId) || selectedNodeIdsSet.has(connection.toNodeId);
+
+  // Derive drag offsets
+  const isFromDragging = draggedNodeIdsSet?.has(connection.fromNodeId) ?? false;
+  const isToDragging = draggedNodeIdsSet?.has(connection.toNodeId) ?? false;
+  const fromDragOffset = isFromDragging && dragState ? dragState.offset : null;
+  const toDragOffset = isToDragging && dragState ? dragState.offset : null;
+
+  // Derive resize sizes
+  const fromResizeSize = getNodeResizeSize(resizeState, connection.fromNodeId);
+  const toResizeSize = getNodeResizeSize(resizeState, connection.toNodeId);
 
   // Get nodes
   const fromNode = nodeEditorState.nodes[connection.fromNodeId];
@@ -271,30 +289,5 @@ const ConnectionRendererContainerComponent: React.FC<ConnectionRendererProps> = 
   );
 };
 
-const areContainerPropsEqual = (prev: ConnectionRendererProps, next: ConnectionRendererProps): boolean => {
-  if (prev.connection !== next.connection) {
-    return false;
-  }
-  if (prev.isSelected !== next.isSelected || prev.isHovered !== next.isHovered) {
-    return false;
-  }
-  if (prev.isAdjacentToSelectedNode !== next.isAdjacentToSelectedNode) {
-    return false;
-  }
-  if (hasPositionChanged(prev.fromDragOffset, next.fromDragOffset)) {
-    return false;
-  }
-  if (hasPositionChanged(prev.toDragOffset, next.toDragOffset)) {
-    return false;
-  }
-  if (hasSizeChanged(prev.fromResizeSize, next.fromResizeSize)) {
-    return false;
-  }
-  if (hasSizeChanged(prev.toResizeSize, next.toResizeSize)) {
-    return false;
-  }
-  return true;
-};
-
-export const ConnectionRenderer = React.memo(ConnectionRendererContainerComponent, areContainerPropsEqual);
+export const ConnectionRenderer = React.memo(ConnectionRendererContainerComponent);
 ConnectionRenderer.displayName = "ConnectionRenderer";

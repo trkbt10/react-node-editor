@@ -8,7 +8,7 @@ import * as React from "react";
 import { NodeEditor } from "../../../../../NodeEditor";
 import type { NodeDefinition, PortInstanceContext } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData, AbsolutePortPlacement } from "../../../../../types/core";
-import { absolutePercent } from "../../../../../contexts/node-ports/utils/placementUtils";
+import { absolutePercent } from "../../../../../core/port/placement";
 import styles from "./AbsolutePortExample.module.css";
 
 const INITIAL_DATA: NodeEditorData = {

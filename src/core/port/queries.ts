@@ -2,7 +2,7 @@
  * @file Port query utilities
  * Pure functions for querying port-related data
  */
-import type { Port, Connection } from "../../types/core";
+import type { Port, Node, Connection } from "../../types/core";
 import type { PortDefinition } from "../../types/NodeDefinition";
 
 const DEFAULT_MAX_CONNECTIONS = 1;
@@ -116,5 +116,34 @@ export function checkPortCapacity(
     existingConnections,
     maxConnections: max,
   };
+}
+
+/**
+ * Get the other port information for a connection.
+ * This function requires a context callback (getNodePorts) to resolve ports.
+ */
+export function getOtherPortInfo(
+  connection: Connection,
+  port: Port,
+  nodes: Record<string, Node>,
+  getNodePorts: (nodeId: string) => Port[],
+): { otherNode: Node; otherPort: Port; isFromPort: boolean } | null {
+  const isFromPort = connection.fromPortId === port.id && connection.fromNodeId === port.nodeId;
+  const otherNodeId = isFromPort ? connection.toNodeId : connection.fromNodeId;
+  const otherPortId = isFromPort ? connection.toPortId : connection.fromPortId;
+  const otherNode = nodes[otherNodeId];
+
+  if (!otherNode) {
+    return null;
+  }
+
+  const otherNodePorts = getNodePorts(otherNodeId);
+  const otherPort = otherNodePorts.find((p) => p.id === otherPortId);
+
+  if (!otherPort) {
+    return null;
+  }
+
+  return { otherNode, otherPort, isFromPort };
 }
 

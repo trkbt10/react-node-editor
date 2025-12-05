@@ -9,6 +9,15 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
+}
+
+.dragPath[data-drag-variant="connecting"] {
+  stroke: var(--node-editor-accent-color, #0066cc);
+  stroke-width: var(--node-editor-connection-drag-stroke-width-connecting);
+  stroke-dasharray: var(--node-editor-connection-drag-dash-array-connecting);
+}
+
+.dragPath[data-drag-variant="disconnecting"] {
   stroke: var(--node-editor-caution-color, #ff3b30);
   stroke-width: var(--node-editor-connection-drag-stroke-width-disconnecting);
   stroke-dasharray: var(--node-editor-connection-drag-dash-array-disconnecting);

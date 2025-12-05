@@ -561,3 +561,31 @@ export const useEditorActionState = (): EditorActionStateContextValue => {
   }
   return context;
 };
+
+// ============================================================================
+// Selection Set Hooks (O(1) lookup)
+// ============================================================================
+
+/**
+ * Returns a memoized Set of selected node IDs for O(1) lookup.
+ */
+export const useSelectedNodeIdsSet = (): ReadonlySet<NodeId> => {
+  const context = React.useContext(EditorActionStateContext);
+  if (!context) {
+    throw new Error("useSelectedNodeIdsSet must be used within an EditorActionStateProvider");
+  }
+  const { selectedNodeIds } = context.state;
+  return React.useMemo(() => new Set(selectedNodeIds), [selectedNodeIds]);
+};
+
+/**
+ * Returns a memoized Set of selected connection IDs for O(1) lookup.
+ */
+export const useSelectedConnectionIdsSet = (): ReadonlySet<ConnectionId> => {
+  const context = React.useContext(EditorActionStateContext);
+  if (!context) {
+    throw new Error("useSelectedConnectionIdsSet must be used within an EditorActionStateProvider");
+  }
+  const { selectedConnectionIds } = context.state;
+  return React.useMemo(() => new Set(selectedConnectionIds), [selectedConnectionIds]);
+};

@@ -4,7 +4,7 @@
  */
 import type { Node, Port, Connection, NodeId } from "../../types/core";
 import type { NodeDefinition, PortConnectionContext } from "../../types/NodeDefinition";
-import { arePortDataTypesCompatible, mergePortDataTypes } from "../../utils/portDataTypeUtils";
+import { arePortDataTypesCompatible, mergePortDataTypes } from "../port/dataType";
 import { getPortDefinition } from "../port/definition";
 import { checkPortCapacity } from "../port/queries";
 import type { NormalizedConnectionContext } from "./normalization";

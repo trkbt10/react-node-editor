@@ -161,3 +161,55 @@ export const useCanvasInteraction = (): CanvasInteractionContextValue => {
 
 // Export the split contexts for use in provider
 export { CanvasInteractionStateContext, CanvasInteractionActionsContext };
+
+// ============================================================================
+// Derived State Hooks
+// ============================================================================
+
+/**
+ * Returns memoized Sets for drag state lookup.
+ * - directlyDraggedNodeIds: only the nodes being directly dragged
+ * - affectedChildNodeIds: only the child nodes affected by group dragging
+ * - allDraggedNodeIds: union of both (for connection rendering)
+ */
+export type DragNodeIdsSets = {
+  directlyDraggedNodeIds: ReadonlySet<NodeId>;
+  affectedChildNodeIds: ReadonlySet<NodeId>;
+  allDraggedNodeIds: ReadonlySet<NodeId>;
+};
+
+export const useDragNodeIdsSets = (): DragNodeIdsSets | null => {
+  const state = React.useContext(CanvasInteractionStateContext);
+  if (!state) {
+    throw new Error("useDragNodeIdsSets must be used within a CanvasInteractionProvider");
+  }
+  const { dragState } = state;
+  return React.useMemo(() => {
+    if (!dragState) {
+      return null;
+    }
+    const directlyDraggedNodeIds = new Set<NodeId>(dragState.nodeIds);
+    const affectedChildNodeIds = new Set<NodeId>();
+    for (const childIds of Object.values(dragState.affectedChildNodes)) {
+      for (const id of childIds) {
+        affectedChildNodeIds.add(id);
+      }
+    }
+    const allDraggedNodeIds = new Set<NodeId>([...directlyDraggedNodeIds, ...affectedChildNodeIds]);
+    return {
+      directlyDraggedNodeIds,
+      affectedChildNodeIds,
+      allDraggedNodeIds,
+    };
+  }, [dragState]);
+};
+
+/**
+ * Returns a memoized Set of all dragged node IDs (including affected children) for O(1) lookup.
+ * Convenience hook for cases where you only need the combined set.
+ * Returns null when no drag is in progress.
+ */
+export const useDraggedNodeIdsSet = (): ReadonlySet<NodeId> | null => {
+  const sets = useDragNodeIdsSets();
+  return sets?.allDraggedNodeIds ?? null;
+};

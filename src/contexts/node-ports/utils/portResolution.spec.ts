@@ -4,7 +4,7 @@
 import type { Node } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { inferDefaultPortDefinitions, getNodePorts, normalizePlacement } from "./portResolution";
-import { getPlacementSegment } from "./placementUtils";
+import { getPlacementSegment } from "../../../core/port/placement";
 
 describe("normalizePlacement", () => {
   it("should return default placement when position is undefined", () => {

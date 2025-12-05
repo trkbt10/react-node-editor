@@ -4,8 +4,8 @@
  */
 import type { Port, PortPlacement, AbsolutePortPlacement, PortPosition, PortType } from "../../types/core";
 import type { PortDefinition } from "../../types/NodeDefinition";
-import { mergePortDataTypes, toPortDataTypeValue } from "../../utils/portDataTypeUtils";
-import { getPlacementSide } from "../../contexts/node-ports/utils/placementUtils";
+import { mergePortDataTypes, toPortDataTypeValue } from "./dataType";
+import { getPlacementSide } from "./placement";
 
 /**
  * Required fields for creating a Port instance

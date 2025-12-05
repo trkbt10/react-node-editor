@@ -6,9 +6,9 @@ import * as React from "react";
 import { NodeId, Position } from "../../../../types/core";
 import { usePointerDrag } from "../../../../hooks/usePointerDrag";
 import { useNodeEditor } from "../../node-editor/context";
-import { useEditorActionState } from "../../EditorActionStateContext";
+import { useEditorActionState, useSelectedNodeIdsSet } from "../../EditorActionStateContext";
 import { useNodeCanvas } from "../viewport/context";
-import { useCanvasInteraction } from "./context";
+import { useCanvasInteraction, useDragNodeIdsSets } from "./context";
 import { useNodeDefinitionList } from "../../../node-definitions/hooks/useNodeDefinitionList";
 import { nodeHasGroupBehavior } from "../../../../types/behaviors";
 import { usePointerShortcutMatcher } from "../../../interaction-settings/hooks/usePointerShortcutMatcher";
@@ -33,15 +33,9 @@ export function useNodeDrag(nodeId: NodeId): UseNodeDragResult {
 
   const node = nodeEditorState.nodes[nodeId];
 
-  // Pre-compute dragged node ids set for O(1) lookup
-  const draggedNodeIdsSet = React.useMemo(() => {
-    if (!interactionState.dragState) {
-      return null;
-    }
-    return new Set(interactionState.dragState.nodeIds);
-  }, [interactionState.dragState]);
-
-  const isDragging = draggedNodeIdsSet?.has(nodeId) ?? false;
+  // Use shared memoized Sets from context
+  const dragNodeIdsSets = useDragNodeIdsSets();
+  const isDragging = dragNodeIdsSets?.directlyDraggedNodeIds.has(nodeId) ?? false;
 
   // Store latest values in refs for useEffectEvent handlers
   const nodesRef = React.useRef(nodeEditorState.nodes);
@@ -182,11 +176,8 @@ export function useNodeDrag(nodeId: NodeId): UseNodeDragResult {
     threshold: 2,
   });
 
-  // Pre-compute selected node ids set for O(1) lookup in event handler
-  const selectedNodeIdsSet = React.useMemo(
-    () => new Set(actionState.selectedNodeIds),
-    [actionState.selectedNodeIds],
-  );
+  // Use shared memoized Set from context
+  const selectedNodeIdsSet = useSelectedNodeIdsSet();
 
   // Use useEffectEvent for stable handler reference that always accesses latest state
   const handlePointerDown = React.useEffectEvent((e: React.PointerEvent) => {

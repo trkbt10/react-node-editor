@@ -1,8 +1,8 @@
 /**
  * @file Helpers for normalizing and comparing port data type declarations.
  */
-import type { Port } from "../types/core";
-import type { PortDefinition } from "../types/NodeDefinition";
+import type { Port } from "../../types/core";
+import type { PortDefinition } from "../../types/NodeDefinition";
 
 type DataTypeValue = Port["dataType"] | PortDefinition["dataType"] | PortDefinition["dataTypes"];
 

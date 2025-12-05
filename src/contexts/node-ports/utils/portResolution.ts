@@ -9,8 +9,8 @@ import type {
   PortInstanceFactoryContext,
 } from "../../../types/NodeDefinition";
 import { createPortInstance } from "../../../core/port/factory";
-import { mergePortDataTypes, toPortDataTypeValue } from "../../../utils/portDataTypeUtils";
-import { isAbsolutePlacement } from "./placementUtils";
+import { mergePortDataTypes, toPortDataTypeValue } from "../../../core/port/dataType";
+import { isAbsolutePlacement } from "../../../core/port/placement";
 
 /**
  * Port override configuration for node-specific customizations

@@ -4,6 +4,7 @@
 import type { Node, NodeId, Port, PortId, Position } from "../../../types/core";
 import type { ConnectablePortsResult } from "./connectablePortPlanner";
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
+import { createActionPort } from "../../../core/port/factory";
 
 export type ConnectionCandidateSearchParams = {
   pointerCanvasPosition: Position;
@@ -19,22 +20,6 @@ type CandidateWithDistance = {
   port: Port;
   distance: number;
 };
-
-const clonePort = (port: Port): Port => ({
-  id: port.id,
-  definitionId: port.definitionId,
-  nodeId: port.nodeId,
-  type: port.type,
-  label: port.label,
-  position: port.position,
-  placement: port.placement,
-  dataType: port.dataType,
-  maxConnections: port.maxConnections,
-  allowedNodeTypes: port.allowedNodeTypes,
-  allowedPortTypes: port.allowedPortTypes,
-  instanceIndex: port.instanceIndex,
-  instanceTotal: port.instanceTotal,
-});
 
 const toDescriptorTuples = (connectablePorts: ConnectablePortsResult): Array<{ nodeId: NodeId; portId: PortId }> => {
   if (connectablePorts.descriptors.size > 0) {
@@ -100,7 +85,7 @@ export function findNearestConnectablePort({
       }
 
       return {
-        port: clonePort(port),
+        port: createActionPort(port),
         distance,
       };
     })

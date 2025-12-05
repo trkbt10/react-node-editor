@@ -15,7 +15,7 @@ import type {
   PortRenderContext,
 } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData, PortPosition, PortPlacement } from "../../../../../types/core";
-import { getPlacementSegment } from "../../../../../contexts/node-ports/utils/placementUtils";
+import { getPlacementSegment } from "../../../../../core/port/placement";
 import { ExampleLayout } from "../../../shared/parts/ExampleLayout";
 import { ExampleWrapper } from "../../../shared/parts/ExampleWrapper";
 import styles from "./DynamicPortPlaygroundExample.module.css";
@@ -27,7 +27,7 @@ import { SwitchInput } from "../../../../../components/elements/SwitchInput";
 import { calculateConnectionControlPoints, calculateConnectionPath } from "../../../../../core/connection/path";
 import { cubicBezierPoint } from "../../../../../core/geometry/curve";
 import { getOppositePortPosition } from "../../../../../core/port/position";
-import { normalizePortDataTypes } from "../../../../../utils/portDataTypeUtils";
+import { normalizePortDataTypes } from "../../../../../core/port/dataType";
 
 type PortGroupConfig = {
   label: string;

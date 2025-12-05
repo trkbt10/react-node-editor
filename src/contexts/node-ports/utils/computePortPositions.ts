@@ -16,10 +16,10 @@ import {
   getPlacementAlign,
   getPlacementInset,
   getPortSide,
-} from "./placementUtils";
+} from "../../../core/port/placement";
 
 // Re-export for backwards compatibility
-export { isAbsolutePlacement } from "./placementUtils";
+export { isAbsolutePlacement } from "../../../core/port/placement";
 
 type PortSegmentGroup = {
   key: string;

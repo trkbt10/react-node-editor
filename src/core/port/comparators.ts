@@ -4,8 +4,8 @@
  */
 import type { Port, PortPlacement, AbsolutePortPlacement } from "../../types/core";
 import { areStringArraysEqual } from "../common/comparators";
-import { arePortDataTypesEqual } from "../../utils/portDataTypeUtils";
-import { isAbsolutePlacement } from "../../contexts/node-ports/utils/placementUtils";
+import { arePortDataTypesEqual } from "./dataType";
+import { isAbsolutePlacement } from "./placement";
 
 /**
  * Check if port ID has changed (handles optional ports)

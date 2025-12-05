@@ -2,7 +2,7 @@
  * @file Connection styling tokens and helpers for the custom port example.
  */
 import type { ConnectionRenderContext } from "../../../../../types/NodeDefinition";
-import { primaryPortDataType } from "../../../../../utils/portDataTypeUtils";
+import { primaryPortDataType } from "../../../../../core/port/dataType";
 
 export type ConnectionVariant = "default" | "data" | "image" | "audio" | "video";
 

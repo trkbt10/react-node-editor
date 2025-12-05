@@ -11,8 +11,7 @@ import { usePortPositions } from "../../../contexts/node-ports/context";
 import {
   computeConnectablePortIds,
 } from "../../../contexts/node-ports/utils/connectablePortPlanner";
-import { getOtherPortInfo } from "../../../contexts/node-ports/utils/portConnectionQueries";
-import { getPortConnections } from "../../../core/port/queries";
+import { getPortConnections, getOtherPortInfo } from "../../../core/port/queries";
 import { createActionPort } from "../../../core/port/factory";
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
 import type { Port, ConnectionDisconnectState } from "../../../types/core";

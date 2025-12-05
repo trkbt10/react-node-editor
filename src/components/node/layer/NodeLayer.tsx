@@ -2,9 +2,15 @@
  * @file Main node layer rendering and interaction handler for the node editor canvas.
  */
 import * as React from "react";
-import { useEditorActionState } from "../../../contexts/composed/EditorActionStateContext";
+import {
+  useEditorActionState,
+  useSelectedNodeIdsSet,
+} from "../../../contexts/composed/EditorActionStateContext";
 import { useNodeCanvas } from "../../../contexts/composed/canvas/viewport/context";
-import { useCanvasInteraction } from "../../../contexts/composed/canvas/interaction/context";
+import {
+  useCanvasInteractionState,
+  useDragNodeIdsSets,
+} from "../../../contexts/composed/canvas/interaction/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
 import { useGroupManagement } from "../../../contexts/composed/node-editor/hooks/useGroupManagement";
@@ -29,7 +35,7 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
   void doubleClickToEdit;
   const { state: nodeEditorState } = useNodeEditor();
   const { state: actionState, actions: actionActions } = useEditorActionState();
-  const { state: interactionState } = useCanvasInteraction();
+  const interactionState = useCanvasInteractionState();
   const { state: canvasState } = useNodeCanvas();
   const { node: NodeComponent } = useRenderers();
   const nodeDefinitionRegistry = useNodeDefinitions();
@@ -101,39 +107,19 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
 
   useNodeLayerConnections();
 
-  const { selectedNodeIds, hoveredPort, connectablePorts } = actionState;
+  const { hoveredPort, connectablePorts } = actionState;
   const { dragState, connectionDragState } = interactionState;
 
-  // Convert selectedNodeIds to Set for O(1) lookup instead of O(n) includes
-  const selectedNodeIdsSet = React.useMemo(() => new Set(selectedNodeIds), [selectedNodeIds]);
-
-  // Pre-compute drag state sets for O(1) lookup
-  const draggedNodeIdsSet = React.useMemo(() => {
-    if (!dragState) {
-      return null;
-    }
-    return new Set(dragState.nodeIds);
-  }, [dragState]);
-
-  const affectedChildNodeIdsSet = React.useMemo(() => {
-    if (!dragState) {
-      return null;
-    }
-    const set = new Set<string>();
-    for (const childIds of Object.values(dragState.affectedChildNodes)) {
-      for (const id of childIds) {
-        set.add(id);
-      }
-    }
-    return set;
-  }, [dragState]);
+  // Use shared memoized Sets from context
+  const selectedNodeIdsSet = useSelectedNodeIdsSet();
+  const dragNodeIdsSets = useDragNodeIdsSets();
 
   return (
     <div className={styles.nodeLayer} data-node-layer>
       {sortedNodes.map((node) => {
-        // O(1) lookup using Sets
-        const isDirectlyDragging = draggedNodeIdsSet?.has(node.id) ?? false;
-        const isInDragState = isDirectlyDragging || (affectedChildNodeIdsSet?.has(node.id) ?? false);
+        // O(1) lookup using shared Sets from context
+        const isDirectlyDragging = dragNodeIdsSets?.directlyDraggedNodeIds.has(node.id) ?? false;
+        const isInDragState = isDirectlyDragging || (dragNodeIdsSets?.affectedChildNodeIds.has(node.id) ?? false);
         const dragOffset = isInDragState && dragState ? dragState.offset : undefined;
 
         return (

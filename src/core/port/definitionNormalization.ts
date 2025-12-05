@@ -2,12 +2,12 @@
  * @file Port definition normalization utilities
  * Normalizes all port definitions to a consistent dynamic port form
  */
-import type { Node } from "../../../types/core";
+import type { Node } from "../../types/core";
 import type {
   PortDefinition,
   PortInstanceContext,
   PortInstanceFactoryContext,
-} from "../../../types/NodeDefinition";
+} from "../../types/NodeDefinition";
 
 /**
  * Normalized port definition where instances is always a function

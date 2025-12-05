@@ -1,14 +1,14 @@
 /**
  * @file Unit tests for port definition normalization
  */
-import type { Node } from "../../../types/core";
-import type { PortDefinition } from "../../../types/NodeDefinition";
+import type { Node } from "../../types/core";
+import type { PortDefinition } from "../../types/NodeDefinition";
 import {
   normalizePortDefinition,
   normalizePortDefinitions,
   isDynamicPortDefinition,
   getPortInstanceCount,
-} from "./normalizePortDefinition";
+} from "./definitionNormalization";
 
 describe("normalizePortDefinition", () => {
   const baseNode: Node = {

@@ -8,7 +8,7 @@ import type {
   AbsolutePortPlacement,
   PortPosition,
   AbsolutePositionUnit,
-} from "../../../types/core";
+} from "../../types/core";
 
 /**
  * Type guard to check if placement is absolute positioning
