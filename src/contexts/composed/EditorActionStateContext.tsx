@@ -1,16 +1,23 @@
 /**
  * @file Context for managing editor UI action states like selection, dragging, resizing, and context menus
+ * Also provides centralized node operations (copy, paste, duplicate, delete, cut)
  */
 import * as React from "react";
-import { bindActionCreators, createAction, createActionHandlerMap, type ActionUnion, type BoundActionCreators } from "../../utils/typedActions";
 import {
-  NodeId,
-  ConnectionId,
-  PortId,
-  Position,
-  Port as BasePort,
-  ContextMenuState,
-} from "../../types/core";
+  bindActionCreators,
+  createAction,
+  createActionHandlerMap,
+  type ActionUnion,
+  type BoundActionCreators,
+} from "../../utils/typedActions";
+import { NodeId, ConnectionId, PortId, Position, Port as BasePort, ContextMenuState } from "../../types/core";
+import { useNodeEditor, useNodeEditorActions } from "./node-editor/context";
+import { useNodeDefinitionList } from "../node-definitions/hooks/useNodeDefinitionList";
+import { canAddNodeType, countNodesByType } from "../node-definitions/utils/nodeTypeLimits";
+import {
+  copyNodesToClipboard,
+  pasteNodesFromClipboard,
+} from "./node-editor/utils/nodeClipboardOperations";
 
 /**
  * Options for showing a context menu
@@ -46,35 +53,33 @@ export type EditorActionState = {
 };
 
 export const editorActionStateActions = {
-  selectInteractionNode: createAction(
-    "SELECT_INTERACTION_NODE",
-    (nodeId: NodeId, multiple: boolean = false) => ({ nodeId, multiple }),
-  ),
+  selectInteractionNode: createAction("SELECT_INTERACTION_NODE", (nodeId: NodeId, multiple: boolean = false) => ({
+    nodeId,
+    multiple,
+  })),
   setInteractionSelection: createAction("SET_INTERACTION_SELECTION", (nodeIds: NodeId[]) => ({ nodeIds })),
   clearInteractionSelection: createAction("CLEAR_INTERACTION_SELECTION"),
-  selectEditingNode: createAction(
-    "SELECT_EDITING_NODE",
-    (nodeId: NodeId, multiple: boolean = false) => ({ nodeId, multiple }),
-  ),
+  selectEditingNode: createAction("SELECT_EDITING_NODE", (nodeId: NodeId, multiple: boolean = false) => ({
+    nodeId,
+    multiple,
+  })),
   setEditingSelection: createAction("SET_EDITING_SELECTION", (nodeIds: NodeId[]) => ({ nodeIds })),
   clearEditingSelection: createAction("CLEAR_EDITING_SELECTION"),
-  selectConnection: createAction(
-    "SELECT_CONNECTION",
-    (connectionId: ConnectionId, multiple: boolean = false) => ({ connectionId, multiple }),
-  ),
+  selectConnection: createAction("SELECT_CONNECTION", (connectionId: ConnectionId, multiple: boolean = false) => ({
+    connectionId,
+    multiple,
+  })),
   clearSelection: createAction("CLEAR_SELECTION"),
   setHoveredNode: createAction("SET_HOVERED_NODE", (nodeId: NodeId | null) => ({ nodeId })),
-  setHoveredConnection: createAction("SET_HOVERED_CONNECTION", (connectionId: ConnectionId | null) => ({ connectionId })),
+  setHoveredConnection: createAction("SET_HOVERED_CONNECTION", (connectionId: ConnectionId | null) => ({
+    connectionId,
+  })),
   setHoveredPort: createAction("SET_HOVERED_PORT", (port: BasePort | null) => ({ port })),
   updateConnectedPorts: createAction("UPDATE_CONNECTED_PORTS", (connectedPorts: Set<PortId>) => ({ connectedPorts })),
-  updateConnectablePorts: createAction(
-    "UPDATE_CONNECTABLE_PORTS",
-    (connectablePorts: ConnectablePortsResult) => ({ connectablePorts }),
-  ),
-  showContextMenu: createAction(
-    "SHOW_CONTEXT_MENU",
-    (options: ShowContextMenuOptions) => options,
-  ),
+  updateConnectablePorts: createAction("UPDATE_CONNECTABLE_PORTS", (connectablePorts: ConnectablePortsResult) => ({
+    connectablePorts,
+  })),
+  showContextMenu: createAction("SHOW_CONTEXT_MENU", (options: ShowContextMenuOptions) => options),
   hideContextMenu: createAction("HIDE_CONTEXT_MENU"),
   setInspectorActiveTab: createAction("SET_INSPECTOR_ACTIVE_TAB", (index: number) => ({ index })),
 } as const;
@@ -247,12 +252,40 @@ export const defaultEditorActionState: EditorActionState = {
   inspectorActiveTab: 0,
 };
 
+// Node operations type
+export type NodeOperations = {
+  /**
+   * Duplicate nodes. If targetNodeId is in selection, duplicates all selected nodes.
+   * Otherwise duplicates only the target node.
+   */
+  duplicateNodes: (targetNodeId?: string) => void;
+  /**
+   * Delete nodes. If targetNodeId is in selection, deletes all selected nodes.
+   * Otherwise deletes only the target node.
+   */
+  deleteNodes: (targetNodeId?: string) => void;
+  /**
+   * Copy nodes to clipboard. If targetNodeId is in selection, copies all selected nodes.
+   * Otherwise copies only the target node.
+   */
+  copyNodes: (targetNodeId?: string) => void;
+  /**
+   * Cut nodes (copy then delete). If targetNodeId is in selection, cuts all selected nodes.
+   * Otherwise cuts only the target node.
+   */
+  cutNodes: (targetNodeId?: string) => void;
+  /**
+   * Paste nodes from clipboard and select them.
+   */
+  pasteNodes: () => void;
+};
 
 // Context types
 export type EditorActionStateActionsValue = {
   dispatch: React.Dispatch<EditorActionStateAction>;
   actions: BoundActionCreators<typeof editorActionStateActions>;
   actionCreators: typeof editorActionStateActions;
+  nodeOperations: NodeOperations;
 };
 
 export type EditorActionStateContextValue = EditorActionStateActionsValue & {
@@ -270,6 +303,25 @@ EditorActionStateActionsContext.displayName = "EditorActionStateActionsContext";
 export const EditorActionStateContext = React.createContext<EditorActionStateContextValue | null>(null);
 EditorActionStateContext.displayName = "EditorActionStateContext";
 
+/**
+ * Resolve target node IDs based on selection state.
+ * If targetNodeId is provided and is in the current selection, returns all selected nodes.
+ * Otherwise returns only the target node (or empty array if no target).
+ */
+function resolveTargetNodeIds(
+  targetNodeId: string | undefined,
+  selectedNodeIds: string[],
+): string[] {
+  if (!targetNodeId) {
+    return selectedNodeIds.length > 0 ? selectedNodeIds : [];
+  }
+  const isInSelection = selectedNodeIds.includes(targetNodeId);
+  if (isInSelection && selectedNodeIds.length > 0) {
+    return selectedNodeIds;
+  }
+  return [targetNodeId];
+}
+
 // Provider
 export type EditorActionStateProviderProps = {
   children: React.ReactNode;
@@ -283,14 +335,110 @@ export const EditorActionStateProvider: React.FC<EditorActionStateProviderProps>
   });
   const boundActions = React.useMemo(() => bindActionCreators(editorActionStateActions, dispatch), [dispatch]);
 
+  // Access other contexts for node operations
+  const { state: editorState } = useNodeEditor();
+  const editorActions = useNodeEditorActions();
+  const nodeDefinitions = useNodeDefinitionList();
+
+  // Node operations
+  const duplicateNodes = React.useCallback(
+    (targetNodeId?: string) => {
+      const nodeIds = resolveTargetNodeIds(targetNodeId, state.selectedNodeIds);
+      if (nodeIds.length === 0) {
+        return;
+      }
+      // Check if all nodes can be duplicated
+      const counts = countNodesByType(editorState);
+      const canDuplicateAll = nodeIds.every((nodeId) => {
+        const node = editorState.nodes[nodeId];
+        if (!node) {
+          return false;
+        }
+        return canAddNodeType(node.type, nodeDefinitions, counts);
+      });
+      if (!canDuplicateAll) {
+        return;
+      }
+      editorActions.duplicateNodes(nodeIds);
+    },
+    [state.selectedNodeIds, editorActions, editorState, nodeDefinitions],
+  );
+
+  const deleteNodes = React.useCallback(
+    (targetNodeId?: string) => {
+      const nodeIds = resolveTargetNodeIds(targetNodeId, state.selectedNodeIds);
+      if (nodeIds.length === 0) {
+        return;
+      }
+      nodeIds.forEach((nodeId) => editorActions.deleteNode(nodeId));
+      boundActions.clearSelection();
+    },
+    [state.selectedNodeIds, editorActions, boundActions],
+  );
+
+  const copyNodes = React.useCallback(
+    (targetNodeId?: string) => {
+      const nodeIds = resolveTargetNodeIds(targetNodeId, state.selectedNodeIds);
+      if (nodeIds.length === 0) {
+        return;
+      }
+      copyNodesToClipboard(nodeIds, editorState);
+    },
+    [state.selectedNodeIds, editorState],
+  );
+
+  const cutNodes = React.useCallback(
+    (targetNodeId?: string) => {
+      const nodeIds = resolveTargetNodeIds(targetNodeId, state.selectedNodeIds);
+      if (nodeIds.length === 0) {
+        return;
+      }
+      copyNodesToClipboard(nodeIds, editorState);
+      nodeIds.forEach((nodeId) => editorActions.deleteNode(nodeId));
+      boundActions.clearSelection();
+    },
+    [state.selectedNodeIds, editorActions, editorState, boundActions],
+  );
+
+  const pasteNodes = React.useCallback(() => {
+    const result = pasteNodesFromClipboard();
+    if (!result) {
+      return;
+    }
+    // Add nodes
+    result.nodes.forEach((node) => {
+      editorActions.addNodeWithId(node);
+    });
+    // Add connections
+    result.connections.forEach((conn) => {
+      editorActions.addConnection(conn);
+    });
+    // Select pasted nodes
+    const newIds = Array.from(result.idMap.values());
+    boundActions.setInteractionSelection(newIds);
+    boundActions.setEditingSelection(newIds);
+  }, [editorActions, boundActions]);
+
+  const nodeOperations = React.useMemo<NodeOperations>(
+    () => ({
+      duplicateNodes,
+      deleteNodes,
+      copyNodes,
+      cutNodes,
+      pasteNodes,
+    }),
+    [duplicateNodes, deleteNodes, copyNodes, cutNodes, pasteNodes],
+  );
+
   // Stable actions value - only depends on dispatch which is stable
   const actionsValue = React.useMemo<EditorActionStateActionsValue>(
     () => ({
       dispatch,
       actions: boundActions,
       actionCreators: editorActionStateActions,
+      nodeOperations,
     }),
-    [dispatch, boundActions],
+    [dispatch, boundActions, nodeOperations],
   );
 
   // Combined context value for backward compatibility
@@ -314,31 +462,6 @@ export const EditorActionStateProvider: React.FC<EditorActionStateProviderProps>
 // Hooks
 
 /**
- * Hook to access only the editor action state
- * Use this when you only need to read state and don't need actions
- */
-export const useEditorActionStateState = (): EditorActionState => {
-  const state = React.useContext(EditorActionStateStateContext);
-  if (!state) {
-    throw new Error("useEditorActionStateState must be used within an EditorActionStateProvider");
-  }
-  return state;
-};
-
-/**
- * Hook to access only the editor action state actions
- * Use this when you only need to dispatch actions and don't need to re-render on state changes
- * The returned actions have stable references and won't cause re-renders
- */
-export const useEditorActionStateActions = (): EditorActionStateActionsValue => {
-  const actionsValue = React.useContext(EditorActionStateActionsContext);
-  if (!actionsValue) {
-    throw new Error("useEditorActionStateActions must be used within an EditorActionStateProvider");
-  }
-  return actionsValue;
-};
-
-/**
  * Hook to access both state and actions (backward compatible)
  * Prefer useEditorActionStateState or useEditorActionStateActions for better performance
  */
@@ -348,24 +471,4 @@ export const useEditorActionState = (): EditorActionStateContextValue => {
     throw new Error("useEditorActionState must be used within an EditorActionStateProvider");
   }
   return context;
-};
-
-/**
- * Hook to access only the bound action creators
- * Use this when you only need to dispatch actions without re-rendering on state changes
- * @deprecated Use useEditorActionStateActions().actions instead
- */
-export const useActionStateActions = (): BoundActionCreators<typeof editorActionStateActions> => {
-  const { actions } = useEditorActionStateActions();
-  return actions;
-};
-
-/**
- * Hook to access state and actions
- * @deprecated Use useEditorActionState() instead
- */
-export const useActionState = (): { state: EditorActionState; actions: BoundActionCreators<typeof editorActionStateActions> } => {
-  const state = useEditorActionStateState();
-  const { actions } = useEditorActionStateActions();
-  return { state, actions };
 };

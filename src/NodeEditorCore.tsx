@@ -28,7 +28,6 @@ import type { ExternalDataReference, NodeDefinition } from "./types/NodeDefiniti
 import type { FallbackDefinition } from "./types/NodeDefinitionRegistry";
 import type { NodeEditorRendererOverrides } from "./types/renderers";
 import { InteractionSettingsProvider } from "./contexts/interaction-settings/context";
-import { NodeOperationsProvider } from "./contexts/composed/NodeOperationsContext";
 import type { NodeEditorInteractionSettingsPatch } from "./types/interaction";
 
 export type NodeEditorCoreProps = {
@@ -147,7 +146,7 @@ export function NodeEditorCore({
                       <InlineEditingProvider>
                         <KeyboardShortcutProvider>
                           <InteractionSettingsProvider value={interactionSettings}>
-                            <NodeOperationsProvider>{children}</NodeOperationsProvider>
+                            {children}
                           </InteractionSettingsProvider>
                         </KeyboardShortcutProvider>
                       </InlineEditingProvider>

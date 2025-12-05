@@ -15,7 +15,6 @@ import type { NodeDefinition } from "../../types/NodeDefinition";
 import { useEditorActionState } from "../../contexts/composed/EditorActionStateContext";
 import { useI18n } from "../../i18n/context";
 import { useNodeEditor, useNodeEditorActions } from "../../contexts/composed/node-editor/context";
-import { useNodeOperations } from "../../contexts/composed/NodeOperationsContext";
 import { NodeActionsList } from "./NodeActionsList";
 import { ContextMenuOverlay } from "../layout/ContextMenuOverlay";
 import { useInteractionSettings } from "../../contexts/interaction-settings/context";
@@ -46,9 +45,8 @@ export const ContextActionMenu: React.FC<ContextActionMenuProps> = ({
 }) => {
   const { t } = useI18n();
   const editorActions = useNodeEditorActions();
-  const { state: actionState, actions: actionActions } = useEditorActionState();
+  const { state: actionState, actions: actionActions, nodeOperations } = useEditorActionState();
   const { state: editorState } = useNodeEditor();
-  const nodeOperations = useNodeOperations();
   const interactionSettings = useInteractionSettings();
   const platform = React.useMemo(() => detectShortcutDisplayPlatform(), []);
   const [resolvedPosition, setResolvedPosition] = React.useState({ x: position.x, y: position.y });

@@ -10,7 +10,6 @@ import { useNodeEditor } from "../../contexts/composed/node-editor/context";
 import { useNodeDefinition } from "../../contexts/node-definitions/hooks/useNodeDefinition";
 import { useExternalDataRef } from "../../contexts/external-data/ExternalDataContext";
 import { useExternalData } from "../../contexts/external-data/useExternalData";
-import { useEditorActionStateState, useEditorActionStateActions } from "../../contexts/composed/EditorActionStateContext";
 import { useCanvasInteraction } from "../../contexts/composed/canvas/interaction/context";
 import { useGroupManagement } from "../../contexts/composed/node-editor/hooks/useGroupManagement";
 import { computeNodeBehaviorState, computeNodeResizeState } from "../../core/node/nodeState";
@@ -66,9 +65,7 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
   // Use split hooks for better performance
   const editingState = useInlineEditingState();
   const { isEditing, startEditing, updateValue, confirmEdit, cancelEdit } = useInlineEditingActions();
-  const _actionState = useEditorActionStateState();
   const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
-  const { actions: _actionActions } = useEditorActionStateActions();
   const groupManager = useGroupManagement({ autoUpdateMembership: false });
   const nodeDefinition = useNodeDefinition(node.type);
   const externalDataRef = useExternalDataRef(node.id);

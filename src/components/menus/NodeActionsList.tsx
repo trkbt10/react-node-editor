@@ -6,7 +6,7 @@ import { DuplicateIcon, CopyIcon, CutIcon, PasteIcon, DeleteIcon } from "../elem
 import { MenuItem } from "./MenuItem";
 import { MenuSeparator } from "./MenuSeparator";
 import { useI18n } from "../../i18n/context";
-import { useNodeOperations } from "../../contexts/composed/NodeOperationsContext";
+import { useEditorActionState } from "../../contexts/composed/EditorActionStateContext";
 import { useInteractionSettings } from "../../contexts/interaction-settings/context";
 import {
   detectShortcutDisplayPlatform,
@@ -35,7 +35,7 @@ export const NodeActionsList: React.FC<NodeActionsListProps> = ({
   includeDelete = true,
 }) => {
   const { t } = useI18n();
-  const nodeOperations = useNodeOperations();
+  const { nodeOperations } = useEditorActionState();
   const interactionSettings = useInteractionSettings();
   const platform = React.useMemo(() => detectShortcutDisplayPlatform(), []);
 
