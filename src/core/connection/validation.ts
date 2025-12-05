@@ -7,6 +7,7 @@ import type { NodeDefinition, PortConnectionContext } from "../../types/NodeDefi
 import { arePortDataTypesCompatible, mergePortDataTypes } from "../../utils/portDataTypeUtils";
 import { getPortDefinition } from "../port/definition";
 import { checkPortCapacity } from "../port/queries";
+import { normalizeConnectionContext } from "./normalization";
 
 // Re-export for backwards compatibility
 export { getPortDefinition } from "../port/definition";
@@ -37,7 +38,16 @@ const connectionExists = (
 };
 
 /**
- * Check if two ports can be connected
+ * Check if two ports can be connected.
+ * Accepts ports in either order - internally normalizes to source(output)/target(input).
+ *
+ * @param fromPort - First port in the connection attempt (can be input or output)
+ * @param toPort - Second port in the connection attempt (can be input or output)
+ * @param fromNodeDef - Node definition for fromPort's node
+ * @param toNodeDef - Node definition for toPort's node
+ * @param connections - Existing connections to check for duplicates and capacity
+ * @param options - Additional validation options
+ * @returns true if connection is valid, false otherwise
  */
 export const canConnectPorts = (
   fromPort: Port,
@@ -47,66 +57,68 @@ export const canConnectPorts = (
   connections?: Record<string, Connection>,
   options?: ConnectionValidationOptions,
 ): boolean => {
-  // Basic connection rules: same type or same node cannot connect
-  if (fromPort.type === toPort.type || fromPort.nodeId === toPort.nodeId) {
+  // Normalize to source(output)/target(input) form
+  // This handles both directions: output->input and input->output
+  const normalized = normalizeConnectionContext(fromPort, toPort, fromNodeDef, toNodeDef);
+  if (!normalized) {
+    // Invalid pairing: same type, same node, or other invalid combination
     return false;
   }
 
-  // Ensure proper input/output pairing
-  const validPairing =
-    (fromPort.type === "output" && toPort.type === "input") ||
-    (fromPort.type === "input" && toPort.type === "output");
-  if (!validPairing) {
-    return false;
-  }
+  const { sourcePort, targetPort, sourceDefinition, targetDefinition } = normalized;
 
   // Check if identical connection already exists
+  // Use original ports for connection lookup to handle both directions
   if (connections && connectionExists(fromPort, toPort, connections)) {
     return false;
   }
 
   // Check custom validation functions (both must allow)
-  const nodeDefValidators = [fromNodeDef, toNodeDef].filter(Boolean) as NodeDefinition[];
-  if (nodeDefValidators.some((def) => def.validateConnection && !def.validateConnection(fromPort, toPort))) {
+  // validateConnection now always receives (outputPort, inputPort) regardless of drag direction
+  const nodeDefValidators = [sourceDefinition, targetDefinition].filter(Boolean) as NodeDefinition[];
+  if (nodeDefValidators.some((def) => def.validateConnection && !def.validateConnection(sourcePort, targetPort))) {
     return false;
   }
 
-  // Check data type compatibility
-  const fromPortDef = getPortDefinition(fromPort, fromNodeDef);
-  const toPortDef = getPortDefinition(toPort, toNodeDef);
-  const fromTypes = mergePortDataTypes(
-    fromPort.dataType,
-    mergePortDataTypes(fromPortDef?.dataType, fromPortDef?.dataTypes),
+  // Check data type compatibility using normalized ports
+  const sourcePortDef = getPortDefinition(sourcePort, sourceDefinition);
+  const targetPortDef = getPortDefinition(targetPort, targetDefinition);
+  const sourceTypes = mergePortDataTypes(
+    sourcePort.dataType,
+    mergePortDataTypes(sourcePortDef?.dataType, sourcePortDef?.dataTypes),
   );
-  const toTypes = mergePortDataTypes(
-    toPort.dataType,
-    mergePortDataTypes(toPortDef?.dataType, toPortDef?.dataTypes),
+  const targetTypes = mergePortDataTypes(
+    targetPort.dataType,
+    mergePortDataTypes(targetPortDef?.dataType, targetPortDef?.dataTypes),
   );
-  if (!arePortDataTypesCompatible(fromTypes, toTypes)) {
+  if (!arePortDataTypesCompatible(sourceTypes, targetTypes)) {
     return false;
   }
 
-  // Check port-level canConnect predicates
+  // Check port-level canConnect predicates with normalized context
+  // PortConnectionContext.fromPort is always output, toPort is always input
   const portContext: PortConnectionContext = {
-    fromPort,
-    toPort,
-    fromNode: options?.nodes?.[fromPort.nodeId],
-    toNode: options?.nodes?.[toPort.nodeId],
-    fromDefinition: fromNodeDef,
-    toDefinition: toNodeDef,
+    fromPort: sourcePort,
+    toPort: targetPort,
+    fromNode: options?.nodes?.[sourcePort.nodeId],
+    toNode: options?.nodes?.[targetPort.nodeId],
+    fromDefinition: sourceDefinition,
+    toDefinition: targetDefinition,
     allConnections: connections,
   };
-  const portDefs = [fromPortDef, toPortDef].filter(Boolean);
+  const portDefs = [sourcePortDef, targetPortDef].filter(Boolean);
   if (portDefs.some((def) => def?.canConnect && !def.canConnect(portContext))) {
     return false;
   }
 
   // Check max connections limit (port object takes priority over definition)
   if (connections) {
-    if (checkPortCapacity(toPort, connections, "to", toPortDef).atCapacity) {
+    // targetPort (input) receives connections, check "to" direction
+    if (checkPortCapacity(targetPort, connections, "to", targetPortDef).atCapacity) {
       return false;
     }
-    if (checkPortCapacity(fromPort, connections, "from", fromPortDef).atCapacity) {
+    // sourcePort (output) sends connections, check "from" direction
+    if (checkPortCapacity(sourcePort, connections, "from", sourcePortDef).atCapacity) {
       return false;
     }
   }

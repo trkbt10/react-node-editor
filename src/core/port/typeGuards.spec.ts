@@ -1,7 +1,14 @@
 /**
  * @file Tests for port type guards
  */
-import { isPort, ensurePort } from "./typeGuards";
+import {
+  isPort,
+  ensurePort,
+  isInputPort,
+  isOutputPort,
+  assertInputPort,
+  assertOutputPort,
+} from "./typeGuards";
 import type { Port } from "../../types/core";
 
 describe("isPort", () => {
@@ -139,5 +146,125 @@ describe("ensurePort", () => {
   it("returns fallback for primitives", () => {
     expect(ensurePort("string", fallbackPort)).toBe(fallbackPort);
     expect(ensurePort(123, fallbackPort)).toBe(fallbackPort);
+  });
+});
+
+describe("isInputPort", () => {
+  const inputPort: Port = {
+    id: "in",
+    nodeId: "node-1",
+    type: "input",
+    label: "Input",
+    position: "left",
+  };
+
+  const outputPort: Port = {
+    id: "out",
+    nodeId: "node-1",
+    type: "output",
+    label: "Output",
+    position: "right",
+  };
+
+  it("returns true for input port", () => {
+    expect(isInputPort(inputPort)).toBe(true);
+  });
+
+  it("returns false for output port", () => {
+    expect(isInputPort(outputPort)).toBe(false);
+  });
+
+  it("narrows type correctly (compile-time check)", () => {
+    if (isInputPort(inputPort)) {
+      // TypeScript should know port.type is "input" here
+      const _type: "input" = inputPort.type;
+      expect(_type).toBe("input");
+    }
+  });
+});
+
+describe("isOutputPort", () => {
+  const inputPort: Port = {
+    id: "in",
+    nodeId: "node-1",
+    type: "input",
+    label: "Input",
+    position: "left",
+  };
+
+  const outputPort: Port = {
+    id: "out",
+    nodeId: "node-1",
+    type: "output",
+    label: "Output",
+    position: "right",
+  };
+
+  it("returns true for output port", () => {
+    expect(isOutputPort(outputPort)).toBe(true);
+  });
+
+  it("returns false for input port", () => {
+    expect(isOutputPort(inputPort)).toBe(false);
+  });
+
+  it("narrows type correctly (compile-time check)", () => {
+    if (isOutputPort(outputPort)) {
+      // TypeScript should know port.type is "output" here
+      const _type: "output" = outputPort.type;
+      expect(_type).toBe("output");
+    }
+  });
+});
+
+describe("assertInputPort", () => {
+  const inputPort: Port = {
+    id: "in",
+    nodeId: "node-1",
+    type: "input",
+    label: "Input",
+    position: "left",
+  };
+
+  const outputPort: Port = {
+    id: "out",
+    nodeId: "node-1",
+    type: "output",
+    label: "Output",
+    position: "right",
+  };
+
+  it("does not throw for input port", () => {
+    expect(() => assertInputPort(inputPort)).not.toThrow();
+  });
+
+  it("throws for output port with descriptive message", () => {
+    expect(() => assertInputPort(outputPort)).toThrow('Expected input port, got "output" for port "out"');
+  });
+});
+
+describe("assertOutputPort", () => {
+  const inputPort: Port = {
+    id: "in",
+    nodeId: "node-1",
+    type: "input",
+    label: "Input",
+    position: "left",
+  };
+
+  const outputPort: Port = {
+    id: "out",
+    nodeId: "node-1",
+    type: "output",
+    label: "Output",
+    position: "right",
+  };
+
+  it("does not throw for output port", () => {
+    expect(() => assertOutputPort(outputPort)).not.toThrow();
+  });
+
+  it("throws for input port with descriptive message", () => {
+    expect(() => assertOutputPort(inputPort)).toThrow('Expected output port, got "input" for port "in"');
   });
 });

@@ -75,6 +75,8 @@ export function isPortConnectable(
 
 /**
  * Check if a PortDefinition has any port that can connect to the given source port.
+ * Note: canConnectPorts now handles port order normalization internally,
+ * so we can pass ports in any order.
  */
 const canDefinitionConnectToPort = (
   portDefinition: PortDefinition,
@@ -92,13 +94,8 @@ const canDefinitionConnectToPort = (
   const placement = normalizePlacement(portDefinition.position);
   const tempPort = createPortFromDefinition(portDefinition, "new", placement);
 
-  // Order ports correctly based on type
-  const [sourcePort, targetPort] =
-    fromPort.type === "output" ? [fromPort, tempPort] : [tempPort, fromPort];
-  const [sourceDef, destDef] =
-    fromPort.type === "output" ? [fromDef, targetDef] : [targetDef, fromDef];
-
-  return canConnectPorts(sourcePort, targetPort, sourceDef, destDef, connections, { nodes });
+  // canConnectPorts handles normalization internally - no need to order ports here
+  return canConnectPorts(fromPort, tempPort, fromDef, targetDef, connections, { nodes });
 };
 
 /**

@@ -35,7 +35,8 @@ export function getOtherPortInfo(
 }
 
 /**
- * Check if a reconnection is valid
+ * Check if a reconnection is valid.
+ * Note: canConnectPorts handles port order normalization internally.
  */
 export function isValidReconnection(
   fixedPort: Port,
@@ -44,6 +45,7 @@ export function isValidReconnection(
   connections: Record<string, Connection>,
   getNodeDefinition: (type: string) => NodeDefinition | undefined,
 ): boolean {
+  // Basic validity checks
   if (fixedPort.type === targetPort.type) {
     return false;
   }
@@ -51,13 +53,11 @@ export function isValidReconnection(
     return false;
   }
 
-  const fromPort = fixedPort.type === "output" ? fixedPort : targetPort;
-  const toPort = fixedPort.type === "output" ? targetPort : fixedPort;
+  const fixedNode = nodes[fixedPort.nodeId];
+  const targetNode = nodes[targetPort.nodeId];
+  const fixedDef = fixedNode ? getNodeDefinition(fixedNode.type) : undefined;
+  const targetDef = targetNode ? getNodeDefinition(targetNode.type) : undefined;
 
-  const fromNode = nodes[fromPort.nodeId];
-  const toNode = nodes[toPort.nodeId];
-  const fromDef = fromNode ? getNodeDefinition(fromNode.type) : undefined;
-  const toDef = toNode ? getNodeDefinition(toNode.type) : undefined;
-
-  return canConnectPorts(fromPort, toPort, fromDef, toDef, connections, { nodes });
+  // canConnectPorts handles normalization internally - no need to order ports here
+  return canConnectPorts(fixedPort, targetPort, fixedDef, targetDef, connections, { nodes });
 }

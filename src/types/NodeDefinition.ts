@@ -131,17 +131,23 @@ export type PortInstanceFactoryContext = PortInstanceContext & {
 };
 
 export type PortConnectionContext = {
-  /** Source port for the attempted connection */
+  /**
+   * Source port for the attempted connection.
+   * Always the OUTPUT port, regardless of drag direction.
+   */
   fromPort: Port;
-  /** Target port for the attempted connection */
+  /**
+   * Target port for the attempted connection.
+   * Always the INPUT port, regardless of drag direction.
+   */
   toPort: Port;
-  /** Node containing the source port (when available) */
+  /** Node containing the source (output) port (when available) */
   fromNode?: Node;
-  /** Node containing the target port (when available) */
+  /** Node containing the target (input) port (when available) */
   toNode?: Node;
-  /** Node definition for the source side (when available) */
+  /** Node definition for the source (output) side (when available) */
   fromDefinition?: NodeDefinition;
-  /** Node definition for the target side (when available) */
+  /** Node definition for the target (input) side (when available) */
   toDefinition?: NodeDefinition;
   /** Existing connections in the editor */
   allConnections?: Record<ConnectionId, Connection>;
@@ -416,7 +422,14 @@ export type NodeDefinition<TData extends Record<string, unknown> = Record<string
   loadExternalData?: (ref: ExternalDataReference) => unknown | Promise<unknown>;
   /** External data updater */
   updateExternalData?: (ref: ExternalDataReference, data: unknown) => void | Promise<void>;
-  /** Validation function for connections */
+  /**
+   * Validation function for connections.
+   * Called to determine if a connection between two ports is allowed.
+   *
+   * @param fromPort - Always the OUTPUT port (connection source), regardless of drag direction
+   * @param toPort - Always the INPUT port (connection target), regardless of drag direction
+   * @returns true if the connection is allowed, false otherwise
+   */
   validateConnection?: (fromPort: Port, toPort: Port) => boolean;
   /** Custom color or visual state */
   visualState?: "info" | "success" | "warning" | "error" | "disabled";

@@ -122,6 +122,103 @@ describe("canConnectPorts - validateConnection callback", () => {
   });
 });
 
+describe("canConnectPorts - port order normalization", () => {
+  it("passes output port as fromPort when dragging output→input", () => {
+    let receivedFromType: string | undefined;
+    let receivedToType: string | undefined;
+
+    const defA = baseNodeDef("A", [{ id: "out", type: "output", label: "out", position: "right" }]);
+    defA.validateConnection = (from, to) => {
+      receivedFromType = from.type;
+      receivedToType = to.type;
+      return true;
+    };
+    const defB = baseNodeDef("B", [{ id: "in", type: "input", label: "in", position: "left" }]);
+
+    const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
+    const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left" };
+
+    canConnectPorts(outPort, inPort, defA, defB);
+
+    expect(receivedFromType).toBe("output");
+    expect(receivedToType).toBe("input");
+  });
+
+  it("passes output port as fromPort when dragging input→output (reverse)", () => {
+    let receivedFromType: string | undefined;
+    let receivedToType: string | undefined;
+
+    const defA = baseNodeDef("A", [{ id: "in", type: "input", label: "in", position: "left" }]);
+    defA.validateConnection = (from, to) => {
+      receivedFromType = from.type;
+      receivedToType = to.type;
+      return true;
+    };
+    const defB = baseNodeDef("B", [{ id: "out", type: "output", label: "out", position: "right" }]);
+
+    const inPort: Port = { id: "in", nodeId: "a", type: "input", label: "in", position: "left" };
+    const outPort: Port = { id: "out", nodeId: "b", type: "output", label: "out", position: "right" };
+
+    // Dragging from input to output (reverse direction)
+    canConnectPorts(inPort, outPort, defA, defB);
+
+    // validateConnection should still receive output as fromPort
+    expect(receivedFromType).toBe("output");
+    expect(receivedToType).toBe("input");
+  });
+
+  it("provides normalized ports in PortConnectionContext for canConnect", () => {
+    let receivedFromType: string | undefined;
+    let receivedToType: string | undefined;
+
+    const defA = baseNodeDef("A", [{
+      id: "in",
+      type: "input",
+      label: "in",
+      position: "left",
+      canConnect: (ctx) => {
+        receivedFromType = ctx.fromPort.type;
+        receivedToType = ctx.toPort.type;
+        return true;
+      },
+    }]);
+    const defB = baseNodeDef("B", [{ id: "out", type: "output", label: "out", position: "right" }]);
+
+    const inPort: Port = { id: "in", nodeId: "a", type: "input", label: "in", position: "left" };
+    const outPort: Port = { id: "out", nodeId: "b", type: "output", label: "out", position: "right" };
+
+    // Dragging from input to output (reverse direction)
+    canConnectPorts(inPort, outPort, defA, defB);
+
+    // PortConnectionContext should have normalized ports
+    expect(receivedFromType).toBe("output");
+    expect(receivedToType).toBe("input");
+  });
+
+  it("correctly associates node definitions after normalization", () => {
+    let receivedFromNodeId: string | undefined;
+    let receivedToNodeId: string | undefined;
+
+    const defA = baseNodeDef("InputNode", [{ id: "in", type: "input", label: "in", position: "left" }]);
+    defA.validateConnection = (from, to) => {
+      receivedFromNodeId = from.nodeId;
+      receivedToNodeId = to.nodeId;
+      return true;
+    };
+    const defB = baseNodeDef("OutputNode", [{ id: "out", type: "output", label: "out", position: "right" }]);
+
+    const inPort: Port = { id: "in", nodeId: "input-node", type: "input", label: "in", position: "left" };
+    const outPort: Port = { id: "out", nodeId: "output-node", type: "output", label: "out", position: "right" };
+
+    // Dragging from input to output - definitions should be swapped correctly
+    canConnectPorts(inPort, outPort, defA, defB);
+
+    // After normalization, fromPort should be the output port
+    expect(receivedFromNodeId).toBe("output-node");
+    expect(receivedToNodeId).toBe("input-node");
+  });
+});
+
 describe("canConnectPorts - data type compatibility", () => {
   it("allows when no data types specified", () => {
     const outPort: Port = { id: "out", nodeId: "a", type: "output", label: "out", position: "right" };
