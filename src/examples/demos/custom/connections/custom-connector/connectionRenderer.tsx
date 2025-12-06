@@ -5,7 +5,6 @@ import * as React from "react";
 import type { ConnectionRenderContext } from "../../../../../types/NodeDefinition";
 import { calculateConnectionControlPoints, calculateConnectionPath } from "../../../../../core/connection/path";
 import { cubicBezierPoint } from "../../../../../core/geometry/curve";
-import { getOppositeSide } from "../../../../../core/port/side";
 import styles from "./CustomConnectorExample.module.css";
 
 type VisualPhase = "idle" | "hovered" | "active";
@@ -177,8 +176,8 @@ export const bezierConnectionRenderer = (
   const hitElement = React.isValidElement(defaultElement) ? <g style={{ opacity: 0 }}>{defaultElement}</g> : defaultElement;
 
   const {
-    fromPort,
-    toPort,
+    fromPort: _fromPort,
+    toPort: _toPort,
     fromPosition,
     toPosition,
     fromConnectionDirection,

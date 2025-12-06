@@ -4,7 +4,6 @@
 import * as React from "react";
 import type { ConnectionRenderContext } from "../../../../../types/NodeDefinition";
 import { calculateConnectionPath } from "../../../../../core/connection/path";
-import { getOppositeSide } from "../../../../../core/port/side";
 import styles from "./OpalThemeExample.module.css";
 
 
@@ -19,7 +18,7 @@ export const opalConnectionRenderer = (
     defaultElement
   );
 
-  const { fromPort, toPort, fromPosition, toPosition, fromConnectionDirection, toConnectionDirection, isSelected, isHovered, handlers } = context;
+  const { fromPort: _fromPort, toPort: _toPort, fromPosition, toPosition, fromConnectionDirection, toConnectionDirection, isSelected, isHovered, handlers } = context;
 
   // Use connectionDirection from context (source of truth for absolute ports)
   const pathData = React.useMemo(

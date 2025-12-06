@@ -7,7 +7,7 @@ import type { NodeDefinition } from "../../types/NodeDefinition";
 import { createNodeDefinitionRegistry, type FallbackDefinition } from "../../types/NodeDefinitionRegistry";
 import { defaultNodeDefinitions } from "../../node-definitions";
 import { defaultFallbackFactory } from "../../node-definitions/error";
-import { createPortDefinitionResolver } from "../../core/port/definition";
+import { createPortDefinitionResolver } from "../../core/port/model/definition";
 import { NodeDefinitionContext, type NodeDefinitionContextValue } from "./context";
 
 /**

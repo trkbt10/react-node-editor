@@ -9,7 +9,7 @@ import { useNodeEditor } from "../../composed/node-editor/context";
 import { usePortPositions } from "../context";
 import { useCanvasInteraction } from "../../composed/canvas/interaction/context";
 import { useNodeDefinitions } from "../../node-definitions/context";
-import { computeNodePortPositions, createDefaultPortCompute } from "../utils/computePortPositions";
+import { computeNodePortPositions, createDefaultPortCompute } from "../../../core/port/appearance/computePositions";
 import { getNodeSize } from "../../../utils/boundingBoxUtils";
 
 type PortPositionOptions = {

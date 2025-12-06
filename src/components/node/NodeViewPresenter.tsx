@@ -5,7 +5,7 @@
 import * as React from "react";
 import type { Node, Position, Port, Size, ResizeHandle as NodeResizeHandle } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";
-import type { ConnectablePortsResult } from "../../core/port/connectableTypes";
+import type { ConnectablePortsResult } from "../../core/port/connection/connectableTypes";
 import type { NodeAppearance } from "../../core/node/nodeAppearance";
 import type { NodeBehaviorState, NodeResizeState } from "../../core/node/nodeState";
 import type { ExternalDataStateWithActions } from "../../contexts/external-data/useExternalData";
@@ -14,7 +14,7 @@ import { areNodeAppearancesEqual } from "../../core/node/nodeAppearance";
 import { areNodeBehaviorStatesEqual, areNodeResizeStatesEqual } from "../../core/node/nodeState";
 import { hasPositionChanged, hasSizeChanged } from "../../core/geometry/comparators";
 import { hasNodeStateChanged } from "../../core/node/comparators";
-import { hasPortIdChanged } from "../../core/port/comparators";
+import { hasPortIdChanged } from "../../core/port/model/comparators";
 import { ResizeHandles } from "./resize/ResizeHandles";
 import { NodeBodyRenderer } from "./body/NodeBodyRenderer";
 import { NodePortsRenderer } from "../ports/NodePortsRenderer";

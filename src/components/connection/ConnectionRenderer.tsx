@@ -21,7 +21,8 @@ import { usePointerShortcutMatcher } from "../../contexts/interaction-settings/h
 import { getPreviewPosition } from "../../core/geometry/position";
 import { hasPositionChanged, hasSizeChanged } from "../../core/geometry/comparators";
 import { getNodeResizeSize } from "../../core/node/resizeState";
-import { ensurePort } from "../../core/port/typeGuards";
+import { ensurePort } from "../../core/port/model/typeGuards";
+import { createPortKey } from "../../core/port/model/portKey";
 import type { Connection, Node as EditorNode, Port as CorePort, Position, Size } from "../../types/core";
 import type { PointerType } from "../../types/interaction";
 
@@ -177,8 +178,8 @@ const ConnectionRendererContainerComponent: React.FC<ConnectionRendererProps> = 
   const toPortPos = useDynamicConnectionPoint(connection.toNodeId, connection.toPortId);
 
   // Get ports with fallback
-  const fromRaw = portLookupMap.get(`${connection.fromNodeId}:${connection.fromPortId}`)?.port as unknown;
-  const toRaw = portLookupMap.get(`${connection.toNodeId}:${connection.toPortId}`)?.port as unknown;
+  const fromRaw = portLookupMap.get(createPortKey(connection.fromNodeId, connection.fromPortId))?.port as unknown;
+  const toRaw = portLookupMap.get(createPortKey(connection.toNodeId, connection.toPortId))?.port as unknown;
 
   const fromPort: CorePort = ensurePort(fromRaw, {
     id: connection.fromPortId,

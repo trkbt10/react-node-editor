@@ -10,14 +10,14 @@ import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
 import { usePortPositions } from "../../../contexts/node-ports/context";
 import {
   computeConnectablePortIds,
-} from "../../../contexts/node-ports/utils/connectablePortPlanner";
-import { getPortConnections, getOtherPortInfo } from "../../../core/port/queries";
-import { createActionPort } from "../../../core/port/factory";
+} from "../../../core/port/connection/planner";
+import { getPortConnections, getOtherPortInfo } from "../../../core/port/connection/queries";
+import { createActionPort } from "../../../core/port/model/factory";
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
 import type { Port, ConnectionDisconnectState } from "../../../types/core";
 import { useConnectionPortResolvers } from "../../../contexts/node-ports/hooks/useConnectionPortResolvers";
 import { useConnectionOperations } from "../../../contexts/node-ports/hooks/useConnectionOperations";
-import { createEmptyConnectablePorts } from "../../../core/port/connectableTypes";
+import { createEmptyConnectablePorts } from "../../../core/port/connection/connectableTypes";
 
 export const useNodeLayerPorts = () => {
   const { state: _actionState, actions: actionActions } = useEditorActionState();

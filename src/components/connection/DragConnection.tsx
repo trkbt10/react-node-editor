@@ -8,7 +8,8 @@ import { useNodeEditor } from "../../contexts/composed/node-editor/context";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import { useDynamicConnectionPoint } from "../../contexts/node-ports/hooks/usePortPosition";
 import { calculateConnectionPath } from "../../core/connection/path";
-import { getOppositeSide } from "../../core/port/side";
+import { getOppositeSide } from "../../core/port/appearance/side";
+import { createPortKey } from "../../core/port/model/portKey";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
 import type { Connection, Node as EditorNode, Port as CorePort, PortPosition, Position } from "../../types/core";
 import styles from "./DragConnection.module.css";
@@ -91,7 +92,7 @@ const useConnectingParams = (): DragConnectionParams | null => {
     return null;
   }
 
-  const fromPortEntry = portLookupMap.get(`${fromNodeId}:${fromPortId}`)?.port ?? dragState.fromPort;
+  const fromPortEntry = portLookupMap.get(createPortKey(fromNodeId, fromPortId))?.port ?? dragState.fromPort;
   const fromNode = nodeEditorState.nodes[fromPortEntry.nodeId];
   if (!fromNode) {
     return null;
@@ -139,8 +140,8 @@ const useDisconnectingParams = (): DragConnectionParams | null => {
   const baseConnection =
     nodeEditorState.connections[disconnectState.connectionId] ?? disconnectState.originalConnection;
 
-  const originalFromPort = portLookupMap.get(`${baseConnection.fromNodeId}:${baseConnection.fromPortId}`)?.port;
-  const originalToPort = portLookupMap.get(`${baseConnection.toNodeId}:${baseConnection.toPortId}`)?.port;
+  const originalFromPort = portLookupMap.get(createPortKey(baseConnection.fromNodeId, baseConnection.fromPortId))?.port;
+  const originalToPort = portLookupMap.get(createPortKey(baseConnection.toNodeId, baseConnection.toPortId))?.port;
 
   if (!originalFromPort || !originalToPort) {
     return null;

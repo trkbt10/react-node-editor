@@ -4,8 +4,8 @@
  * for efficient O(1) access to nodes, connections, ports, and spatial queries
  */
 import type { Node, NodeId, Connection, ConnectionId, Port, PortId } from "../../../../types/core";
-import type { PortKey } from "../../../../core/port/portKey";
-import { createPortKey } from "../../../../core/port/portKey";
+import type { PortKey } from "../../../../core/port/model/portKey";
+import { createPortKey } from "../../../../core/port/model/portKey";
 
 /**
  * Create a lookup map from port ID to node ID

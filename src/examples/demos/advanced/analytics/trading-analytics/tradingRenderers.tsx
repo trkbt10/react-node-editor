@@ -13,7 +13,7 @@ export const renderTradingConnection = (
   context: ConnectionRenderContext,
   defaultRender: () => React.ReactElement,
 ): React.ReactElement => {
-  const { connection, fromPosition, toPosition, fromPort, toPort, fromConnectionDirection, toConnectionDirection, handlers, isSelected, isHovered } = context;
+  const { connection, fromPosition, toPosition, fromPort: _fromPort, toPort, fromConnectionDirection, toConnectionDirection, handlers, isSelected, isHovered } = context;
 
   // If no connection exists yet (preview mode), use default
   if (!connection) {

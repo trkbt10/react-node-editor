@@ -6,7 +6,7 @@ import { useEditorActionState } from "../../composed/EditorActionStateContext";
 import { useCanvasInteraction } from "../../composed/canvas/interaction/context";
 import { useNodeEditor } from "../../composed/node-editor/context";
 import { usePortPositions } from "../context";
-import { findNearestConnectablePort } from "../utils/connectionCandidate";
+import { findNearestConnectablePort } from "../../../core/port/connection/candidate";
 import type { Position } from "../../../types/core";
 
 export const useConnectionPortResolvers = () => {

@@ -20,7 +20,7 @@ import {
 } from "./node-editor/utils/nodeClipboardOperations";
 import { useNodeCanvas } from "./canvas/viewport/context";
 import { buildNodeFromDefinition } from "./node-editor/utils/nodeFactory";
-import { findConnectablePortDefinition } from "../../core/port/connectability";
+import { findConnectablePortDefinition } from "../../core/port/connection/connectability";
 
 /**
  * Options for showing a context menu
@@ -37,7 +37,7 @@ export type ShowContextMenuOptions = {
 import {
   createEmptyConnectablePorts,
   type ConnectablePortsResult,
-} from "../../core/port/connectableTypes";
+} from "../../core/port/connection/connectableTypes";
 
 export type EditorActionState = {
   selectedNodeIds: NodeId[];

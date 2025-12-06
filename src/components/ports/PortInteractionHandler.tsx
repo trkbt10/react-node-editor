@@ -10,10 +10,10 @@ import { useNodeCanvas } from "../../contexts/composed/canvas/viewport/context";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import { usePointerDrag } from "../../hooks/usePointerDrag";
 import { usePortPositions } from "../../contexts/node-ports/context";
-import { createActionPort } from "../../core/port/factory";
-import { isPortConnectable } from "../../core/port/connectableTypes";
-import { computeConnectablePortIds } from "../../contexts/node-ports/utils/connectablePortPlanner";
-import { findNearestConnectablePort } from "../../contexts/node-ports/utils/connectionCandidate";
+import { createActionPort } from "../../core/port/model/factory";
+import { isPortConnectable } from "../../core/port/connection/connectableTypes";
+import { computeConnectablePortIds } from "../../core/port/connection/planner";
+import { findNearestConnectablePort } from "../../core/port/connection/candidate";
 import { useConnectionOperations } from "../../contexts/node-ports/hooks/useConnectionOperations";
 import { PORT_INTERACTION_THRESHOLD } from "../../constants/interaction";
 

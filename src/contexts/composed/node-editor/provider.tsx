@@ -8,7 +8,7 @@ import type { NodeEditorData, NodeId, Port } from "../../../types/core";
 import { useSettings } from "../../../hooks/useSettings";
 import type { SettingsManager } from "../../../settings/SettingsManager";
 import type { SettingValue } from "../../../settings/types";
-import { createCachedPortResolver } from "../../node-ports/utils/portLookup";
+import { createCachedPortResolver } from "../../../core/port/model/lookup";
 import { NodeDefinitionContext } from "../../node-definitions/context";
 import { bindActionCreators } from "../../../utils/typedActions";
 import { nodeEditorActions, type NodeEditorAction } from "./actions";

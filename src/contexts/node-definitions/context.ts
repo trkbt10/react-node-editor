@@ -3,7 +3,7 @@
  */
 import * as React from "react";
 import type { NodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
-import type { PortDefinitionResolver } from "../../core/port/definition";
+import type { PortDefinitionResolver } from "../../core/port/model/definition";
 
 /**
  * Context value for node definitions
