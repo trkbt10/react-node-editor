@@ -252,6 +252,58 @@ describe("canConnectPorts - data type compatibility", () => {
     const inPort: Port = { id: "in", nodeId: "b", type: "input", label: "in", position: "left", dataType: "json" };
     expect(canConnectPorts(outPort, inPort, defA, defB)).toBe(true);
   });
+
+  it("uses port dataType when multiple definitions share same id (instances pattern)", () => {
+    // Simulates a node with multiple PortDefinitions that share the same id
+    // but have different dataTypes, selected via `instances` function.
+    // Example: artifact-io with scope-out having typed-object, object, string, binary variants
+    const defWithMultipleSameIdPorts = baseNodeDef("ArtifactIO", [
+      { id: "scope-out", type: "output", label: "Scope (Typed Object)", position: "right", dataType: "typed-object", instances: () => 0 },
+      { id: "scope-out", type: "output", label: "Scope (Object)", position: "right", dataType: "object", instances: () => 0 },
+      { id: "scope-out", type: "output", label: "Scope (String)", position: "right", dataType: "string", instances: () => 1 }, // Active one
+      { id: "scope-out", type: "output", label: "Scope (Binary)", position: "right", dataType: "binary", instances: () => 0 },
+    ]);
+    const defConsumer = baseNodeDef("Consumer", [
+      { id: "in", type: "input", label: "in", position: "left", dataType: "string" },
+    ]);
+
+    // The derived Port has dataType: "string" from the active definition
+    const derivedPort: Port = {
+      id: "scope-out",
+      definitionId: "scope-out",
+      nodeId: "artifact",
+      type: "output",
+      label: "Scope (String)",
+      position: "right",
+      dataType: "string", // Set during port derivation from active PortDefinition
+    };
+    const consumerPort: Port = {
+      id: "in",
+      nodeId: "consumer",
+      type: "input",
+      label: "in",
+      position: "left",
+      dataType: "string",
+    };
+
+    // Should connect because Port.dataType is "string" (not "typed-object" from first matching definition)
+    expect(canConnectPorts(derivedPort, consumerPort, defWithMultipleSameIdPorts, defConsumer)).toBe(true);
+
+    // Verify incompatible type is rejected
+    const binaryConsumer = baseNodeDef("BinaryConsumer", [
+      { id: "in", type: "input", label: "in", position: "left", dataType: "binary" },
+    ]);
+    const binaryPort: Port = {
+      id: "in",
+      nodeId: "binary-consumer",
+      type: "input",
+      label: "in",
+      position: "left",
+      dataType: "binary",
+    };
+    // Should NOT connect because string !== binary
+    expect(canConnectPorts(derivedPort, binaryPort, defWithMultipleSameIdPorts, binaryConsumer)).toBe(false);
+  });
 });
 
 describe("canConnectPorts - maxConnections default/unlimited", () => {

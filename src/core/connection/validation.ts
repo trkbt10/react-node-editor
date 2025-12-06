@@ -68,16 +68,14 @@ export const canConnectNormalizedPorts = (
   }
 
   // Check data type compatibility
+  // Port.dataType is set during derivation from the active PortDefinition,
+  // so it takes priority. Only fall back to PortDefinition lookup when Port.dataType is not set.
+  // This is important when multiple PortDefinitions share the same id but have different
+  // dataTypes (selected via instances function).
   const sourcePortDef = getPortDefinition(sourcePort, sourceDefinition);
   const targetPortDef = getPortDefinition(targetPort, targetDefinition);
-  const sourceTypes = mergePortDataTypes(
-    sourcePort.dataType,
-    mergePortDataTypes(sourcePortDef?.dataType, sourcePortDef?.dataTypes),
-  );
-  const targetTypes = mergePortDataTypes(
-    targetPort.dataType,
-    mergePortDataTypes(targetPortDef?.dataType, targetPortDef?.dataTypes),
-  );
+  const sourceTypes = sourcePort.dataType ?? mergePortDataTypes(sourcePortDef?.dataType, sourcePortDef?.dataTypes);
+  const targetTypes = targetPort.dataType ?? mergePortDataTypes(targetPortDef?.dataType, targetPortDef?.dataTypes);
   if (!arePortDataTypesCompatible(sourceTypes, targetTypes)) {
     return false;
   }
