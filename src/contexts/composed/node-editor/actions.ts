@@ -38,6 +38,7 @@ export const nodeEditorActions = {
   ),
   copyNodes: createAction("COPY_NODES", (nodeIds: NodeId[]) => ({ nodeIds })),
   pasteNodes: createAction("PASTE_NODES", (offsetX?: number, offsetY?: number) => ({ offsetX, offsetY })),
+  pruneInvalidConnections: createAction("PRUNE_INVALID_CONNECTIONS", () => ({})),
 } as const;
 
 export type NodeEditorAction = ActionUnion<typeof nodeEditorActions>;

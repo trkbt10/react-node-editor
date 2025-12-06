@@ -11,8 +11,7 @@
  */
 import * as React from "react";
 import { NodeEditor } from "../../../../../NodeEditor";
-import type { NodeDefinition, InspectorRenderProps } from "../../../../../types/NodeDefinition";
-import { toUntypedDefinition } from "../../../../../types/NodeDefinition";
+import { asNodeDefinition, type NodeDefinition, type InspectorRenderProps } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData } from "../../../../../types/core";
 import { StandardNodeDefinition } from "../../../../../node-definitions/standard";
 import {
@@ -674,10 +673,10 @@ export const CustomInspectorExample: React.FC = () => {
         <NodeEditor
           initialData={initialData}
           nodeDefinitions={[
-            toUntypedDefinition(PersonNodeDefinition),
-            toUntypedDefinition(ProjectNodeDefinition),
-            toUntypedDefinition(AnalyticsNodeDefinition),
-            toUntypedDefinition(StandardNodeDefinition),
+            asNodeDefinition(PersonNodeDefinition),
+            asNodeDefinition(ProjectNodeDefinition),
+            asNodeDefinition(AnalyticsNodeDefinition),
+            asNodeDefinition(StandardNodeDefinition),
           ]}
           gridConfig={defaultEditorGridConfig}
           gridLayers={gridLayers}

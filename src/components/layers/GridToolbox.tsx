@@ -2,7 +2,7 @@
  * @file Grid toolbox component
  */
 import * as React from "react";
-import { useNodeCanvas, useCanvasActions } from "../../contexts/composed/canvas/viewport/context";
+import { useNodeCanvas, useNodeCanvasActions } from "../../contexts/composed/canvas/viewport/context";
 import { useNodeEditor } from "../../contexts/composed/node-editor/context";
 import { useEditorActionState } from "../../contexts/composed/EditorActionStateContext";
 import { applyZoomDelta, clampZoomScale } from "../../utils/zoomUtils";
@@ -62,7 +62,7 @@ StatusIndicator.displayName = "StatusIndicator";
 
 export const GridToolbox: React.FC<GridToolboxProps> = React.memo(() => {
   const { state: canvasState } = useNodeCanvas();
-  const canvasActions = useCanvasActions();
+  const { actions: canvasActions } = useNodeCanvasActions();
   const { state: editorState } = useNodeEditor();
   const { state: actionState } = useEditorActionState();
 

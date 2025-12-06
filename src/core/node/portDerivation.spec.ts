@@ -3,7 +3,7 @@
  */
 import type { Node } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";
-import { inferDefaultPortDefinitions, getNodePorts } from "./portDerivation";
+import { inferDefaultPortDefinitions, deriveNodePorts } from "./portDerivation";
 import { normalizePlacement, getPlacementSegment } from "../port/spatiality/placement";
 
 describe("normalizePlacement", () => {
@@ -77,7 +77,7 @@ describe("inferDefaultPortDefinitions", () => {
   });
 });
 
-describe("getNodePorts", () => {
+describe("deriveNodePorts", () => {
   it("should use ports from definition when available", () => {
     const node: Node = {
       id: "node-1",
@@ -105,7 +105,7 @@ describe("getNodePorts", () => {
       ],
     };
 
-    const ports = getNodePorts(node, definition);
+    const ports = deriveNodePorts(node, definition);
 
     expect(ports).toHaveLength(2);
     expect(ports[0].id).toBe("in1");
@@ -127,7 +127,7 @@ describe("getNodePorts", () => {
       displayName: "Test Node",
     };
 
-    const ports = getNodePorts(node, definition);
+    const ports = deriveNodePorts(node, definition);
 
     expect(ports).toHaveLength(2);
     expect(ports[0]).toMatchObject({
@@ -166,7 +166,7 @@ describe("getNodePorts", () => {
       displayName: "Test Node",
     };
 
-    const ports = getNodePorts(node, definition);
+    const ports = deriveNodePorts(node, definition);
 
     expect(ports).toHaveLength(2);
     expect(ports[0].maxConnections).toBe(5);
@@ -193,7 +193,7 @@ describe("getNodePorts", () => {
       displayName: "Test Node",
     };
 
-    const ports = getNodePorts(node, definition);
+    const ports = deriveNodePorts(node, definition);
 
     expect(ports).toHaveLength(1);
     expect(ports[0].id).toBe("input");
@@ -216,7 +216,7 @@ describe("getNodePorts", () => {
       ],
     };
 
-    const ports = getNodePorts(node, definition);
+    const ports = deriveNodePorts(node, definition);
 
     expect(ports).toHaveLength(3);
     expect(ports.map((port) => port.id)).toEqual(["input-1", "input-2", "output"]);
@@ -249,7 +249,7 @@ describe("getNodePorts", () => {
       ],
     };
 
-    const ports = getNodePorts(node, definition);
+    const ports = deriveNodePorts(node, definition);
 
     expect(ports).toHaveLength(3);
     expect(ports.map((port) => port.id)).toEqual(["option-1", "option-2", "option-3"]);
@@ -276,7 +276,7 @@ describe("getNodePorts", () => {
       ports: [{ id: "input", type: "input", label: "Input", position: "left", instances: 2 }],
     };
 
-    const ports = getNodePorts(node, definition);
+    const ports = deriveNodePorts(node, definition);
 
     expect(ports).toHaveLength(0);
   });
@@ -299,7 +299,7 @@ describe("getNodePorts", () => {
         ],
       };
 
-      const ports = getNodePorts(node, definition);
+      const ports = deriveNodePorts(node, definition);
 
       expect(ports).toHaveLength(2);
       expect(ports[0].dataType).toBe("string");
@@ -320,7 +320,7 @@ describe("getNodePorts", () => {
         ports: [{ id: "input", type: "input", label: "Input", position: "left", dataType: ["text", "html"] }],
       };
 
-      const ports = getNodePorts(node, definition);
+      const ports = deriveNodePorts(node, definition);
 
       expect(ports).toHaveLength(1);
       expect(ports[0].dataType).toEqual(["text", "html"]);
@@ -340,7 +340,7 @@ describe("getNodePorts", () => {
         ports: [{ id: "input", type: "input", label: "Input", position: "left", dataType: "text", dataTypes: ["html", "markdown"] }],
       };
 
-      const ports = getNodePorts(node, definition);
+      const ports = deriveNodePorts(node, definition);
 
       expect(ports).toHaveLength(1);
       expect(ports[0].dataType).toEqual(["text", "html", "markdown"]);
@@ -360,7 +360,7 @@ describe("getNodePorts", () => {
         ports: [{ id: "input", type: "input", label: "Input", position: "left", dataType: "string", instances: 3 }],
       };
 
-      const ports = getNodePorts(node, definition);
+      const ports = deriveNodePorts(node, definition);
 
       expect(ports).toHaveLength(3);
       expect(ports[0].dataType).toBe("string");
@@ -382,7 +382,7 @@ describe("getNodePorts", () => {
         ports: [{ id: "input", type: "input", label: "Input", position: "left", dataTypes: ["image", "audio"], instances: 2 }],
       };
 
-      const ports = getNodePorts(node, definition);
+      const ports = deriveNodePorts(node, definition);
 
       expect(ports).toHaveLength(2);
       expect(ports[0].dataType).toEqual(["image", "audio"]);
@@ -406,7 +406,7 @@ describe("getNodePorts", () => {
         ],
       };
 
-      const ports = getNodePorts(node, definition);
+      const ports = deriveNodePorts(node, definition);
 
       expect(ports).toHaveLength(4);
       expect(ports[0].id).toBe("main-output-1");

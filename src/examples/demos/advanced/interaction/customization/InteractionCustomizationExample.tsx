@@ -11,7 +11,7 @@ import {
   type KeyboardShortcutActionBehavior,
   type ContextMenuRequest,
   type CanvasPanActivator,
-  toUntypedDefinition,
+  asNodeDefinition,
 } from "../../../../../index";
 import { NodeCanvas } from "../../../../../components/canvas/NodeCanvas";
 import { InspectorPanel } from "../../../../../components/inspector/InspectorPanel";
@@ -245,7 +245,7 @@ export const InteractionCustomizationExample: React.FC = () => {
         gridConfig={gridConfig}
         gridLayers={gridLayers}
         interactionSettings={interactionSettings}
-        nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
+        nodeDefinitions={[asNodeDefinition(StandardNodeDefinition)]}
       />
     </div>
   );

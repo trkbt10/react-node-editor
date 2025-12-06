@@ -8,7 +8,7 @@ import React from "react";
 import { render, fireEvent, waitFor } from "@testing-library/react";
 import { NodeEditor } from "../../NodeEditor";
 import type { NodeEditorData } from "../../types/core";
-import { toUntypedDefinition } from "../../types/NodeDefinition";
+import { asNodeDefinition } from "../../types/NodeDefinition";
 import { StandardNodeDefinition } from "../../node-definitions/standard";
 
 // Helper to query flow stripe paths (SVG stroke-dasharray is present only on stripes)
@@ -29,7 +29,7 @@ describe("Connection flow highlight behavior", () => {
     render(
       <NodeEditor
         initialData={initialData}
-        nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
+        nodeDefinitions={[asNodeDefinition(StandardNodeDefinition)]}
         includeDefaultDefinitions={false}
       />,
     );

@@ -9,7 +9,7 @@ import type {
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
-import { toUntypedDefinition } from "../../../../../types/NodeDefinition";
+import { asNodeDefinition } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData } from "../../../../../types/core";
 import { StandardNodeDefinition } from "../../../../../node-definitions/standard";
 import { NodeResizer } from "../../../../../components/node/resize/NodeResizer";
@@ -290,7 +290,7 @@ export const CustomNodeExample: React.FC = () => {
   return (
     <NodeEditor
       initialData={initialData}
-      nodeDefinitions={[TaskNodeDefinition, toUntypedDefinition(StandardNodeDefinition)]}
+      nodeDefinitions={[TaskNodeDefinition, asNodeDefinition(StandardNodeDefinition)]}
       externalDataRefs={externalDataRefs}
       onDataChange={(data) => {
         console.log("Editor data changed:", data);

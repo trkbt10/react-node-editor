@@ -1,7 +1,7 @@
 /**
  * @file Node definitions and initial data for the custom connector example.
  */
-import { createNodeDefinition, toUntypedDefinition } from "../../../../../types/NodeDefinition";
+import { createNodeDefinition, asNodeDefinition } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData } from "../../../../../types/core";
 import { bezierConnectionRenderer } from "./connectionRenderer";
 
@@ -144,5 +144,5 @@ export const createInitialData = (): NodeEditorData => ({
 });
 
 export const getUntypedNodeDefinitions = () => {
-  return createNodeDefinitions().map(toUntypedDefinition);
+  return createNodeDefinitions().map(asNodeDefinition);
 };

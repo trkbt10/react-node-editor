@@ -5,7 +5,7 @@
 import * as React from "react";
 import {
   createNodeDefinition,
-  toUntypedDefinition,
+  asNodeDefinition,
   type InspectorRenderProps,
   type NodeDefinition,
   type NodeRenderProps,
@@ -888,11 +888,11 @@ const ThreePreviewDefinition = createNodeDefinition<ThreePreviewData>({
 });
 
 export const createThreeJsNodeDefinitions = (): NodeDefinition[] => [
-  toUntypedDefinition(ColorControlDefinition),
-  toUntypedDefinition(ScaleControlDefinition),
-  toUntypedDefinition(WireframeControlDefinition),
-  toUntypedDefinition(MaterialControlDefinition),
-  toUntypedDefinition(ThreePreviewDefinition),
+  asNodeDefinition(ColorControlDefinition),
+  asNodeDefinition(ScaleControlDefinition),
+  asNodeDefinition(WireframeControlDefinition),
+  asNodeDefinition(MaterialControlDefinition),
+  asNodeDefinition(ThreePreviewDefinition),
 ];
 
 /*

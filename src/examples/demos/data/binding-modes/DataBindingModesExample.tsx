@@ -4,7 +4,7 @@
 import * as React from "react";
 import { NodeEditor } from "../../../../NodeEditor";
 import type { NodeEditorData } from "../../../../types/core";
-import { toUntypedDefinition } from "../../../../types/NodeDefinition";
+import { asNodeDefinition } from "../../../../types/NodeDefinition";
 import { StandardNodeDefinition } from "../../../../node-definitions/standard";
 import classes from "./DataBindingModesExample.module.css";
 
@@ -58,7 +58,7 @@ export function DataBindingModesExample(): React.ReactElement {
   const [controlledData, setControlledData] = React.useState<NodeEditorData>(createControlledData);
   const [controlledUpdates, setControlledUpdates] = React.useState(0);
   const [uncontrolledUpdates, setUncontrolledUpdates] = React.useState(0);
-  const definitions = React.useMemo(() => [toUntypedDefinition(StandardNodeDefinition)], []);
+  const definitions = React.useMemo(() => [asNodeDefinition(StandardNodeDefinition)], []);
 
   return (
     <div className={classes.wrapper}>

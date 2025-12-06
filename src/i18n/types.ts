@@ -152,6 +152,12 @@ export type I18nMessages = {
   autoLayoutStrategyTree?: string;
   autoLayoutStrategyGrid?: string;
 
+  // Connection Pruning
+  pruneInvalidConnections?: string;
+  pruneInvalidConnectionsRun?: string;
+  pruneInvalidConnectionsCount?: string;
+  pruneInvalidConnectionsNone?: string;
+
   // History Panel
   historyUndo?: string;
   historyRedo?: string;

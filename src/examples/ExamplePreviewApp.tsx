@@ -42,6 +42,7 @@ import { ComfyUILayoutExample } from "./demos/custom/layouts/comfyui/ComfyUILayo
 import { CustomInspectorExample } from "./demos/custom/inspector/custom-inspector/CustomInspectorExample";
 import { NodeSearchMenuExample } from "./demos/custom/search/node-search-menu/NodeSearchMenuExample";
 import { NodeAddMenuExample } from "./demos/custom/menus/node-add-menu/NodeAddMenuExample";
+import { ConnectionRulesExample } from "./demos/custom/connections/connection-rules/ConnectionRulesExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -164,6 +165,13 @@ const examples: ExampleEntry[] = [
     title: "Custom Connector Playground",
     description: "Render bezier connectors with live handle overlays and animated accents.",
     component: CustomConnectorExample,
+    category: "custom",
+  },
+  {
+    id: "connection-rules",
+    title: "Connection Rules",
+    description: "Demonstrates the 4 ways to customize port connectivity: dataType, canConnect, validateConnection, maxConnections.",
+    component: ConnectionRulesExample,
     category: "custom",
   },
   {

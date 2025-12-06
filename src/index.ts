@@ -14,17 +14,11 @@ export { NodeResizer, normalizeNodeSize } from "./components/node/resize/NodeRes
 export type { NodeResizerProps } from "./components/node/resize/NodeResizer";
 
 // Node definition helpers for custom nodes and inspectors
-export {
-  createNodeDataUpdater,
-  createNodeDefinition,
-  getTypedNodeData,
-  toUntypedDefinition,
-} from "./types/NodeDefinition";
+export { asNodeDefinition, createNodeDataUpdater, createNodeDefinition } from "./types/NodeDefinition";
 export type {
   ConnectionRenderContext,
   ExternalDataReference,
   InspectorRenderProps,
-  NodeDataTypeMap,
   NodeDefinition,
   NodeRenderProps,
   PortDefinition,

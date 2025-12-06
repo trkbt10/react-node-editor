@@ -4,7 +4,7 @@
 import type { Connection, Node } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { createNodeDefinitionRegistry } from "../../../types/NodeDefinitionRegistry";
-import { getNodePorts } from "../../node/portDerivation";
+import { deriveNodePorts } from "../../node/portDerivation";
 import { createPortKey } from "../identity/key";
 import { computeConnectablePortIds } from "../connectivity/planner";
 import { planConnectionChange, ConnectionSwitchBehavior } from "../connectivity/connectionPlanning";
@@ -58,7 +58,7 @@ describe("connectablePortPlanner - threejs definitions", () => {
       if (!definition) {
         return [];
       }
-      return getNodePorts(node, definition);
+      return deriveNodePorts(node, definition);
     };
 
     const colorOutput = getPorts("color-node").find((port) => port.id === "color");

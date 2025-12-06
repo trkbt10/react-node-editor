@@ -7,10 +7,10 @@ import { EditorActionStateProvider, useEditorActionState } from "./EditorActionS
 import { NodeEditorProvider } from "./node-editor/provider";
 import { NodeDefinitionProvider } from "../node-definitions/provider";
 import { NodeCanvasProvider } from "./canvas/viewport/provider";
-import { toUntypedDefinition, type NodeDefinition } from "../../types/NodeDefinition";
+import { asNodeDefinition, type NodeDefinition } from "../../types/NodeDefinition";
 import { StandardNodeDefinition } from "../../node-definitions/standard";
 
-const testNodeDefinitions: NodeDefinition[] = [toUntypedDefinition(StandardNodeDefinition)];
+const testNodeDefinitions: NodeDefinition[] = [asNodeDefinition(StandardNodeDefinition)];
 
 const TestProviders: FC<{ children: React.ReactNode }> = ({ children }) => (
   <NodeDefinitionProvider nodeDefinitions={testNodeDefinitions}>

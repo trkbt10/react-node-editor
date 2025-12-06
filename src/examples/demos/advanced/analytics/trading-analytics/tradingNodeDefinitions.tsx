@@ -4,7 +4,7 @@
 import * as React from "react";
 import {
   createNodeDefinition,
-  toUntypedDefinition,
+  asNodeDefinition,
   type NodeDefinition,
   type NodeRenderProps,
 } from "../../../../../types/NodeDefinition";
@@ -448,9 +448,9 @@ const PortfolioMetricDefinition = createNodeDefinition<PortfolioMetricData>({
 });
 
 export const createTradingNodeDefinitions = (): NodeDefinition[] => [
-  toUntypedDefinition(AlgoTradingStrategyDefinition),
-  toUntypedDefinition(SignalSourceDefinition),
-  toUntypedDefinition(TradingVolumeDefinition),
-  toUntypedDefinition(PerformanceMetricDefinition),
-  toUntypedDefinition(PortfolioMetricDefinition),
+  asNodeDefinition(AlgoTradingStrategyDefinition),
+  asNodeDefinition(SignalSourceDefinition),
+  asNodeDefinition(TradingVolumeDefinition),
+  asNodeDefinition(PerformanceMetricDefinition),
+  asNodeDefinition(PortfolioMetricDefinition),
 ];

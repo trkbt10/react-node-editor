@@ -16,6 +16,8 @@ import { DEFAULT_NODE_SIZE } from "../../../utils/boundingBoxUtils";
 import { InspectorDefinitionList } from "../parts/InspectorDefinitionList";
 import { AutoSaveSection } from "../../controls/autoSave/AutoSaveSection";
 import { AutoLayoutSection } from "../../controls/autoLayout/AutoLayoutSection";
+import { ConnectionPruneSection } from "../../controls/connectionPrune/ConnectionPruneSection";
+import { findInvalidConnections } from "../../../contexts/composed/node-editor/utils/connectionPruning";
 
 /**
  * General editor settings component
@@ -78,8 +80,18 @@ export const GeneralSettingsPanel: React.FC = React.memo(() => {
     }
   });
 
+  const handleRunPrune = React.useEffectEvent(() => {
+    actions.pruneInvalidConnections();
+  });
+
   const settingsWritable = React.useMemo(() => Boolean(settingsManager), [settingsManager]);
   const hasNodes = React.useMemo(() => Object.keys(state.nodes).length > 0, [state.nodes]);
+  const hasConnections = React.useMemo(() => Object.keys(state.connections).length > 0, [state.connections]);
+  const nodeDefinitions = React.useMemo(() => registry.getAll(), [registry]);
+  const invalidCount = React.useMemo(
+    () => findInvalidConnections(state, nodeDefinitions).length,
+    [state, nodeDefinitions],
+  );
 
   const autoSaveInterval = settings.autoSaveInterval ?? 30;
 
@@ -97,6 +109,11 @@ export const GeneralSettingsPanel: React.FC = React.memo(() => {
         selectedStrategy={layoutStrategy}
         onStrategyChange={handleStrategyChange}
         onRunAutoLayout={handleRunAutoLayout}
+      />
+      <ConnectionPruneSection
+        hasConnections={hasConnections}
+        invalidCount={invalidCount}
+        onRunPrune={handleRunPrune}
       />
     </InspectorDefinitionList>
   );

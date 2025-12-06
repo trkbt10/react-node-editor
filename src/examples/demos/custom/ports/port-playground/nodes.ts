@@ -1,7 +1,7 @@
 /**
  * @file Node definitions and initial data for the custom port example.
  */
-import { createNodeDefinition, toUntypedDefinition } from "../../../../../types/NodeDefinition";
+import { asNodeDefinition, createNodeDefinition } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData } from "../../../../../types/core";
 import { customPortRenderer } from "./portRenderer";
 import { createConnectionRenderer } from "./connectionRenderer";
@@ -268,5 +268,5 @@ export const createInitialData = (): NodeEditorData => ({
 });
 
 export const getUntypedNodeDefinitions = () => {
-  return createNodeDefinitions().map(toUntypedDefinition);
+  return createNodeDefinitions().map(asNodeDefinition);
 };

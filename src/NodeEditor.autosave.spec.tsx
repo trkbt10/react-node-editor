@@ -3,7 +3,7 @@
  */
 import { render, screen } from "@testing-library/react";
 import { NodeEditor } from "./NodeEditor";
-import { toUntypedDefinition } from "./types/NodeDefinition";
+import { asNodeDefinition } from "./types/NodeDefinition";
 import { StandardNodeDefinition } from "./node-definitions/standard";
 
 describe("NodeEditor autoSave override", () => {
@@ -12,7 +12,7 @@ describe("NodeEditor autoSave override", () => {
       <NodeEditor
         autoSaveEnabled={false}
         initialData={{ nodes: {}, connections: {} }}
-        nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
+        nodeDefinitions={[asNodeDefinition(StandardNodeDefinition)]}
       />,
     );
     // StatusBar is rendered by default (showStatusBar default true)

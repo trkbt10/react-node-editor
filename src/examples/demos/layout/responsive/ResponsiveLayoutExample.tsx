@@ -9,7 +9,7 @@ import { NodeCanvas } from "../../../../components/canvas/NodeCanvas";
 import { Minimap } from "../../../../components/layers/Minimap";
 import { GridToolbox } from "../../../../components/layers/GridToolbox";
 import { StandardNodeDefinition } from "../../../../node-definitions/standard";
-import { toUntypedDefinition } from "../../../../types/NodeDefinition";
+import { asNodeDefinition } from "../../../../types/NodeDefinition";
 import type { NodeEditorData } from "../../../../types/core";
 import { getViewportWidth } from "../../../../utils/mobileDetection";
 
@@ -366,7 +366,7 @@ export const ResponsiveLayoutExample: React.FC = () => {
         gridConfig={gridConfig}
         gridLayers={gridLayers}
         initialData={initialData}
-        nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
+        nodeDefinitions={[asNodeDefinition(StandardNodeDefinition)]}
       />
 
       <LayoutModeIndicator

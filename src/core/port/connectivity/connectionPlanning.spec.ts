@@ -4,7 +4,7 @@
 import type { Connection, Node, Port } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { planConnectionChange, ConnectionSwitchBehavior } from "../connectivity/connectionPlanning";
-import { getNodePorts } from "../../node/portDerivation";
+import { deriveNodePorts } from "../../node/portDerivation";
 
 const makeNode = (id: string, type: string): Node => ({
   id,
@@ -201,8 +201,8 @@ describe("planConnectionChange", () => {
     };
 
     const getDefinition = (type: string) => definitions[type];
-    const sourcePorts = getNodePorts(nodes.source, definitions["dynamic-source"]);
-    const targetPorts = getNodePorts(nodes.target, definitions["dynamic-target"]);
+    const sourcePorts = deriveNodePorts(nodes.source, definitions["dynamic-source"]);
+    const targetPorts = deriveNodePorts(nodes.target, definitions["dynamic-target"]);
     const fromPort = sourcePorts[0];
     const toPort = targetPorts[1];
 

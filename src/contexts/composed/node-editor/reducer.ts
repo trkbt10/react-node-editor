@@ -8,6 +8,7 @@ import { nodeEditorActions, type NodeEditorAction } from "./actions";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { nodeHasGroupBehavior } from "../../../types/behaviors";
 import { copyNodesToClipboard, pasteNodesFromClipboard } from "./utils/nodeClipboardOperations";
+import { pruneInvalidConnections } from "./utils/connectionPruning";
 import { createActionHandlerMap } from "../../../utils/typedActions";
 
 const nodeEditorHandlers = createActionHandlerMap<NodeEditorData, typeof nodeEditorActions, NodeDefinition[]>(
@@ -211,6 +212,10 @@ const nodeEditorHandlers = createActionHandlerMap<NodeEditorData, typeof nodeEdi
       return { ...state, nodes: updatedNodes };
     },
     autoLayout: (state) => state,
+    pruneInvalidConnections: (state, _action, nodeDefinitions) => {
+      const result = pruneInvalidConnections(state, nodeDefinitions);
+      return result.data;
+    },
     copyNodes: (state, action) => {
       const { nodeIds } = action.payload;
       copyNodesToClipboard(nodeIds, state);

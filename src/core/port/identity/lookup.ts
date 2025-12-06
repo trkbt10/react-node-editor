@@ -5,7 +5,7 @@ import type { Node, Port, NodeId } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import type { PortKey } from "./key";
 import { createPortKey } from "./key";
-import { getNodePorts } from "../../node/portDerivation";
+import { deriveNodePorts } from "../../node/portDerivation";
 
 /**
  * Port resolver interface
@@ -36,7 +36,7 @@ export function createPortLookupMap(
       continue;
     }
 
-    const ports = getNodePorts(node, definition);
+    const ports = deriveNodePorts(node, definition);
     for (const port of ports) {
       const key = createPortKey(node.id, port.id);
       map.set(key, { node, port });
@@ -66,7 +66,7 @@ export function createCachedPortResolver(): PortResolver & {
       }
 
       // Resolve ports
-      const ports = getNodePorts(node, definition);
+      const ports = deriveNodePorts(node, definition);
 
       // Cache the result
       portCache.set(cacheKey, ports);
@@ -95,6 +95,6 @@ export function createCachedPortResolver(): PortResolver & {
  * Default port resolver instance
  */
 export const defaultPortResolver: PortResolver = {
-  getNodePorts,
+  getNodePorts: deriveNodePorts,
   createPortLookupMap,
 };

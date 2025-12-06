@@ -150,6 +150,12 @@ export const enMessages: I18nMessages = {
   autoLayoutStrategyTree: "Tree",
   autoLayoutStrategyGrid: "Grid",
 
+  // Connection Pruning
+  pruneInvalidConnections: "Prune Invalid",
+  pruneInvalidConnectionsRun: "Run",
+  pruneInvalidConnectionsCount: "{{count}} invalid",
+  pruneInvalidConnectionsNone: "None found",
+
   // History Panel
   historyUndo: "Undo",
   historyRedo: "Redo",

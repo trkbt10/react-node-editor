@@ -233,7 +233,3 @@ export function deriveNodePorts(node: Node, definition: NodeDefinition): Port[] 
   return resolvedPorts;
 }
 
-/**
- * @deprecated Use deriveNodePorts instead. This alias exists for backward compatibility.
- */
-export const getNodePorts = deriveNodePorts;

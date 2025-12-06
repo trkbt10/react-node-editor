@@ -14,7 +14,7 @@ import {
 } from "../../../../../components/layout/FloatingPanelFrame";
 import { NodeEditor } from "../../../../../index";
 import { StandardNodeDefinition } from "../../../../../node-definitions/standard";
-import { toUntypedDefinition, type ExternalDataReference } from "../../../../../types/NodeDefinition";
+import { asNodeDefinition, type ExternalDataReference } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData } from "../../../../../types/core";
 import type { GridLayoutConfig, LayerDefinition } from "../../../../../types/panels";
 import { useNodeEditor } from "../../../../../contexts/composed/node-editor/context";
@@ -81,7 +81,7 @@ export const SubEditorWindow: React.FC<SubEditorWindowProps> = ({ nodeId, title,
     [],
   );
 
-  const nestedDefinitions = React.useMemo(() => [toUntypedDefinition(StandardNodeDefinition)], []);
+  const nestedDefinitions = React.useMemo(() => [asNodeDefinition(StandardNodeDefinition)], []);
 
   const handleClose = React.useCallback(() => {
     onClose(nodeId);

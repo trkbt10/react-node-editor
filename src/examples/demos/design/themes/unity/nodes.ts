@@ -1,7 +1,7 @@
 /**
  * @file Node definitions and initial data for the Unity theme example.
  */
-import { createNodeDefinition, toUntypedDefinition } from "../../../../../types/NodeDefinition";
+import { createNodeDefinition, asNodeDefinition } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData } from "../../../../../types/core";
 
 const createGameObjectDefinition = () => {
@@ -130,5 +130,5 @@ export const createInitialData = (): NodeEditorData => ({
 });
 
 export const getUntypedNodeDefinitions = () => {
-  return createNodeDefinitions().map(toUntypedDefinition);
+  return createNodeDefinitions().map(asNodeDefinition);
 };

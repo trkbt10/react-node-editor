@@ -97,24 +97,5 @@ export const useNodeCanvas = (): NodeCanvasContextValue => {
   return context;
 };
 
-/**
- * Hook to access only the bound action creators
- * @deprecated Use useNodeCanvasActions().actions instead
- */
-export const useCanvasActions = (): BoundActionCreators<typeof nodeCanvasActions> => {
-  const { actions } = useNodeCanvasActions();
-  return actions;
-};
-
-/**
- * Hook to access state and actions
- * @deprecated Use useNodeCanvas() instead
- */
-export const useCanvasState = (): { state: NodeCanvasState; actions: BoundActionCreators<typeof nodeCanvasActions> } => {
-  const state = useNodeCanvasState();
-  const { actions } = useNodeCanvasActions();
-  return { state, actions };
-};
-
 // Export the split contexts for use in provider
 export { NodeCanvasStateContext, NodeCanvasActionsContext };

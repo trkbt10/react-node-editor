@@ -8,7 +8,7 @@ import { enMessages } from "../../../../../i18n/en";
 import type { I18nDictionaries, I18nMessages, Locale } from "../../../../../i18n/types";
 import type { NodeEditorData } from "../../../../../types/core";
 import { StandardNodeDefinition } from "../../../../../node-definitions/standard";
-import { toUntypedDefinition } from "../../../../../types/NodeDefinition";
+import { asNodeDefinition } from "../../../../../types/NodeDefinition";
 import classes from "./I18nPlaygroundExample.module.css";
 
 const playgroundInitialData: NodeEditorData = {
@@ -327,7 +327,7 @@ export function I18nPlaygroundExample(): React.ReactElement {
           fallbackLocale={fallbackLocale}
           messagesOverride={messageOverrides}
           localeDictionaries={editorDictionaries}
-          nodeDefinitions={[toUntypedDefinition(StandardNodeDefinition)]}
+          nodeDefinitions={[asNodeDefinition(StandardNodeDefinition)]}
         />
       </div>
     </div>

@@ -7,10 +7,10 @@ import type { ComponentProps } from "react";
 import { NodeEditor } from "./NodeEditor";
 import type { NodeEditorData } from "./types/core";
 import type { LayerDefinition } from "./types/panels";
-import { toUntypedDefinition } from "./types/NodeDefinition";
+import { asNodeDefinition } from "./types/NodeDefinition";
 import { StandardNodeDefinition } from "./node-definitions/standard";
 
-const standardDefinitions = [toUntypedDefinition(StandardNodeDefinition)];
+const standardDefinitions = [asNodeDefinition(StandardNodeDefinition)];
 
 const createNodeEditorElement = (props: ComponentProps<typeof NodeEditor>) => (
   <NodeEditor nodeDefinitions={standardDefinitions} {...props} />

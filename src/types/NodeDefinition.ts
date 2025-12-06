@@ -7,14 +7,6 @@ import type { CategoryInfo } from "../category/types";
 import type { NodeBehavior } from "./behaviors";
 
 /**
- * @deprecated NodeDataTypeMap is no longer used. Node data defaults to Record<string, unknown>.
- * This type is kept for backward compatibility only.
- */
-export type NodeDataTypeMap = {
-  [key: string]: Record<string, unknown>;
-};
-
-/**
  * External data reference for nodes
  * Supports both synchronous and asynchronous data loading
  */
@@ -463,15 +455,6 @@ export function createNodeDefinition<TData extends Record<string, unknown> = Rec
 }
 
 /**
- * Helper function to get typed node data
- * @template TData - The node data type
- * @deprecated Use node.data directly with type assertion if needed
- */
-export function getTypedNodeData<TData extends Record<string, unknown> = Record<string, unknown>>(node: Node): TData {
-  return node.data as TData;
-}
-
-/**
  * Helper function to create a type-safe node data updater
  * @template TData - The node data type
  */
@@ -484,9 +467,10 @@ export function createNodeDataUpdater<TData extends Record<string, unknown> = Re
 }
 
 /**
- * @deprecated No longer needed - NodeDefinition is already compatible
+ * Convert a typed NodeDefinition to the base NodeDefinition type.
+ * Use this when passing typed definitions to components that expect NodeDefinition[].
  */
-export function toUntypedDefinition<TData extends Record<string, unknown> = Record<string, unknown>>(
+export function asNodeDefinition<TData extends Record<string, unknown> = Record<string, unknown>>(
   def: NodeDefinition<TData>,
 ): NodeDefinition {
   return def as NodeDefinition<Record<string, unknown>>;

@@ -7,7 +7,7 @@ import { NodeCanvas } from "../../../../../components/canvas/NodeCanvas";
 import { Minimap } from "../../../../../components/layers/Minimap";
 import type { GridLayoutConfig, LayerDefinition } from "../../../../../types/panels";
 import type { NodeEditorData } from "../../../../../types/core";
-import { toUntypedDefinition, type ExternalDataReference, type NodeDefinition } from "../../../../../types/NodeDefinition";
+import { asNodeDefinition, type ExternalDataReference, type NodeDefinition } from "../../../../../types/NodeDefinition";
 import { StandardNodeDefinition } from "../../../../../node-definitions/standard";
 import { SubEditorHostProvider, type SubEditorOpenRequest } from "./SubEditorHostContext";
 import { SubEditorNodeDefinition } from "./SubEditorNode";
@@ -50,8 +50,8 @@ const baseLayers: LayerDefinition[] = [
 ];
 
 const providedDefinitions: NodeDefinition[] = [
-  toUntypedDefinition(SubEditorNodeDefinition),
-  toUntypedDefinition(StandardNodeDefinition),
+  asNodeDefinition(SubEditorNodeDefinition),
+  asNodeDefinition(StandardNodeDefinition),
 ];
 
 const buildExternalRefsFromData = (data: NodeEditorData): Record<string, ExternalDataReference> => {

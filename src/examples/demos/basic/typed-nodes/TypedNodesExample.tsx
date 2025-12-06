@@ -7,7 +7,7 @@ import { NodeEditor } from "../../../../NodeEditor";
 import type { NodeEditorData } from "../../../../types/core";
 
 import { CounterNodeDefinition, LegacyNodeDefinition, TextDisplayDefinition } from "./typedNodes.example";
-import { toUntypedDefinition } from "../../../../types/NodeDefinition";
+import { asNodeDefinition } from "../../../../types/NodeDefinition";
 import classes from "./TypedNodesExample.module.css";
 
 const typedNodesInitialData: NodeEditorData = {
@@ -48,9 +48,9 @@ const typedNodesInitialData: NodeEditorData = {
 };
 
 const typedNodeDefinitions = [
-  toUntypedDefinition(CounterNodeDefinition),
-  toUntypedDefinition(TextDisplayDefinition),
-  toUntypedDefinition(LegacyNodeDefinition),
+  asNodeDefinition(CounterNodeDefinition),
+  asNodeDefinition(TextDisplayDefinition),
+  asNodeDefinition(LegacyNodeDefinition),
 ];
 
 /**
