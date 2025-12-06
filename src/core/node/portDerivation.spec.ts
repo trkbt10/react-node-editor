@@ -1,10 +1,10 @@
 /**
- * @file Unit tests for port resolution with default port inference
+ * @file Unit tests for port derivation from node definitions
  */
-import type { Node } from "../../../types/core";
-import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { inferDefaultPortDefinitions, getNodePorts } from "./resolution";
-import { normalizePlacement, getPlacementSegment } from "../appearance/placement";
+import type { Node } from "../../types/core";
+import type { NodeDefinition } from "../../types/NodeDefinition";
+import { inferDefaultPortDefinitions, getNodePorts } from "./portDerivation";
+import { normalizePlacement, getPlacementSegment } from "../port/spatiality/placement";
 
 describe("normalizePlacement", () => {
   it("should return default placement when position is undefined", () => {

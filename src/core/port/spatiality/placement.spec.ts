@@ -11,7 +11,7 @@ import {
   getPlacementAlign,
   getPlacementInset,
   getPlacementSegment,
-} from "./placement";
+} from "../spatiality/placement";
 import type { AbsolutePortPlacement, PortPlacement } from "../../../types/core";
 
 describe("isAbsolutePlacement", () => {

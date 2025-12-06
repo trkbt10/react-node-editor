@@ -4,8 +4,8 @@
  */
 import type { Port } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";
-import type { InputPort, OutputPort } from "../port/model/typeGuards";
-import { isInputPort, isOutputPort } from "../port/model/typeGuards";
+import type { InputPort, OutputPort } from "../port/identity/guards";
+import { isInputPort, isOutputPort } from "../port/identity/guards";
 
 /**
  * Normalized connection parameters with proper port typing.

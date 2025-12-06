@@ -8,7 +8,7 @@ import {
   isOutputPort,
   assertInputPort,
   assertOutputPort,
-} from "./typeGuards";
+} from "../identity/guards";
 import type { Port } from "../../../types/core";
 
 describe("isPort", () => {

@@ -6,7 +6,7 @@ import * as React from "react";
 import type { Connection, Node, Port, PortPosition, Position } from "../../types/core";
 import { calculateConnectionPath, calculateConnectionMidpoint } from "../../core/connection/path";
 import { hasAnyPositionChanged, hasAnySizeChanged } from "../../core/geometry/comparators";
-import { hasPortPositionChanged } from "../../core/port/model/comparators";
+import { hasPortPositionChanged } from "../../core/port/identity/comparators";
 import { useDynamicConnectionPoint } from "../../contexts/node-ports/hooks/usePortPosition";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import type { ConnectionRenderContext, PortDefinition } from "../../types/NodeDefinition";

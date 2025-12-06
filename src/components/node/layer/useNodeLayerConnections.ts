@@ -6,7 +6,7 @@ import { useCanvasInteraction } from "../../../contexts/composed/canvas/interact
 import { useNodeCanvas } from "../../../contexts/composed/canvas/viewport/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
-import { getConnectableNodeTypes } from "../../../core/port/connection/connectability";
+import { getConnectableNodeTypes } from "../../../core/port/connectivity/connectability";
 import { usePointerInteraction } from "../../../hooks/usePointerInteraction";
 import { useConnectionPortResolvers } from "../../../contexts/node-ports/hooks/useConnectionPortResolvers";
 import { useConnectionOperations } from "../../../contexts/node-ports/hooks/useConnectionOperations";

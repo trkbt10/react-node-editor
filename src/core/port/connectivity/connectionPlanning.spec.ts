@@ -3,8 +3,8 @@
  */
 import type { Connection, Node, Port } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import { planConnectionChange, ConnectionSwitchBehavior } from "./connectionPlanning";
-import { getNodePorts } from "../model/resolution";
+import { planConnectionChange, ConnectionSwitchBehavior } from "../connectivity/connectionPlanning";
+import { getNodePorts } from "../../node/portDerivation";
 
 const makeNode = (id: string, type: string): Node => ({
   id,

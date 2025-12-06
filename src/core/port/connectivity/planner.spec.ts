@@ -6,10 +6,10 @@ import type { NodeDefinition } from "../../../types/NodeDefinition";
 import {
   computeConnectablePortIds,
   resolveConnectableSourcePort,
-} from "./planner";
-import type { ConnectablePortDescriptor } from "./connectableTypes";
-import { ConnectionSwitchBehavior } from "./connectionPlanning";
-import { createPortKey } from "../model/portKey";
+} from "../connectivity/planner";
+import type { ConnectablePortDescriptor } from "../connectivity/connectableTypes";
+import { ConnectionSwitchBehavior } from "../connectivity/connectionPlanning";
+import { createPortKey } from "../identity/key";
 
 const makePort = (nodeId: string, id: string, type: "input" | "output"): Port => ({
   id,

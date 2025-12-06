@@ -15,7 +15,7 @@ import type { NodeEditorData, Port, Size } from "../../../../../types/core";
 import { ExampleLayout } from "../../../shared/parts/ExampleLayout";
 import { ExampleWrapper } from "../../../shared/parts/ExampleWrapper";
 import { getNodeBoundingBox } from "../../../../../utils/boundingBoxUtils";
-import { getPortSide, getPlacementSegment } from "../../../../../core/port/appearance/placement";
+import { getPortSide, getPlacementSegment } from "../../../../../core/port/spatiality/placement";
 import { PropertySection } from "../../../../../components/inspector/parts/PropertySection";
 import styles from "./ComfyUILayoutExample.module.css";
 

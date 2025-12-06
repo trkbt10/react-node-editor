@@ -3,9 +3,9 @@
  */
 import type { Node, Port, NodeId } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import type { PortKey } from "./portKey";
-import { createPortKey } from "./portKey";
-import { getNodePorts } from "./resolution";
+import type { PortKey } from "./key";
+import { createPortKey } from "./key";
+import { getNodePorts } from "../../node/portDerivation";
 
 /**
  * Port resolver interface

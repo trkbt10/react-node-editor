@@ -5,7 +5,7 @@
 import type { Connection, Node, NodeId, Port } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { createValidatedConnection } from "../../connection/operations";
-import { getPortDefinition } from "../model/definition";
+import { getPortDefinition } from "../identity/definition";
 import { checkPortCapacity } from "./queries";
 
 /**

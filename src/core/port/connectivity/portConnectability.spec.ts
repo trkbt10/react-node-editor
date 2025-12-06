@@ -7,9 +7,9 @@ import {
   getConnectablePortIds,
   getConnectableNodeTypes,
   findConnectablePortDefinition,
-} from "./connectability";
-import { isPortConnectable } from "./connectableTypes";
-import { createPortKey, type PortKey } from "../model/portKey";
+} from "../connectivity/connectability";
+import { isPortConnectable } from "../connectivity/connectableTypes";
+import { createPortKey, type PortKey } from "../identity/key";
 
 const createPort = (overrides: Partial<Port> = {}): Port => ({
   id: "port-1",

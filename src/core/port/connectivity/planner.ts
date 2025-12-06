@@ -12,7 +12,7 @@ import type {
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { getConnectablePortIds } from "./connectability";
 import { getConnectionSwitchContext } from "./connectionPlanning";
-import { parsePortKey } from "../model/portKey";
+import { parsePortKey } from "../identity/key";
 import {
   createEmptyConnectablePorts,
   type ConnectablePortSourceInfo,

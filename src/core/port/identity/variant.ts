@@ -4,8 +4,8 @@
  */
 import type { Port, PortPlacement, AbsolutePortPlacement, PortPosition, PortType } from "../../../types/core";
 import type { PortDefinition } from "../../../types/NodeDefinition";
-import { mergePortDataTypes, toPortDataTypeValue } from "./dataType";
-import { getPlacementSide } from "../appearance/placement";
+import { mergePortDataTypes, toPortDataTypeValue } from "../connectivity/dataType";
+import { getPlacementSide } from "../spatiality/placement";
 
 /**
  * Required fields for creating a Port instance
@@ -138,50 +138,6 @@ export const createPortFromDefinition = (
     allowedPortTypes: undefined,
     instanceIndex: undefined,
     instanceTotal: undefined,
-  };
-};
-
-/**
- * Context for creating dynamic port instances
- */
-export type PortInstanceCreationContext = {
-  /** Port ID (may be generated from createPortId callback) */
-  id: string;
-  /** Port label (may be generated from createPortLabel callback) */
-  label: string;
-  /** Node ID that owns this port */
-  nodeId: string;
-  /** Normalized placement for the port */
-  placement: PortPlacement | AbsolutePortPlacement;
-  /** Zero-based index of this instance */
-  instanceIndex: number;
-  /** Total number of instances from the definition */
-  instanceTotal: number;
-};
-
-/**
- * Creates a Port instance from a PortDefinition with instance-specific properties.
- * Used for creating dynamic port instances (instances > 1).
- */
-export const createPortInstance = (
-  definition: PortDefinition,
-  context: PortInstanceCreationContext,
-  resolvedDataType: string | string[] | undefined,
-): Port => {
-  return {
-    id: context.id,
-    definitionId: definition.id,
-    type: definition.type,
-    label: context.label,
-    nodeId: context.nodeId,
-    position: getPlacementSide(context.placement),
-    placement: context.placement,
-    dataType: resolvedDataType,
-    maxConnections: definition.maxConnections,
-    allowedNodeTypes: undefined,
-    allowedPortTypes: undefined,
-    instanceIndex: context.instanceIndex,
-    instanceTotal: context.instanceTotal,
   };
 };
 

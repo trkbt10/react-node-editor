@@ -1,7 +1,7 @@
 /**
  * @file Unit tests for port definition resolution utilities
  */
-import { getPortDefinition, createPortDefinitionResolver } from "./definition";
+import { getPortDefinition, createPortDefinitionResolver } from "../identity/definition";
 import type { Port } from "../../../types/core";
 import type { NodeDefinition, PortDefinition } from "../../../types/NodeDefinition";
 

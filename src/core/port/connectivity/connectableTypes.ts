@@ -4,7 +4,7 @@
  */
 import type { NodeId, PortId, PortType } from "../../../types/core";
 import type { ConnectionSwitchBehavior } from "./connectionPlanning";
-import { createPortKey, type PortKey } from "../model/portKey";
+import { createPortKey, type PortKey } from "../identity/key";
 
 /**
  * Information about the source port initiating a connection

@@ -1,17 +1,21 @@
 /**
- * @file Port resolution utilities with default port inference
- * Pure functions for resolving ports from node definitions
+ * @file Port derivation from node definitions
+ * Derives port instances from NodeDefinition for a given Node.
+ * This is a Node concern - nodes produce their ports from definitions.
  */
-import type { Node, Port } from "../../../types/core";
+import type { Node, Port, PortPlacement, AbsolutePortPlacement } from "../../types/core";
 import type {
   NodeDefinition,
   PortDefinition,
   PortInstanceContext,
   PortInstanceFactoryContext,
-} from "../../../types/NodeDefinition";
-import { createPortInstance } from "./factory";
-import { mergePortDataTypes, toPortDataTypeValue } from "./dataType";
-import { normalizePlacement } from "../appearance/placement";
+} from "../../types/NodeDefinition";
+import { mergePortDataTypes, toPortDataTypeValue } from "../port/connectivity/dataType";
+import { normalizePlacement, getPlacementSide } from "../port/spatiality/placement";
+
+// ============================================================================
+// Types
+// ============================================================================
 
 /**
  * Port override configuration for node-specific customizations
@@ -37,13 +41,24 @@ export type NodeWithPortOverrides = {
   portOverrides?: PortOverride[];
 } & Omit<Node, "ports">;
 
+/**
+ * Context for creating dynamic port instances
+ */
+type PortInstanceCreationContext = {
+  id: string;
+  label: string;
+  nodeId: string;
+  placement: PortPlacement | AbsolutePortPlacement;
+  instanceIndex: number;
+  instanceTotal: number;
+};
+
 // ============================================================================
 // Internal: Port Definition Normalization
 // ============================================================================
 
 /**
  * Normalized port definition where instances is always a function.
- * This is an internal type used during port resolution.
  */
 type NormalizedPortDefinition = Omit<PortDefinition, "instances" | "createPortId" | "createPortLabel"> & {
   instances: (context: PortInstanceContext) => number;
@@ -51,25 +66,16 @@ type NormalizedPortDefinition = Omit<PortDefinition, "instances" | "createPortId
   createPortLabel: (context: PortInstanceFactoryContext) => string;
 };
 
-/**
- * Default port ID generator
- */
 function defaultCreatePortId(context: PortInstanceFactoryContext): string {
   const { definition, index, total } = context;
   return total > 1 ? `${definition.id}-${index + 1}` : definition.id;
 }
 
-/**
- * Default port label generator
- */
 function defaultCreatePortLabel(context: PortInstanceFactoryContext): string {
   const { definition, index, total } = context;
   return total > 1 ? `${definition.label} ${index + 1}` : definition.label;
 }
 
-/**
- * Normalize instance count to a resolver function
- */
 function normalizeInstances(
   instances: PortDefinition["instances"],
 ): (context: PortInstanceContext) => number {
@@ -80,9 +86,6 @@ function normalizeInstances(
   return () => count;
 }
 
-/**
- * Normalize a port definition to consistent dynamic port form
- */
 function normalizePortDefinition(definition: PortDefinition): NormalizedPortDefinition {
   return {
     ...definition,
@@ -93,13 +96,9 @@ function normalizePortDefinition(definition: PortDefinition): NormalizedPortDefi
 }
 
 // ============================================================================
-// Port Instance Creation
+// Internal: Port Instance Creation
 // ============================================================================
 
-/**
- * Resolve instance count from normalized definition
- * Returns 0 for invalid counts (NaN, negative)
- */
 const resolveInstanceCount = (normalized: NormalizedPortDefinition, node: Node): number => {
   const raw = normalized.instances({ node });
   const count = Math.floor(raw);
@@ -109,9 +108,28 @@ const resolveInstanceCount = (normalized: NormalizedPortDefinition, node: Node):
   return count;
 };
 
-/**
- * Create port instances from a port definition
- */
+const createPortInstance = (
+  definition: PortDefinition,
+  context: PortInstanceCreationContext,
+  resolvedDataType: string | string[] | undefined,
+): Port => {
+  return {
+    id: context.id,
+    definitionId: definition.id,
+    type: definition.type,
+    label: context.label,
+    nodeId: context.nodeId,
+    position: getPlacementSide(context.placement),
+    placement: context.placement,
+    dataType: resolvedDataType,
+    maxConnections: definition.maxConnections,
+    allowedNodeTypes: undefined,
+    allowedPortTypes: undefined,
+    instanceIndex: context.instanceIndex,
+    instanceTotal: context.instanceTotal,
+  };
+};
+
 const createPortInstances = (definition: PortDefinition, node: Node): Port[] => {
   const normalized = normalizePortDefinition(definition);
   const total = resolveInstanceCount(normalized, node);
@@ -173,13 +191,15 @@ export function inferDefaultPortDefinitions(_node: Node): PortDefinition[] {
 }
 
 /**
- * Resolve ports from node definition, applying any node-specific overrides
+ * Derive ports from node definition, applying any node-specific overrides.
+ * This is the main entry point for port derivation.
+ *
  * If no ports are defined in the definition, infers default ports based on:
  * - input ports positioned on the left
  * - output ports positioned on the right
  * - vertically centered
  */
-export function getNodePorts(node: Node, definition: NodeDefinition): Port[] {
+export function deriveNodePorts(node: Node, definition: NodeDefinition): Port[] {
   const basePorts = definition.ports || inferDefaultPortDefinitions(node);
   const nodeWithOverrides = node as NodeWithPortOverrides;
 
@@ -212,3 +232,8 @@ export function getNodePorts(node: Node, definition: NodeDefinition): Port[] {
 
   return resolvedPorts;
 }
+
+/**
+ * @deprecated Use deriveNodePorts instead. This alias exists for backward compatibility.
+ */
+export const getNodePorts = deriveNodePorts;

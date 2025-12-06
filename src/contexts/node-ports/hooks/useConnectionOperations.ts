@@ -10,9 +10,9 @@ import { createValidatedConnection } from "../../../core/connection/operations";
 import {
   planConnectionChange,
   ConnectionSwitchBehavior,
-} from "../../../core/port/connection/connectionPlanning";
+} from "../../../core/port/connectivity/connectionPlanning";
 import type { Port } from "../../../types/core";
-import { createEmptyConnectablePorts } from "../../../core/port/connection/connectableTypes";
+import { createEmptyConnectablePorts } from "../../../core/port/connectivity/connectableTypes";
 
 export const useConnectionOperations = () => {
   const { state: _actionState, actions: actionActions } = useEditorActionState();

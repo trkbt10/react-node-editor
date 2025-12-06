@@ -2,7 +2,7 @@
  * @file Tests for port comparison utilities
  */
 import type { Port } from "../../../types/core";
-import { hasPortIdChanged, hasPortPositionChanged } from "./comparators";
+import { hasPortIdChanged, hasPortPositionChanged } from "../identity/comparators";
 
 describe("port comparators", () => {
   const createPort = (overrides: Partial<Port> = {}): Port => ({

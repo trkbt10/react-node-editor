@@ -4,10 +4,10 @@
  */
 import type { Port, Node, Connection } from "../../../types/core";
 import type { NodeDefinition, PortDefinition } from "../../../types/NodeDefinition";
-import { createPortFromDefinition } from "../model/factory";
-import { normalizePlacement } from "../appearance/placement";
-import { createPortKey } from "../model/portKey";
-import type { PortKey } from "../model/portKey";
+import { createPortFromDefinition } from "../identity/variant";
+import { normalizePlacement } from "../spatiality/placement";
+import { createPortKey } from "../identity/key";
+import type { PortKey } from "../identity/key";
 import { canConnectPorts } from "../../connection/validation";
 
 /**

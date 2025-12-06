@@ -4,10 +4,10 @@
 import type { Connection, Node } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { createNodeDefinitionRegistry } from "../../../types/NodeDefinitionRegistry";
-import { getNodePorts } from "../model/resolution";
-import { createPortKey } from "../model/portKey";
-import { computeConnectablePortIds } from "./planner";
-import { planConnectionChange, ConnectionSwitchBehavior } from "./connectionPlanning";
+import { getNodePorts } from "../../node/portDerivation";
+import { createPortKey } from "../identity/key";
+import { computeConnectablePortIds } from "../connectivity/planner";
+import { planConnectionChange, ConnectionSwitchBehavior } from "../connectivity/connectionPlanning";
 import { createThreeJsNodeDefinitions } from "../../../examples/demos/advanced/integrations/threejs/createThreeJsNodeDefinitions";
 import { canConnectPorts } from "../../connection/validation";
 

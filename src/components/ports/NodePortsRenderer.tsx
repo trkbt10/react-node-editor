@@ -3,11 +3,11 @@
  */
 import * as React from "react";
 import type { Port } from "../../types/core";
-import type { ConnectablePortsResult } from "../../core/port/connection/connectableTypes";
-import { isPortConnectable } from "../../core/port/connection/connectableTypes";
+import type { ConnectablePortsResult } from "../../core/port/connectivity/connectableTypes";
+import { isPortConnectable } from "../../core/port/connectivity/connectableTypes";
 import { PortView } from "./PortView";
 import { useOptionalRenderers } from "../../contexts/RendererContext";
-import { hasPortIdChanged } from "../../core/port/model/comparators";
+import { hasPortIdChanged } from "../../core/port/identity/comparators";
 import styles from "./NodePortsRenderer.module.css";
 
 export type NodePortsRendererProps = {

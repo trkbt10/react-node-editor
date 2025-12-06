@@ -6,7 +6,7 @@ import type { Connection, Port } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";
 import type { NodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
 import { createNodeDefinitionRegistry } from "../../types/NodeDefinitionRegistry";
-import { getPlacementSegment } from "../port/appearance/placement";
+import { getPlacementSegment } from "../port/spatiality/placement";
 
 const mkRegistry = (defs: NodeDefinition[]): NodeDefinitionRegistry => {
   const reg = createNodeDefinitionRegistry();

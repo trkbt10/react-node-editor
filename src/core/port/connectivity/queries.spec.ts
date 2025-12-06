@@ -1,7 +1,7 @@
 /**
  * @file Unit tests for port query utilities
  */
-import { getPortConnections, hasPortConnections, countPortConnections } from "./queries";
+import { getPortConnections, hasPortConnections, countPortConnections } from "../connectivity/queries";
 import type { Port, Connection } from "../../../types/core";
 
 describe("port query utilities", () => {

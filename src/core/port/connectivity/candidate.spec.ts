@@ -2,10 +2,10 @@
  * @file Tests for connection candidate utilities
  */
 import type { Node, Port, Position } from "../../../types/core";
-import { ConnectionSwitchBehavior } from "./connectionPlanning";
-import type { ConnectablePortsResult } from "./connectableTypes";
-import { createPortKey, type PortKey } from "../model/portKey";
-import { findNearestConnectablePort } from "./candidate";
+import { ConnectionSwitchBehavior } from "../connectivity/connectionPlanning";
+import type { ConnectablePortsResult } from "../connectivity/connectableTypes";
+import { createPortKey, type PortKey } from "../identity/key";
+import { findNearestConnectablePort } from "../connectivity/candidate";
 
 const createPort = (
   id: string,

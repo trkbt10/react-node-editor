@@ -1,7 +1,7 @@
 /**
  * @file Tests for computeNodePortPositions with segmented port layouts.
  */
-import { computeNodePortPositions, createDefaultPortCompute } from "./computePositions";
+import { computeNodePortPositions, createDefaultPortCompute } from "../spatiality/computePositions";
 import { DEFAULT_PORT_POSITION_CONFIG } from "../../../types/portPosition";
 import type { Node, Port } from "../../../types/core";
 

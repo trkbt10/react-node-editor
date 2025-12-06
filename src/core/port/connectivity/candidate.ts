@@ -4,8 +4,8 @@
 import type { Node, NodeId, Port, PortId, Position } from "../../../types/core";
 import type { ConnectablePortsResult } from "./connectableTypes";
 import { PORT_INTERACTION_THRESHOLD } from "../../../constants/interaction";
-import { createActionPort } from "../model/factory";
-import { parsePortKey } from "../model/portKey";
+import { createActionPort } from "../identity/variant";
+import { parsePortKey } from "../identity/key";
 
 export type ConnectionCandidateSearchParams = {
   pointerCanvasPosition: Position;

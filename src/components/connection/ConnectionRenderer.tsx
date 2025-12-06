@@ -21,8 +21,8 @@ import { usePointerShortcutMatcher } from "../../contexts/interaction-settings/h
 import { getPreviewPosition } from "../../core/geometry/position";
 import { hasPositionChanged, hasSizeChanged } from "../../core/geometry/comparators";
 import { getNodeResizeSize } from "../../core/node/resizeState";
-import { ensurePort } from "../../core/port/model/typeGuards";
-import { createPortKey } from "../../core/port/model/portKey";
+import { ensurePort } from "../../core/port/identity/guards";
+import { createPortKey } from "../../core/port/identity/key";
 import type { Connection, Node as EditorNode, Port as CorePort, Position, Size } from "../../types/core";
 import type { PointerType } from "../../types/interaction";
 

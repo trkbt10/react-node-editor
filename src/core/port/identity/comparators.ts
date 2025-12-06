@@ -4,8 +4,8 @@
  */
 import type { Port } from "../../../types/core";
 import { areStringArraysEqual } from "../../common/comparators";
-import { arePortDataTypesEqual } from "./dataType";
-import { arePlacementsEqual } from "../appearance/comparators";
+import { arePortDataTypesEqual } from "../connectivity/dataType";
+import { arePlacementsEqual } from "../spatiality/comparators";
 
 /**
  * Check if port ID has changed (handles optional ports)

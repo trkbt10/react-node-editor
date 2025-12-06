@@ -2,7 +2,7 @@
  * @file Tests for placement comparison utilities
  */
 import type { Port, PortPlacement } from "../../../types/core";
-import { arePlacementsEqual, hasPortPlacementChanged } from "./comparators";
+import { arePlacementsEqual, hasPortPlacementChanged } from "../spatiality/comparators";
 
 describe("placement comparators", () => {
   const createPort = (overrides: Partial<Port> = {}): Port => ({

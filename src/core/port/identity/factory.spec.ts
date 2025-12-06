@@ -9,10 +9,9 @@ import {
   clonePortForNode,
   createActionPort,
   createPortFromDefinition,
-  createPortInstance,
   validatePortCompleteness,
   PORT_PROPERTY_KEYS,
-} from "./factory";
+} from "../identity/variant";
 
 const createFullPort = (overrides: Partial<Port> = {}): Port => ({
   id: "test-port",
@@ -210,105 +209,6 @@ describe("createPortFromDefinition", () => {
     const port = createPortFromDefinition(definition, "node-1", placement);
 
     expect(port.maxConnections).toBe(2);
-  });
-});
-
-describe("createPortInstance", () => {
-  it("creates a port instance with all properties from definition and context", () => {
-    const definition: PortDefinition = {
-      id: "input-def",
-      type: "input",
-      label: "Input Port",
-      position: "left",
-      maxConnections: 3,
-    };
-    const placement: PortPlacement = { side: "left", segment: "main" };
-
-    const port = createPortInstance(
-      definition,
-      {
-        id: "input-def-1",
-        label: "Input Port 1",
-        nodeId: "node-1",
-        placement,
-        instanceIndex: 0,
-        instanceTotal: 3,
-      },
-      "text",
-    );
-
-    expect(port.id).toBe("input-def-1");
-    expect(port.definitionId).toBe("input-def");
-    expect(port.type).toBe("input");
-    expect(port.label).toBe("Input Port 1");
-    expect(port.nodeId).toBe("node-1");
-    expect(port.position).toBe("left");
-    expect(port.placement).toEqual(placement);
-    expect(port.dataType).toBe("text");
-    expect(port.maxConnections).toBe(3);
-    expect(port.instanceIndex).toBe(0);
-    expect(port.instanceTotal).toBe(3);
-  });
-
-  it("creates multiple instances with correct indices", () => {
-    const definition: PortDefinition = {
-      id: "output",
-      type: "output",
-      label: "Output",
-      position: "right",
-      dataType: ["text", "html"],
-    };
-    const placement: PortPlacement = { side: "right" };
-    const resolvedDataType = ["text", "html"];
-
-    const instances = [0, 1, 2].map((index) =>
-      createPortInstance(
-        definition,
-        {
-          id: `output-${index + 1}`,
-          label: `Output ${index + 1}`,
-          nodeId: "node-1",
-          placement,
-          instanceIndex: index,
-          instanceTotal: 3,
-        },
-        resolvedDataType,
-      ),
-    );
-
-    expect(instances).toHaveLength(3);
-    instances.forEach((port, index) => {
-      expect(port.id).toBe(`output-${index + 1}`);
-      expect(port.definitionId).toBe("output");
-      expect(port.instanceIndex).toBe(index);
-      expect(port.instanceTotal).toBe(3);
-      expect(port.dataType).toEqual(["text", "html"]);
-    });
-  });
-
-  it("handles undefined dataType", () => {
-    const definition: PortDefinition = {
-      id: "generic",
-      type: "input",
-      label: "Generic",
-      position: "left",
-    };
-    const placement: PortPlacement = { side: "left" };
-
-    const port = createPortInstance(
-      definition,
-      {
-        id: "generic",
-        label: "Generic",
-        nodeId: "node-1",
-        placement,
-        instanceIndex: 0,
-        instanceTotal: 1,
-      },
-      undefined,
-    );
-
-    expect(port.dataType).toBeUndefined();
   });
 });
 

@@ -4,14 +4,14 @@
  */
 import type { Node, Port, Connection, NodeId } from "../../types/core";
 import type { NodeDefinition, PortConnectionContext } from "../../types/NodeDefinition";
-import { arePortDataTypesCompatible, mergePortDataTypes } from "../port/model/dataType";
-import { getPortDefinition } from "../port/model/definition";
-import { checkPortCapacity } from "../port/connection/queries";
+import { arePortDataTypesCompatible, mergePortDataTypes } from "../port/connectivity/dataType";
+import { getPortDefinition } from "../port/identity/definition";
+import { checkPortCapacity } from "../port/connectivity/queries";
 import type { NormalizedConnectionContext } from "./normalization";
 import { normalizeConnectionContext } from "./normalization";
 
 // Re-export for backwards compatibility
-export { getPortDefinition } from "../port/model/definition";
+export { getPortDefinition } from "../port/identity/definition";
 
 export type ConnectionValidationOptions = {
   nodes?: Record<NodeId, Node>;

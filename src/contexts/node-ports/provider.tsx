@@ -15,7 +15,7 @@ import type {
   PortPositionConfig,
   PortPositionNode,
 } from "../../types/portPosition";
-import { computeAllPortPositions, computeNodePortPositions } from "../../core/port/appearance/computePositions";
+import { computeAllPortPositions, computeNodePortPositions } from "../../core/port/spatiality/computePositions";
 import { PortPositionContext } from "./context";
 import type { PortPositionContextValue } from "./context";
 import { useNodeEditor } from "../composed/node-editor/context";
