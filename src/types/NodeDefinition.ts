@@ -2,7 +2,7 @@
  * @file Core node definition types including render props, constraints, and external data handling
  */
 import React, { type ReactNode, type ReactElement } from "react";
-import type { Node, NodeId, Port, Connection, ConnectionId, NodeData, PortPlacement, AbsolutePortPlacement, Size, Position, PortPosition as PortSide } from "./core";
+import type { Node, NodeId, Port, Connection, ConnectionId, NodeData, PortPlacement, AbsolutePortPlacement, Size, Position } from "./core";
 import type { CategoryInfo } from "../category/types";
 import type { NodeBehavior } from "./behaviors";
 
@@ -204,7 +204,7 @@ export type PortDefinition = {
    * Position on the node.
    * - Simple: "left" | "right" | "top" | "bottom"
    * - Segmented: { side, segment?, segmentOrder?, segmentSpan?, align?, inset? }
-   * - Absolute: { mode: "absolute", x, y, connectionDirection? }
+   * - Absolute: { mode: "absolute", x, y, unit? }
    */
   position: PortPlacement | AbsolutePortPlacement | "left" | "right" | "top" | "bottom";
   /**
@@ -328,11 +328,6 @@ export type ComputedPortPosition = {
   renderPosition: Position & { transform?: string };
   /** Absolute canvas position where connections should attach */
   connectionPoint: Position;
-  /**
-   * Direction from which connections should enter/exit the port.
-   * If not provided, falls back to port.position from the Port object.
-   */
-  connectionDirection?: PortSide;
 };
 
 /**

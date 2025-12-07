@@ -2,7 +2,7 @@
  * @file Hooks for accessing dynamic port positions and connection points
  */
 import * as React from "react";
-import type { Position, Size, PortPosition as PortSide } from "../../../types/core";
+import type { Position, Size } from "../../../types/core";
 import type { PortPosition, PortPositionNode } from "../../../types/portPosition";
 import type { ComputedPortPosition } from "../../../types/NodeDefinition";
 import { useNodeEditor } from "../../composed/node-editor/context";
@@ -136,9 +136,6 @@ export function useDynamicPortPosition(
         // connectionPoint was calculated with basePosition, adjust for current effectivePosition
         const positionDeltaX = effectivePosition.x - customComputeCache.current.basePosition.x;
         const positionDeltaY = effectivePosition.y - customComputeCache.current.basePosition.y;
-        // Fallback to port.position if connectionDirection is not provided by custom compute
-        const fallbackPort = nodePorts.find((p) => p.id === portId);
-        const connectionDirection = cachedPos.connectionDirection ?? fallbackPort?.position ?? "right";
         return {
           portId,
           renderPosition: cachedPos.renderPosition,
@@ -146,7 +143,6 @@ export function useDynamicPortPosition(
             x: cachedPos.connectionPoint.x + positionDeltaX,
             y: cachedPos.connectionPoint.y + positionDeltaY,
           },
-          connectionDirection,
         };
       }
     }
@@ -167,23 +163,21 @@ export function useDynamicPortPosition(
 }
 
 /**
- * Connection point with direction information
+ * Connection point type
  */
-export type ConnectionPointWithDirection = {
+export type ConnectionPoint = {
   x: number;
   y: number;
-  /** Direction from which connections should enter/exit */
-  connectionDirection: PortSide;
 };
 
 /**
- * Hook to get dynamic connection point for a port, including direction
+ * Hook to get dynamic connection point for a port
  */
 export function useDynamicConnectionPoint(
   nodeId: string,
   portId: string,
   options?: PortPositionOptions,
-): ConnectionPointWithDirection | undefined {
+): ConnectionPoint | undefined {
   const position = useDynamicPortPosition(nodeId, portId, options);
   if (!position) {
     return undefined;
@@ -191,6 +185,5 @@ export function useDynamicConnectionPoint(
   return {
     x: position.connectionPoint.x,
     y: position.connectionPoint.y,
-    connectionDirection: position.connectionDirection,
   };
 }

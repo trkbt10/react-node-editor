@@ -154,9 +154,11 @@ describe("createDefaultPortCompute", () => {
     // Output port should be on the right (near node width)
     expect(outputPos?.renderPosition.x).toBeGreaterThan(140);
 
-    // Connection points should include node position
-    expect(inputPos?.connectionPoint.x).toBeLessThan(100);
-    expect(outputPos?.connectionPoint.x).toBeGreaterThan(250);
+    // Connection points should be at port visual centers
+    // Input port on left: x = 100 (node.x) + 0 (left edge) = 100
+    // Output port on right: x = 100 (node.x) + 150 (node width) = 250
+    expect(inputPos?.connectionPoint.x).toBeCloseTo(100, 1);
+    expect(outputPos?.connectionPoint.x).toBeCloseTo(250, 1);
   });
 
   it("returns empty map for empty port array", () => {
@@ -331,14 +333,12 @@ describe("computeNodePortPositions - absolute placement", () => {
     expect(absolutePort?.renderPosition.x).toBeCloseTo(50 - halfPortSize, 1);
     expect(absolutePort?.renderPosition.y).toBeCloseTo(30 - halfPortSize, 1);
 
-    // Connection point x should be at node position + port x
+    // Connection point should be at port center (node position + port position)
     expect(absolutePort?.connectionPoint.x).toBeCloseTo(100 + 50, 1);
-    // Port at (50, 30) in a 200x150 node is closest to top edge (distToTop=30)
-    // So connectionDirection is inferred as "top", and connection extends upward
-    expect(absolutePort?.connectionPoint.y).toBeLessThan(100 + 30);
+    expect(absolutePort?.connectionPoint.y).toBeCloseTo(100 + 30, 1);
   });
 
-  it("infers connectionDirection for absolute port at bottom edge", () => {
+  it("places absolute port at bottom edge correctly", () => {
     const node: Node = {
       id: "node-1",
       type: "test",
@@ -347,7 +347,7 @@ describe("computeNodePortPositions - absolute placement", () => {
       data: {},
     };
 
-    // Port near the bottom edge (y=140 is closest to bottom edge at y=150)
+    // Port near the bottom edge (y=140)
     const ports: Port[] = [
       {
         id: "absolute-bottom",
@@ -362,13 +362,12 @@ describe("computeNodePortPositions - absolute placement", () => {
     const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
     const absoluteBottom = positions.get("absolute-bottom");
 
-    // Connection point x should match port center
+    // Connection point should be at port center
     expect(absoluteBottom?.connectionPoint.x).toBeCloseTo(100, 1);
-    // Connection point y should extend downward (y + connectionMargin) since nearest edge is bottom
-    expect(absoluteBottom?.connectionPoint.y).toBeGreaterThan(140);
+    expect(absoluteBottom?.connectionPoint.y).toBeCloseTo(140, 1);
   });
 
-  it("infers connectionDirection based on nearest edge", () => {
+  it("places absolute port near right edge correctly", () => {
     const node: Node = {
       id: "node-1",
       type: "test",
@@ -392,8 +391,8 @@ describe("computeNodePortPositions - absolute placement", () => {
     const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
     const nearRight = positions.get("near-right");
 
-    // Connection should extend to the right (x + margin)
-    expect(nearRight?.connectionPoint.x).toBeGreaterThan(190);
+    // Connection point should be at port center (no directional offset)
+    expect(nearRight?.connectionPoint.x).toBeCloseTo(190, 1);
     expect(nearRight?.connectionPoint.y).toBeCloseTo(50, 1);
   });
 
@@ -441,7 +440,7 @@ describe("computeNodePortPositions - absolute placement", () => {
     expect(absolutePort?.renderPosition.x).toBeCloseTo(100 - halfPortSize, 1);
   });
 
-  it("connectionPoint is exactly connectionMargin away from port visual center", () => {
+  it("connectionPoint is at port visual center for absolute placement", () => {
     const node: Node = {
       id: "node-1",
       type: "test",
@@ -451,9 +450,8 @@ describe("computeNodePortPositions - absolute placement", () => {
     };
 
     const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
-    const connectionMargin = DEFAULT_PORT_POSITION_CONFIG.connectionMargin;
 
-    // Port in center of node - should connect to nearest edge (could be any)
+    // Port in center of node
     const ports: Port[] = [
       {
         id: "center-port",
@@ -472,16 +470,12 @@ describe("computeNodePortPositions - absolute placement", () => {
     const portVisualCenterX = node.position.x + pos!.renderPosition.x + halfPortSize;
     const portVisualCenterY = node.position.y + pos!.renderPosition.y + halfPortSize;
 
-    // Distance from port visual center to connection point
-    const dx = pos!.connectionPoint.x - portVisualCenterX;
-    const dy = pos!.connectionPoint.y - portVisualCenterY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    // Connection point should be exactly connectionMargin away from port center
-    expect(distance).toBeCloseTo(connectionMargin, 1);
+    // Connection point should be at port visual center (no offset)
+    expect(pos!.connectionPoint.x).toBeCloseTo(portVisualCenterX, 1);
+    expect(pos!.connectionPoint.y).toBeCloseTo(portVisualCenterY, 1);
   });
 
-  it("connectionPoint aligns with port visual center on perpendicular axis", () => {
+  it("connectionPoint equals port visual center", () => {
     const node: Node = {
       id: "node-1",
       type: "test",
@@ -491,9 +485,8 @@ describe("computeNodePortPositions - absolute placement", () => {
     };
 
     const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
-    const connectionMargin = DEFAULT_PORT_POSITION_CONFIG.connectionMargin;
 
-    // Port near right edge - should connect to the right
+    // Port near right edge
     const ports: Port[] = [
       {
         id: "right-port",
@@ -512,13 +505,12 @@ describe("computeNodePortPositions - absolute placement", () => {
     const portVisualCenterX = node.position.x + pos!.renderPosition.x + halfPortSize;
     const portVisualCenterY = node.position.y + pos!.renderPosition.y + halfPortSize;
 
-    // For right direction, connectionPoint.y should equal port center y
+    // Connection point should equal port visual center
+    expect(pos!.connectionPoint.x).toBeCloseTo(portVisualCenterX, 1);
     expect(pos!.connectionPoint.y).toBeCloseTo(portVisualCenterY, 1);
-    // connectionPoint.x should be connectionMargin to the right of port center
-    expect(pos!.connectionPoint.x).toBeCloseTo(portVisualCenterX + connectionMargin, 1);
   });
 
-  it("absolute port at corner has correct connectionPoint relative to visual center", () => {
+  it("absolute port at corner has connectionPoint at visual center", () => {
     const node: Node = {
       id: "node-1",
       type: "test",
@@ -528,7 +520,6 @@ describe("computeNodePortPositions - absolute placement", () => {
     };
 
     const halfPortSize = DEFAULT_PORT_POSITION_CONFIG.visualSize / 2;
-    const connectionMargin = DEFAULT_PORT_POSITION_CONFIG.connectionMargin;
 
     // Port at top-left corner (0, 0)
     const ports: Port[] = [
@@ -553,11 +544,9 @@ describe("computeNodePortPositions - absolute placement", () => {
     expect(portVisualCenterX).toBeCloseTo(node.position.x + 0, 1);
     expect(portVisualCenterY).toBeCloseTo(node.position.y + 0, 1);
 
-    // Connection point should be connectionMargin away from port center
-    const dx = pos!.connectionPoint.x - portVisualCenterX;
-    const dy = pos!.connectionPoint.y - portVisualCenterY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    expect(distance).toBeCloseTo(connectionMargin, 1);
+    // Connection point should be at port visual center
+    expect(pos!.connectionPoint.x).toBeCloseTo(portVisualCenterX, 1);
+    expect(pos!.connectionPoint.y).toBeCloseTo(portVisualCenterY, 1);
   });
 
   it("absolute and side placement at same position produce consistent connectionPoints", () => {
@@ -615,7 +604,7 @@ describe("computeNodePortPositions - absolute placement", () => {
     expect(sidePos.connectionPoint.x).toBeCloseTo(absPos.connectionPoint.x, 1);
   });
 
-  it("absolute port connectionPoint.y equals placement.y + node.position.y for horizontal directions", () => {
+  it("absolute port connectionPoint equals port visual center", () => {
     const node: Node = {
       id: "node-1",
       type: "test",
@@ -639,7 +628,8 @@ describe("computeNodePortPositions - absolute placement", () => {
     const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
     const pos = positions.get("left-center")!;
 
-    // For left direction, connectionPoint.y should exactly equal node.y + placement.y
+    // Connection point should be at port visual center (node.position + placement)
+    expect(pos.connectionPoint.x).toBe(node.position.x + 0);
     expect(pos.connectionPoint.y).toBe(node.position.y + 75);
   });
 });
@@ -817,7 +807,7 @@ describe("computeNodePortPositions - absolute placement with unit", () => {
     expect(pos?.renderPosition.y).toBeCloseTo(50 - halfPortSize, 1);
   });
 
-  it("infers correct direction for percent placement on left edge", () => {
+  it("places percent port on left edge at correct position", () => {
     const node: Node = {
       id: "node-1",
       type: "test",
@@ -841,12 +831,12 @@ describe("computeNodePortPositions - absolute placement with unit", () => {
     const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
     const pos = positions.get("left-edge");
 
-    // Connection should extend to the left
-    expect(pos?.connectionPoint.x).toBeLessThan(0);
-    expect(pos?.connectionDirection).toBe("left");
+    // Connection point should be at port center (x=0, y=50% of 100 = 50)
+    expect(pos?.connectionPoint.x).toBeCloseTo(0, 1);
+    expect(pos?.connectionPoint.y).toBeCloseTo(50, 1);
   });
 
-  it("infers correct direction for percent placement on right edge", () => {
+  it("places percent port on right edge at correct position", () => {
     const node: Node = {
       id: "node-1",
       type: "test",
@@ -870,9 +860,9 @@ describe("computeNodePortPositions - absolute placement with unit", () => {
     const positions = computeNodePortPositions({ ...node, ports }, DEFAULT_PORT_POSITION_CONFIG, ports);
     const pos = positions.get("right-edge");
 
-    // Connection should extend to the right
-    expect(pos?.connectionPoint.x).toBeGreaterThan(200);
-    expect(pos?.connectionDirection).toBe("right");
+    // Connection point should be at port center (x=100% of 200 = 200, y=50% of 100 = 50)
+    expect(pos?.connectionPoint.x).toBeCloseTo(200, 1);
+    expect(pos?.connectionPoint.y).toBeCloseTo(50, 1);
   });
 
   it("handles mixed px and percent ports on same node", () => {

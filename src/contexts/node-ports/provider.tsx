@@ -89,7 +89,6 @@ const StatelessPortPositionProvider: React.FC<{
           portId: port.id,
           renderPosition: { x: 0, y: 0 },
           connectionPoint: { x: node.position.x, y: node.position.y },
-          connectionDirection: port.position,
         };
       },
       calculateNodePortPositions,

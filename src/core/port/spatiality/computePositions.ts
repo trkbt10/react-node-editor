@@ -1,7 +1,7 @@
 /**
  * @file Port position computation utilities
  */
-import type { Node, Port, Position, Size, PortPlacement, AbsolutePortPlacement, PortPosition as PortSide } from "../../../types/core";
+import type { Node, Port, Position, Size, PortPlacement, AbsolutePortPlacement } from "../../../types/core";
 import type {
   PortPosition,
   NodePortPositions,
@@ -211,51 +211,42 @@ function calculatePortRenderPosition(
 }
 
 /**
- * Calculate the connection point for a port (absolute canvas position)
+ * Calculate the connection point for a port (absolute canvas position).
+ * Connection point is at the port visual center, derived directly from render position.
+ * The bezier curve calculation in path.ts handles curve direction based on
+ * geometric relationship between connected ports.
  */
 function calculatePortConnectionPoint(
-  port: Port,
-  relativeOffset: number,
+  renderPosition: Position & { transform?: string },
   node: Node,
   config: PortPositionConfig,
 ): Position {
-  const nodeSize = getNodeSize(node);
   const { left, top } = getNodeBoundingBox(node);
-  const side = getPortSide(port);
-  const inset = getPlacementInset(port.placement);
+  const halfPortSize = config.visualSize / 2;
 
-  // For inset ports, connection point is at the port center (inside node)
-  // For normal ports, connection point extends beyond the node boundary
-  const margin = inset ? 0 : config.connectionMargin;
-  const insetAmount = inset ? config.visualSize : 0;
+  // The render position is the top-left corner of the port element.
+  // CSS transform (translateX/Y) centers the port visually.
+  // We need to calculate the visual center based on which axis is transformed.
+  const transform = renderPosition.transform ?? "";
 
-  switch (side) {
-    case "left":
-      return {
-        x: left - margin + insetAmount,
-        y: top + nodeSize.height * relativeOffset,
-      };
-    case "right":
-      return {
-        x: left + nodeSize.width + margin - insetAmount,
-        y: top + nodeSize.height * relativeOffset,
-      };
-    case "top":
-      return {
-        x: left + nodeSize.width * relativeOffset,
-        y: top - margin + insetAmount,
-      };
-    case "bottom":
-      return {
-        x: left + nodeSize.width * relativeOffset,
-        y: top + nodeSize.height + margin - insetAmount,
-      };
-    default:
-      // Default to right
-      return {
-        x: left + nodeSize.width + margin - insetAmount,
-        y: top + nodeSize.height * 0.5,
-      };
+  if (transform.includes("translateY")) {
+    // Left/Right ports: transform shifts vertically, so y-center is at renderPosition.y
+    return {
+      x: left + renderPosition.x + halfPortSize,
+      y: top + renderPosition.y,
+    };
+  } else if (transform.includes("translateX")) {
+    // Top/Bottom ports: transform shifts horizontally, so x-center is at renderPosition.x
+    return {
+      x: left + renderPosition.x,
+      y: top + renderPosition.y + halfPortSize,
+    };
+  } else {
+    // No transform: center is at renderPosition + halfPortSize
+    return {
+      x: left + renderPosition.x + halfPortSize,
+      y: top + renderPosition.y + halfPortSize,
+    };
   }
 }
 
@@ -282,7 +273,8 @@ function resolveAbsoluteCoordinates(
 }
 
 /**
- * Calculate positions for an absolute positioned port
+ * Calculate positions for an absolute positioned port.
+ * Connection point is at the port visual center, derived from render position.
  */
 function calculateAbsolutePortPosition(
   port: Port,
@@ -291,91 +283,26 @@ function calculateAbsolutePortPosition(
   nodeSize: Size,
   config: PortPositionConfig,
 ): PortPosition {
-  const { left, top } = getNodeBoundingBox(node);
   const halfPortSize = config.visualSize / 2;
 
   // Resolve coordinates to pixels (handles both px and percent units)
   const resolved = resolveAbsoluteCoordinates(placement, nodeSize);
 
   // Render position is the absolute position minus half port size for centering
+  // No transform is used for absolute positioned ports
   const renderPosition: Position & { transform?: string } = {
     x: resolved.x - halfPortSize,
     y: resolved.y - halfPortSize,
   };
 
-  // Connection direction is always inferred from port position relative to node
-  const direction = inferConnectionDirection(resolved, nodeSize);
-
-  // Connection point extends from the port center in the specified direction
-  const portCenterX = left + resolved.x;
-  const portCenterY = top + resolved.y;
-
-  let connectionPoint: Position;
-  switch (direction) {
-    case "left":
-      connectionPoint = { x: portCenterX - config.connectionMargin, y: portCenterY };
-      break;
-    case "right":
-      connectionPoint = { x: portCenterX + config.connectionMargin, y: portCenterY };
-      break;
-    case "top":
-      connectionPoint = { x: portCenterX, y: portCenterY - config.connectionMargin };
-      break;
-    case "bottom":
-      connectionPoint = { x: portCenterX, y: portCenterY + config.connectionMargin };
-      break;
-    default:
-      connectionPoint = { x: portCenterX + config.connectionMargin, y: portCenterY };
-  }
+  // Connection point is derived from render position (no transform case)
+  const connectionPoint = calculatePortConnectionPoint(renderPosition, node, config);
 
   return {
     portId: port.id,
     renderPosition,
     connectionPoint,
-    connectionDirection: direction,
   };
-}
-
-/**
- * Infer connection direction based on port position relative to node center
- * @param resolvedPosition - Position in pixels (already resolved from px or percent)
- * @param nodeSize - Node dimensions
- */
-function inferConnectionDirection(
-  resolvedPosition: { x: number; y: number },
-  nodeSize: Size,
-): PortSide {
-  const centerX = nodeSize.width / 2;
-  const centerY = nodeSize.height / 2;
-  const dx = resolvedPosition.x - centerX;
-  const dy = resolvedPosition.y - centerY;
-
-  // Determine which edge is closest
-  const distToLeft = resolvedPosition.x;
-  const distToRight = nodeSize.width - resolvedPosition.x;
-  const distToTop = resolvedPosition.y;
-  const distToBottom = nodeSize.height - resolvedPosition.y;
-
-  const minDist = Math.min(distToLeft, distToRight, distToTop, distToBottom);
-
-  if (minDist === distToLeft) {
-    return "left";
-  }
-  if (minDist === distToRight) {
-    return "right";
-  }
-  if (minDist === distToTop) {
-    return "top";
-  }
-  if (minDist === distToBottom) {
-    return "bottom";
-  }
-
-  // Fallback based on offset from center
-  if (Math.abs(dx) > Math.abs(dy)) {
-    return dx > 0 ? "right" : "left";
-  }
-  return dy > 0 ? "bottom" : "top";
 }
 
 /**
@@ -452,14 +379,12 @@ export function computeNodePortPositions(
       segment.ports.forEach((port, index) => {
         const relativeOffset = segmentStart + segmentRange * offsetsWithinSegment[index];
         const renderPosition = calculatePortRenderPosition(port, relativeOffset, nodeSize, config);
-        const connectionPoint = calculatePortConnectionPoint(port, relativeOffset, node, config);
-        const side = getPortSide(port);
+        const connectionPoint = calculatePortConnectionPoint(renderPosition, node, config);
 
         positions.set(port.id, {
           portId: port.id,
           renderPosition,
           connectionPoint,
-          connectionDirection: side,
         });
       });
 
@@ -486,7 +411,6 @@ export function createDefaultPortCompute(
       result.set(portId, {
         renderPosition: pos.renderPosition,
         connectionPoint: pos.connectionPoint,
-        connectionDirection: pos.connectionDirection,
       });
     }
 

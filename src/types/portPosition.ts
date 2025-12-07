@@ -1,7 +1,7 @@
 /**
  * @file Type definitions for port positioning and calculation behavior
  */
-import type { Node, Port, NodeId, PortId, Position, PortPosition as PortSide } from "./core";
+import type { Node, Port, NodeId, PortId, Position } from "./core";
 
 /**
  * Computed position information for a port
@@ -16,8 +16,6 @@ export type PortPosition = {
   };
   /** Absolute position on canvas (for drawing connections) */
   connectionPoint: Position;
-  /** Direction from which connections should enter/exit the port */
-  connectionDirection: PortSide;
 };
 
 /**
