@@ -7,11 +7,11 @@ import { useCanvasInteraction } from "../../contexts/composed/canvas/interaction
 import { useNodeEditor } from "../../contexts/composed/node-editor/context";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import { useDynamicConnectionPoint } from "../../contexts/node-ports/hooks/usePortPosition";
-import { calculateConnectionPath } from "../../core/connection/path";
-import { getOppositeSide } from "../../core/port/spatiality/side";
 import { createPortKey } from "../../core/port/identity/key";
+import type { ConnectionEndpoints } from "../../core/connection/endpoints";
+import { useConnectionPathData } from "./ConnectionPath";
 import type { ConnectionRenderContext } from "../../types/NodeDefinition";
-import type { Connection, Node as EditorNode, Port as CorePort, PortPosition, Position } from "../../types/core";
+import type { Connection, Node as EditorNode, Port as CorePort } from "../../types/core";
 import styles from "./DragConnection.module.css";
 
 // ============================================================================
@@ -20,16 +20,22 @@ import styles from "./DragConnection.module.css";
 
 type DragVariant = "connecting" | "disconnecting";
 
+/**
+ * Normalized connection parameters.
+ * Connections always flow from output port to input port.
+ */
 type DragConnectionParams = {
   variant: DragVariant;
-  fromPosition: Position;
-  toPosition: Position;
-  fromDirection: PortPosition;
-  toDirection: PortPosition;
-  fromPort: CorePort;
-  toPort: CorePort | undefined;
-  fromNode: EditorNode;
-  toNode: EditorNode | undefined;
+  /** Connection endpoints (output → input) */
+  endpoints: ConnectionEndpoints;
+  /** Output port (where data flows from) */
+  outputPort: CorePort | undefined;
+  /** Input port (where data flows to) */
+  inputPort: CorePort | undefined;
+  /** Node containing the output port */
+  outputNode: EditorNode | undefined;
+  /** Node containing the input port */
+  inputNode: EditorNode | undefined;
   connection: Connection | null;
 };
 
@@ -80,41 +86,48 @@ const useConnectingParams = (): DragConnectionParams | null => {
 
   const dragState = interactionState.connectionDragState;
 
-  const fromNodeId = dragState?.fromPort.nodeId ?? "";
-  const fromPortId = dragState?.fromPort.id ?? "";
+  const dragStartNodeId = dragState?.fromPort.nodeId ?? "";
+  const dragStartPortId = dragState?.fromPort.id ?? "";
   const candidateNodeId = dragState?.candidatePort?.nodeId ?? "";
   const candidatePortId = dragState?.candidatePort?.id ?? "";
 
-  const fromPos = useDynamicConnectionPoint(fromNodeId, fromPortId);
+  const dragStartPos = useDynamicConnectionPoint(dragStartNodeId, dragStartPortId);
   const candidatePos = useDynamicConnectionPoint(candidateNodeId, candidatePortId);
 
-  if (!dragState || !fromPos) {
+  if (!dragState || !dragStartPos) {
     return null;
   }
 
-  const fromPortEntry = portLookupMap.get(createPortKey(fromNodeId, fromPortId))?.port ?? dragState.fromPort;
-  const fromNode = nodeEditorState.nodes[fromPortEntry.nodeId];
-  if (!fromNode) {
+  const dragStartPort = portLookupMap.get(createPortKey(dragStartNodeId, dragStartPortId))?.port ?? dragState.fromPort;
+  const dragStartNode = nodeEditorState.nodes[dragStartPort.nodeId];
+  if (!dragStartNode) {
     return null;
   }
 
-  const candidatePort = dragState.candidatePort ?? undefined;
+  const candidatePortFromLookup = candidateNodeId && candidatePortId
+    ? portLookupMap.get(createPortKey(candidateNodeId, candidatePortId))?.port
+    : undefined;
+  const candidatePort = candidatePortFromLookup ?? dragState.candidatePort ?? undefined;
   const candidateNode = candidatePort ? nodeEditorState.nodes[candidatePort.nodeId] : undefined;
-  const toPosition = candidatePort && candidatePos ? candidatePos : dragState.toPosition;
+  const candidatePosition = candidatePort && candidatePos ? candidatePos : dragState.toPosition;
 
-  const fromDirection = fromPos.connectionDirection;
-  const toDirection = candidatePos?.connectionDirection ?? getOppositeSide(fromDirection);
+  // Normalize: output port is always "from", input port is always "to"
+  const isDraggingFromOutput = dragStartPort.type === "output";
+
+  const outputPosition = isDraggingFromOutput
+    ? { x: dragStartPos.x, y: dragStartPos.y }
+    : { x: candidatePosition.x, y: candidatePosition.y };
+  const inputPosition = isDraggingFromOutput
+    ? { x: candidatePosition.x, y: candidatePosition.y }
+    : { x: dragStartPos.x, y: dragStartPos.y };
 
   return {
     variant: "connecting",
-    fromPosition: fromPos,
-    toPosition,
-    fromDirection,
-    toDirection,
-    fromPort: fromPortEntry,
-    toPort: candidatePort,
-    fromNode,
-    toNode: candidateNode,
+    endpoints: { outputPosition, inputPosition },
+    outputPort: isDraggingFromOutput ? dragStartPort : candidatePort,
+    inputPort: isDraggingFromOutput ? candidatePort : dragStartPort,
+    outputNode: isDraggingFromOutput ? dragStartNode : candidateNode,
+    inputNode: isDraggingFromOutput ? candidateNode : dragStartNode,
     connection: null,
   };
 };
@@ -140,40 +153,45 @@ const useDisconnectingParams = (): DragConnectionParams | null => {
   const baseConnection =
     nodeEditorState.connections[disconnectState.connectionId] ?? disconnectState.originalConnection;
 
-  const originalFromPort = portLookupMap.get(createPortKey(baseConnection.fromNodeId, baseConnection.fromPortId))?.port;
-  const originalToPort = portLookupMap.get(createPortKey(baseConnection.toNodeId, baseConnection.toPortId))?.port;
+  const originalOutputPort = portLookupMap.get(createPortKey(baseConnection.fromNodeId, baseConnection.fromPortId))?.port;
+  const originalInputPort = portLookupMap.get(createPortKey(baseConnection.toNodeId, baseConnection.toPortId))?.port;
 
-  if (!originalFromPort || !originalToPort) {
+  if (!originalOutputPort || !originalInputPort) {
     return null;
   }
 
-  const fromNode = nodeEditorState.nodes[baseConnection.fromNodeId];
-  const toNode = nodeEditorState.nodes[baseConnection.toNodeId];
-  if (!fromNode || !toNode) {
+  const outputNode = nodeEditorState.nodes[baseConnection.fromNodeId];
+  const inputNode = nodeEditorState.nodes[baseConnection.toNodeId];
+  if (!outputNode || !inputNode) {
     return null;
   }
 
-  const candidatePort = disconnectState.candidatePort ?? undefined;
+  const candidatePortFromLookup = candidateNodeId && candidatePortId
+    ? portLookupMap.get(createPortKey(candidateNodeId, candidatePortId))?.port
+    : undefined;
+  const candidatePort = candidatePortFromLookup ?? disconnectState.candidatePort ?? undefined;
   const candidateNode = candidatePort ? nodeEditorState.nodes[candidatePort.nodeId] : undefined;
 
   const draggingPosition = disconnectState.draggingPosition;
   const candidatePosition = candidatePort && candidatePos ? candidatePos : draggingPosition;
 
-  const fixedDirection = fixedPos.connectionDirection;
-  const candidateDirection = candidatePos?.connectionDirection ?? getOppositeSide(fixedDirection);
+  // draggingEnd === "from" means dragging the output side
+  const isDraggingOutput = disconnectState.draggingEnd === "from";
 
-  const isDraggingFrom = disconnectState.draggingEnd === "from";
+  const outputPosition = isDraggingOutput
+    ? { x: candidatePosition.x, y: candidatePosition.y }
+    : { x: fixedPos.x, y: fixedPos.y };
+  const inputPosition = isDraggingOutput
+    ? { x: fixedPos.x, y: fixedPos.y }
+    : { x: candidatePosition.x, y: candidatePosition.y };
 
   return {
     variant: "disconnecting",
-    fromPosition: isDraggingFrom ? candidatePosition : fixedPos,
-    toPosition: isDraggingFrom ? fixedPos : candidatePosition,
-    fromDirection: isDraggingFrom ? candidateDirection : fixedDirection,
-    toDirection: isDraggingFrom ? fixedDirection : candidateDirection,
-    fromPort: originalFromPort,
-    toPort: candidatePort ?? originalToPort,
-    fromNode,
-    toNode: candidateNode ?? toNode,
+    endpoints: { outputPosition, inputPosition },
+    outputPort: isDraggingOutput ? (candidatePort ?? originalOutputPort) : originalOutputPort,
+    outputNode: isDraggingOutput ? (candidateNode ?? outputNode) : outputNode,
+    inputPort: isDraggingOutput ? originalInputPort : (candidatePort ?? originalInputPort),
+    inputNode: isDraggingOutput ? inputNode : (candidateNode ?? inputNode),
     connection: baseConnection,
   };
 };
@@ -189,26 +207,28 @@ const DragConnectionComponent: React.FC = () => {
   const disconnectingParams = useDisconnectingParams();
 
   const params = connectingParams ?? disconnectingParams;
+
+  // Use shared path calculation - must be called before any early returns (Rules of Hooks)
+  const pathData = useConnectionPathData(
+    params?.endpoints.outputPosition ?? { x: 0, y: 0 },
+    params?.endpoints.inputPosition ?? { x: 0, y: 0 },
+  );
+
   if (!params) {
     return null;
   }
 
   const {
     variant,
-    fromPosition,
-    toPosition,
-    fromDirection,
-    toDirection,
-    fromPort,
-    toPort,
-    fromNode,
-    toNode,
+    endpoints,
+    outputPort,
+    inputPort,
+    outputNode,
+    inputNode,
     connection,
   } = params;
 
-  const renderer = resolveConnectionRenderer(getPortDefinition, fromPort, fromNode, toPort, toNode);
-
-  const pathData = calculateConnectionPath(fromPosition, toPosition, fromDirection, toDirection);
+  const renderer = resolveConnectionRenderer(getPortDefinition, outputPort, outputNode, inputPort, inputNode);
 
   const defaultRender = () => (
     <g className={styles.dragGroup} data-drag-state={variant} shapeRendering="geometricPrecision">
@@ -216,21 +236,21 @@ const DragConnectionComponent: React.FC = () => {
     </g>
   );
 
-  if (!renderer) {
+  // Use default rendering if output port/node is not resolved yet
+  if (!renderer || !outputPort || !outputNode) {
     return defaultRender();
   }
 
+  // ConnectionRenderContext for custom renderers
   const previewContext: ConnectionRenderContext = {
     connection,
     phase: variant,
-    fromPort,
-    toPort,
-    fromNode,
-    toNode,
-    fromPosition,
-    toPosition,
-    fromConnectionDirection: fromDirection,
-    toConnectionDirection: toDirection,
+    fromPort: outputPort,
+    toPort: inputPort,
+    fromNode: outputNode,
+    toNode: inputNode,
+    fromPosition: endpoints.outputPosition,
+    toPosition: endpoints.inputPosition,
     isSelected: false,
     isHovered: false,
     isAdjacentToSelectedNode: false,

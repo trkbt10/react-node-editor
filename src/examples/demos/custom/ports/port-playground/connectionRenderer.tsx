@@ -154,41 +154,15 @@ export const createConnectionRenderer = (variant?: ConnectionVariant) => {
     const resolvedVariant = variant ?? resolveConnectionVariant(context);
     const tokens = CONNECTION_VARIANT_TOKENS[resolvedVariant];
 
-    // Use connectionDirection from context (source of truth for absolute ports)
-    const fromDirection = context.fromConnectionDirection;
-    const toDirection = context.toConnectionDirection;
+    const pathData = React.useMemo(
+      () => calculateConnectionPath(context.fromPosition, context.toPosition),
+      [context.fromPosition.x, context.fromPosition.y, context.toPosition.x, context.toPosition.y],
+    );
 
-    const pathData = React.useMemo(() => {
-      return calculateConnectionPath(
-        context.fromPosition,
-        context.toPosition,
-        fromDirection,
-        toDirection,
-      );
-    }, [
-      context.fromPosition.x,
-      context.fromPosition.y,
-      context.toPosition.x,
-      context.toPosition.y,
-      fromDirection,
-      toDirection,
-    ]);
-
-    const { cp1, cp2 } = React.useMemo(() => {
-      return calculateConnectionControlPoints(
-        context.fromPosition,
-        context.toPosition,
-        fromDirection,
-        toDirection,
-      );
-    }, [
-      context.fromPosition.x,
-      context.fromPosition.y,
-      context.toPosition.x,
-      context.toPosition.y,
-      fromDirection,
-      toDirection,
-    ]);
+    const { cp1, cp2 } = React.useMemo(
+      () => calculateConnectionControlPoints(context.fromPosition, context.toPosition),
+      [context.fromPosition.x, context.fromPosition.y, context.toPosition.x, context.toPosition.y],
+    );
 
     const midpoint = React.useMemo(() => {
       return cubicBezierPoint(context.fromPosition, cp1, cp2, context.toPosition, 0.5);

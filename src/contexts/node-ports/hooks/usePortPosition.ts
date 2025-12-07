@@ -7,7 +7,6 @@ import type { PortPosition, PortPositionNode } from "../../../types/portPosition
 import type { ComputedPortPosition } from "../../../types/NodeDefinition";
 import { useNodeEditor } from "../../composed/node-editor/context";
 import { usePortPositions } from "../context";
-import { useCanvasInteraction } from "../../composed/canvas/interaction/context";
 import { useNodeDefinitions } from "../../node-definitions/context";
 import { computeNodePortPositions, createDefaultPortCompute } from "../../../core/port/spatiality/computePositions";
 import { getNodeSize } from "../../../utils/boundingBoxUtils";
@@ -15,7 +14,6 @@ import { getNodeSize } from "../../../utils/boundingBoxUtils";
 type PortPositionOptions = {
   positionOverride?: Position;
   sizeOverride?: { width: number; height: number };
-  applyInteractionPreview?: boolean;
 };
 
 /**
@@ -39,7 +37,8 @@ const computeCacheKeyEquals = (a: ComputeCacheKey | null, b: ComputeCacheKey): b
 };
 
 /**
- * Hook to get dynamic port position that updates with node position
+ * Hook to get dynamic port position that updates with node position.
+ * Always uses node's stored position unless explicitly overridden via positionOverride.
  */
 export function useDynamicPortPosition(
   nodeId: string,
@@ -48,7 +47,6 @@ export function useDynamicPortPosition(
 ): PortPosition | undefined {
   const { state, getNodePorts } = useNodeEditor();
   const { config, behavior } = usePortPositions();
-  const { state: interactionState } = useCanvasInteraction();
   const { registry } = useNodeDefinitions();
   const currentNode = React.useMemo(() => state.nodes[nodeId], [state.nodes, nodeId]);
   const nodePorts = React.useMemo(() => getNodePorts(nodeId), [getNodePorts, nodeId]);
@@ -64,66 +62,20 @@ export function useDynamicPortPosition(
     result: Map<string, ComputedPortPosition>;
   }>({ key: null, basePosition: { x: 0, y: 0 }, result: new Map() });
 
-  // Pre-compute sets for O(1) lookup instead of O(n) includes/some
-  const draggedNodeIdsSet = React.useMemo(() => {
-    const dragState = interactionState.dragState;
-    if (!dragState) {
-      return null;
-    }
-    const set = new Set<string>(dragState.nodeIds);
-    // Include affected children
-    for (const childIds of Object.values(dragState.affectedChildNodes ?? {})) {
-      for (const id of childIds) {
-        set.add(id);
-      }
-    }
-    return set;
-  }, [interactionState.dragState]);
-
-  // Compute effective size (may change during resize)
+  // Compute effective size: use override if provided, otherwise use node's size
   const effectiveSize = React.useMemo((): Size | undefined => {
-    const { sizeOverride, applyInteractionPreview = true } = options ?? {};
-    if (sizeOverride) {
-      return sizeOverride;
-    }
-    if (applyInteractionPreview) {
-      const resizeState = interactionState.resizeState;
-      if (resizeState?.nodeId === nodeId && resizeState.currentSize) {
-        return resizeState.currentSize;
-      }
-    }
-    return currentNode?.size;
-  }, [currentNode?.size, nodeId, interactionState.resizeState, options?.sizeOverride, options?.applyInteractionPreview]);
+    const { sizeOverride } = options ?? {};
+    return sizeOverride ?? currentNode?.size;
+  }, [currentNode?.size, options?.sizeOverride]);
 
-  // Compute effective position (changes during drag/resize)
+  // Compute effective position: use override if provided, otherwise use node's position
   const effectivePosition = React.useMemo((): Position | undefined => {
     if (!currentNode) {
       return undefined;
     }
-    const { positionOverride, applyInteractionPreview = true } = options ?? {};
-    if (positionOverride) {
-      return positionOverride;
-    }
-    if (applyInteractionPreview) {
-      const dragState = interactionState.dragState;
-      if (dragState && draggedNodeIdsSet?.has(nodeId)) {
-        return { x: currentNode.position.x + dragState.offset.x, y: currentNode.position.y + dragState.offset.y };
-      }
-      const resizeState = interactionState.resizeState;
-      if (resizeState?.nodeId === nodeId && resizeState.currentPosition) {
-        return resizeState.currentPosition;
-      }
-    }
-    return currentNode.position;
-  }, [
-    currentNode,
-    nodeId,
-    interactionState.dragState,
-    interactionState.resizeState,
-    draggedNodeIdsSet,
-    options?.positionOverride,
-    options?.applyInteractionPreview,
-  ]);
+    const { positionOverride } = options ?? {};
+    return positionOverride ?? currentNode.position;
+  }, [currentNode, options?.positionOverride]);
 
   // Stable ports key for cache comparison
   const portsKey = React.useMemo(() => nodePorts.map((p) => p.id).join(","), [nodePorts]);

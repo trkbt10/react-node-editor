@@ -43,6 +43,7 @@ import { CustomInspectorExample } from "./demos/custom/inspector/custom-inspecto
 import { NodeSearchMenuExample } from "./demos/custom/search/node-search-menu/NodeSearchMenuExample";
 import { NodeAddMenuExample } from "./demos/custom/menus/node-add-menu/NodeAddMenuExample";
 import { ConnectionRulesExample } from "./demos/custom/connections/connection-rules/ConnectionRulesExample";
+import { GroupScopeExample } from "./demos/custom/connections/group-scope/GroupScopeExample";
 import classes from "./ExamplePreviewApp.module.css";
 
 type ExampleEntry = {
@@ -172,6 +173,13 @@ const examples: ExampleEntry[] = [
     title: "Connection Rules",
     description: "Demonstrates the 4 ways to customize port connectivity: dataType, canConnect, validateConnection, maxConnections.",
     component: ConnectionRulesExample,
+    category: "custom",
+  },
+  {
+    id: "group-scope-connection",
+    title: "Group Scope Connection",
+    description: "Demonstrates canConnect overriding default dataType checking for group scope ports.",
+    component: GroupScopeExample,
     category: "custom",
   },
   {

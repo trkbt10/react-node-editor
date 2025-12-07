@@ -67,21 +67,19 @@ export const canConnectNormalizedPorts = (
     return false;
   }
 
-  // Check data type compatibility
-  // Port.dataType is set during derivation from the active PortDefinition,
-  // so it takes priority. Only fall back to PortDefinition lookup when Port.dataType is not set.
-  // This is important when multiple PortDefinitions share the same id but have different
-  // dataTypes (selected via instances function).
+  // Get port definitions for source and target
   const sourcePortDef = getPortDefinition(sourcePort, sourceDefinition);
   const targetPortDef = getPortDefinition(targetPort, targetDefinition);
+
+  // Compute default data type compatibility
+  // Port.dataType is set during derivation from the active PortDefinition,
+  // so it takes priority. Only fall back to PortDefinition lookup when Port.dataType is not set.
   const sourceTypes = sourcePort.dataType ?? mergePortDataTypes(sourcePortDef?.dataType, sourcePortDef?.dataTypes);
   const targetTypes = targetPort.dataType ?? mergePortDataTypes(targetPortDef?.dataType, targetPortDef?.dataTypes);
-  if (!arePortDataTypesCompatible(sourceTypes, targetTypes)) {
-    return false;
-  }
+  const dataTypeCompatible = arePortDataTypesCompatible(sourceTypes, targetTypes);
 
-  // Check port-level canConnect predicates
-  // PortConnectionContext.fromPort is always output, toPort is always input
+  // Build port connection context for canConnect predicates
+  // Includes the default data type compatibility result so canConnect can override it
   const portContext: PortConnectionContext = {
     fromPort: sourcePort,
     toPort: targetPort,
@@ -90,10 +88,29 @@ export const canConnectNormalizedPorts = (
     fromDefinition: sourceDefinition,
     toDefinition: targetDefinition,
     allConnections: connections,
+    dataTypeCompatible,
   };
-  const portDefs = [sourcePortDef, targetPortDef].filter(Boolean);
-  if (portDefs.some((def) => def?.canConnect && !def.canConnect(portContext))) {
-    return false;
+
+  // Check port-level canConnect predicates
+  // When canConnect is defined, it overrides the default data type compatibility check.
+  // If not defined, the default data type check result is used.
+  const sourceHasCanConnect = sourcePortDef?.canConnect !== undefined;
+  const targetHasCanConnect = targetPortDef?.canConnect !== undefined;
+
+  if (sourceHasCanConnect || targetHasCanConnect) {
+    // canConnect takes full control - it can accept connections regardless of data type
+    // by returning true, or reject them by returning false
+    if (sourceHasCanConnect && !sourcePortDef!.canConnect!(portContext)) {
+      return false;
+    }
+    if (targetHasCanConnect && !targetPortDef!.canConnect!(portContext)) {
+      return false;
+    }
+  } else {
+    // No canConnect defined - use default data type compatibility check
+    if (!dataTypeCompatible) {
+      return false;
+    }
   }
 
   // Check max connections limit (port object takes priority over definition)

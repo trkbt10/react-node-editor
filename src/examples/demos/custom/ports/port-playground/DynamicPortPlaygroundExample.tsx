@@ -423,16 +423,8 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
     defaultRender: () => React.ReactElement,
   ): React.ReactElement => {
     const defaultElement = defaultRender();
-    // Use connectionDirection from context (source of truth for absolute ports)
-    const fromDirection = context.fromConnectionDirection;
-    const toDirection = context.toConnectionDirection;
-    const pathData = calculateConnectionPath(context.fromPosition, context.toPosition, fromDirection, toDirection);
-    const { cp1, cp2 } = calculateConnectionControlPoints(
-      context.fromPosition,
-      context.toPosition,
-      fromDirection,
-      toDirection,
-    );
+    const pathData = calculateConnectionPath(context.fromPosition, context.toPosition);
+    const { cp1, cp2 } = calculateConnectionControlPoints(context.fromPosition, context.toPosition);
     const midpoint = cubicBezierPoint(context.fromPosition, cp1, cp2, context.toPosition, 0.5);
 
     const fromTypes = normalizePortDataTypes(context.fromPort.dataType);

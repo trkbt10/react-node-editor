@@ -3,12 +3,14 @@
  * Split into Container (context-aware) and Inner (pure rendering) for optimal memoization.
  */
 import * as React from "react";
-import type { Connection, Node, Port, PortPosition, Position } from "../../types/core";
-import { calculateConnectionPath, calculateConnectionMidpoint } from "../../core/connection/path";
+import type { Connection, Node, Port, Position } from "../../types/core";
+import { calculateConnectionMidpoint } from "../../core/connection/path";
 import { hasAnyPositionChanged, hasAnySizeChanged } from "../../core/geometry/comparators";
 import { hasPortPositionChanged } from "../../core/port/identity/comparators";
 import { useDynamicConnectionPoint } from "../../contexts/node-ports/hooks/usePortPosition";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
+import type { ConnectionEndpoints } from "../../core/connection/endpoints";
+import { useConnectionPathData } from "./ConnectionPath";
 import type { ConnectionRenderContext, PortDefinition } from "../../types/NodeDefinition";
 import {
   CONNECTION_APPEARANCES,
@@ -49,12 +51,8 @@ export type ConnectionViewProps = {
 
 type ConnectionViewInnerProps = {
   connectionId: string;
-  fromPosition: Position;
-  toPosition: Position;
-  /** Connection direction for the source port (from computed port position) */
-  fromConnectionDirection: PortPosition;
-  /** Connection direction for the target port (from computed port position) */
-  toConnectionDirection: PortPosition;
+  /** Connection endpoints (output → input) */
+  endpoints: ConnectionEndpoints;
   isSelected: boolean;
   isHovered: boolean;
   isAdjacentToSelectedNode: boolean;
@@ -74,10 +72,7 @@ type ConnectionViewInnerProps = {
 
 const ConnectionViewInnerComponent: React.FC<ConnectionViewInnerProps> = ({
   connectionId,
-  fromPosition,
-  toPosition,
-  fromConnectionDirection,
-  toConnectionDirection,
+  endpoints,
   isSelected,
   isHovered,
   isAdjacentToSelectedNode,
@@ -102,14 +97,11 @@ const ConnectionViewInnerComponent: React.FC<ConnectionViewInnerProps> = ({
     [interactionPhase, adjacency],
   );
 
-  const pathData = React.useMemo(
-    () => calculateConnectionPath(fromPosition, toPosition, fromConnectionDirection, toConnectionDirection),
-    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromConnectionDirection, toConnectionDirection],
-  );
+  const pathData = useConnectionPathData(endpoints.outputPosition, endpoints.inputPosition);
 
   const midAndAngle = React.useMemo(
-    () => calculateConnectionMidpoint(fromPosition, toPosition, fromConnectionDirection, toConnectionDirection),
-    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y, fromConnectionDirection, toConnectionDirection],
+    () => calculateConnectionMidpoint(endpoints.outputPosition, endpoints.inputPosition),
+    [endpoints.outputPosition.x, endpoints.outputPosition.y, endpoints.inputPosition.x, endpoints.inputPosition.y],
   );
 
   const arrowGeometry = React.useMemo(
@@ -211,20 +203,16 @@ const areInnerPropsEqual = (prev: ConnectionViewInnerProps, next: ConnectionView
     return false;
   }
   if (
-    prev.fromPosition.x !== next.fromPosition.x ||
-    prev.fromPosition.y !== next.fromPosition.y ||
-    prev.toPosition.x !== next.toPosition.x ||
-    prev.toPosition.y !== next.toPosition.y
+    prev.endpoints.outputPosition.x !== next.endpoints.outputPosition.x ||
+    prev.endpoints.outputPosition.y !== next.endpoints.outputPosition.y ||
+    prev.endpoints.inputPosition.x !== next.endpoints.inputPosition.x ||
+    prev.endpoints.inputPosition.y !== next.endpoints.inputPosition.y
   ) {
-    return false;
-  }
-  if (prev.fromConnectionDirection !== next.fromConnectionDirection || prev.toConnectionDirection !== next.toConnectionDirection) {
     return false;
   }
   if (prev.customRenderer !== next.customRenderer) {
     return false;
   }
-  // renderContext is memoized in container, check by reference
   if (prev.renderContext !== next.renderContext) {
     return false;
   }
@@ -266,33 +254,33 @@ const ConnectionViewContainer: React.FC<ConnectionViewProps> = ({
 }) => {
   const connectionId = connection.id;
 
-  // Dynamic port positions
   const baseFromPosition = useDynamicConnectionPoint(fromNode.id, fromPort.id, {
     positionOverride: fromNodePosition ?? undefined,
     sizeOverride: fromNodeSize ?? undefined,
-    applyInteractionPreview: false,
   });
   const baseToPosition = useDynamicConnectionPoint(toNode.id, toPort.id, {
     positionOverride: toNodePosition ?? undefined,
     sizeOverride: toNodeSize ?? undefined,
-    applyInteractionPreview: false,
   });
 
-  const fromPosition = React.useMemo(
+  const outputPosition = React.useMemo(
     () => resolvePosition(baseFromPosition, fromNode.position, fromNodePosition),
     [baseFromPosition, fromNode.position.x, fromNode.position.y, fromNodePosition?.x, fromNodePosition?.y],
   );
 
-  const toPosition = React.useMemo(
+  const inputPosition = React.useMemo(
     () => resolvePosition(baseToPosition, toNode.position, toNodePosition),
     [baseToPosition, toNode.position.x, toNode.position.y, toNodePosition?.x, toNodePosition?.y],
   );
 
-  // Connection directions from computed port positions (source of truth)
-  const fromConnectionDirection = baseFromPosition?.connectionDirection ?? fromPort.position;
-  const toConnectionDirection = baseToPosition?.connectionDirection ?? toPort.position;
+  const endpoints = React.useMemo<ConnectionEndpoints>(
+    () => ({
+      outputPosition: { x: outputPosition.x, y: outputPosition.y },
+      inputPosition: { x: inputPosition.x, y: inputPosition.y },
+    }),
+    [outputPosition.x, outputPosition.y, inputPosition.x, inputPosition.y],
+  );
 
-  // Event handlers (stable via useEffectEvent)
   const handlePointerDown = React.useEffectEvent((e: React.PointerEvent) => {
     e.stopPropagation();
     onPointerDown?.(e, connectionId);
@@ -311,13 +299,11 @@ const ConnectionViewContainer: React.FC<ConnectionViewProps> = ({
     onContextMenu?.(e, connectionId);
   });
 
-  // Get port definitions for custom renderer (context access)
   const { getPortDefinition } = useNodeDefinitions();
   const fromPortDefinition = getPortDefinition(fromPort, fromNode.type);
   const toPortDefinition = getPortDefinition(toPort, toNode.type);
   const customRenderer = fromPortDefinition?.renderConnection || toPortDefinition?.renderConnection;
 
-  // Build render context for custom renderer
   const renderContext: ConnectionRenderContext = React.useMemo(
     () => ({
       connection,
@@ -326,10 +312,8 @@ const ConnectionViewContainer: React.FC<ConnectionViewProps> = ({
       toPort,
       fromNode,
       toNode,
-      fromPosition,
-      toPosition,
-      fromConnectionDirection,
-      toConnectionDirection,
+      fromPosition: endpoints.outputPosition,
+      toPosition: endpoints.inputPosition,
       isSelected,
       isHovered,
       isAdjacentToSelectedNode,
@@ -348,10 +332,7 @@ const ConnectionViewContainer: React.FC<ConnectionViewProps> = ({
       toPort,
       fromNode,
       toNode,
-      fromPosition,
-      toPosition,
-      fromConnectionDirection,
-      toConnectionDirection,
+      endpoints,
       isSelected,
       isHovered,
       isAdjacentToSelectedNode,
@@ -363,10 +344,7 @@ const ConnectionViewContainer: React.FC<ConnectionViewProps> = ({
   return (
     <ConnectionViewInner
       connectionId={connectionId}
-      fromPosition={fromPosition}
-      toPosition={toPosition}
-      fromConnectionDirection={fromConnectionDirection}
-      toConnectionDirection={toConnectionDirection}
+      endpoints={endpoints}
       isSelected={isSelected}
       isHovered={isHovered}
       isAdjacentToSelectedNode={isAdjacentToSelectedNode}

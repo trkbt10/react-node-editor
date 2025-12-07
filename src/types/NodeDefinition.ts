@@ -143,6 +143,12 @@ export type PortConnectionContext = {
   toDefinition?: NodeDefinition;
   /** Existing connections in the editor */
   allConnections?: Record<ConnectionId, Connection>;
+  /**
+   * Result of the default data type compatibility check.
+   * When canConnect is defined, it can use this to see the default result
+   * and decide whether to override it.
+   */
+  dataTypeCompatible: boolean;
 };
 
 /**
@@ -165,10 +171,6 @@ export type ConnectionRenderContext = {
   fromPosition: { x: number; y: number };
   /** Absolute position of the target port */
   toPosition: { x: number; y: number };
-  /** Direction from which the connection exits the source port (computed from port position) */
-  fromConnectionDirection: PortSide;
-  /** Direction from which the connection enters the target port (computed from port position) */
-  toConnectionDirection: PortSide;
   /** Whether this connection is selected */
   isSelected: boolean;
   /** Whether this connection is hovered */

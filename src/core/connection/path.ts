@@ -1,57 +1,33 @@
 /**
  * @file Connection path utilities
- * Functions for calculating connection paths based on port positions
+ * Functions for calculating connection paths based on port positions.
+ * Direction is calculated purely from geometric positions.
  */
-import type { Position, PortPosition } from "../../types/core";
+import type { Position } from "../../types/core";
 import { getDistance } from "../geometry/position";
 import { cubicBezierPoint, cubicBezierTangent } from "../geometry/curve";
 
-/**
- * Opposite positions for detecting opposite-facing ports
- */
-const OPPOSITE_POSITIONS: Record<PortPosition, PortPosition> = {
-  left: "right",
-  right: "left",
-  top: "bottom",
-  bottom: "top",
-};
+type DirectionVector = { dx: -1 | 0 | 1; dy: -1 | 0 | 1 };
 
 /**
- * Offset direction for each port position
- * dx/dy represent unit vector direction for the control point offset
+ * Calculate direction vector from one position toward another.
+ * Returns unit vector along the dominant axis.
  */
-const PORT_OFFSET_DELTA: Record<PortPosition, { dx: -1 | 0 | 1; dy: -1 | 0 | 1 }> = {
-  left: { dx: -1, dy: 0 },
-  right: { dx: 1, dy: 0 },
-  top: { dx: 0, dy: -1 },
-  bottom: { dx: 0, dy: 1 },
-};
+const calculateDirectionVector = (from: Position, to: Position): DirectionVector => {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
 
-/**
- * Check if two port positions are facing opposite directions
- */
-const isOppositeFacing = (from?: PortPosition, to?: PortPosition): boolean => {
-  if (!from || !to) {
-    return false;
+  if (Math.abs(dx) >= Math.abs(dy)) {
+    return { dx: dx >= 0 ? 1 : -1, dy: 0 };
   }
-  return OPPOSITE_POSITIONS[from] === to;
+  return { dx: 0, dy: dy >= 0 ? 1 : -1 };
 };
 
 /**
- * Calculate control point position based on port position and offset
+ * Check if two directions are opposite (facing each other)
  */
-const calculateControlPoint = (
-  origin: Position,
-  portPosition: PortPosition | undefined,
-  offset: number,
-  defaultDelta: { dx: -1 | 0 | 1; dy: -1 | 0 | 1 },
-): Position => {
-  const delta = portPosition ? PORT_OFFSET_DELTA[portPosition] : defaultDelta;
-  return {
-    x: origin.x + delta.dx * offset,
-    y: origin.y + delta.dy * offset,
-  };
-};
+const isOppositeFacing = (from: DirectionVector, to: DirectionVector): boolean =>
+  from.dx === -to.dx && from.dy === -to.dy;
 
 const OFFSET_MIN = 40;
 const OFFSET_MAX = 120;
@@ -65,34 +41,30 @@ const calculateOffset = (distance: number, oppositeFacing: boolean): number => {
 };
 
 /**
- * Calculate control points for a bezier curve connecting two ports
- * Takes port positions into account to ensure smooth curves that exit/enter correctly
+ * Calculate control points for a bezier curve connecting two ports.
+ * Direction is automatically calculated from the geometric relationship.
  */
 export const calculateConnectionControlPoints = (
   from: Position,
   to: Position,
-  fromPortPosition?: PortPosition,
-  toPortPosition?: PortPosition,
 ): { cp1: Position; cp2: Position } => {
+  const fromDir = calculateDirectionVector(from, to);
+  const toDir = { dx: -fromDir.dx, dy: -fromDir.dy } as DirectionVector;
+
   const distance = getDistance(from, to);
-  const offset = calculateOffset(distance, isOppositeFacing(fromPortPosition, toPortPosition));
+  const offset = calculateOffset(distance, isOppositeFacing(fromDir, toDir));
 
-  const cp1 = calculateControlPoint(from, fromPortPosition, offset, { dx: 1, dy: 0 });
-  const cp2 = calculateControlPoint(to, toPortPosition, offset, { dx: -1, dy: 0 });
-
-  return { cp1, cp2 };
+  return {
+    cp1: { x: from.x + fromDir.dx * offset, y: from.y + fromDir.dy * offset },
+    cp2: { x: to.x + toDir.dx * offset, y: to.y + toDir.dy * offset },
+  };
 };
 
 /**
  * Calculate SVG bezier path string for a connection
  */
-export const calculateConnectionPath = (
-  from: Position,
-  to: Position,
-  fromPortPosition?: PortPosition,
-  toPortPosition?: PortPosition,
-): string => {
-  const { cp1, cp2 } = calculateConnectionControlPoints(from, to, fromPortPosition, toPortPosition);
+export const calculateConnectionPath = (from: Position, to: Position): string => {
+  const { cp1, cp2 } = calculateConnectionControlPoints(from, to);
   return `M ${from.x} ${from.y} C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${to.x} ${to.y}`;
 };
 
@@ -106,16 +78,11 @@ export type ConnectionMidpointInfo = {
 };
 
 /**
- * Calculate the midpoint position and tangent angle at t=0.5 along the connection bezier
- * Useful for placing direction markers or labels
+ * Calculate the midpoint position and tangent angle at t=0.5 along the connection bezier.
+ * Useful for placing direction markers or labels.
  */
-export const calculateConnectionMidpoint = (
-  from: Position,
-  to: Position,
-  fromPortPosition?: PortPosition,
-  toPortPosition?: PortPosition,
-): ConnectionMidpointInfo => {
-  const { cp1, cp2 } = calculateConnectionControlPoints(from, to, fromPortPosition, toPortPosition);
+export const calculateConnectionMidpoint = (from: Position, to: Position): ConnectionMidpointInfo => {
+  const { cp1, cp2 } = calculateConnectionControlPoints(from, to);
   const t = 0.5;
   const pt = cubicBezierPoint(from, cp1, cp2, to, t);
   const tan = cubicBezierTangent(from, cp1, cp2, to, t);

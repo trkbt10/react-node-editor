@@ -425,6 +425,8 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
   });
 
   it("honors dataTypes arrays and segment-aware canConnect hooks for dynamic ports", () => {
+    // When canConnect is defined, it has full control over connection validation.
+    // To also enforce data type compatibility, include dataTypeCompatible in the logic.
     const dynamicSource: NodeDefinition = {
       type: "dynamic-source",
       displayName: "Dynamic Source",
@@ -436,8 +438,10 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
           position: { side: "right", segment: "main" },
           dataTypes: ["text", "html"],
           instances: () => 1,
-          canConnect: ({ fromPort, toPort }) =>
-            getPlacementSegment(fromPort.placement) !== undefined && getPlacementSegment(toPort?.placement) === getPlacementSegment(fromPort.placement),
+          canConnect: ({ fromPort, toPort, dataTypeCompatible }) =>
+            dataTypeCompatible &&
+            getPlacementSegment(fromPort.placement) !== undefined &&
+            getPlacementSegment(toPort?.placement) === getPlacementSegment(fromPort.placement),
         },
       ],
     };
@@ -452,8 +456,10 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
           position: { side: "left", segment: "main" },
           dataTypes: ["markdown", "text"],
           instances: () => 1,
-          canConnect: ({ fromPort, toPort }) =>
-            getPlacementSegment(toPort?.placement) !== undefined && getPlacementSegment(fromPort.placement) === getPlacementSegment(toPort?.placement),
+          canConnect: ({ fromPort, toPort, dataTypeCompatible }) =>
+            dataTypeCompatible &&
+            getPlacementSegment(toPort?.placement) !== undefined &&
+            getPlacementSegment(fromPort.placement) === getPlacementSegment(toPort?.placement),
         },
       ],
     };
@@ -502,8 +508,10 @@ describe("canConnectPorts - maxConnections default/unlimited", () => {
           position: { side: "left", segment: "main" },
           dataTypes: ["json"],
           instances: () => 1,
-          canConnect: ({ fromPort, toPort }) =>
-            getPlacementSegment(toPort?.placement) !== undefined && getPlacementSegment(fromPort.placement) === getPlacementSegment(toPort?.placement),
+          canConnect: ({ fromPort, toPort, dataTypeCompatible }) =>
+            dataTypeCompatible &&
+            getPlacementSegment(toPort?.placement) !== undefined &&
+            getPlacementSegment(fromPort.placement) === getPlacementSegment(toPort?.placement),
         },
       ],
     };

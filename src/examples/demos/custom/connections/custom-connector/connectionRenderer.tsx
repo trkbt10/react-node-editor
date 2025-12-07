@@ -180,8 +180,6 @@ export const bezierConnectionRenderer = (
     toPort: _toPort,
     fromPosition,
     toPosition,
-    fromConnectionDirection,
-    toConnectionDirection,
     isSelected,
     isHovered,
     isAdjacentToSelectedNode,
@@ -189,35 +187,14 @@ export const bezierConnectionRenderer = (
     phase,
   } = context;
 
-  // Use connectionDirection from context (source of truth for absolute ports)
   const { cp1, cp2 } = React.useMemo(
-    () => calculateConnectionControlPoints(fromPosition, toPosition, fromConnectionDirection, toConnectionDirection),
-    [
-      fromPosition.x,
-      fromPosition.y,
-      toPosition.x,
-      toPosition.y,
-      fromConnectionDirection,
-      toConnectionDirection,
-    ],
+    () => calculateConnectionControlPoints(fromPosition, toPosition),
+    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y],
   );
 
   const pathData = React.useMemo(
-    () =>
-      calculateConnectionPath(
-        fromPosition,
-        toPosition,
-        fromConnectionDirection,
-        toConnectionDirection,
-      ),
-    [
-      fromPosition.x,
-      fromPosition.y,
-      toPosition.x,
-      toPosition.y,
-      fromConnectionDirection,
-      toConnectionDirection,
-    ],
+    () => calculateConnectionPath(fromPosition, toPosition),
+    [fromPosition.x, fromPosition.y, toPosition.x, toPosition.y],
   );
 
   const bounds = React.useMemo(

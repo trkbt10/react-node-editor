@@ -294,6 +294,226 @@ describe("getConnectableNodeTypes", () => {
   });
 });
 
+describe("child to parent group scope-in connection with canConnect", () => {
+  it("allows child node output to connect to parent group scope-in port when canConnect returns true", () => {
+    // Parent group node definition with scope-in port that uses canConnect
+    const parentDefinition: NodeDefinition = {
+      type: "artifact-io",
+      displayName: "Artifact IO",
+      behaviors: ["node", { type: "group", autoGroup: true }],
+      ports: [
+        { id: "in", type: "input", label: "data", position: "left", dataType: "any" },
+        { id: "out", type: "output", label: "data", position: "right", dataType: "any" },
+        { id: "scope-out", type: "output", label: "→child", position: "top", dataType: "any" },
+        // scope-in uses canConnect to accept any type
+        { id: "scope-in", type: "input", label: "←result", position: "bottom", canConnect: () => true },
+      ],
+    };
+
+    // Child node definition
+    const childDefinition: NodeDefinition = {
+      type: "text-template",
+      displayName: "Text Template",
+      ports: [
+        { id: "input", type: "input", label: "Input", position: "left", dataType: "any" },
+        { id: "out", type: "output", label: "Output", position: "right", dataType: "string" },
+      ],
+    };
+
+    // Parent group node
+    const parentNode: Node = {
+      id: "parent-group",
+      type: "artifact-io",
+      position: { x: 0, y: 0 },
+      size: { width: 400, height: 300 },
+      data: {},
+    };
+
+    // Child node inside the parent group
+    const childNode: Node = {
+      id: "child-node",
+      type: "text-template",
+      position: { x: 50, y: 50 },
+      data: {},
+      parentId: "parent-group",
+    };
+
+    const nodes: Record<string, Node> = {
+      "parent-group": parentNode,
+      "child-node": childNode,
+    };
+
+    // Ports for child node
+    const childOutputPort: Port = {
+      id: "out",
+      type: "output",
+      label: "Output",
+      nodeId: "child-node",
+      position: "right",
+      dataType: "string",
+    };
+
+    // Ports for parent node
+    const parentScopeInPort: Port = {
+      id: "scope-in",
+      type: "input",
+      label: "←result",
+      nodeId: "parent-group",
+      position: "bottom",
+    };
+
+    const getNodePorts = (nodeId: string): Port[] => {
+      if (nodeId === "child-node") {
+        return [
+          { id: "input", type: "input", label: "Input", nodeId: "child-node", position: "left", dataType: "any" },
+          childOutputPort,
+        ];
+      }
+      if (nodeId === "parent-group") {
+        return [
+          { id: "in", type: "input", label: "data", nodeId: "parent-group", position: "left", dataType: "any" },
+          { id: "out", type: "output", label: "data", nodeId: "parent-group", position: "right", dataType: "any" },
+          { id: "scope-out", type: "output", label: "→child", nodeId: "parent-group", position: "top", dataType: "any" },
+          parentScopeInPort,
+        ];
+      }
+      return [];
+    };
+
+    const getNodeDefinition = (type: string) => {
+      if (type === "artifact-io") {return parentDefinition;}
+      if (type === "text-template") {return childDefinition;}
+      return undefined;
+    };
+
+    const connections: Record<string, Connection> = {};
+
+    // When dragging from child's output port
+    const result = getConnectablePortIds(
+      childOutputPort,
+      nodes,
+      getNodePorts,
+      connections,
+      getNodeDefinition,
+    );
+
+    // Should include the parent's scope-in port as a valid connection candidate
+    const parentScopeInKey = createPortKey("parent-group", "scope-in");
+    expect(result.has(parentScopeInKey)).toBe(true);
+  });
+
+  it("allows connection when port has no dataType specified (untyped port)", () => {
+    // Port without dataType should accept any connection
+    const childOutputPort: Port = {
+      id: "out",
+      type: "output",
+      label: "Output",
+      nodeId: "child-node",
+      position: "right",
+      dataType: "string",
+    };
+
+    const parentScopeInPort: Port = {
+      id: "scope-in",
+      type: "input",
+      label: "←result",
+      nodeId: "parent-group",
+      position: "bottom",
+      // No dataType - should be compatible with any type
+    };
+
+    const nodes: Record<string, Node> = {
+      "child-node": {
+        id: "child-node",
+        type: "text-template",
+        position: { x: 50, y: 50 },
+        data: {},
+        parentId: "parent-group",
+      },
+      "parent-group": {
+        id: "parent-group",
+        type: "artifact-io",
+        position: { x: 0, y: 0 },
+        data: {},
+      },
+    };
+
+    const getNodePorts = (nodeId: string): Port[] => {
+      if (nodeId === "child-node") {return [childOutputPort];}
+      if (nodeId === "parent-group") {return [parentScopeInPort];}
+      return [];
+    };
+
+    const getNodeDefinition = () => createNodeDefinition();
+    const connections: Record<string, Connection> = {};
+
+    const result = getConnectablePortIds(
+      childOutputPort,
+      nodes,
+      getNodePorts,
+      connections,
+      getNodeDefinition,
+    );
+
+    expect(result.has(createPortKey("parent-group", "scope-in"))).toBe(true);
+  });
+
+  it("rejects connection when dataTypes do not match and no canConnect is defined", () => {
+    const childOutputPort: Port = {
+      id: "out",
+      type: "output",
+      label: "Output",
+      nodeId: "child-node",
+      position: "right",
+      dataType: "string",
+    };
+
+    const parentScopeInPort: Port = {
+      id: "scope-in",
+      type: "input",
+      label: "←result",
+      nodeId: "parent-group",
+      position: "bottom",
+      dataType: "number", // Different type, should not match "string"
+    };
+
+    const nodes: Record<string, Node> = {
+      "child-node": {
+        id: "child-node",
+        type: "text-template",
+        position: { x: 50, y: 50 },
+        data: {},
+      },
+      "parent-group": {
+        id: "parent-group",
+        type: "other-node",
+        position: { x: 0, y: 0 },
+        data: {},
+      },
+    };
+
+    const getNodePorts = (nodeId: string): Port[] => {
+      if (nodeId === "child-node") {return [childOutputPort];}
+      if (nodeId === "parent-group") {return [parentScopeInPort];}
+      return [];
+    };
+
+    const getNodeDefinition = () => createNodeDefinition();
+    const connections: Record<string, Connection> = {};
+
+    const result = getConnectablePortIds(
+      childOutputPort,
+      nodes,
+      getNodePorts,
+      connections,
+      getNodeDefinition,
+    );
+
+    // Should NOT include the port because dataTypes don't match
+    expect(result.has(createPortKey("parent-group", "scope-in"))).toBe(false);
+  });
+});
+
 describe("findConnectablePortDefinition", () => {
   const createDefinitionWithPorts = (
     type: string,
