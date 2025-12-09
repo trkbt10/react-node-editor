@@ -304,32 +304,35 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
   const [config, setConfig] = React.useState<PlaygroundConfig>(defaultConfig);
   const [data, setData] = React.useState<NodeEditorData>(() => buildInitialData(defaultConfig));
 
-  const updateCount = React.useCallback((nodeKey: "source" | "target", groupKey: "main" | "optional", value: number) => {
-    const nextCount = clampCount(value);
-    setConfig((prev) => ({
-      ...prev,
-      [nodeKey]: {
-        ...prev[nodeKey],
-        [groupKey]: { ...prev[nodeKey][groupKey], count: nextCount },
-      },
-    }));
-
-    setData((prev) => {
-      const nodeId = nodeKey === "source" ? "source" : "target";
-      const countKey = groupKey === "main" ? "mainCount" : "optionalCount";
-      const node = prev.nodes[nodeId];
-      if (!node) {
-        return prev;
-      }
-      return {
+  const updateCount = React.useCallback(
+    (nodeKey: "source" | "target", groupKey: "main" | "optional", value: number) => {
+      const nextCount = clampCount(value);
+      setConfig((prev) => ({
         ...prev,
-        nodes: {
-          ...prev.nodes,
-          [nodeId]: { ...node, data: { ...node.data, [countKey]: nextCount } },
+        [nodeKey]: {
+          ...prev[nodeKey],
+          [groupKey]: { ...prev[nodeKey][groupKey], count: nextCount },
         },
-      };
-    });
-  }, []);
+      }));
+
+      setData((prev) => {
+        const nodeId = nodeKey === "source" ? "source" : "target";
+        const countKey = groupKey === "main" ? "mainCount" : "optionalCount";
+        const node = prev.nodes[nodeId];
+        if (!node) {
+          return prev;
+        }
+        return {
+          ...prev,
+          nodes: {
+            ...prev.nodes,
+            [nodeId]: { ...node, data: { ...node.data, [countKey]: nextCount } },
+          },
+        };
+      });
+    },
+    [],
+  );
 
   const updateGroup = React.useCallback(
     (nodeKey: "source" | "target", groupKey: "main" | "optional", patch: Partial<PortGroupConfig>) => {
@@ -485,7 +488,13 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
               {primaryLabel}
             </text>
             {segmentLabel ? (
-              <text className={styles.connectionBadgeSubtext} x={0} y={12} textAnchor="middle" dominantBaseline="middle">
+              <text
+                className={styles.connectionBadgeSubtext}
+                x={0}
+                y={12}
+                textAnchor="middle"
+                dominantBaseline="middle"
+              >
                 {segmentLabel}
               </text>
             ) : null}
@@ -530,7 +539,13 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
             renderConnection: renderConnectionDetails,
           },
           {
-            ...makePortGroupDefinition("optional-output", "output", config.source.optional, sharedCanConnect, "optionalCount"),
+            ...makePortGroupDefinition(
+              "optional-output",
+              "output",
+              config.source.optional,
+              sharedCanConnect,
+              "optionalCount",
+            ),
             renderPort: createPortRenderer(config.source.optional.label, "secondary"),
             renderConnection: renderConnectionDetails,
           },
@@ -557,7 +572,13 @@ export const DynamicPortPlaygroundExample: React.FC = () => {
             renderConnection: renderConnectionDetails,
           },
           {
-            ...makePortGroupDefinition("optional-input", "input", config.target.optional, sharedCanConnect, "optionalCount"),
+            ...makePortGroupDefinition(
+              "optional-input",
+              "input",
+              config.target.optional,
+              sharedCanConnect,
+              "optionalCount",
+            ),
             renderPort: createPortRenderer(config.target.optional.label, "secondary"),
             renderConnection: renderConnectionDetails,
           },
