@@ -524,7 +524,7 @@ describe("findConnectablePortDefinition", () => {
     ports,
   });
 
-  it("finds first compatible port definition", () => {
+  it("finds first compatible port", () => {
     const fromPort = createPort({ id: "out", type: "output", nodeId: "node-1", dataType: "text" });
 
     const targetDef = createDefinitionWithPorts("target", [
@@ -547,7 +547,6 @@ describe("findConnectablePortDefinition", () => {
     });
 
     expect(result).not.toBeNull();
-    expect(result?.portDefinition.id).toBe("input");
     expect(result?.port.id).toBe("input");
     expect(result?.port.nodeId).toBe("new-node");
     expect(result?.port.dataType).toBe("text");
@@ -602,7 +601,7 @@ describe("findConnectablePortDefinition", () => {
     });
 
     expect(result).not.toBeNull();
-    expect(result?.portDefinition.id).toBe("image-input");
+    expect(result?.port.id).toBe("image-input");
     expect(result?.port.dataType).toBe("image");
   });
 
@@ -655,7 +654,48 @@ describe("findConnectablePortDefinition", () => {
     });
 
     expect(result).not.toBeNull();
-    expect(result?.portDefinition.id).toBe("output");
+    expect(result?.port.id).toBe("output");
     expect(result?.port.type).toBe("output");
+  });
+
+  it("supports dynamic ports via instances function", () => {
+    const fromPort = createPort({ id: "out", type: "output", nodeId: "node-1", dataType: "text" });
+
+    const targetDef: NodeDefinition = {
+      type: "dynamic-target",
+      displayName: "Dynamic Target",
+      defaultData: { inputCount: 3 },
+      ports: [
+        {
+          id: "dynamic-input",
+          type: "input",
+          label: "Dynamic Input",
+          position: "left",
+          dataType: "text",
+          instances: ({ node }) => (node.data as { inputCount?: number }).inputCount ?? 1,
+        },
+      ],
+    };
+
+    const nodes: Record<string, Node> = {
+      "node-1": createNode({ id: "node-1", type: "source" }),
+    };
+
+    const connections: Record<string, Connection> = {};
+
+    const result = findConnectablePortDefinition({
+      fromPort,
+      fromNodeDefinition: undefined,
+      targetNodeDefinition: targetDef,
+      targetNodeId: "new-node",
+      connections,
+      nodes,
+    });
+
+    expect(result).not.toBeNull();
+    // Dynamic port should be derived with index suffix
+    expect(result?.port.id).toBe("dynamic-input-1");
+    expect(result?.port.nodeId).toBe("new-node");
+    expect(result?.port.dataType).toBe("text");
   });
 });

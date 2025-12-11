@@ -345,6 +345,8 @@ export class SettingsManager extends SettingsEventEmitter implements ISettingsMa
     this.emit("change", event);
   }
 
+  setValues(values: Partial<EditorSettings>): void;
+  setValues(values: Partial<SettingsValues>): void;
   setValues(values: Partial<SettingsValues>): void {
     Object.entries(values).forEach(([key, value]) => {
       if (value !== undefined) {

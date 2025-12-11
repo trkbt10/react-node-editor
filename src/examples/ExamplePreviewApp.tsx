@@ -46,6 +46,7 @@ import { NodeSearchMenuExample } from "./demos/custom/search/node-search-menu/No
 import { NodeAddMenuExample } from "./demos/custom/menus/node-add-menu/NodeAddMenuExample";
 import { ConnectionRulesExample } from "./demos/custom/connections/connection-rules/ConnectionRulesExample";
 import { GroupScopeExample } from "./demos/custom/connections/group-scope/GroupScopeExample";
+import { SettingsEditorExample } from "./demos/basic/settings-editor/SettingsEditorExample";
 import { ExampleSelector, type ExampleCategory, type ExampleEntry } from "./components/ExampleSelector";
 import { ThemeSelector } from "./components/ThemeSelector";
 import classes from "./ExamplePreviewApp.module.css";
@@ -121,6 +122,13 @@ const examples: InternalExampleEntry[] = [
     title: "Error Node Fallback",
     description: "Shows how unknown node types are displayed as error nodes when fallbackDefinition is enabled.",
     component: ErrorNodeFallbackExample,
+    category: "basic",
+  },
+  {
+    id: "settings-editor",
+    title: "Settings Editor",
+    description: "Interactive settings panel demonstrating SettingsManager for runtime configuration.",
+    component: SettingsEditorExample,
     category: "basic",
   },
   {

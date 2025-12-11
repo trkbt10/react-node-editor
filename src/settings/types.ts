@@ -148,7 +148,10 @@ export type SettingsManager = {
     <K extends EditorSettingKey>(key: K, value: EditorSettings[K]): void;
     (key: string, value: SettingValue): void;
   };
-  setValues: (values: Partial<SettingsValues>) => void;
+  setValues: {
+    (values: Partial<EditorSettings>): void;
+    (values: Partial<SettingsValues>): void;
+  };
   getAllValues: () => SettingsValues;
   resetToDefaults: (keys?: string[]) => void;
 

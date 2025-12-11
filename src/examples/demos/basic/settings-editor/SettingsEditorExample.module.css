@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  background: var(--node-editor-canvas-background);
+}
+
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  background: var(--node-editor-control-background);
+  border-right: 1px solid var(--node-editor-border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebarHeader {
+  padding: var(--node-editor-inspector-space-sm) var(--node-editor-inspector-space-md);
+  border-bottom: 1px solid var(--node-editor-border-color);
+}
+
+.sidebarContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--node-editor-inspector-space-sm);
+}
+
+.sidebarFooter {
+  padding: var(--node-editor-inspector-space-sm) var(--node-editor-inspector-space-md);
+  border-top: 1px solid var(--node-editor-border-color);
+}
+
+.sidebarFooter button {
+  width: 100%;
+}
+
+.editorArea {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}

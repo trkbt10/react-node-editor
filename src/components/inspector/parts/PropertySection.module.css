@@ -31,7 +31,7 @@
 }
 
 .sectionBody {
-  display: flex;
-  flex-direction: column;
-  gap: var(--node-editor-inspector-section-gap);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--node-editor-inspector-section-gap) var(--node-editor-inspector-inline-gap);
 }

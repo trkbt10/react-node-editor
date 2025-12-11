@@ -97,12 +97,20 @@
   flex-wrap: nowrap;
 }
 
+.card[data-variant="grid"] .title {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
 .card[data-variant="grid"] .typeBadge {
   margin-left: auto;
   font-size: 9px;
   padding: 1px 4px;
   opacity: 0.7;
-  flex-shrink: 0;
+  max-width: 30%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* ============================================================================

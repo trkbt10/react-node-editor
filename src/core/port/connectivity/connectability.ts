@@ -3,12 +3,11 @@
  * Pure functions for port connectability calculations
  */
 import type { Port, Node, Connection } from "../../../types/core";
-import type { NodeDefinition, PortDefinition } from "../../../types/NodeDefinition";
-import { createPortFromDefinition } from "../identity/variant";
-import { normalizePlacement } from "../spatiality/placement";
+import type { NodeDefinition } from "../../../types/NodeDefinition";
 import { createPortKey } from "../identity/key";
 import type { PortKey } from "../identity/key";
 import { canConnectPorts } from "../../connection/validation";
+import { deriveNodePorts } from "../../node/portDerivation";
 
 /**
  * Compute connectable port IDs for a given source port.
@@ -47,31 +46,6 @@ export function getConnectablePortIds(
 }
 
 /**
- * Check if a PortDefinition has any port that can connect to the given source port.
- * canConnectPorts handles all validation including type checks and normalization.
- */
-const canDefinitionConnectToPort = (
-  portDefinition: PortDefinition,
-  fromPort: Port,
-  fromDef: NodeDefinition | undefined,
-  targetDef: NodeDefinition,
-  connections: Record<string, Connection>,
-  nodes: Record<string, Node>,
-): boolean => {
-  const placement = normalizePlacement(portDefinition.position);
-  const tempPort = createPortFromDefinition(portDefinition, "new", placement);
-
-  // canConnectPorts handles all validation:
-  // - same type check
-  // - same node check (tempPort has nodeId="new" so will never match)
-  // - port normalization
-  // - validateConnection callbacks
-  // - data type compatibility
-  // - capacity limits
-  return canConnectPorts(fromPort, tempPort, fromDef, targetDef, connections, { nodes });
-};
-
-/**
  * Parameters for computing connectable node types
  */
 export type GetConnectableNodeTypesParams = {
@@ -88,8 +62,29 @@ export type GetConnectableNodeTypesParams = {
 };
 
 /**
+ * Create a temporary node for port derivation.
+ * Uses default data from definition to properly resolve dynamic ports.
+ */
+const createTempNodeForDefinition = (definition: NodeDefinition, nodeId: string): Node => {
+  const defaultData =
+    definition.defaultData !== undefined ? { ...(definition.defaultData as Record<string, unknown>) } : {};
+
+  return {
+    id: nodeId,
+    type: definition.type,
+    position: { x: 0, y: 0 },
+    size: definition.defaultSize ?? { width: 150, height: 50 },
+    data: {
+      ...defaultData,
+      title: "",
+    },
+  };
+};
+
+/**
  * Get all node types that have at least one port capable of connecting to the source port.
  * Used for filtering the node search menu when dragging a connection to empty space.
+ * Supports dynamic ports by deriving actual ports from a temporary node instance.
  */
 export const getConnectableNodeTypes = ({
   fromPort,
@@ -105,9 +100,12 @@ export const getConnectableNodeTypes = ({
   const connectableTypes: string[] = [];
 
   for (const def of allDefinitions) {
-    const ports = def.ports || [];
-    const hasConnectablePort = ports.some((portDef) =>
-      canDefinitionConnectToPort(portDef, fromPort, fromDef, def, connections, nodes),
+    // Create a temporary node to derive actual ports (handles dynamic ports)
+    const tempNode = createTempNodeForDefinition(def, "__temp_connectable_check__");
+    const derivedPorts = deriveNodePorts(tempNode, def);
+
+    const hasConnectablePort = derivedPorts.some((port) =>
+      canConnectPorts(fromPort, port, fromDef, def, connections, { nodes }),
     );
 
     if (hasConnectablePort) {
@@ -137,18 +135,16 @@ export type FindConnectablePortDefinitionParams = {
 };
 
 /**
- * Result of finding a connectable port definition
+ * Result of finding a connectable port
  */
-export type ConnectablePortDefinitionResult = {
-  /** The port definition that can connect */
-  portDefinition: PortDefinition;
+export type ConnectablePortResult = {
   /** The resolved Port instance for the connection */
   port: Port;
 } | null;
 
 /**
- * Find the first port definition on a target node that can connect to the source port.
- * Returns both the definition and a properly constructed Port instance.
+ * Find the first port on a target node that can connect to the source port.
+ * Supports dynamic ports by deriving actual ports from the target node definition.
  * Used when creating a new node and auto-connecting to an existing port.
  */
 export const findConnectablePortDefinition = ({
@@ -158,14 +154,14 @@ export const findConnectablePortDefinition = ({
   targetNodeId,
   connections,
   nodes,
-}: FindConnectablePortDefinitionParams): ConnectablePortDefinitionResult => {
-  const targetPorts = targetNodeDefinition.ports || [];
+}: FindConnectablePortDefinitionParams): ConnectablePortResult => {
+  // Create a temporary node to derive actual ports (handles dynamic ports)
+  const tempNode = createTempNodeForDefinition(targetNodeDefinition, targetNodeId);
+  const derivedPorts = deriveNodePorts(tempNode, targetNodeDefinition);
 
-  for (const portDef of targetPorts) {
-    if (canDefinitionConnectToPort(portDef, fromPort, fromNodeDefinition, targetNodeDefinition, connections, nodes)) {
-      const placement = normalizePlacement(portDef.position);
-      const port = createPortFromDefinition(portDef, targetNodeId, placement);
-      return { portDefinition: portDef, port };
+  for (const port of derivedPorts) {
+    if (canConnectPorts(fromPort, port, fromNodeDefinition, targetNodeDefinition, connections, { nodes })) {
+      return { port };
     }
   }
 

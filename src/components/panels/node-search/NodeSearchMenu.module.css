@@ -3,11 +3,11 @@
 /* ========================================= */
 
 .nodeSearchMenu {
-  --_menu-min-width: 360px;
+  --_menu-min-width-default: 360px;
   --_menu-max-width: 480px;
   --_menu-max-height: 480px;
 
-  min-width: var(--_menu-min-width);
+  min-width: var(--_menu-min-width, var(--_menu-min-width-default));
   max-width: var(--_menu-max-width);
   max-height: var(--_menu-max-height);
   background: var(--node-editor-control-background);
@@ -16,28 +16,15 @@
   box-shadow: var(--node-editor-dialog-box-shadow);
   overflow: hidden;
   font-family: var(--node-editor-theme-default-font-family);
-  animation: menuFadeIn var(--node-editor-transition-duration) cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
   flex-direction: column;
 }
 
 /* Split view mode - wider layout */
 .nodeSearchMenu[data-view-mode="split"] {
-  --_menu-min-width: 540px;
+  --_menu-min-width-default: 540px;
   --_menu-max-width: 680px;
   --_menu-max-height: 520px;
-}
-
-@keyframes menuFadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.98) translateY(calc(-1 * var(--node-editor-space-xs)));
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
 }
 
 /* Container for view components - delegates scroll behavior to children */
