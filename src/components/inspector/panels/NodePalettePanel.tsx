@@ -96,14 +96,14 @@ export const NodePalettePanel: React.FC = () => {
                 <span className={styles.categoryCount}>{category.nodes.length}</span>
               </div>
 
-              <div className={styles.cardGrid}>
+              <div className={styles.nodeList}>
                 {category.nodes.map((nodeDefinition) => {
                   const disabled = disabledSet.has(nodeDefinition.type);
                   return (
                     <NodeCard
                       key={nodeDefinition.type}
                       node={nodeDefinition}
-                      variant="grid"
+                      variant="list"
                       disabled={disabled}
                       draggable={!disabled}
                       onDragStart={(event) => {

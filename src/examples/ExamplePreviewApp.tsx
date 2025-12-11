@@ -31,6 +31,8 @@ import { UnityThemeExample } from "./demos/design/themes/unity/UnityThemeExample
 import { AdobeThemeExample } from "./demos/design/themes/adobe/AdobeThemeExample";
 import { FigmaThemeExample } from "./demos/design/themes/figma/FigmaThemeExample";
 import { InspectorComponentsExample } from "./demos/design/inspector-components/InspectorComponentsExample";
+import { NodeCardsExample } from "./demos/design/node-cards/NodeCardsExample";
+import { InspectorPanelsExample } from "./demos/design/inspector-panels/InspectorPanelsExample";
 import { TradingAnalyticsDashboard } from "./demos/advanced/analytics/trading-analytics/TradingAnalyticsDashboard";
 import { DataBindingModesExample } from "./demos/data/binding-modes/DataBindingModesExample";
 import { ErrorNodeFallbackExample } from "./demos/basic/error-node-fallback/ErrorNodeFallbackExample";
@@ -44,9 +46,11 @@ import { NodeSearchMenuExample } from "./demos/custom/search/node-search-menu/No
 import { NodeAddMenuExample } from "./demos/custom/menus/node-add-menu/NodeAddMenuExample";
 import { ConnectionRulesExample } from "./demos/custom/connections/connection-rules/ConnectionRulesExample";
 import { GroupScopeExample } from "./demos/custom/connections/group-scope/GroupScopeExample";
+import { ExampleSelector, type ExampleCategory, type ExampleEntry } from "./components/ExampleSelector";
+import { ThemeSelector } from "./components/ThemeSelector";
 import classes from "./ExamplePreviewApp.module.css";
 
-type ExampleEntry = {
+type InternalExampleEntry = {
   id: string;
   title: string;
   description: string;
@@ -54,7 +58,7 @@ type ExampleEntry = {
   category: "basic" | "advanced" | "custom" | "layout" | "design" | "data";
 };
 
-const examples: ExampleEntry[] = [
+const examples: InternalExampleEntry[] = [
   {
     id: "trading-analytics-dashboard",
     title: "Trading Analytics Dashboard",
@@ -288,6 +292,20 @@ const examples: ExampleEntry[] = [
     category: "design",
   },
   {
+    id: "design-node-cards",
+    title: "Design: Node Cards",
+    description: "Preview of NodeCard component variants (list, grid, menu, compact) and states.",
+    component: NodeCardsExample,
+    category: "design",
+  },
+  {
+    id: "design-inspector-panels",
+    title: "Design: Inspector Panels",
+    description: "Preview of all inspector panel components: NodePalette, History, GridSettings, GeneralSettings, NodeTree, InteractionHelp.",
+    component: InspectorPanelsExample,
+    category: "design",
+  },
+  {
     id: "design-opal-theme",
     title: "Design: Opal Theme",
     description: "Soft pastel aesthetic with custom connection and port renderers inspired by Opal AI.",
@@ -390,31 +408,50 @@ export function ExamplePreviewApp(): React.ReactElement {
     applyTheme(selectedThemeId);
   }, [selectedThemeId]);
 
-  const groupedExamples = React.useMemo(() => {
-    const groups: Record<string, ExampleEntry[]> = {
-      basic: [],
-      advanced: [],
-      layout: [],
-      design: [],
-      custom: [],
-      data: [],
-    };
-
-    for (const example of examples) {
-      groups[example.category].push(example);
-    }
-
-    return groups;
+  const selectorExamples = React.useMemo<ExampleEntry[]>(() => {
+    return examples.map((ex) => ({
+      id: ex.id,
+      title: ex.title,
+      description: ex.description,
+      category: ex.category,
+    }));
   }, []);
 
-  const categoryLabels: Record<string, string> = {
-    basic: "Basic Examples",
-    advanced: "Advanced Examples",
-    layout: "Layout Examples",
-    design: "Design Examples",
-    custom: "Custom Renderer Examples",
-    data: "Data Binding Examples",
-  };
+  const selectorCategories = React.useMemo<ExampleCategory[]>(() => {
+    const filterByCategory = (cat: string) => selectorExamples.filter((ex) => ex.category === cat);
+
+    // Custom category with subcategories based on example id patterns
+    const customExamples = filterByCategory("custom");
+    const customNodes = customExamples.filter((ex) => ex.id === "custom-node");
+    const customPorts = customExamples.filter((ex) =>
+      ["custom-port-renderer", "dynamic-port-playground", "absolute-port-placement", "comfyui-layout"].includes(ex.id)
+    );
+    const customConnections = customExamples.filter((ex) =>
+      ["custom-connector-renderer", "connection-rules", "group-scope-connection"].includes(ex.id)
+    );
+    const customUI = customExamples.filter((ex) =>
+      ["custom-inspector", "node-search-menu", "node-add-menu"].includes(ex.id)
+    );
+
+    return [
+      { id: "basic", label: "Basic", examples: filterByCategory("basic") },
+      { id: "advanced", label: "Advanced", examples: filterByCategory("advanced") },
+      { id: "layout", label: "Layout", examples: filterByCategory("layout") },
+      { id: "design", label: "Design", examples: filterByCategory("design") },
+      {
+        id: "custom",
+        label: "Custom",
+        examples: [],
+        children: [
+          { id: "custom-nodes", label: "Nodes", examples: customNodes },
+          { id: "custom-ports", label: "Ports", examples: customPorts },
+          { id: "custom-connections", label: "Connections", examples: customConnections },
+          { id: "custom-ui", label: "UI", examples: customUI },
+        ],
+      },
+      { id: "data", label: "Data", examples: filterByCategory("data") },
+    ];
+  }, [selectorExamples]);
 
   return (
     <div className={classes.container}>
@@ -424,34 +461,17 @@ export function ExamplePreviewApp(): React.ReactElement {
           <span className={classes.description}>{selectedExample.description}</span>
         </div>
         <div className={classes.controls}>
-          <select
-            aria-label="Select theme"
-            value={selectedThemeId}
-            onChange={(event) => setSelectedThemeId(event.target.value as NodeEditorThemeId)}
-            className={classes.select}
-          >
-            {themeOptions.map((theme) => (
-              <option key={theme.id} value={theme.id}>
-                {theme.label}
-              </option>
-            ))}
-          </select>
-          <select
-            aria-label="Select example"
-            value={selectedExampleId}
-            onChange={(event) => handleExampleChange(event.target.value)}
-            className={classes.select}
-          >
-            {Object.entries(groupedExamples).map(([category, categoryExamples]) => (
-              <optgroup key={category} label={categoryLabels[category]}>
-                {categoryExamples.map((example) => (
-                  <option key={example.id} value={example.id}>
-                    {example.title}
-                  </option>
-                ))}
-              </optgroup>
-            ))}
-          </select>
+          <ThemeSelector
+            options={themeOptions}
+            selectedId={selectedThemeId}
+            onSelect={(id) => setSelectedThemeId(id as NodeEditorThemeId)}
+          />
+          <ExampleSelector
+            examples={selectorExamples}
+            categories={selectorCategories}
+            selectedId={selectedExampleId}
+            onSelect={handleExampleChange}
+          />
         </div>
       </header>
       <main className={classes.main} key={selectedExample.id}>

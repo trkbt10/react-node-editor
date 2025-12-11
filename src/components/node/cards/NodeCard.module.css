@@ -72,7 +72,7 @@
   gap: var(--node-editor-space-sm);
   padding: var(--node-editor-space-sm);
   border: var(--node-editor-input-border);
-  box-shadow: var(--node-editor-card-box-shadow);
+  box-shadow: var(--node-editor-node-card-box-shadow);
 }
 
 .card[data-variant="grid"]:focus-visible {
@@ -93,8 +93,16 @@
   -webkit-line-clamp: 2;
 }
 
+.card[data-variant="grid"] .titleRow {
+  flex-wrap: nowrap;
+}
+
 .card[data-variant="grid"] .typeBadge {
-  margin-left: var(--node-editor-space-md);
+  margin-left: auto;
+  font-size: 9px;
+  padding: 1px 4px;
+  opacity: 0.7;
+  flex-shrink: 0;
 }
 
 /* ============================================================================

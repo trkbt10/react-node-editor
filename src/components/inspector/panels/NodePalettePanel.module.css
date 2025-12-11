@@ -38,10 +38,9 @@
   color: var(--node-editor-tertiary-label-color);
 }
 
-.cardGrid {
-  display: grid;
-  gap: var(--node-editor-space-md);
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+.nodeList {
+  display: flex;
+  flex-direction: column;
 }
 
 .emptyState {

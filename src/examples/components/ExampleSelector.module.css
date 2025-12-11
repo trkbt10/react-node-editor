@@ -1,0 +1,275 @@
+/**
+ * @file Styles for ExampleSelector component
+ */
+
+.container {
+  position: relative;
+}
+
+/* Trigger button */
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-space-sm, 8px);
+  padding: var(--node-editor-space-sm, 6px) var(--node-editor-space-md, 12px);
+  background: var(--node-editor-control-background, #1e293b);
+  color: var(--node-editor-control-text-color, #f8fafc);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-control-border-radius, 6px);
+  font: var(--node-editor-control-text-font, 600 14px/1.4 system-ui);
+  cursor: pointer;
+  min-width: 200px;
+  max-width: 300px;
+  text-align: left;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.trigger:hover {
+  background: var(--node-editor-control-hover-background, #334155);
+}
+
+.triggerLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.triggerIcon {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+/* Dropdown menu */
+.dropdown {
+  position: absolute;
+  top: calc(100% + var(--node-editor-space-xs, 4px));
+  right: 0;
+  width: 640px;
+  max-width: calc(100vw - 32px);
+  max-height: 480px;
+  background: var(--node-editor-control-background, #1e293b);
+  border: var(--node-editor-input-border);
+  border-radius: var(--node-editor-card-border-radius, 12px);
+  box-shadow: var(--node-editor-dialog-box-shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Search header */
+.searchHeader {
+  padding: var(--node-editor-space-md, 12px);
+  border-bottom: 1px solid var(--node-editor-divider-color, rgba(148, 163, 184, 0.2));
+}
+
+.searchInput {
+  width: 100%;
+}
+
+/* Split pane */
+.splitPane {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.categoryPane {
+  width: 180px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--node-editor-divider-color, rgba(148, 163, 184, 0.2));
+  background: var(--node-editor-surface-secondary, rgba(0, 0, 0, 0.1));
+}
+
+.examplePane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.paneHeader {
+  padding: var(--node-editor-space-sm, 8px) var(--node-editor-space-md, 12px);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--node-editor-secondary-label-color, #94a3b8);
+  border-bottom: 1px solid var(--node-editor-divider-color, rgba(148, 163, 184, 0.2));
+  background: var(--node-editor-table-header-background-color, rgba(0, 0, 0, 0.1));
+}
+
+/* Category list */
+.categoryList {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--node-editor-space-xs, 4px);
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  gap: var(--node-editor-space-xs, 4px);
+  padding: var(--node-editor-space-sm, 8px) var(--node-editor-space-md, 12px);
+  border-radius: var(--node-editor-control-border-radius, 6px);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.categoryItem:hover {
+  background: var(--node-editor-control-hover-background, rgba(255, 255, 255, 0.05));
+}
+
+.categoryItem[data-selected="true"] {
+  background: var(--node-editor-selected-control-color, #3b82f6);
+  color: var(--node-editor-selected-control-text-color, #ffffff);
+}
+
+.expandButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.expandIcon {
+  font-size: 8px;
+  transition: transform 0.15s ease;
+}
+
+.expandIcon[data-expanded="true"] {
+  transform: rotate(90deg);
+}
+
+.expandPlaceholder {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.categoryLabel {
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.categoryCount {
+  font-size: 11px;
+  opacity: 0.6;
+  flex-shrink: 0;
+  margin-left: var(--node-editor-space-sm, 8px);
+}
+
+.categoryChildren {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Example list */
+.exampleList {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--node-editor-space-xs, 4px);
+}
+
+.exampleItem {
+  padding: var(--node-editor-space-sm, 8px) var(--node-editor-space-md, 12px);
+  border-radius: var(--node-editor-control-border-radius, 6px);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.exampleItem:hover {
+  background: var(--node-editor-control-hover-background, rgba(255, 255, 255, 0.05));
+}
+
+.exampleItem[data-selected="true"] {
+  background: var(--node-editor-selected-control-color, #3b82f6);
+  color: var(--node-editor-selected-control-text-color, #ffffff);
+}
+
+.exampleTitle {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.exampleDescription {
+  font-size: 11px;
+  opacity: 0.7;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.exampleItem[data-selected="true"] .exampleDescription {
+  opacity: 0.85;
+}
+
+.emptyState {
+  padding: var(--node-editor-space-xl, 24px);
+  text-align: center;
+  color: var(--node-editor-tertiary-label-color, #64748b);
+  font-size: 13px;
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+  .dropdown {
+    width: calc(100vw - 16px);
+    left: 8px;
+    right: 8px;
+  }
+
+  .splitPane {
+    flex-direction: column;
+  }
+
+  .categoryPane {
+    width: 100%;
+    max-height: 120px;
+    border-right: none;
+    border-bottom: 1px solid var(--node-editor-divider-color, rgba(148, 163, 184, 0.2));
+  }
+
+  .categoryList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--node-editor-space-xs, 4px);
+    padding: var(--node-editor-space-sm, 8px);
+  }
+
+  .categoryItem {
+    padding: var(--node-editor-space-xs, 4px) var(--node-editor-space-sm, 8px);
+    font-size: 12px;
+  }
+
+  .trigger {
+    min-width: 160px;
+  }
+}

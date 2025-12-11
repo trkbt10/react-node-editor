@@ -64,12 +64,17 @@ export const NodeCard: React.FC<NodeCardProps> = ({
         <div className={styles.titleRow}>
           <div className={styles.title}>{node.displayName}</div>
           {titleSuffix}
+          {showTypeBadge && variant === "grid" ? (
+            <div className={styles.typeBadge}>{node.type}</div>
+          ) : null}
         </div>
         {shouldShowDescription && node.description ? (
           <div className={styles.description}>{node.description}</div>
         ) : null}
       </div>
-      {showTypeBadge ? <div className={styles.typeBadge}>{node.type}</div> : null}
+      {showTypeBadge && variant !== "grid" ? (
+        <div className={styles.typeBadge}>{node.type}</div>
+      ) : null}
     </div>
   );
 };

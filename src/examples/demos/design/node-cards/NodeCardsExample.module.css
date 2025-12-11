@@ -1,0 +1,117 @@
+/**
+ * @file Styles for NodeCard variants preview
+ */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-xl, 24px);
+  padding: var(--node-editor-space-xl, 24px);
+  height: 100%;
+  box-sizing: border-box;
+  background: var(--node-editor-window-background-color, #f8fafc);
+  overflow: auto;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-sm, 8px);
+  padding-bottom: var(--node-editor-space-md, 12px);
+  border-bottom: var(--node-editor-card-border, 1px solid rgba(0, 0, 0, 0.1));
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--node-editor-secondary-label-color, #475569);
+  font-size: 13px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-lg, 16px);
+}
+
+.variantSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-sm, 8px);
+  padding: var(--node-editor-space-md, 12px);
+  background: var(--node-editor-surface-primary, #ffffff);
+  border-radius: var(--node-editor-card-border-radius, 8px);
+  border: var(--node-editor-card-border, 1px solid rgba(0, 0, 0, 0.1));
+}
+
+.variantSection[data-variant="grid"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.variantSection[data-variant="menu"],
+.variantSection[data-variant="compact"] {
+  max-width: 360px;
+}
+
+.statesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--node-editor-space-md, 12px);
+}
+
+.stateColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-xs, 4px);
+  padding: var(--node-editor-space-md, 12px);
+  background: var(--node-editor-surface-primary, #ffffff);
+  border-radius: var(--node-editor-card-border-radius, 8px);
+  border: var(--node-editor-card-border, 1px solid rgba(0, 0, 0, 0.1));
+}
+
+.stateLabel {
+  font-size: var(--node-editor-inspector-font-size-meta, 0.6875rem);
+  color: var(--node-editor-tertiary-label-color, #9ca3af);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.optionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--node-editor-space-md, 12px);
+}
+
+.optionItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--node-editor-space-xs, 4px);
+  padding: var(--node-editor-space-md, 12px);
+  background: var(--node-editor-surface-primary, #ffffff);
+  border-radius: var(--node-editor-card-border-radius, 8px);
+  border: var(--node-editor-card-border, 1px solid rgba(0, 0, 0, 0.1));
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--node-editor-success-background-color, #dcfce7);
+  color: var(--node-editor-success-color, #16a34a);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.hint {
+  margin: 0 0 var(--node-editor-space-sm, 8px);
+  color: var(--node-editor-secondary-label-color, #475569);
+  font-size: 13px;
+}
+
+.draggableRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--node-editor-space-md, 12px);
+}
