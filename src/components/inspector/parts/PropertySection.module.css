@@ -7,8 +7,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--node-editor-inspector-inline-gap);
-  min-height: calc(var(--node-editor-inspector-section-header-height) + 1px);
-  padding: 0 var(--node-editor-inspector-space-xs);
+  min-height: var(--node-editor-inspector-section-header-height);
   border-bottom: 1px solid var(--node-editor-separator-color);
   box-sizing: border-box;
 }
@@ -32,6 +31,5 @@
 
 .sectionBody {
   display: grid;
-  grid-template-columns: auto 1fr;
   gap: var(--node-editor-inspector-section-gap) var(--node-editor-inspector-inline-gap);
 }

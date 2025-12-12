@@ -15,10 +15,7 @@ type NodeTitleSectionProps = {
 /**
  * Section for editing node title
  */
-export function NodeTitleSection({
-  node,
-  onTitleChange,
-}: NodeTitleSectionProps): React.ReactElement {
+export function NodeTitleSection({ node, onTitleChange }: NodeTitleSectionProps): React.ReactElement {
   const { t } = useI18n();
 
   const handleChange = React.useEffectEvent((e: React.ChangeEvent<HTMLInputElement>) => {
