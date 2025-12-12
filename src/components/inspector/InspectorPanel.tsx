@@ -7,10 +7,7 @@ import { NodeTreeListPanel } from "./panels/NodeTreeListPanel";
 import { HistoryPanel } from "./panels/HistoryPanel";
 import { InspectorPropertiesTab } from "./panels/InspectorPropertiesTab";
 import { InspectorSection } from "./parts/InspectorSection";
-import {
-  InspectorTabbedContainer,
-  type InspectorTabConfig,
-} from "./parts/InspectorTabbedContainer";
+import { InspectorTabbedContainer, type InspectorTabConfig } from "./parts/InspectorTabbedContainer";
 import styles from "./InspectorPanel.module.css";
 import { useI18n } from "../../i18n/context";
 import { GeneralSettingsPanel } from "./panels/GeneralSettingsPanel";
@@ -130,7 +127,9 @@ export const InspectorSettingsTab: React.FC<InspectorSettingsTabProps> = ({ pane
     <>
       {effectivePanels.map((panel, index) => (
         <PropertySection title={panel.title} key={index}>
-          <panel.component />
+          <div className={styles.settingsSectionBody}>
+            <panel.component />
+          </div>
         </PropertySection>
       ))}
     </>
