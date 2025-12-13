@@ -1,3 +1,6 @@
+/**
+ * @file Shared IntersectionObserver hook with caching per config.
+ */
 import React, { useEffect } from "react";
 
 const idMaker = () => {
@@ -38,6 +41,7 @@ const getSharedObserver = (options: IntersectionObserverInit) => {
         }
       });
     }, options);
+    /** Observe target and invoke callback on entry updates. */
     observe(target: Element, callback: Callback) {
       this.#callbackMap.set(target, callback);
       this.#intersectionObserver.observe(target);
@@ -61,6 +65,10 @@ const voidClientRect = Object.freeze({
   bottom: 0,
   left: 0,
 }) as DOMRectReadOnly;
+
+/**
+ * Observe an element and expose the latest IntersectionObserver entry fields.
+ */
 export function useIntersectionObserver<T extends HTMLElement>(
   ref: React.RefObject<T | null>,
   { threshold = 0, rootMargin = "0px", root = null }: IntersectionObserverInit,
@@ -75,7 +83,9 @@ export function useIntersectionObserver<T extends HTMLElement>(
 } {
   const [intersection, setIntersection] = React.useState<IntersectionObserverEntry | null>(null);
   useEffect(() => {
-    if (!ref.current) return;
+    if (!ref.current) {
+      return;
+    }
     const observer = getSharedObserver({
       threshold,
       rootMargin,
