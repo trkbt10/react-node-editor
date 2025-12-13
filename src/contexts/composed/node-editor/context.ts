@@ -2,7 +2,7 @@
  * @file Node editor context type definitions and hook for accessing editor state and utilities
  */
 import * as React from "react";
-import type { Node, NodeEditorData, NodeId, Port, Position, GridSettings } from "../../../types/core";
+import type { Node, NodeEditorData, NodeId, Port, Position, GridSettings, PortId } from "../../../types/core";
 import { nodeEditorActions } from "./actions";
 import type { NodeEditorAction } from "./actions";
 import type { BoundActionCreators } from "../../../utils/typedActions";
@@ -34,6 +34,16 @@ export type NodeEditorContextValue = {
   dispatch: React.Dispatch<NodeEditorAction>;
   actions: BoundActionCreators<typeof nodeEditorActions>;
   actionCreators: typeof nodeEditorActions;
+  /**
+   * Nodes sorted for rendering (group nodes first).
+   * This is independent of viewport visibility.
+   */
+  sortedNodes: Node[];
+  /**
+   * Set of port IDs that are part of any connection.
+   * Do not mutate.
+   */
+  connectedPorts: Set<PortId>;
   isLoading: boolean;
   isSaving: boolean;
   handleSave: () => Promise<void>;

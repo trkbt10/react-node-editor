@@ -17,6 +17,8 @@ import { NodeEditorContext } from "./context";
 import { snapToGrid } from "./utils/gridSnap";
 import { findContainingGroup, getGroupChildren, isNodeInsideGroup } from "./utils/groupOperations";
 import { useStabilizedControlledData, areNodeEditorDataEqual } from "./utils/controlledData";
+import { hasGroupBehavior } from "../../../types/behaviors";
+import { useConnectedPorts } from "./utils/renderOptimizationMemoization";
 
 export type NodeEditorProviderProps = {
   children: React.ReactNode;
@@ -211,6 +213,32 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
     return portResolver.createPortLookupMap(state.nodes, (type: string) => registry.get(type));
   }, [state.nodes, registry, portResolver]);
 
+  const groupNodeTypes = React.useMemo(() => {
+    const groupTypes = new Set<string>();
+    nodeDefinitions.forEach((definition) => {
+      if (hasGroupBehavior(definition)) {
+        groupTypes.add(definition.type);
+      }
+    });
+    return groupTypes;
+  }, [nodeDefinitions]);
+
+  const sortedNodes = React.useMemo(() => {
+    return Object.values(state.nodes).sort((a, b) => {
+      const aGroup = groupNodeTypes.has(a.type);
+      const bGroup = groupNodeTypes.has(b.type);
+      if (aGroup && !bGroup) {
+        return -1;
+      }
+      if (!aGroup && bGroup) {
+        return 1;
+      }
+      return 0;
+    });
+  }, [state.nodes, groupNodeTypes]);
+
+  const connectedPorts = useConnectedPorts(state.connections);
+
   const getNodeById = React.useCallback(
     (nodeId: NodeId) => {
       return stateRef.current.nodes[nodeId];
@@ -252,6 +280,8 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
       dispatch,
       actions: boundActions,
       actionCreators: nodeEditorActions,
+      sortedNodes,
+      connectedPorts,
       isLoading,
       isSaving,
       handleSave,
@@ -273,6 +303,8 @@ export const NodeEditorProvider: React.FC<NodeEditorProviderProps> = ({
       getNodePorts,
       getNodeById,
       portLookupMap,
+      sortedNodes,
+      connectedPorts,
       settings,
       settingsManager,
       updateSetting,

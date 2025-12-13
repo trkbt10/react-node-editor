@@ -5,6 +5,7 @@ import * as React from "react";
 import { bindActionCreators, createActionHandlerMap } from "../../../../utils/typedActions";
 import { clampZoomScale } from "./utils/zoomScale";
 import { createCanvasUtils } from "./utils/coordinateConversion";
+import { useResizeObserver } from "../../../../hooks/useResizeObserver";
 import {
   type NodeCanvasState,
   type NodeCanvasAction,
@@ -112,6 +113,10 @@ const nodeCanvasHandlers = createActionHandlerMap<NodeCanvasState, typeof nodeCa
       startPosition: null,
     },
   }),
+  setViewBox: (state, action) => ({
+    ...state,
+    viewBox: action.payload.viewBox,
+  }),
 });
 
 // Canvas reducer
@@ -141,6 +146,10 @@ export const defaultNodeCanvasState: NodeCanvasState = {
     isPanning: false,
     startPosition: null,
   },
+  viewBox: {
+    width: 0,
+    height: 0,
+  },
 };
 
 // Provider
@@ -154,10 +163,30 @@ export const NodeCanvasProvider: React.FC<NodeCanvasProviderProps> = ({ children
 
   const canvasRef = React.useRef<HTMLDivElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const [containerElement, setContainerElementState] = React.useState<HTMLDivElement | null>(null);
   const setContainerElement = React.useCallback((element: HTMLDivElement | null) => {
     containerRef.current = element;
+    setContainerElementState(element);
   }, []);
   const boundActions = React.useMemo(() => bindActionCreators(nodeCanvasActions, dispatch), [dispatch]);
+
+  const { rect } = useResizeObserver(containerRef, { box: "border-box" });
+
+  React.useEffect(() => {
+    if (!containerElement) {
+      return;
+    }
+
+    const initialRect = containerElement.getBoundingClientRect();
+    dispatch(nodeCanvasActions.setViewBox({ width: initialRect.width, height: initialRect.height }));
+  }, [containerElement]);
+
+  React.useEffect(() => {
+    if (!rect) {
+      return;
+    }
+    dispatch(nodeCanvasActions.setViewBox({ width: rect.width, height: rect.height }));
+  }, [rect?.width, rect?.height]);
 
   // Stable actions value - refs and dispatch are stable
   const actionsValue = React.useMemo<NodeCanvasActionsValue>(

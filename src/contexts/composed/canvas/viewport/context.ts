@@ -11,11 +11,21 @@ export type PanState = {
   startPosition: Position | null;
 };
 
+export type CanvasViewBox = {
+  width: number;
+  height: number;
+};
+
 export type NodeCanvasState = {
   viewport: Viewport;
   gridSettings: GridSettings;
   isSpacePanning: boolean;
   panState: PanState;
+  /**
+   * Canvas container dimensions in CSS pixels.
+   * Used as the viewbox for viewport-dependent calculations (visibility, minimap, etc).
+   */
+  viewBox: CanvasViewBox;
 };
 
 export const nodeCanvasActions = {
@@ -28,6 +38,7 @@ export const nodeCanvasActions = {
   startPan: createAction("START_PAN", (position: Position) => ({ position })),
   updatePan: createAction("UPDATE_PAN", (position: Position) => ({ position })),
   endPan: createAction("END_PAN"),
+  setViewBox: createAction("SET_VIEWBOX", (viewBox: CanvasViewBox) => ({ viewBox })),
 } as const;
 
 export type NodeCanvasAction = ActionUnion<typeof nodeCanvasActions>;

@@ -16,13 +16,15 @@ type ViewportBounds = {
  * Hook to calculate which nodes are visible in the current viewport
  * Adds a buffer zone to prevent nodes from popping in/out during pan
  */
-export const useVisibleNodes = (nodes: Record<string, Node>, bufferFactor: number = 1.5): Node[] => {
+export const useVisibleNodes = (nodes: readonly Node[], bufferFactor: number = 1.5): Node[] => {
   const { state: canvasState } = useNodeCanvas();
 
   return React.useMemo(() => {
     const { viewport } = canvasState;
-    const containerWidth = window.innerWidth;
-    const containerHeight = window.innerHeight;
+    const containerWidth =
+      canvasState.viewBox.width > 0 ? canvasState.viewBox.width : (typeof window !== "undefined" ? window.innerWidth : 0);
+    const containerHeight =
+      canvasState.viewBox.height > 0 ? canvasState.viewBox.height : (typeof window !== "undefined" ? window.innerHeight : 0);
 
     // Calculate viewport bounds in canvas coordinates
     const buffer = (Math.max(containerWidth, containerHeight) * (bufferFactor - 1)) / 2;
@@ -34,7 +36,7 @@ export const useVisibleNodes = (nodes: Record<string, Node>, bufferFactor: numbe
     };
 
     // Filter nodes by visibility and intersection with viewport
-    return Object.values(nodes).filter((node) => {
+    return nodes.filter((node) => {
       if (node.visible === false) {
         return false;
       }
@@ -49,5 +51,5 @@ export const useVisibleNodes = (nodes: Record<string, Node>, bufferFactor: numbe
         node.position.y <= bounds.bottom
       );
     });
-  }, [nodes, canvasState.viewport, bufferFactor]);
+  }, [nodes, canvasState.viewport, canvasState.viewBox, bufferFactor]);
 };

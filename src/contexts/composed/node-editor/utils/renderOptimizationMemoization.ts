@@ -4,7 +4,7 @@
  * during node and connection rendering, especially for performance-critical drag operations
  */
 import * as React from "react";
-import { Node, Connection, NodeId, ConnectionId } from "../../../../types/core";
+import { Node, Connection, NodeId, ConnectionId, PortId } from "../../../../types/core";
 import type { NodeDefinition } from "../../../../types/NodeDefinition";
 import { nodeHasGroupBehavior } from "../../../../types/behaviors";
 import { hasPositionChanged, hasSizeChanged } from "../../../../core/geometry/comparators";
@@ -89,9 +89,9 @@ export function useSortedNodes(nodes: Record<NodeId, Node>, nodeDefinitions: Nod
 /**
  * Memoized connected ports calculation
  */
-export function useConnectedPorts(connections: Record<ConnectionId, Connection>): Set<string> {
+export function useConnectedPorts(connections: Record<ConnectionId, Connection>): Set<PortId> {
   return React.useMemo(() => {
-    const connectedPorts = new Set<string>();
+    const connectedPorts = new Set<PortId>();
     Object.values(connections).forEach((connection) => {
       connectedPorts.add(connection.fromPortId);
       connectedPorts.add(connection.toPortId);
