@@ -41,6 +41,12 @@ function App() {
 }
 ```
 
+## Changelog
+
+### Unreleased
+
+- **Breaking:** `NodeRenderProps` was removed. Use `NodeRendererProps` instead.
+
 ## Custom ports and connections
 
 Declare `renderPort` per port definition to override the visual while keeping editor interactions. The second argument renders the default dot, which you can keep for accessibility hitboxes or replace entirely. Always forward `context.handlers` and honor `context.position` (x, y, transform) for correct anchoring.
