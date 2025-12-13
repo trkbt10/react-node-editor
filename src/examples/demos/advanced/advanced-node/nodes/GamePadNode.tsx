@@ -4,7 +4,7 @@
 import * as React from "react";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -17,7 +17,7 @@ export type GamePadData = {
   moveSpeed: number; // pixels to move per button press
 };
 
-export const GamePadRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRenderProps) => {
+export const GamePadRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRendererProps) => {
   const gamePadData = externalData as GamePadData | undefined;
   const [position, setPosition] = React.useState({ x: 50, y: 50 });
   const [activeButton, setActiveButton] = React.useState<string | null>(null);

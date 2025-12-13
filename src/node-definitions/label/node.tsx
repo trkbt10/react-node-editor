@@ -2,7 +2,7 @@
  * @file Renderer component for label nodes
  */
 import * as React from "react";
-import type { NodeRenderProps } from "../../types/NodeDefinition";
+import type { NodeRendererProps } from "../../types/NodeDefinition";
 import type { LabelNodeData } from "./types";
 import styles from "./label.module.css";
 
@@ -10,7 +10,7 @@ import styles from "./label.module.css";
  * Node renderer for label nodes
  * Displays title, subtitle, and caption with configurable alignment, wrapping, and text color
  */
-export function LabelNodeRenderer({ node, onStartEdit }: NodeRenderProps<LabelNodeData>): React.ReactElement {
+export function LabelNodeRenderer({ node, onStartEdit }: NodeRendererProps<LabelNodeData>): React.ReactElement {
   const d = node.data;
   const title = typeof d.labelTitle === "string" ? d.labelTitle : undefined;
   const subtitle = typeof d.labelSubtitle === "string" ? d.labelSubtitle : undefined;

@@ -2,7 +2,7 @@
  * @file Renderer component for standard nodes
  */
 import * as React from "react";
-import type { NodeRenderProps } from "../../types/NodeDefinition";
+import type { NodeRendererProps } from "../../types/NodeDefinition";
 import { useI18n } from "../../i18n/context";
 import { NodeResizer } from "../../components/node/resize/NodeResizer";
 import styles from "./standard.module.css";
@@ -15,7 +15,7 @@ export function StandardNodeRenderer({
   isSelected,
   isDragging,
   onStartEdit,
-}: NodeRenderProps): React.ReactElement {
+}: NodeRendererProps): React.ReactElement {
   const { t } = useI18n();
   return (
     <NodeResizer node={node} className={styles.standardNodeRenderer}>

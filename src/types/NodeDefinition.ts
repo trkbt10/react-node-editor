@@ -48,8 +48,6 @@ export type NodeRendererProps<TData extends Record<string, unknown> = Record<str
   onUpdateNode: (updates: Partial<Node>) => void;
 };
 
-export type NodeRenderProps<TData extends Record<string, unknown> = Record<string, unknown>> = NodeRendererProps<TData>;
-
 /**
  * Inspector panel render props
  * @template TData - The node data type (defaults to Record<string, unknown>)

@@ -2,7 +2,7 @@
  * @file Particle System Node - Interactive particle effect simulator with custom physics
  */
 import * as React from "react";
-import type { NodeDefinition, NodeRenderProps, InspectorRenderProps } from "../../../../../types/NodeDefinition";
+import type { NodeDefinition, NodeRendererProps, InspectorRenderProps } from "../../../../../types/NodeDefinition";
 import classes from "./ParticleSystemNode.module.css";
 import {
   createDefaultParticleData,
@@ -53,7 +53,7 @@ const areParticleConfigsEqual = (a?: ParticleData | null, b?: ParticleData | nul
   return JSON.stringify(a) === JSON.stringify(b);
 };
 
-export const ParticleSystemRenderer = ({ node, isSelected, isDragging }: NodeRenderProps) => {
+export const ParticleSystemRenderer = ({ node, isSelected, isDragging }: NodeRendererProps) => {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const particlesRef = React.useRef<Particle[]>([]);
   const animationRef = React.useRef<number | undefined>(undefined);

@@ -21,7 +21,6 @@ export type {
   InspectorRenderProps,
   NodeDefinition,
   NodeRendererProps,
-  NodeRenderProps,
   PortDefinition,
   PortConnectionContext,
   PortInstanceContext,

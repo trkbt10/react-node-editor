@@ -5,7 +5,7 @@ import * as React from "react";
 import { NodeEditor } from "../../../../../NodeEditor";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -59,7 +59,7 @@ const TaskNodeRenderer = ({
   isLoadingExternalData,
   onStartEdit,
   node,
-}: NodeRenderProps<TaskData>) => {
+}: NodeRendererProps<TaskData>) => {
   const task = externalData as TaskData | undefined;
   const initialLoading = externalData === undefined && isLoadingExternalData;
 

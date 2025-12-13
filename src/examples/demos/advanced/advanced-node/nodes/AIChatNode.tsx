@@ -4,7 +4,7 @@
 import * as React from "react";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -26,7 +26,7 @@ export type ChatData = {
   model: string;
 };
 
-export const AIChatRenderer = ({ node, isSelected, isDragging, externalData }: NodeRenderProps) => {
+export const AIChatRenderer = ({ node, isSelected, isDragging, externalData }: NodeRendererProps) => {
   const chatData = externalData as ChatData | undefined;
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
 

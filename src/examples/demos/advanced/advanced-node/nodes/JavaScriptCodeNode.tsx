@@ -4,7 +4,7 @@
 import * as React from "react";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -22,7 +22,7 @@ export const JavaScriptCodeRenderer = ({
   isDragging,
   externalData,
   onUpdateNode,
-}: NodeRenderProps) => {
+}: NodeRendererProps) => {
   const codeData = externalData as JavaScriptCodeData | undefined;
   const [localCode, setLocalCode] = React.useState(codeData?.code || "");
 

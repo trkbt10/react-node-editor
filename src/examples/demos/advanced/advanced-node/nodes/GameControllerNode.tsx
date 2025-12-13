@@ -4,7 +4,7 @@
 import * as React from "react";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -35,7 +35,7 @@ export type GameControllerData = {
   battery: number; // 0-100
 };
 
-export const GameControllerRenderer = ({ node, isSelected, isDragging, externalData }: NodeRenderProps) => {
+export const GameControllerRenderer = ({ node, isSelected, isDragging, externalData }: NodeRendererProps) => {
   const controllerData = externalData as GameControllerData | undefined;
 
   const getControllerColor = (type?: string) => {

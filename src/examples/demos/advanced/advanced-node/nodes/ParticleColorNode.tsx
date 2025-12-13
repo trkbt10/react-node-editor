@@ -4,7 +4,7 @@
 import * as React from "react";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -52,7 +52,7 @@ export const ParticleColorRenderer = ({
   isDragging,
   externalData,
   onUpdateNode,
-}: NodeRenderProps) => {
+}: NodeRendererProps) => {
   const colorData = externalData as ParticleColorData | undefined;
   const rgbColor = ensureRgb(colorData?.color ?? "rgb(249, 115, 22)");
   const [hexColor, setHexColor] = React.useState(rgbToHex(rgbColor));

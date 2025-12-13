@@ -4,7 +4,7 @@
 import * as React from "react";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -20,7 +20,7 @@ export type CodeData = {
   errors?: string[];
 };
 
-export const CodeEditorRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRenderProps) => {
+export const CodeEditorRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRendererProps) => {
   const codeData = externalData as CodeData | undefined;
   const [isEditing, setIsEditing] = React.useState(false);
   const [localCode, setLocalCode] = React.useState(codeData?.code || "");

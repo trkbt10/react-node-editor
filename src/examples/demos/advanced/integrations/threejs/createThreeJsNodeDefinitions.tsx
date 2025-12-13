@@ -8,7 +8,7 @@ import {
   asNodeDefinition,
   type InspectorRenderProps,
   type NodeDefinition,
-  type NodeRenderProps,
+  type NodeRendererProps,
   type ConnectionRenderContext,
 } from "../../../../../types/NodeDefinition";
 import { ThreeSceneCanvas } from "./ThreeSceneCanvas";
@@ -308,7 +308,7 @@ const MaterialConnectionRenderer = (context: ConnectionRenderContext, defaultRen
   );
 };
 
-const ColorControlNodeRenderer = ({ node, onUpdateNode }: NodeRenderProps<ColorControlData>) => {
+const ColorControlNodeRenderer = ({ node, onUpdateNode }: NodeRendererProps<ColorControlData>) => {
   const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onUpdateNode({ data: { ...node.data, color: event.target.value } });
   };
@@ -348,7 +348,7 @@ const ColorControlInspector = ({ node, onUpdateNode }: InspectorRenderProps<Colo
   );
 };
 
-const SliderControlNodeRenderer = ({ node, onUpdateNode }: NodeRenderProps<SliderControlData>) => {
+const SliderControlNodeRenderer = ({ node, onUpdateNode }: NodeRendererProps<SliderControlData>) => {
   const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = Number(event.target.value);
     onUpdateNode({ data: { ...node.data, value: newValue } });
@@ -427,7 +427,7 @@ const SliderControlInspector = ({ node, onUpdateNode }: InspectorRenderProps<Sli
   );
 };
 
-const WireframeControlNodeRenderer = ({ node, onUpdateNode }: NodeRenderProps<WireframeControlData>) => {
+const WireframeControlNodeRenderer = ({ node, onUpdateNode }: NodeRendererProps<WireframeControlData>) => {
   const handleToggle = () => {
     onUpdateNode({ data: { ...node.data, wireframe: !node.data.wireframe } });
   };
@@ -472,7 +472,7 @@ const WireframeControlInspector = ({ node, onUpdateNode }: InspectorRenderProps<
   );
 };
 
-const MaterialControlNodeRenderer = ({ node, onUpdateNode }: NodeRenderProps<MaterialControlData>) => {
+const MaterialControlNodeRenderer = ({ node, onUpdateNode }: NodeRendererProps<MaterialControlData>) => {
   const material = React.useMemo(() => {
     const source = node.data.material ?? getMaterialPreset("standard");
     return mergeMaterialConfig(source);
@@ -613,7 +613,7 @@ const MaterialControlInspector = ({ node, onUpdateNode }: InspectorRenderProps<M
   );
 };
 
-const ThreeSceneNodeRenderer = ({ node, isResizing }: NodeRenderProps<ThreePreviewData>) => {
+const ThreeSceneNodeRenderer = ({ node, isResizing }: NodeRendererProps<ThreePreviewData>) => {
   const { state } = useNodeEditor();
 
   const resolveInputValue = React.useCallback(

@@ -4,7 +4,7 @@
 
 import React from "react";
 import classes from "./TypedNodesExample.module.css";
-import { NodeRenderProps, InspectorRenderProps, createNodeDefinition } from "../../../../types/NodeDefinition";
+import { NodeRendererProps, InspectorRenderProps, createNodeDefinition } from "../../../../types/NodeDefinition";
 
 // For this example, we'll define the types directly
 type CounterNodeData = {
@@ -20,7 +20,7 @@ type TextDisplayData = {
 };
 
 // Step 2: Create type-safe node renderers (without module augmentation for this example)
-const CounterNodeRenderer = ({ node, onUpdateNode }: NodeRenderProps): React.ReactElement => {
+const CounterNodeRenderer = ({ node, onUpdateNode }: NodeRendererProps): React.ReactElement => {
   // For the example, we'll use type assertions
   const { label, count, step } = node.data as CounterNodeData;
 
@@ -109,7 +109,7 @@ export const CounterNodeDefinition = createNodeDefinition({
 });
 
 // Text Display Node
-const TextDisplayRenderer = ({ node }: NodeRenderProps): React.ReactElement => {
+const TextDisplayRenderer = ({ node }: NodeRendererProps): React.ReactElement => {
   const { title, content, fontSize } = node.data as TextDisplayData;
 
   return (
@@ -184,7 +184,7 @@ export const TextDisplayDefinition = createNodeDefinition({
 });
 
 // Example of using with existing non-typed nodes (backward compatibility)
-const LegacyNodeRenderer = ({ node }: NodeRenderProps): React.ReactElement => {
+const LegacyNodeRenderer = ({ node }: NodeRendererProps): React.ReactElement => {
   // For non-typed nodes, node.data is just NodeData (Record<string, unknown>)
   const title = (node.data.title as string) || "Legacy Node";
 

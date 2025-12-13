@@ -1,7 +1,7 @@
 /**
  * @file Type guards for label node data validation
  */
-import type { NodeRenderProps, InspectorRenderProps } from "../../types/NodeDefinition";
+import type { NodeRendererProps, InspectorRenderProps } from "../../types/NodeDefinition";
 import type { LabelNodeData } from "./types";
 
 function isStringOrUndefined(v: unknown): v is string | undefined {
@@ -24,7 +24,7 @@ export function isLabelNodeData(data: unknown): data is LabelNodeData {
 /**
  * Type guard: render props is for label node with correct data shape
  */
-export function isLabelNodeRenderProps(props: NodeRenderProps): props is NodeRenderProps<LabelNodeData> {
+export function isLabelNodeRenderProps(props: NodeRendererProps): props is NodeRendererProps<LabelNodeData> {
   return props.node.type === "label" && isLabelNodeData(props.node.data);
 }
 

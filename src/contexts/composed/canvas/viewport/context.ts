@@ -62,6 +62,15 @@ export type NodeCanvasContextValue = NodeCanvasActionsValue & {
 const NodeCanvasStateContext = React.createContext<NodeCanvasState | null>(null);
 NodeCanvasStateContext.displayName = "NodeCanvasStateContext";
 
+const NodeCanvasViewportOffsetContext = React.createContext<Position | null>(null);
+NodeCanvasViewportOffsetContext.displayName = "NodeCanvasViewportOffsetContext";
+
+const NodeCanvasViewportScaleContext = React.createContext<number | null>(null);
+NodeCanvasViewportScaleContext.displayName = "NodeCanvasViewportScaleContext";
+
+const NodeCanvasGridSettingsContext = React.createContext<GridSettings | null>(null);
+NodeCanvasGridSettingsContext.displayName = "NodeCanvasGridSettingsContext";
+
 const NodeCanvasActionsContext = React.createContext<NodeCanvasActionsValue | null>(null);
 NodeCanvasActionsContext.displayName = "NodeCanvasActionsContext";
 
@@ -81,6 +90,30 @@ export const useNodeCanvasState = (): NodeCanvasState => {
     throw new Error("useNodeCanvasState must be used within a NodeCanvasProvider");
   }
   return state;
+};
+
+export const useNodeCanvasViewportOffset = (): Position => {
+  const offset = React.useContext(NodeCanvasViewportOffsetContext);
+  if (!offset) {
+    throw new Error("useNodeCanvasViewportOffset must be used within a NodeCanvasProvider");
+  }
+  return offset;
+};
+
+export const useNodeCanvasViewportScale = (): number => {
+  const scale = React.useContext(NodeCanvasViewportScaleContext);
+  if (scale === null) {
+    throw new Error("useNodeCanvasViewportScale must be used within a NodeCanvasProvider");
+  }
+  return scale;
+};
+
+export const useNodeCanvasGridSettings = (): GridSettings => {
+  const gridSettings = React.useContext(NodeCanvasGridSettingsContext);
+  if (!gridSettings) {
+    throw new Error("useNodeCanvasGridSettings must be used within a NodeCanvasProvider");
+  }
+  return gridSettings;
 };
 
 /**
@@ -109,4 +142,10 @@ export const useNodeCanvas = (): NodeCanvasContextValue => {
 };
 
 // Export the split contexts for use in provider
-export { NodeCanvasStateContext, NodeCanvasActionsContext };
+export {
+  NodeCanvasStateContext,
+  NodeCanvasViewportOffsetContext,
+  NodeCanvasViewportScaleContext,
+  NodeCanvasGridSettingsContext,
+  NodeCanvasActionsContext,
+};

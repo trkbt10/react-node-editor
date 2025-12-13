@@ -4,7 +4,7 @@
 import * as React from "react";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -22,7 +22,7 @@ export type FormData = {
   }>;
 };
 
-export const FormRenderer = ({ node, isSelected, isDragging, externalData }: NodeRenderProps) => {
+export const FormRenderer = ({ node, isSelected, isDragging, externalData }: NodeRendererProps) => {
   const formData = externalData as FormData | undefined;
 
   const formColor = "#f59e0b";

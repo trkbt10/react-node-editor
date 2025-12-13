@@ -4,7 +4,7 @@
 import * as React from "react";
 import { Button } from "../../../../../components/elements/Button";
 import { NodeMapRenderer } from "../../../../../components/layers/NodeMapRenderer";
-import type { NodeDefinition, NodeRenderProps, ExternalDataReference } from "../../../../../types/NodeDefinition";
+import type { NodeDefinition, NodeRendererProps, ExternalDataReference } from "../../../../../types/NodeDefinition";
 import { createNodeDefinition } from "../../../../../types/NodeDefinition";
 import type { NodeEditorData } from "../../../../../types/core";
 import { useSubEditorHost } from "./SubEditorHostContext";
@@ -22,7 +22,7 @@ const SubEditorNodeRenderer = ({
   externalData,
   isLoadingExternalData,
   onUpdateNode,
-}: NodeRenderProps<SubEditorNodeData>): React.ReactElement => {
+}: NodeRendererProps<SubEditorNodeData>): React.ReactElement => {
   const { openSubEditor } = useSubEditorHost();
 
   const nodeTitle = node.data.title ?? "Nested Flow";

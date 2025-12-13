@@ -4,7 +4,7 @@
 import * as React from "react";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -19,7 +19,7 @@ export type NumberInputData = {
   label: string;
 };
 
-export const NumberInputRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRenderProps) => {
+export const NumberInputRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRendererProps) => {
   const numberData = externalData as NumberInputData | undefined;
   const [value, setValue] = React.useState(numberData?.value || 0);
   const lastExternalValueRef = React.useRef<number | undefined>(undefined);

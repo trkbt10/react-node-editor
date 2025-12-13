@@ -32,7 +32,6 @@ export type {
   InspectorRenderProps,
   NodeDefinition,
   NodeRendererProps,
-  NodeRenderProps,
   PortDefinition,
   PortRenderContext,
 } from "./types/NodeDefinition";

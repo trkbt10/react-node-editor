@@ -7,7 +7,7 @@ import * as React from "react";
 import { NodeEditor } from "../../../../../NodeEditor";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   ComputePortPositionsContext,
   ComputedPortPosition,
 } from "../../../../../types/NodeDefinition";
@@ -147,7 +147,7 @@ function computeComfyPortPositions(context: ComputePortPositionsContext): Map<st
 /**
  * Custom node renderer that positions content below the header port region
  */
-function ComfyUINodeRenderer(props: NodeRenderProps<ComfyNodeData>): React.ReactElement {
+function ComfyUINodeRenderer(props: NodeRendererProps<ComfyNodeData>): React.ReactElement {
   const { node, isSelected } = props;
   const nodeData = node.data;
 

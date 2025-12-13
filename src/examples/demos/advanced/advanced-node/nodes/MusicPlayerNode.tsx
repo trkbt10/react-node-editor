@@ -4,7 +4,7 @@
 import * as React from "react";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -22,7 +22,7 @@ export type MusicData = {
   visualizerData: number[]; // amplitude data for visualizer
 };
 
-export const MusicPlayerRenderer = ({ node, isSelected, isDragging, externalData }: NodeRenderProps) => {
+export const MusicPlayerRenderer = ({ node, isSelected, isDragging, externalData }: NodeRendererProps) => {
   const musicData = externalData as MusicData | undefined;
   const [localTime, setLocalTime] = React.useState(musicData?.currentTime || 0);
 

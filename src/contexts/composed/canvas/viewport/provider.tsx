@@ -13,6 +13,9 @@ import {
   type NodeCanvasContextValue,
   nodeCanvasActions,
   NodeCanvasStateContext,
+  NodeCanvasViewportOffsetContext,
+  NodeCanvasViewportScaleContext,
+  NodeCanvasGridSettingsContext,
   NodeCanvasActionsContext,
   NodeCanvasContext,
 } from "./context";
@@ -219,9 +222,15 @@ export const NodeCanvasProvider: React.FC<NodeCanvasProviderProps> = ({ children
 
   return (
     <NodeCanvasStateContext.Provider value={state}>
-      <NodeCanvasActionsContext.Provider value={actionsValue}>
-        <NodeCanvasContext.Provider value={contextValue}>{children}</NodeCanvasContext.Provider>
-      </NodeCanvasActionsContext.Provider>
+      <NodeCanvasViewportOffsetContext.Provider value={state.viewport.offset}>
+        <NodeCanvasViewportScaleContext.Provider value={state.viewport.scale}>
+          <NodeCanvasGridSettingsContext.Provider value={state.gridSettings}>
+            <NodeCanvasActionsContext.Provider value={actionsValue}>
+              <NodeCanvasContext.Provider value={contextValue}>{children}</NodeCanvasContext.Provider>
+            </NodeCanvasActionsContext.Provider>
+          </NodeCanvasGridSettingsContext.Provider>
+        </NodeCanvasViewportScaleContext.Provider>
+      </NodeCanvasViewportOffsetContext.Provider>
     </NodeCanvasStateContext.Provider>
   );
 };

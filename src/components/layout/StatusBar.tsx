@@ -42,6 +42,28 @@ export const StatusBar: React.FC<StatusBarProps> = React.memo(({
 
   const zoomPercentage = Math.round(canvasState.viewport.scale * 100);
 
+  const selectionValue = React.useMemo(() => {
+    if (selectedNodeCount === 0 && selectedConnectionCount === 0) {
+      return "None";
+    }
+    const parts: string[] = [];
+    if (selectedNodeCount > 0) {
+      parts.push(`${selectedNodeCount} node${selectedNodeCount !== 1 ? "s" : ""}`);
+    }
+    if (selectedConnectionCount > 0) {
+      parts.push(`${selectedConnectionCount} connection${selectedConnectionCount !== 1 ? "s" : ""}`);
+    }
+    return parts.join(", ");
+  }, [selectedNodeCount, selectedConnectionCount]);
+
+  const gridValue = React.useMemo(() => {
+    if (!canvasState.gridSettings.showGrid) {
+      return null;
+    }
+    const snapText = canvasState.gridSettings.snapToGrid ? " (Snap ON)" : "";
+    return `${canvasState.gridSettings.size}px${snapText}`;
+  }, [canvasState.gridSettings.showGrid, canvasState.gridSettings.size, canvasState.gridSettings.snapToGrid]);
+
   // Determine operation mode
   const operationMode = React.useMemo((): string => {
     if (interactionState.dragState) {
@@ -82,15 +104,7 @@ export const StatusBar: React.FC<StatusBarProps> = React.memo(({
       {/* Selection info */}
       <StatusSection
         label="Selection"
-        value={
-          <>
-            {selectedNodeCount > 0 && `${selectedNodeCount} node${selectedNodeCount !== 1 ? "s" : ""}`}
-            {selectedNodeCount > 0 && selectedConnectionCount > 0 && ", "}
-            {selectedConnectionCount > 0 &&
-              `${selectedConnectionCount} connection${selectedConnectionCount !== 1 ? "s" : ""}`}
-            {selectedNodeCount === 0 && selectedConnectionCount === 0 && "None"}
-          </>
-        }
+        value={selectionValue}
       />
 
       {/* Total counts */}
@@ -106,17 +120,7 @@ export const StatusBar: React.FC<StatusBarProps> = React.memo(({
       <StatusSection label="Position" value={cursorPosition} />
 
       {/* Grid info */}
-      {canvasState.gridSettings.showGrid && (
-        <StatusSection
-          label="Grid"
-          value={
-            <>
-              {canvasState.gridSettings.size}px
-              {canvasState.gridSettings.snapToGrid && " (Snap ON)"}
-            </>
-          }
-        />
-      )}
+      {gridValue && <StatusSection label="Grid" value={gridValue} />}
 
       {/* Auto-save status */}
       {autoSave && (

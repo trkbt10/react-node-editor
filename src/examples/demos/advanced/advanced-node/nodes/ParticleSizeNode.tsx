@@ -4,7 +4,7 @@
 import * as React from "react";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -18,7 +18,7 @@ export type ParticleSizeData = {
   step: number;
 };
 
-export const ParticleSizeRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRenderProps) => {
+export const ParticleSizeRenderer = ({ node, isSelected, isDragging, externalData, onUpdateNode }: NodeRendererProps) => {
   const sizeData = externalData as ParticleSizeData | undefined;
   const [value, setValue] = React.useState(sizeData?.value ?? 4);
   const lastExternalValueRef = React.useRef<number | undefined>(undefined);

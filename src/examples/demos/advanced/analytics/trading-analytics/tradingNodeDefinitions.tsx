@@ -6,7 +6,7 @@ import {
   createNodeDefinition,
   asNodeDefinition,
   type NodeDefinition,
-  type NodeRenderProps,
+  type NodeRendererProps,
 } from "../../../../../types/NodeDefinition";
 import { NodeResizer } from "../../../../../components/node/resize/NodeResizer";
 import { renderTradingConnection, renderTradingPort } from "./tradingRenderers";
@@ -74,7 +74,7 @@ const formatPercentage = (change: number | null): string => {
 };
 
 // Strategy Card Renderer
-const StrategyCardRenderer = ({ node }: NodeRenderProps<StrategyCardData>) => {
+const StrategyCardRenderer = ({ node }: NodeRendererProps<StrategyCardData>) => {
   const statusColors = {
     active: "#10b981",
     testing: "#f59e0b",
@@ -117,7 +117,7 @@ const StrategyCardRenderer = ({ node }: NodeRenderProps<StrategyCardData>) => {
 };
 
 // Trading Metric Renderer
-const TradingMetricRenderer = ({ node }: NodeRenderProps<TradingMetricData>) => {
+const TradingMetricRenderer = ({ node }: NodeRendererProps<TradingMetricData>) => {
   return (
     <NodeResizer node={node}>
       {({ width, height }) => (
@@ -176,7 +176,7 @@ const TradingMetricRenderer = ({ node }: NodeRenderProps<TradingMetricData>) => 
 };
 
 // Performance Metric Renderer (with target)
-const PerformanceMetricRenderer = ({ node }: NodeRenderProps<PerformanceMetricData>) => {
+const PerformanceMetricRenderer = ({ node }: NodeRendererProps<PerformanceMetricData>) => {
   return (
     <NodeResizer node={node}>
       {({ width, height }) => (
@@ -238,7 +238,7 @@ const PerformanceMetricRenderer = ({ node }: NodeRenderProps<PerformanceMetricDa
 };
 
 // Portfolio Metric Renderer
-const PortfolioMetricRenderer = ({ node }: NodeRenderProps<PortfolioMetricData>) => {
+const PortfolioMetricRenderer = ({ node }: NodeRendererProps<PortfolioMetricData>) => {
   return (
     <NodeResizer node={node}>
       {({ width, height }) => (

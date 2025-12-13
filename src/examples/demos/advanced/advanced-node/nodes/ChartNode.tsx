@@ -4,7 +4,7 @@
 import * as React from "react";
 import type {
   NodeDefinition,
-  NodeRenderProps,
+  NodeRendererProps,
   InspectorRenderProps,
   ExternalDataReference,
 } from "../../../../../types/NodeDefinition";
@@ -17,7 +17,7 @@ export type ChartData = {
   data: Array<{ label: string; value: number; color?: string }>;
 };
 
-export const ChartRenderer = ({ node, isSelected, isDragging, externalData }: NodeRenderProps) => {
+export const ChartRenderer = ({ node, isSelected, isDragging, externalData }: NodeRendererProps) => {
   const chartData = externalData as ChartData | undefined;
 
   const renderMiniChart = () => {

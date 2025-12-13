@@ -3,7 +3,7 @@
  * Aggregation layer that combines grid settings sections
  */
 import * as React from "react";
-import { useNodeCanvas } from "../../../contexts/composed/canvas/viewport/context";
+import { useNodeCanvasActions, useNodeCanvasGridSettings } from "../../../contexts/composed/canvas/viewport/context";
 import { GridVisibilitySection } from "../../controls/gridSettings/GridVisibilitySection";
 import { GridSizeSection } from "../../controls/gridSettings/GridSizeSection";
 
@@ -11,7 +11,8 @@ import { GridSizeSection } from "../../controls/gridSettings/GridSizeSection";
  * Grid settings component
  */
 export const GridSettingsPanel: React.FC = () => {
-  const { state: canvasState, actions: canvasActions } = useNodeCanvas();
+  const gridSettings = useNodeCanvasGridSettings();
+  const { actions: canvasActions } = useNodeCanvasActions();
 
   const handleShowGridChange = React.useEffectEvent((checked: boolean) => {
     canvasActions.updateGridSettings({ showGrid: checked });
@@ -32,14 +33,14 @@ export const GridSettingsPanel: React.FC = () => {
   return (
     <>
       <GridVisibilitySection
-        showGrid={canvasState.gridSettings.showGrid}
-        snapToGrid={canvasState.gridSettings.snapToGrid}
+        showGrid={gridSettings.showGrid}
+        snapToGrid={gridSettings.snapToGrid}
         onShowGridChange={handleShowGridChange}
         onSnapToGridChange={handleSnapToGridChange}
       />
       <GridSizeSection
-        gridSize={canvasState.gridSettings.size}
-        snapThreshold={canvasState.gridSettings.snapThreshold}
+        gridSize={gridSettings.size}
+        snapThreshold={gridSettings.snapThreshold}
         onGridSizeChange={handleGridSizeChange}
         onSnapThresholdChange={handleSnapThresholdChange}
       />

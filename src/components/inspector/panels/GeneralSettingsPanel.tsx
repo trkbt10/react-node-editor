@@ -5,7 +5,7 @@
 import * as React from "react";
 import type { Size, NodeId } from "../../../types/core";
 import { useNodeEditor } from "../../../contexts/composed/node-editor/context";
-import { useNodeCanvas } from "../../../contexts/composed/canvas/viewport/context";
+import { useNodeCanvasActions, useNodeCanvasViewportScale } from "../../../contexts/composed/canvas/viewport/context";
 import { useNodeDefinitions } from "../../../contexts/node-definitions/context";
 import {
   calculateAutoLayout,
@@ -24,7 +24,8 @@ import { findInvalidConnections } from "../../../contexts/composed/node-editor/u
  */
 export const GeneralSettingsPanel: React.FC = React.memo(() => {
   const { state, actions, settings, settingsManager, updateSetting } = useNodeEditor();
-  const { state: canvasState, actions: canvasActions } = useNodeCanvas();
+  const viewportScale = useNodeCanvasViewportScale();
+  const { actions: canvasActions } = useNodeCanvasActions();
   const { registry } = useNodeDefinitions();
   const [layoutStrategy, setLayoutStrategy] = React.useState<LayoutAlgorithm>("auto");
 
@@ -70,12 +71,12 @@ export const GeneralSettingsPanel: React.FC = React.memo(() => {
       const viewportCenterX = typeof window !== "undefined" ? window.innerWidth / 2 : bbox.centerX;
       const viewportCenterY = typeof window !== "undefined" ? window.innerHeight / 2 : bbox.centerY;
 
-      const newOffsetX = viewportCenterX - bbox.centerX * canvasState.viewport.scale;
-      const newOffsetY = viewportCenterY - bbox.centerY * canvasState.viewport.scale;
+      const newOffsetX = viewportCenterX - bbox.centerX * viewportScale;
+      const newOffsetY = viewportCenterY - bbox.centerY * viewportScale;
 
       canvasActions.setViewport({
         offset: { x: newOffsetX, y: newOffsetY },
-        scale: canvasState.viewport.scale,
+        scale: viewportScale,
       });
     }
   });

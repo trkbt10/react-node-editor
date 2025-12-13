@@ -2,7 +2,7 @@
  * @file Renderer component for error nodes displayed when node definition is not found
  */
 import * as React from "react";
-import type { NodeRenderProps } from "../../types/NodeDefinition";
+import type { NodeRendererProps } from "../../types/NodeDefinition";
 import type { ErrorNodeData } from "./types";
 import styles from "./error.module.css";
 
@@ -11,7 +11,7 @@ import styles from "./error.module.css";
  * Displays a visual indicator that the node type definition was not found,
  * along with the original type name and any preserved title data.
  */
-export function ErrorNodeRenderer({ node }: NodeRenderProps<ErrorNodeData>): React.ReactElement {
+export function ErrorNodeRenderer({ node }: NodeRendererProps<ErrorNodeData>): React.ReactElement {
   const d = node.data;
   const originalType = typeof d.originalType === "string" ? d.originalType : "unknown";
   const originalTitle = typeof d.title === "string" && d.title.trim().length > 0 ? d.title : undefined;
