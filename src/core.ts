@@ -21,7 +21,7 @@ export type { NodeEditorData } from "./types/core";
 export type { NodeEditorRendererOverrides, NodeEditorRenderers } from "./types/renderers";
 
 // Helper components for custom node implementations
-export { NodeResizer, normalizeNodeSize } from "./components/node/resize/NodeResizer";
+export { NodeResizer, normalizeNodeSize, useNodeResizerContext } from "./components/node/resize/NodeResizer";
 export type { NodeResizerProps } from "./components/node/resize/NodeResizer";
 
 // Node definition helpers for custom nodes and inspectors
@@ -31,6 +31,7 @@ export type {
   ExternalDataReference,
   InspectorRenderProps,
   NodeDefinition,
+  NodeRendererProps,
   NodeRenderProps,
   PortDefinition,
   PortRenderContext,

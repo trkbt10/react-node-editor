@@ -117,12 +117,12 @@ export const useConnectionOperations = () => {
   const endConnectionDrag = React.useCallback(() => {
     interactionActions.endConnectionDrag();
     actionActions.updateConnectablePorts(createEmptyConnectablePorts());
-  }, [actionActions]);
+  }, [interactionActions, actionActions]);
 
   const endConnectionDisconnect = React.useCallback(() => {
     interactionActions.endConnectionDisconnect();
     actionActions.updateConnectablePorts(createEmptyConnectablePorts());
-  }, [actionActions]);
+  }, [interactionActions, actionActions]);
 
   return { completeConnectionDrag, completeDisconnectDrag, endConnectionDrag, endConnectionDisconnect };
 };

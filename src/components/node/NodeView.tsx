@@ -4,4 +4,4 @@
  */
 export { NodeViewContainer as NodeView } from "./NodeViewContainer";
 export type { NodeViewContainerProps as NodeViewProps } from "./NodeViewContainer";
-export type { CustomNodeRendererProps } from "./NodeViewPresenter";
+export type { NodeRendererProps } from "../../types/NodeDefinition";

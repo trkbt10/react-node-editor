@@ -5,6 +5,7 @@
 import * as React from "react";
 import type { Node, Position, Port, Size, ResizeHandle as NodeResizeHandle } from "../../types/core";
 import type { NodeDefinition } from "../../types/NodeDefinition";
+import type { NodeRendererProps } from "../../types/NodeDefinition";
 import type { ConnectablePortsResult } from "../../core/port/connectivity/connectableTypes";
 import type { NodeAppearance } from "../../core/node/nodeAppearance";
 import type { NodeBehaviorState, NodeResizeState } from "../../core/node/nodeState";
@@ -20,24 +21,12 @@ import { NodeBodyRenderer } from "./body/NodeBodyRenderer";
 import { NodePortsRenderer } from "../ports/NodePortsRenderer";
 import styles from "./NodeView.module.css";
 
-export type CustomNodeRendererProps = {
-  node: Node;
-  isSelected: boolean;
-  isDragging: boolean;
-  isResizing: boolean;
-  isEditing: boolean;
-  externalData: unknown;
-  isLoadingExternalData: boolean;
-  externalDataError: Error | null;
-  onStartEdit: () => void;
-  onUpdateNode: (updates: Partial<Node>) => void;
-};
-
 export type NodeViewPresenterProps = {
   node: Node;
   isSelected: boolean;
   isDragging: boolean;
   dragOffset?: Position;
+  nodeRenderer?: (props: NodeRendererProps) => React.ReactNode;
 
   behaviorState: NodeBehaviorState;
   appearance: NodeAppearance;
@@ -86,6 +75,7 @@ const NodeViewPresenterComponent: React.FC<NodeViewPresenterProps> = ({
   isSelected,
   isDragging,
   dragOffset,
+  nodeRenderer,
   behaviorState,
   appearance,
   resizeState,
@@ -161,7 +151,7 @@ const NodeViewPresenterComponent: React.FC<NodeViewPresenterProps> = ({
     [nodeDefinition?.interactive, node.id, isSelected, onPointerDown],
   );
 
-  const customRenderProps = React.useMemo((): CustomNodeRendererProps => {
+  const customRenderProps = React.useMemo((): NodeRendererProps => {
     const nodeWithCurrentSize: Node = resizeState.isResizing && resizeState.currentSize
       ? { ...node, size: resizeState.currentSize }
       : node;
@@ -195,7 +185,7 @@ const NodeViewPresenterComponent: React.FC<NodeViewPresenterProps> = ({
   const connectingPortId = connectingPort?.id;
   const { isGroup, isAppearance } = behaviorState;
   const { backgroundWithOpacity, groupBackground, groupTextColor } = appearance;
-  const hasCustomRenderer = !!nodeDefinition?.renderNode;
+  const hasCustomRenderer = !!nodeRenderer || !!nodeDefinition?.renderNode;
   const disableOutline = nodeDefinition?.disableOutline ?? false;
 
   return (
@@ -230,6 +220,7 @@ const NodeViewPresenterComponent: React.FC<NodeViewPresenterProps> = ({
         isSelected={isSelected}
         nodeDefinition={nodeDefinition}
         isUnknownType={isUnknownType}
+        nodeRenderer={nodeRenderer}
         customRenderProps={customRenderProps}
         isEditing={isEditingTitle}
         editingValue={editingValue}
@@ -289,6 +280,10 @@ const arePresenterPropsEqual = (
   }
   if (prevProps.isDragging !== nextProps.isDragging) {
     debugLog("isDragging changed");
+    return false;
+  }
+  if (prevProps.nodeRenderer !== nextProps.nodeRenderer) {
+    debugLog("nodeRenderer changed");
     return false;
   }
   if (prevProps.isVisuallyDragging !== nextProps.isVisuallyDragging) {

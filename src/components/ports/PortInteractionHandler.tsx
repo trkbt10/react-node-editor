@@ -9,12 +9,11 @@ import { useCanvasInteraction } from "../../contexts/composed/canvas/interaction
 import { useNodeCanvas } from "../../contexts/composed/canvas/viewport/context";
 import { useNodeDefinitions } from "../../contexts/node-definitions/context";
 import { usePointerDrag } from "../../hooks/usePointerDrag";
-import { usePortPositions } from "../../contexts/node-ports/context";
 import { createActionPort } from "../../core/port/identity/variant";
 import { isPortConnectable } from "../../core/port/connectivity/connectableTypes";
 import { computeConnectablePortIds } from "../../core/port/connectivity/planner";
-import { findNearestConnectablePort } from "../../core/port/connectivity/candidate";
 import { useConnectionOperations } from "../../contexts/node-ports/hooks/useConnectionOperations";
+import { useConnectionPortResolvers } from "../../contexts/node-ports/hooks/useConnectionPortResolvers";
 import { PORT_INTERACTION_THRESHOLD } from "../../constants/interaction";
 
 export type PortInteractionHandlerProps = {
@@ -41,8 +40,8 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
   const { state: interactionState, actions: interactionActions } = useCanvasInteraction();
   const { utils } = useNodeCanvas();
   const { registry } = useNodeDefinitions();
-  const { getPortPosition, computePortPosition } = usePortPositions();
   const { completeConnectionDrag, endConnectionDrag } = useConnectionOperations();
+  const { resolveCandidatePort } = useConnectionPortResolvers();
 
   // Check port states
   const isHovered = actionState.hoveredPort?.id === port.id;
@@ -53,46 +52,6 @@ export const PortInteractionHandler: React.FC<PortInteractionHandlerProps> = ({ 
 
   // Convert to Port for actions using factory to ensure all properties are copied
   const actionPort = React.useMemo<Port>(() => createActionPort(port), [port]);
-
-  const resolveConnectionPoint = React.useEffectEvent((nodeId: string, portId: string) => {
-    const stored = getPortPosition(nodeId, portId);
-    if (stored) {
-      return stored.connectionPoint;
-    }
-    const node = nodeEditorState.nodes[nodeId];
-    if (!node) {
-      return null;
-    }
-    // Skip port resolution for unknown node types
-    const definition = registry.get(node.type);
-    if (!definition) {
-      return null;
-    }
-    const ports = getNodePorts(nodeId);
-    const targetPort = ports.find((candidate) => candidate.id === portId);
-    if (!targetPort) {
-      return null;
-    }
-    const computed = computePortPosition({ ...node, ports }, targetPort);
-    return computed.connectionPoint;
-  });
-
-  const resolveCandidatePort = React.useEffectEvent((canvasPosition: Position) => {
-    if (!interactionState.connectionDragState) {
-      return null;
-    }
-    return findNearestConnectablePort({
-      pointerCanvasPosition: canvasPosition,
-      connectablePorts: actionState.connectablePorts,
-      nodes: nodeEditorState.nodes,
-      getNodePorts,
-      getConnectionPoint: resolveConnectionPoint,
-      excludePort: {
-        nodeId: interactionState.connectionDragState.fromPort.nodeId,
-        portId: interactionState.connectionDragState.fromPort.id,
-      },
-    });
-  });
 
   // Handle connection drag
   const handleConnectionDragStartImpl = React.useEffectEvent((_event: PointerEvent, _portElement: HTMLElement) => {

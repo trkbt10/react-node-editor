@@ -107,28 +107,8 @@ export const NodeLayer: React.FC<NodeLayerProps> = ({ doubleClickToEdit }) => {
             onPortPointerLeave={handlePortPointerLeave}
             onPortPointerCancel={handlePortPointerCancel}
             connectablePorts={connectablePorts}
-            connectingPort={
-              connectionDragState?.fromPort
-                ? {
-                    id: connectionDragState.fromPort.id,
-                    type: connectionDragState.fromPort.type,
-                    label: connectionDragState.fromPort.label,
-                    nodeId: connectionDragState.fromPort.nodeId,
-                    position: connectionDragState.fromPort.position,
-                  }
-                : undefined
-            }
-            hoveredPort={
-              hoveredPort
-                ? {
-                    id: hoveredPort.id,
-                    type: hoveredPort.type,
-                    label: hoveredPort.label,
-                    nodeId: hoveredPort.nodeId,
-                    position: hoveredPort.position,
-                  }
-                : undefined
-            }
+            connectingPort={connectionDragState?.fromPort}
+            hoveredPort={hoveredPort ?? undefined}
             connectedPorts={connectedPorts}
             candidatePortId={connectionDragState?.candidatePort?.id}
           />

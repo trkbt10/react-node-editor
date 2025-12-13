@@ -402,15 +402,14 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(rootItem);
         });
 
+        await screen.findByText("Category1");
         expect(screen.getByText("Category1")).toBeInTheDocument();
 
         // Simulate moving to submenu: leave root wrapper, enter submenu
         const submenu = screen.getByText("Category1").closest("[class*='submenu']")!;
         await act(async () => {
-          fireEvent.pointerLeave(rootWrapper);
-        });
-        await act(async () => {
           fireEvent.pointerEnter(submenu);
+          fireEvent.pointerLeave(rootWrapper);
         });
 
         // Submenu should still be visible (closeDelayMs=0 means immediate)
@@ -432,13 +431,12 @@ describe("NodeAddMenu", () => {
           fireEvent.pointerEnter(rootItem);
         });
 
+        await screen.findByText("Category1");
         // Leave root and enter category item
         const category1 = screen.getByText("Category1").closest("[role='menuitem']")!;
         await act(async () => {
-          fireEvent.pointerLeave(rootWrapper);
-        });
-        await act(async () => {
           fireEvent.pointerEnter(category1);
+          fireEvent.pointerLeave(rootWrapper);
         });
 
         // Menu should stay open

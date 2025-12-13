@@ -1,7 +1,7 @@
 /**
  * @file Type guard factory utilities for safely checking node render and inspector props
  */
-import type { NodeRenderProps, InspectorRenderProps } from "./NodeDefinition";
+import type { NodeRendererProps, InspectorRenderProps } from "./NodeDefinition";
 
 /**
  * Generic type guard factory based on node type (data shape is not validated)
@@ -9,7 +9,7 @@ import type { NodeRenderProps, InspectorRenderProps } from "./NodeDefinition";
  * @returns A type guard function for node render props
  */
 export function createTypeGuard<TData extends Record<string, unknown> = Record<string, unknown>>(type: string) {
-  return (props: NodeRenderProps): props is NodeRenderProps<TData> => props.node.type === type;
+  return (props: NodeRendererProps): props is NodeRendererProps<TData> => props.node.type === type;
 }
 
 /**

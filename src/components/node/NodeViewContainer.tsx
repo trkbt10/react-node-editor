@@ -12,11 +12,10 @@ import { useExternalDataRef } from "../../contexts/external-data/ExternalDataCon
 import { useExternalData } from "../../contexts/external-data/useExternalData";
 import { useCanvasInteraction } from "../../contexts/composed/canvas/interaction/context";
 import { useGroupManagement } from "../../contexts/composed/node-editor/hooks/useGroupManagement";
-import { computeNodeBehaviorState, computeNodeResizeState } from "../../core/node/nodeState";
-import { computeNodeAppearance } from "../../core/node/nodeAppearance";
-import { DEFAULT_NODE_SIZE } from "../../core/node/comparators";
+import { computeNodeDerivedState } from "../../core/node/nodeState";
+import { hasGroupBehavior } from "../../types/behaviors";
 import { NodeViewPresenter } from "./NodeViewPresenter";
-import type { CustomNodeRendererProps } from "./NodeViewPresenter";
+import type { NodeRendererProps } from "../../types/NodeDefinition";
 
 export type NodeViewContainerProps = {
   node: Node;
@@ -37,7 +36,7 @@ export type NodeViewContainerProps = {
   connectedPorts?: Set<string>;
   connectablePorts?: ConnectablePortsResult;
   candidatePortId?: string;
-  nodeRenderer?: (props: CustomNodeRendererProps) => React.ReactNode;
+  nodeRenderer?: (props: NodeRendererProps) => React.ReactNode;
   externalData?: unknown;
   onUpdateNode?: (updates: Partial<Node>) => void;
 };
@@ -47,6 +46,7 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
   isSelected,
   isDragging,
   dragOffset,
+  nodeRenderer,
   onPointerDown,
   onContextMenu,
   onPortPointerDown,
@@ -71,32 +71,23 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
   const externalDataRef = useExternalDataRef(node.id);
   const externalDataState = useExternalData(node, externalDataRef);
 
-  const behaviorState = React.useMemo(() => computeNodeBehaviorState(nodeDefinition), [nodeDefinition]);
-
-  const appearance = React.useMemo(
-    () => computeNodeAppearance(node, behaviorState.isGroup),
-    [node, behaviorState.isGroup],
-  );
-
-  const resizeState = React.useMemo(
-    () => computeNodeResizeState(node.id, interactionState.resizeState),
-    [node.id, interactionState.resizeState],
-  );
+  const isGroup = React.useMemo(() => hasGroupBehavior(nodeDefinition), [nodeDefinition]);
 
   const groupChildren = React.useMemo(
-    () => (behaviorState.isGroup ? groupManager.getGroupChildren(node.id) : []),
-    [behaviorState.isGroup, groupManager, node.id],
+    () => (isGroup ? groupManager.getGroupChildren(node.id) : []),
+    [isGroup, groupManager, node.id],
   );
 
-  const displaySize = React.useMemo(() => {
-    if (resizeState.isResizing && resizeState.currentSize) {
-      return resizeState.currentSize;
-    }
-    return node.size ?? DEFAULT_NODE_SIZE;
-  }, [node.size, resizeState.isResizing, resizeState.currentSize]);
-
-  const isVisuallyDragging = isDragging || dragOffset !== undefined;
-  const hasChildren = groupChildren.length > 0;
+  const derivedState = React.useMemo(() => {
+    return computeNodeDerivedState(
+      node,
+      nodeDefinition,
+      interactionState.resizeState,
+      dragOffset,
+      isDragging,
+      groupChildren.length,
+    );
+  }, [node, nodeDefinition, interactionState.resizeState, dragOffset, isDragging, groupChildren.length]);
 
   // Whether this node has an unknown/unregistered type
   const isUnknownType = nodeDefinition === undefined;
@@ -187,12 +178,13 @@ const NodeViewContainerComponent: React.FC<NodeViewContainerProps> = ({
       isSelected={isSelected}
       isDragging={isDragging}
       dragOffset={dragOffset}
-      behaviorState={behaviorState}
-      appearance={appearance}
-      resizeState={resizeState}
-      displaySize={displaySize}
-      isVisuallyDragging={isVisuallyDragging}
-      hasChildren={hasChildren}
+      nodeRenderer={nodeRenderer}
+      behaviorState={derivedState.behaviorState}
+      appearance={derivedState.appearance}
+      resizeState={derivedState.resizeState}
+      displaySize={derivedState.displayGeometry.displaySize}
+      isVisuallyDragging={derivedState.isVisuallyDragging}
+      hasChildren={derivedState.hasChildren}
       groupChildrenCount={groupChildren.length}
       nodeDefinition={nodeDefinition}
       isUnknownType={isUnknownType}

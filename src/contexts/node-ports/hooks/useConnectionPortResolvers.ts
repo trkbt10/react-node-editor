@@ -5,14 +5,16 @@ import * as React from "react";
 import { useEditorActionState } from "../../composed/EditorActionStateContext";
 import { useCanvasInteraction } from "../../composed/canvas/interaction/context";
 import { useNodeEditor } from "../../composed/node-editor/context";
+import { useNodeDefinitions } from "../../node-definitions/context";
 import { usePortPositions } from "../context";
 import { findNearestConnectablePort } from "../../../core/port/connectivity/candidate";
 import type { Position } from "../../../types/core";
 
 export const useConnectionPortResolvers = () => {
   const { state: actionState } = useEditorActionState();
-  const { state: interactionState, actions: _interactionActions } = useCanvasInteraction();
+  const { state: interactionState } = useCanvasInteraction();
   const { state: nodeEditorState, getNodePorts } = useNodeEditor();
+  const { registry } = useNodeDefinitions();
   const { getPortPosition, computePortPosition } = usePortPositions();
 
   const resolveConnectionPoint = React.useCallback(
@@ -25,6 +27,11 @@ export const useConnectionPortResolvers = () => {
       if (!node) {
         return null;
       }
+      const definition = registry.get(node.type);
+      if (!definition) {
+        // getNodePorts throws when the node type is unregistered
+        return null;
+      }
       const ports = getNodePorts(nodeId);
       const targetPort = ports.find((candidate) => candidate.id === portId);
       if (!targetPort) {
@@ -33,7 +40,7 @@ export const useConnectionPortResolvers = () => {
       const computed = computePortPosition({ ...node, ports }, targetPort);
       return computed.connectionPoint;
     },
-    [getPortPosition, nodeEditorState.nodes, getNodePorts, computePortPosition],
+    [getPortPosition, nodeEditorState.nodes, registry, getNodePorts, computePortPosition],
   );
 
   const resolveCandidatePort = React.useCallback(

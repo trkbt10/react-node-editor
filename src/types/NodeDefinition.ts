@@ -25,7 +25,7 @@ export type ExternalDataReference = {
  * Node render props for custom node visualization
  * @template TData - The node data type (defaults to Record<string, unknown>)
  */
-export type NodeRenderProps<TData extends Record<string, unknown> = Record<string, unknown>> = {
+export type NodeRendererProps<TData extends Record<string, unknown> = Record<string, unknown>> = {
   /** The node data */
   node: Node & { data: TData };
   /** Whether the node is selected */
@@ -47,6 +47,8 @@ export type NodeRenderProps<TData extends Record<string, unknown> = Record<strin
   /** Callback to update node data */
   onUpdateNode: (updates: Partial<Node>) => void;
 };
+
+export type NodeRenderProps<TData extends Record<string, unknown> = Record<string, unknown>> = NodeRendererProps<TData>;
 
 /**
  * Inspector panel render props
@@ -399,7 +401,7 @@ export type NodeDefinition<TData extends Record<string, unknown> = Record<string
    * it will be invoked as a JSX component, allowing the use of React hooks.
    * Otherwise, it will be called as a regular function for backwards compatibility.
    */
-  renderNode?: (props: NodeRenderProps<TData>) => ReactElement;
+  renderNode?: (props: NodeRendererProps<TData>) => ReactElement;
   /**
    * Custom render function for the inspector panel.
    * If the function name starts with an uppercase letter (React component convention),

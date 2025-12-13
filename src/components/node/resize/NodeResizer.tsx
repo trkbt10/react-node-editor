@@ -5,6 +5,11 @@
 import * as React from "react";
 import type { Size, Node } from "../../../types/core";
 
+const NodeResizerNodeContext = React.createContext<Node | null>(null);
+NodeResizerNodeContext.displayName = "NodeResizerNodeContext";
+
+export const useNodeResizerContext = (): Node | null => React.useContext(NodeResizerNodeContext);
+
 /**
  * Default size constants
  */
@@ -19,7 +24,7 @@ export type NodeResizerProps = {
    * Node object (optional - if not provided, will attempt to resolve from context)
    * Takes precedence over size prop
    */
-  node: Node;
+  node?: Node;
   /**
    * Node size (width and height may be undefined)
    * Only used if node prop is not provided and no node is available in context
@@ -77,7 +82,7 @@ export const normalizeNodeSize = (
  *
  * @example Method 1: Explicit node prop (recommended when node is available)
  * ```tsx
- * const MyNodeRenderer = ({ node }: NodeRenderProps) => (
+ * const MyNodeRenderer = ({ node }: NodeRendererProps) => (
  *   <NodeResizer node={node}>
  *     {({width, height}) => (
  *       <div style={{width, height}}>
@@ -90,7 +95,7 @@ export const normalizeNodeSize = (
  *
  * @example Method 2: Implicit resolution from context (cleanest API)
  * ```tsx
- * const MyNodeRenderer = ({ node }: NodeRenderProps) => (
+ * const MyNodeRenderer = ({ node }: NodeRendererProps) => (
  *   <NodeResizer node={node}>
  *     {() => <MyNodeContent />}
  *   </NodeResizer>
@@ -127,7 +132,7 @@ export const normalizeNodeSize = (
  *
  * @example Listening to resize events
  * ```tsx
- * const MyNodeRenderer = ({ node, isResizing }: NodeRenderProps) => {
+ * const MyNodeRenderer = ({ node, isResizing }: NodeRendererProps) => {
  *   const handleResize = (size: Required<Size>, resizing: boolean) => {
  *     console.log('Current size:', size, 'Is resizing:', resizing);
  *   };
@@ -153,13 +158,16 @@ export const NodeResizer: React.FC<NodeResizerProps> = ({
   isResizing = false,
   onResize,
 }) => {
+  const contextNode = useNodeResizerContext();
+  const resolvedNode = node ?? contextNode;
+
   // Determine the size to use: node.size takes precedence over size prop
   const effectiveSize = React.useMemo(() => {
-    if (node) {
-      return node.size;
+    if (resolvedNode) {
+      return resolvedNode.size;
     }
     return size;
-  }, [node, size]);
+  }, [resolvedNode, size]);
 
   const normalizedSize = React.useMemo(
     () => normalizeNodeSize(effectiveSize, defaultWidth, defaultHeight),
@@ -187,9 +195,11 @@ export const NodeResizer: React.FC<NodeResizerProps> = ({
   );
 
   return (
-    <div className={className} style={mergedStyle}>
-      {children(normalizedSize)}
-    </div>
+    <NodeResizerNodeContext.Provider value={resolvedNode ?? null}>
+      <div className={className} style={mergedStyle}>
+        {children(normalizedSize)}
+      </div>
+    </NodeResizerNodeContext.Provider>
   );
 };
 

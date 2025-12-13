@@ -4,12 +4,11 @@
 import * as React from "react";
 import type { Node } from "../../../types/core";
 import type { NodeDefinition } from "../../../types/NodeDefinition";
-import type { CustomNodeRendererProps } from "../NodeViewPresenter";
+import type { NodeRendererProps } from "../../../types/NodeDefinition";
 import { GroupNodeRenderer as GroupContent } from "../../../node-definitions/group/node";
 import { LockIcon } from "../../elements/icons";
 import { useI18n } from "../../../i18n/context";
 import styles from "./NodeBodyRenderer.module.css";
-import { areExternalDataStatesEqual } from "../../../contexts/external-data/useExternalData";
 import { hasNodeStateChanged } from "../../../core/node/comparators";
 
 export type NodeBodyRendererProps = {
@@ -18,7 +17,8 @@ export type NodeBodyRendererProps = {
   nodeDefinition?: NodeDefinition;
   /** Whether this node's type is not registered in the definition registry */
   isUnknownType?: boolean;
-  customRenderProps: CustomNodeRendererProps;
+  nodeRenderer?: (props: NodeRendererProps) => React.ReactNode;
+  customRenderProps: NodeRendererProps;
   isEditing: boolean;
   editingValue: string;
   isGroup: boolean;
@@ -38,6 +38,7 @@ const NodeBodyRendererComponent: React.FC<NodeBodyRendererProps> = ({
   isSelected,
   nodeDefinition,
   isUnknownType,
+  nodeRenderer,
   customRenderProps,
   isEditing,
   editingValue,
@@ -50,6 +51,12 @@ const NodeBodyRendererComponent: React.FC<NodeBodyRendererProps> = ({
   onEditingBlur,
 }) => {
   const { t } = useI18n();
+  const isComponentLikeRenderer = React.useCallback((renderFn: NonNullable<NodeDefinition["renderNode"]>): boolean => {
+    const named = renderFn as unknown as { displayName?: string; name?: string };
+    const name = named.displayName ?? named.name;
+    const first = typeof name === "string" ? name.slice(0, 1) : "";
+    return first.length > 0 && first === first.toUpperCase();
+  }, []);
 
   // Render broken/corrupted node for unknown types
   if (isUnknownType) {
@@ -82,13 +89,15 @@ const NodeBodyRendererComponent: React.FC<NodeBodyRendererProps> = ({
     );
   }
 
-  // Use component invocation to properly support React hooks
-  if (nodeDefinition?.renderNode) {
-    const renderFn = nodeDefinition.renderNode;
+  const renderCustom = (
+    renderFn: ((props: NodeRendererProps) => React.ReactNode) | undefined,
+  ): React.ReactElement | null => {
+    if (!renderFn) {
+      return null;
+    }
 
-    // If it looks like a React component, use as JSX to support hooks
-    if (React.isValidElement(renderFn)) {
-      const CustomNodeRenderer = renderFn;
+    if (isComponentLikeRenderer(renderFn as NonNullable<NodeDefinition["renderNode"]>)) {
+      const CustomNodeRenderer = renderFn as unknown as React.ComponentType<NodeRendererProps>;
       return (
         <div className={styles.customNodeContent}>
           <CustomNodeRenderer {...customRenderProps} />
@@ -96,8 +105,16 @@ const NodeBodyRendererComponent: React.FC<NodeBodyRendererProps> = ({
       );
     }
 
-    // Otherwise, call as a regular function (legacy support)
     return <div className={styles.customNodeContent}>{renderFn(customRenderProps)}</div>;
+  };
+
+  const renderedFromProp = renderCustom(nodeRenderer);
+  if (renderedFromProp) {
+    return renderedFromProp;
+  }
+
+  if (nodeDefinition?.renderNode) {
+    return renderCustom(nodeDefinition.renderNode);
   }
 
   return (
@@ -218,6 +235,10 @@ export const NodeBodyRenderer = React.memo(NodeBodyRendererComponent, (prevProps
     });
     return false;
   }
+  if (prevProps.nodeRenderer !== nextProps.nodeRenderer) {
+    debugLog("nodeRenderer changed");
+    return false;
+  }
 
   // Check customRenderProps (deep comparison of relevant fields)
   if (prevProps.customRenderProps !== nextProps.customRenderProps) {
@@ -239,31 +260,16 @@ export const NodeBodyRenderer = React.memo(NodeBodyRendererComponent, (prevProps
       return false;
     }
 
-    // Check external data related properties
-    const prevExternalDataState = {
-      data: prevCustom.externalData,
-      isLoading: prevCustom.isLoadingExternalData,
-      error: prevCustom.externalDataError,
-      refresh: () => {},
-      update: async () => {},
-    };
-    const nextExternalDataState = {
-      data: nextCustom.externalData,
-      isLoading: nextCustom.isLoadingExternalData,
-      error: nextCustom.externalDataError,
-      refresh: () => {},
-      update: async () => {},
-    };
-
-    if (!areExternalDataStatesEqual(prevExternalDataState, nextExternalDataState)) {
-      debugLog("customRenderProps.externalData* changed", {
-        prevData: prevCustom.externalData,
-        nextData: nextCustom.externalData,
-        prevIsLoading: prevCustom.isLoadingExternalData,
-        nextIsLoading: nextCustom.isLoadingExternalData,
-        prevError: prevCustom.externalDataError,
-        nextError: nextCustom.externalDataError,
-      });
+    if (prevCustom.externalData !== nextCustom.externalData) {
+      debugLog("customRenderProps.externalData changed");
+      return false;
+    }
+    if (prevCustom.isLoadingExternalData !== nextCustom.isLoadingExternalData) {
+      debugLog("customRenderProps.isLoadingExternalData changed");
+      return false;
+    }
+    if (prevCustom.externalDataError !== nextCustom.externalDataError) {
+      debugLog("customRenderProps.externalDataError changed");
       return false;
     }
   }
