@@ -55,25 +55,17 @@ export const NodeCard: React.FC<NodeCardProps> = ({
       data-is-disabled={disabled}
       data-is-selected={isSelected}
       data-is-non-matching={isNonMatching}
+      data-has-description={shouldShowDescription && !!node.description}
       aria-disabled={disabled}
     >
       <div className={styles.icon} aria-hidden="true">
         {node.icon ?? getNodeIcon(node.type, [])}
       </div>
-      <div className={styles.content}>
-        <div className={styles.titleRow}>
-          <div className={styles.title}>{node.displayName}</div>
-          {titleSuffix}
-          {showTypeBadge && variant === "grid" ? (
-            <div className={styles.typeBadge}>{node.type}</div>
-          ) : null}
-        </div>
-        {shouldShowDescription && node.description ? (
-          <div className={styles.description}>{node.description}</div>
-        ) : null}
-      </div>
-      {showTypeBadge && variant !== "grid" ? (
-        <div className={styles.typeBadge}>{node.type}</div>
+      <div className={styles.title}>{node.displayName}</div>
+      {titleSuffix ? <div className={styles.titleSuffix}>{titleSuffix}</div> : null}
+      {showTypeBadge ? <div className={styles.typeBadge}>{node.type}</div> : null}
+      {shouldShowDescription && node.description ? (
+        <div className={styles.description}>{node.description}</div>
       ) : null}
     </div>
   );

@@ -1,8 +1,14 @@
 /* NodeCard - Shared node definition card for menus, search, and inspector */
 
+/* ============================================================================
+   Base card layout using CSS Grid
+   ============================================================================ */
+
 .card {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  grid-template-rows: auto;
+  grid-template-areas: "icon title suffix badge";
   align-items: center;
   gap: var(--node-editor-space-md);
   border-radius: var(--node-editor-card-border-radius);
@@ -18,12 +24,22 @@
   width: 100%;
 }
 
+/* When description is present, add a second row */
+.card[data-has-description="true"] {
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "icon title suffix badge"
+    ".    desc  desc   desc";
+}
+
 /* ============================================================================
    Variant: list (default - for NodeSearchMenu)
    ============================================================================ */
 
 .card[data-variant="list"] {
   gap: var(--node-editor-space-md);
+  column-gap: var(--node-editor-space-md);
+  row-gap: var(--node-editor-space-xxs);
   border: none;
   border-radius: 0;
   padding: var(--node-editor-space-sm) var(--node-editor-space-lg);
@@ -49,10 +65,6 @@
   filter: brightness(0.95);
 }
 
-.card[data-variant="list"] .content {
-  gap: var(--node-editor-space-xxs, 4px);
-}
-
 .card[data-variant="list"] .description {
   display: -webkit-box;
   -webkit-line-clamp: 1;
@@ -60,7 +72,7 @@
 }
 
 .card[data-variant="list"] .typeBadge {
-  margin-left: var(--node-editor-space-lg);
+  margin-left: var(--node-editor-space-md);
 }
 
 /* ============================================================================
@@ -68,11 +80,18 @@
    ============================================================================ */
 
 .card[data-variant="grid"] {
-  flex-direction: row;
-  gap: var(--node-editor-space-sm);
+  column-gap: var(--node-editor-space-sm);
+  row-gap: var(--node-editor-space-xxs);
   padding: var(--node-editor-space-sm);
   border: var(--node-editor-input-border);
   box-shadow: var(--node-editor-node-card-box-shadow);
+}
+
+/* Grid variant keeps icon spanning both rows when description exists */
+.card[data-variant="grid"][data-has-description="true"] {
+  grid-template-areas:
+    "icon title suffix badge"
+    "icon desc  desc   desc";
 }
 
 .card[data-variant="grid"]:focus-visible {
@@ -85,29 +104,19 @@
   box-shadow: var(--node-editor-card-hover-box-shadow);
 }
 
-.card[data-variant="grid"] .content {
-  gap: var(--node-editor-space-xxs, 4px);
+.card[data-variant="grid"] .icon {
+  grid-row: 1 / -1;
 }
 
 .card[data-variant="grid"] .description {
   -webkit-line-clamp: 2;
 }
 
-.card[data-variant="grid"] .titleRow {
-  flex-wrap: nowrap;
-}
-
-.card[data-variant="grid"] .title {
-  flex: 1 1 0;
-  min-width: 0;
-}
-
 .card[data-variant="grid"] .typeBadge {
-  margin-left: auto;
   font-size: 9px;
   padding: 1px 4px;
   opacity: 0.7;
-  max-width: 30%;
+  max-width: 60px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -144,7 +153,6 @@
 .card[data-variant="menu"] .typeBadge {
   font-size: 10px;
   padding: 1px 6px;
-  margin-left: auto;
 }
 
 /* ============================================================================
@@ -177,10 +185,11 @@
 }
 
 /* ============================================================================
-   Shared element styles
+   Grid area assignments
    ============================================================================ */
 
 .icon {
+  grid-area: icon;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -192,22 +201,8 @@
   flex-shrink: 0;
 }
 
-.content {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--node-editor-space-xs);
-}
-
-.titleRow {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--node-editor-space-sm);
-}
-
 .title {
+  grid-area: title;
   font-size: var(--node-editor-inspector-font-size-body);
   font-weight: 600;
   line-height: 1.3;
@@ -215,17 +210,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  min-width: 0;
 }
 
-.description {
-  font-size: var(--node-editor-inspector-font-size-meta);
-  color: var(--node-editor-secondary-label-color);
-  line-height: 1.4;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.titleSuffix {
+  grid-area: suffix;
 }
 
 .typeBadge {
+  grid-area: badge;
   font-size: var(--node-editor-inspector-font-size-meta);
   font-family: var(--node-editor-input-font);
   padding: var(--node-editor-space-xxs, 4px) var(--node-editor-space-xs);
@@ -233,7 +226,17 @@
   background: var(--node-editor-table-header-background-color);
   color: var(--node-editor-secondary-label-color);
   flex-shrink: 0;
-  align-self: flex-start;
+  justify-self: end;
+}
+
+.description {
+  grid-area: desc;
+  font-size: var(--node-editor-inspector-font-size-meta);
+  color: var(--node-editor-secondary-label-color);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 /* ============================================================================
